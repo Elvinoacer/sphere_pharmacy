@@ -422,7 +422,9 @@ function RiderDeliveryCard({
       <CardContent className="space-y-3 p-4">
         <div className="flex flex-wrap items-center gap-2">
           <p className="font-mono text-sm font-bold">{order.reference}</p>
-          <OrderStatusBadge status={order.status} />
+          {order.status === "READY_FOR_PICKUP"
+                            ? <Badge variant="outline" className="border-teal-300 bg-teal-50 text-teal-800 dark:border-teal-800 dark:bg-teal-950/40 dark:text-teal-200">Ready for dispatch</Badge>
+                            : <OrderStatusBadge status={order.status} />}
           <span className="ml-auto text-xs text-muted-foreground">{timeAgo(order.createdAt)}</span>
         </div>
 
@@ -574,7 +576,9 @@ function DispatchCard({
       <CardContent className="space-y-3 p-4">
         <div className="flex flex-wrap items-center gap-2">
           <p className="font-mono text-sm font-bold">{order.reference}</p>
-          <OrderStatusBadge status={order.status} />
+          {order.status === "READY_FOR_PICKUP"
+                            ? <Badge variant="outline" className="border-teal-300 bg-teal-50 text-teal-800 dark:border-teal-800 dark:bg-teal-950/40 dark:text-teal-200">Ready for dispatch</Badge>
+                            : <OrderStatusBadge status={order.status} />}
           <span className="ml-auto text-xs text-muted-foreground">{timeAgo(order.createdAt)}</span>
         </div>
 
