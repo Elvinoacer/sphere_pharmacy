@@ -88,9 +88,10 @@ function nextStatusesFor(order: OrderDTO, role: Role | "CUSTOMER" | undefined): 
       : order.riderId ? ["OUT_FOR_DELIVERY"] : []
   }
   // Delivery must be checked and packed before it can leave the pharmacy.
-  return (NEXT_STATUS[order.status] ?? []).filter((status) =>
-    status !== "COMPLETED_DELIVERY" || order.fulfillment === "DELIVERY"
-  )
+  return (NEXT_STATUS[order.status] ?? []).filter((status) => {
+    if (status === "PAID") return order.payments.some((payment) => payment.status === "SUCCESS")
+    return status !== "COMPLETED_DELIVERY" || order.fulfillment === "DELIVERY"
+  })
 }
 
 function workflowLabel(order: OrderDTO, status: OrderStatus): string {
@@ -751,12 +752,13 @@ function OrderDetailSheet({
                     })}
                 </ul>
               )}
-              {pay && order.status === "AWAITING_PAYMENT" && canManage ? (
+              {canManage && ["AVAILABILITY_CONFIRMED", "AWAITING_PAYMENT"].includes(order.status) && !order.payments.some((payment) => payment.status === "SUCCESS") ? (
                 <div className="mt-2 flex flex-wrap gap-2">
                   <Button
                     size="sm"
                     className="gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white"
-                    disabled={actionBusy}
+                    disabled={actionBusy || !order.customerPhone}
+                    title={!order.customerPhone ? "A customer phone number is required to send M-Pesa" : undefined}
                     onClick={() => onPromptMpesa(order)}
                   >
                     <Smartphone className="h-4 w-4" /> Send M-Pesa STK prompt
