@@ -62,6 +62,9 @@ export async function PATCH(request: Request, { params }: Params) {
     if (order.status === status) return NextResponse.json(toOrderDTO(order))
     if (status === "CANCELLED") return NextResponse.json({ error: "Use the cancellation action so reserved stock and loyalty are restored safely." }, { status: 409 })
     if (status === "REFUNDED") return NextResponse.json({ error: "Use the refund action so the payment provider confirms the refund." }, { status: 409 })
+    if (status === "PAID" && !order.payments.some((payment) => payment.status === "SUCCESS")) {
+      return NextResponse.json({ error: "Confirm the payment through M-Pesa, the provider webhook or the cash-received action before marking an order paid." }, { status: 409 })
+    }
     if (status === "READY_FOR_PICKUP" && order.prescriptions.some((rx) => !["APPROVED", "PARTIALLY_APPROVED"].includes(rx.status))) {
       return NextResponse.json({ error: "Review all prescription items before marking this order ready for collection or dispatch." }, { status: 409 })
     }
