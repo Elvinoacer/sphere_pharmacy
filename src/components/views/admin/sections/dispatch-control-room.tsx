@@ -422,7 +422,9 @@ export function DispatchControlRoom({ refreshKey, onRefresh, onNavigateSection }
                       <div className="min-w-0 flex-1">
                         <div className="flex flex-wrap items-center gap-2">
                           <span className="font-mono text-sm font-bold">{order.reference}</span>
-                          <OrderStatusBadge status={order.status} />
+                          {order.status === "READY_FOR_PICKUP"
+                            ? <Badge variant="outline" className="border-teal-300 bg-teal-50 text-teal-800 dark:border-teal-800 dark:bg-teal-950/40 dark:text-teal-200">Ready for dispatch</Badge>
+                            : <OrderStatusBadge status={order.status} />}
                           {attention(order, now) && !completed ? <Badge variant="outline" className="gap-1 border-amber-300 text-amber-800 dark:text-amber-300"><Clock3 className="h-3 w-3" /> Check delay</Badge> : null}
                         </div>
                         <p className="mt-1 text-xs text-muted-foreground">
