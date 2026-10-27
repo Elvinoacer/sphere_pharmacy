@@ -339,7 +339,7 @@ export const paymentsApi = {
   requestPayment: (orderId: string, phone?: string) =>
     req<{ ok: boolean; paymentId: string; checkoutRequestId: string; phone: string; amount: number; message: string }>(
       `/api/orders/${orderId}/request-payment`,
-      { method: "POST", body: JSON.stringify({ phone }) }
+      { method: "POST", body: JSON.stringify({ phone, idempotencyKey: crypto.randomUUID() }) }
     ),
   refund: (paymentId: string) => req<{ ok: boolean }>("/api/payments/refund", { method: "POST", body: JSON.stringify({ paymentId }) }),
 }
