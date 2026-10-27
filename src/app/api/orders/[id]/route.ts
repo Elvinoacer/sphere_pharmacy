@@ -106,7 +106,7 @@ export async function PATCH(request: Request, { params }: Params) {
     const email = orderStatusUpdateTemplate({
       orderReference: order.reference,
       customerName: customer?.name || order.guestName || "Valued Customer",
-      statusLabel: ORDER_STATUS_LABELS[status], message,
+      statusLabel: status === "READY_FOR_PICKUP" && order.fulfillment === "DELIVERY" ? "Ready for dispatch" : ORDER_STATUS_LABELS[status], message,
       pickupCode: status === "READY_FOR_PICKUP" ? order.pickupCode : null, orderUrl,
     })
     await notifyCustomer(order.userId, "ORDER_STATUS", title, message, "IN_APP", {
