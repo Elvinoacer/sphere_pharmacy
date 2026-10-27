@@ -803,6 +803,27 @@ function OrderDetailSheet({
               </section>
             )}
 
+            {/* Clear and actionable order-to-rider handoff */}
+            {order.fulfillment === "DELIVERY" ? (
+              <section aria-labelledby="od-dispatch-readiness">
+                <h3 id="od-dispatch-readiness" className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Dispatch readiness</h3>
+                <div className="space-y-3 rounded-xl border border-teal-200 bg-teal-50/60 p-3 dark:border-teal-900 dark:bg-teal-950/20">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Truck className="h-4 w-4 text-teal-800 dark:text-teal-300" aria-hidden />
+                    <OrderFulfillmentStatus order={order} />
+                    {order.riderId ? (
+                      <Badge variant="outline" className="border-teal-300 bg-background text-teal-800 dark:border-teal-800 dark:text-teal-200"><Bike className="mr-1 h-3 w-3" /> Rider assigned</Badge>
+                    ) : null}
+                  </div>
+                  <p className="text-sm leading-relaxed text-foreground">{deliveryGuidance(order)}</p>
+                  <p className="text-xs text-muted-foreground">Preparation, readiness and rider assignment are distinct steps. Marking an order ready does not send it out for delivery.</p>
+                  <Button size="sm" variant="outline" className="gap-1.5" onClick={() => onNavigateSection("dispatch", { search: order.reference })}>
+                    <Truck className="h-3.5 w-3.5" /> View in Dispatch <ChevronRight className="h-3.5 w-3.5" />
+                  </Button>
+                </div>
+              </section>
+            ) : null}
+
             {/* order notes */}
             {order.notes ? (
               <section aria-labelledby="od-notes">
@@ -910,6 +931,9 @@ function OrderDetailSheet({
         <div className="scroll-slim max-h-[40dvh] shrink-0 space-y-2 overflow-y-auto border-t bg-background p-3 pb-[max(.75rem,env(safe-area-inset-bottom))] sm:bg-muted/30 sm:p-4">
           {canManage || role === "RIDER" ? (
             <>
+              {order.fulfillment === "DELIVERY" ? (
+                <p className="text-xs font-semibold text-foreground">{order.status === "READY_FOR_PICKUP" && !order.riderId ? "Next: assign a rider before dispatching" : "Next order action"}</p>
+              ) : null}
               <div className="grid gap-2 sm:flex sm:flex-wrap">
                 {nexts.map((target, idx) => (
                   <Button
@@ -920,10 +944,15 @@ function OrderDetailSheet({
                     onClick={() => onStartTransition(order, target)}
                     className="w-full sm:w-auto"
                   >
-                    {TRANSITION_LABELS[target] ?? statusLabel(target)}
+                    {workflowLabel(order, target)}
                   </Button>
                 ))}
               </div>
+              {order.fulfillment === "DELIVERY" && order.status === "READY_FOR_PICKUP" && !order.riderId ? (
+                <Button size="sm" variant="outline" className="w-full gap-1.5 sm:w-auto" onClick={() => onNavigateSection("dispatch", { search: order.reference })}>
+                  <Bike className="h-4 w-4" /> Assign a rider in Dispatch
+                </Button>
+              ) : null}
               {canManage && ACTIVE_STATUSES.includes(order.status) ? (
                 <Button size="sm" variant="ghost" className="w-full gap-1.5 text-rose-600 hover:text-rose-700 sm:w-auto" disabled={actionBusy} onClick={() => onCancel(order)}>
                   <Ban className="h-4 w-4" /> Cancel order
@@ -965,12 +994,16 @@ function TransitionDialog({
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>
-            {viaCash ? "Confirm cash payment" : `Move to “${statusLabel(target)}”?`}
+            {viaCash ? "Confirm cash payment" : `Confirm: ${workflowLabel(order, target)}?`}
           </DialogTitle>
           <DialogDescription>
             {viaCash
               ? `Mark order ${order.reference} as paid — confirm you received ${formatKES(order.total)} in cash.`
-              : `Order ${order.reference} will move from “${statusLabel(order.status)}” to “${statusLabel(target)}”. The customer is notified in-app.`}
+              : target === "READY_FOR_PICKUP" && order.fulfillment === "DELIVERY"
+                ? `Confirm all items in ${order.reference} have been checked, packed and are physically ready to hand over. This does not send the rider out yet.`
+                : target === "OUT_FOR_DELIVERY" && order.fulfillment === "DELIVERY"
+                  ? `Confirm the securely packed order ${order.reference} has been physically handed to ${order.riderName ?? "the assigned rider"}. This changes its status to Out for delivery.`
+                  : `Order ${order.reference} will move from “${statusLabel(order.status)}” to “${statusLabel(target)}”. The customer is notified in-app.`}
           </DialogDescription>
         </DialogHeader>
         {!viaCash ? (
@@ -989,7 +1022,7 @@ function TransitionDialog({
           <Button variant="outline" onClick={onClose} disabled={busy}>Cancel</Button>
           <Button onClick={() => void onConfirm(note)} disabled={busy}>
             {busy ? <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden /> : null}
-            {viaCash ? "Mark as paid" : `Confirm: ${TRANSITION_LABELS[target] ?? statusLabel(target)}`}
+            {viaCash ? "Mark as paid" : `Confirm: ${workflowLabel(order, target)}`}
           </Button>
         </DialogFooter>
       </DialogContent>
