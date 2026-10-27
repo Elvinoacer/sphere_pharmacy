@@ -595,21 +595,28 @@ function OrderDetailSheet({
 }) {
   const [riders, setRiders] = useState<StaffDTO[]>([])
   const [ridersLoading, setRidersLoading] = useState(true)
+  const [ridersError, setRidersError] = useState<string | null>(null)
+  const [riderPick, setRiderPick] = useState("")
 
   const needsRiders =
     Boolean(order) && canAssignRider && order?.fulfillment === "DELIVERY" &&
-    (order?.status === "PAID" || order?.status === "PREPARING")
+    ["PAID", "PREPARING", "READY_FOR_PICKUP"].includes(order.status)
 
   useEffect(() => {
     if (!open || !needsRiders || riders.length > 0) return
     let cancelled = false
-    adminApi
-      .staff()
+    ordersApi.dispatchRiders()
       .then((list) => {
-        if (!cancelled) setRiders(list.filter((s) => s.role === "RIDER" && s.active))
+        if (!cancelled) {
+          setRiders(list)
+          setRidersError(null)
+        }
       })
-      .catch(() => {
-        if (!cancelled) setRiders([])
+      .catch((err) => {
+        if (!cancelled) {
+          setRiders([])
+          setRidersError(apiErrorMessage(err))
+        }
       })
       .finally(() => {
         if (!cancelled) setRidersLoading(false)
@@ -828,47 +835,44 @@ function OrderDetailSheet({
             {/* rider assignment */}
             {needsRiders ? (
               <section aria-labelledby="od-rider">
-                <h3 id="od-rider" className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Assign rider</h3>
+                <h3 id="od-rider" className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Rider assignment</h3>
+                <p className="mb-2 text-xs text-muted-foreground">Assign a rider while the order is being prepared or once it is ready. Assignment does not dispatch the package.</p>
+                {order.riderId ? <p className="mb-2 flex items-center gap-2 rounded-lg border border-teal-200 bg-teal-50 px-3 py-2 text-sm font-medium text-teal-900 dark:border-teal-800 dark:bg-teal-950/30 dark:text-teal-200"><Bike className="h-4 w-4" /> Currently assigned: {order.riderName || "Rider"}</p> : null}
                 {ridersLoading ? (
                   <p className="flex items-center gap-2 text-sm text-muted-foreground"><Loader2 className="h-4 w-4 animate-spin" /> Loading riders…</p>
-                ) : riders.length === 0 ? (
-                  <p className="rounded-lg border border-dashed p-3 text-sm text-muted-foreground">No active riders on the team.</p>
+                ) : ridersError ? (
+                  <div className="rounded-lg border border-rose-300 bg-rose-50 p-3 text-sm text-rose-800 dark:border-rose-800 dark:bg-rose-950/30 dark:text-rose-200">Could not load active riders: {ridersError}. Open Dispatch to try again.</div>
+                ) : riders.filter((r) => r.id !== order.riderId).length === 0 ? (
+                  <p className="rounded-lg border border-dashed p-3 text-sm text-muted-foreground">{order.riderId ? "No other active riders are available for reassignment." : "No active rider accounts are available. An admin can add riders in Staff."}</p>
                 ) : (
                   <div className="space-y-2">
-                    <Select value="" onValueChange={(staffId) => {
-                      const rider = riders.find((r) => r.id === staffId)
-                      void onAssignRider(order, staffId, rider?.name)
-                    }}>
-                      <SelectTrigger className="w-full" aria-label="Assign a rider to this delivery">
-                        <SelectValue placeholder="Choose a rider to assign…" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {riders.map((rider) => (
-                          <SelectItem key={rider.id} value={rider.id}>
-                            {rider.name}
-                            {rider.phone ? ` · ${rider.phone}` : ""}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    {actionBusy ? (
-                      <p className="flex items-center gap-2 text-xs text-muted-foreground">
-                        <Loader2 className="h-3.5 w-3.5 animate-spin" /> Assigning rider…
-                      </p>
-                    ) : (
-                      <div className="flex flex-wrap gap-1.5">
-                        {riders.map((rider) => (
-                          <a
-                            key={rider.id}
-                            href={telHref(rider.phone) ?? "#"}
-                            className="flex items-center gap-1 rounded-md border px-2 py-1 text-xs text-muted-foreground hover:bg-accent/60"
-                            aria-label={`Call rider ${rider.name}`}
-                          >
-                            <Phone className="h-3 w-3" aria-hidden /> {rider.name}
-                          </a>
-                        ))}
-                      </div>
-                    )}
+                    <div className="flex flex-col gap-2 sm:flex-row">
+                      <Select value={riderPick || undefined} onValueChange={setRiderPick} disabled={actionBusy}>
+                        <SelectTrigger className="w-full min-w-0 sm:flex-1" aria-label="Select an active delivery rider">
+                          <SelectValue placeholder={order.riderId ? "Choose a replacement rider…" : "Choose an active rider…"} />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {riders.filter((r) => r.id !== order.riderId).map((rider) => (
+                            <SelectItem key={rider.id} value={rider.id}>
+                              {rider.name}{rider.phone ? ` · ${rider.phone}` : ""}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <Button
+                        size="sm"
+                        className="gap-1.5"
+                        disabled={actionBusy || !riderPick || riderPick === order.riderId}
+                        onClick={() => {
+                          const rider = riders.find((r) => r.id === riderPick)
+                          void onAssignRider(order, riderPick, rider?.name)
+                        }}
+                      >
+                        {actionBusy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Bike className="h-4 w-4" />}
+                        {order.riderId ? "Reassign rider" : "Assign rider"}
+                      </Button>
+                    </div>
+                    <p className="text-xs text-muted-foreground">Only active rider accounts are shown. Use Dispatch to manage assignments and see each rider’s workload.</p>
                   </div>
                 )}
               </section>
