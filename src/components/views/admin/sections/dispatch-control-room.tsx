@@ -13,6 +13,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { EmptyState } from "@/components/shared/empty-state"
 import { OrderStatusBadge } from "@/components/shared/status-badges"
 import { ordersApi, paymentsApi } from "@/lib/api-client"
+import { useAppStore } from "@/store/use-app-store"
 import type { OrderDTO, StaffDTO } from "@/lib/types"
 import { formatKES, shortRef, timeAgo } from "@/lib/format"
 import { cn } from "@/lib/utils"
@@ -60,7 +61,7 @@ export function DispatchControlRoom({ refreshKey, onRefresh, onNavigateSection }
   const [now, setNow] = useState(() => Date.now())
   const [refreshing, setRefreshing] = useState(false)
   const [view, setView] = useState<View>("all")
-  const [search, setSearch] = useState("")
+  const [search, setSearch] = useState(() => useAppStore.getState().params.search ?? "")
   const [riderFilter, setRiderFilter] = useState("all")
   const [sort, setSort] = useState<Sort>("oldest")
   const [selected, setSelected] = useState<string[]>([])
