@@ -169,7 +169,7 @@ export function DispatchControlRoom({ refreshKey, onRefresh, onNavigateSection }
 
   function changeStatus(order: OrderDTO, status: "PREPARING" | "READY_FOR_PICKUP" | "OUT_FOR_DELIVERY") {
     void apply(order, () => ordersApi.updateStatus(order.id, status),
-      status === "PREPARING" ? "Preparation started." : status === "READY_FOR_PICKUP" ? "Order is ready for rider handoff." : "Rider dispatched.")
+      status === "PREPARING" ? "Preparation started." : status === "READY_FOR_PICKUP" ? "Order is packed and ready for rider handoff." : "Rider dispatched.")
   }
 
   async function confirmAction() {
