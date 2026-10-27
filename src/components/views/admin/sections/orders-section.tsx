@@ -22,7 +22,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { EmptyState } from "@/components/shared/empty-state"
 import { OrderStatusBadge, PaymentStatusBadge, RxFlagBadge, RxStatusBadge } from "@/components/shared/status-badges"
-import { ordersApi, adminApi, paymentsApi } from "@/lib/api-client"
+import { ordersApi, paymentsApi } from "@/lib/api-client"
 import type { OrderDTO, PaymentDTO, StaffDTO } from "@/lib/types"
 import {
   ACTIVE_STATUSES, FULFILLMENT_LABELS, NEXT_STATUS, ORDER_STATUS_LABELS, ORDER_TYPE_LABELS,
@@ -34,7 +34,7 @@ import { useAuthStore } from "@/store/use-auth-store"
 import { toast } from "sonner"
 import { AdminSectionHeader, KpiCard, apiErrorMessage, telHref, useDebounced, waHref, type SectionProps } from "../admin-shared"
 import {
-  Search, Package, Loader2, Truck, Store, Phone, MessageCircle, ChevronRight, Ban,
+  Search, Package, Loader2, Truck, Store, Phone, MessageCircle, ChevronRight, Ban, Bike,
   Banknote, Smartphone, CreditCard, ClipboardList, Wallet, Clock, CheckCircle2, User, X,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -76,15 +76,46 @@ function latestPayment(order: OrderDTO): PaymentDTO | null {
 }
 
 function nextStatusesFor(order: OrderDTO, role: Role | "CUSTOMER" | undefined): OrderStatus[] {
-  const base = NEXT_STATUS[order.status] ?? []
-  if (role === "RIDER") return base.filter((s) => s === "COMPLETED_DELIVERY")
-  if (order.status === "PREPARING") {
-    // Only offer the branch matching the fulfillment method.
-    return base.filter((s) =>
-      order.fulfillment === "PICKUP" ? s === "READY_FOR_PICKUP" : s === "OUT_FOR_DELIVERY"
-    )
+  if (role === "RIDER") {
+    return order.fulfillment === "DELIVERY" && order.riderId && order.status === "READY_FOR_PICKUP"
+      ? ["OUT_FOR_DELIVERY"]
+      : order.fulfillment === "DELIVERY" && order.status === "OUT_FOR_DELIVERY"
+        ? ["COMPLETED_DELIVERY"]
+        : []
   }
-  return base
+  if (order.status === "READY_FOR_PICKUP") {
+    return order.fulfillment === "PICKUP" ? ["COMPLETED_PICKUP"]
+      : order.riderId ? ["OUT_FOR_DELIVERY"] : []
+  }
+  // Delivery must be checked and packed before it can leave the pharmacy.
+  return (NEXT_STATUS[order.status] ?? []).filter((status) =>
+    status !== "COMPLETED_DELIVERY" || order.fulfillment === "DELIVERY"
+  )
+}
+
+function workflowLabel(order: OrderDTO, status: OrderStatus): string {
+  if (status === "READY_FOR_PICKUP" && order.fulfillment === "DELIVERY") return "Mark ready for dispatch"
+  return TRANSITION_LABELS[status] ?? statusLabel(status)
+}
+
+function OrderFulfillmentStatus({ order }: { order: OrderDTO }) {
+  if (order.fulfillment === "DELIVERY" && order.status === "READY_FOR_PICKUP") {
+    return <Badge variant="outline" className="border-teal-300 bg-teal-50 text-teal-800 dark:border-teal-800 dark:bg-teal-950/40 dark:text-teal-200">Ready for dispatch</Badge>
+  }
+  return <OrderStatusBadge status={order.status} />
+}
+
+function deliveryGuidance(order: OrderDTO): string {
+  switch (order.status) {
+    case "PAID": return "Payment is recorded. Start preparing, verify and pack the order."
+    case "PREPARING": return "After medicines are checked and securely packed, mark the order ready for dispatch. Rider assignment can happen now."
+    case "READY_FOR_PICKUP": return order.riderId
+      ? "Package ready and rider assigned. Hand over the package, then select Dispatch rider."
+      : "Package is ready. Assign an active rider below to unlock Dispatch rider."
+    case "OUT_FOR_DELIVERY": return "Order has left the pharmacy. Track the rider and confirm delivery when it reaches the customer."
+    case "COMPLETED_DELIVERY": return "The delivery is complete."
+    default: return "Complete prescription review, payment and order confirmation first. Preparation and rider assignment become available when the order reaches Paid."
+  }
 }
 
 type RangeKey = "today" | "7d" | "30d" | "all"
@@ -108,13 +139,13 @@ export function OrdersSection({ refreshKey, onRefresh, onNavigateSection }: Sect
   const role = useAuthStore((s) => s.session?.role)
   const isRider = role === "RIDER"
   const canManage = role === "ADMIN" || role === "PHARMACIST" || role === "STAFF"
-  const canAssignRider = role === "ADMIN" || role === "STAFF"
+  const canAssignRider = role === "ADMIN" || role === "STAFF" || role === "PHARMACIST"
 
   const [raw, setRaw] = useState<OrderDTO[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  const [searchInput, setSearchInput] = useState("")
+  const [searchInput, setSearchInput] = useState(() => useAppStore.getState().params.search ?? "")
   const search = useDebounced(searchInput.trim(), 300)
 
   const [statusFilter, setStatusFilter] = useState<string>(() => { const value = useAppStore.getState().params.status; return value && [...ACTIVE_STATUSES, ...TERMINAL_STATUSES].includes(value as OrderStatus) ? value : "ALL" })
@@ -170,8 +201,9 @@ export function OrdersSection({ refreshKey, onRefresh, onNavigateSection }: Sect
     : [
         { label: "Awaiting review", value: queueCount((o) => o.status === "RECEIVED" || o.status === "UNDER_REVIEW"), tone: "amber" as const, icon: ClipboardList },
         { label: "Awaiting payment", value: queueCount((o) => o.status === "AWAITING_PAYMENT"), tone: "amber" as const, icon: Wallet },
-        { label: "Ready for pickup", value: queueCount((o) => o.status === "READY_FOR_PICKUP"), tone: "teal" as const, icon: Store },
+        { label: "Ready for dispatch", value: queueCount((o) => o.fulfillment === "DELIVERY" && o.status === "READY_FOR_PICKUP"), tone: "teal" as const, icon: Truck },
         { label: "Out for delivery", value: queueCount((o) => o.status === "OUT_FOR_DELIVERY"), tone: "teal" as const, icon: Truck },
+        { label: "Ready for pickup", value: queueCount((o) => o.fulfillment === "PICKUP" && o.status === "READY_FOR_PICKUP"), tone: "default" as const, icon: Store },
       ]
 
   function openDetail(order: OrderDTO) {
@@ -234,7 +266,7 @@ export function OrdersSection({ refreshKey, onRefresh, onNavigateSection }: Sect
       />
 
       {/* KPI queue snapshot */}
-      <div className="grid grid-cols-2 gap-3 xl:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 xl:grid-cols-5">
         {queueKpis.map((kpi) => <KpiCard key={kpi.label} label={kpi.label} value={loading ? "—" : kpi.value} icon={kpi.icon} tone={kpi.tone} hint="In the active order queue" />)}
       </div>
 
@@ -413,7 +445,7 @@ export function OrdersSection({ refreshKey, onRefresh, onNavigateSection }: Sect
                             <span className="text-xs text-muted-foreground">Not initiated</span>
                           )}
                         </TableCell>
-                        <TableCell><OrderStatusBadge status={order.status} /></TableCell>
+                        <TableCell><OrderFulfillmentStatus order={order} /></TableCell>
                         <TableCell className="text-right font-semibold tabular-nums">{formatKES(order.total)}</TableCell>
                         <TableCell className="text-right text-xs text-muted-foreground">{timeAgo(order.createdAt)}</TableCell>
                         <TableCell>
@@ -436,7 +468,7 @@ export function OrdersSection({ refreshKey, onRefresh, onNavigateSection }: Sect
                   <CardContent className="p-4">
                     <div className="flex items-center justify-between gap-2">
                       <p className="font-bold">{shortRef(order.reference)}</p>
-                      <OrderStatusBadge status={order.status} />
+                      <OrderFulfillmentStatus order={order} />
                     </div>
                     <div className="mt-2 flex items-center gap-2 text-sm">
                       <User className="h-3.5 w-3.5 text-muted-foreground" aria-hidden />
@@ -472,6 +504,7 @@ export function OrdersSection({ refreshKey, onRefresh, onNavigateSection }: Sect
 
       {/* detail sheet */}
       <OrderDetailSheet
+        key={selected?.id ?? "no-order"}
         order={selected}
         open={sheetOpen}
         onOpenChange={(open) => {
@@ -599,7 +632,7 @@ function OrderDetailSheet({
         <SheetHeader className="shrink-0 space-y-1 border-b p-3 pr-12 text-left sm:p-4 sm:pr-12">
           <SheetTitle className="flex flex-wrap items-center gap-2 text-base">
             <span className="min-w-0 break-all font-bold">{order.reference}</span>
-            <OrderStatusBadge status={order.status} />
+            <OrderFulfillmentStatus order={order} />
           </SheetTitle>
           <SheetDescription className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
             <span>{formatDateTime(order.createdAt)}</span>
