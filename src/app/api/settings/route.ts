@@ -79,7 +79,19 @@ export async function PUT(request: Request) {
     }
     if (body.compliance) {
       if (!body.compliance || typeof body.compliance !== "object" || Array.isArray(body.compliance)) return NextResponse.json({ error: "Invalid compliance settings." }, { status: 400 })
-      const compliance = Object.fromEntries(["premiseLicenceNumber", "premiseLicenceExpiry", "superintendentName", "superintendentReg", "notes"].filter((key) => body.compliance[key] !== undefined).map((key) => [key, String(body.compliance[key]).trim().slice(0, key === "notes" ? 1000 : 160)]))
+      const allowedKeys = ["premiseLicenceNumber", "premiseLicenceExpiry", "superintendentName", "superintendentReg", "notes"] as const
+      if (allowedKeys.some((key) => body.compliance[key] !== undefined && typeof body.compliance[key] !== "string")) {
+        return NextResponse.json({ error: "Compliance details must be text values." }, { status: 400 })
+      }
+      if (allowedKeys.some((key) => String(body.compliance[key] ?? "").length > (key === "notes" ? 1000 : 160))) {
+        return NextResponse.json({ error: "Some compliance fields exceed their maximum length." }, { status: 400 })
+      }
+      const compliance = Object.fromEntries(allowedKeys.filter((key) => body.compliance[key] !== undefined).map((key) => [key, String(body.compliance[key]).trim()]))
+      const expiry = compliance.premiseLicenceExpiry
+      if (expiry && (!/^\d{4}-\d{2}-\d{2}$/.test(expiry) || Number.isNaN(Date.parse(`${expiry}T00:00:00Z`)) || new Date(`${expiry}T00:00:00Z`).toISOString().slice(0, 10) !== expiry)) {
+        return NextResponse.json({ error: "Enter a valid licence expiry date." }, { status: 400 })
+      }
+      // These are internal draft records; updating them never constitutes verification or publication.
       await saveSettingsSection("compliance", compliance)
       await audit(session.staffName ?? "Admin", "ADMIN", "COMPLIANCE_UPDATED", "Setting", "compliance", "Compliance/licence details updated")
     }
