@@ -106,6 +106,18 @@ function OrderFulfillmentStatus({ order }: { order: OrderDTO }) {
   return <OrderStatusBadge status={order.status} />
 }
 
+function nextOrderActionLabel(order: OrderDTO): string {
+  if (order.fulfillment === "DELIVERY") {
+    if (order.status === "PAID") return "Start preparing"
+    if (order.status === "PREPARING") return "Mark ready for dispatch"
+    if (order.status === "READY_FOR_PICKUP") return order.riderId ? "Dispatch rider" : "Assign rider"
+    if (order.status === "OUT_FOR_DELIVERY") return "Track delivery"
+  }
+  if (order.status === "AWAITING_PAYMENT") return "Confirm payment"
+  if (order.status === "RECEIVED" || order.status === "UNDER_REVIEW") return "Review order"
+  return "View details"
+}
+
 function deliveryGuidance(order: OrderDTO): string {
   switch (order.status) {
     case "PAID": return "Payment is recorded. Start preparing, verify and pack the order."
@@ -397,7 +409,7 @@ export function OrdersSection({ refreshKey, onRefresh, onNavigateSection }: Sect
                     <TableHead>Status</TableHead>
                     <TableHead className="text-right">Total</TableHead>
                     <TableHead className="text-right">Age</TableHead>
-                    <TableHead className="w-12" />
+                    <TableHead className="min-w-36 text-right">Next step</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -450,7 +462,9 @@ export function OrdersSection({ refreshKey, onRefresh, onNavigateSection }: Sect
                         <TableCell className="text-right font-semibold tabular-nums">{formatKES(order.total)}</TableCell>
                         <TableCell className="text-right text-xs text-muted-foreground">{timeAgo(order.createdAt)}</TableCell>
                         <TableCell>
-                          <Button variant="ghost" size="icon" aria-label={`View order ${shortRef(order.reference)}`} onClick={(event) => { event.stopPropagation(); openDetail(order) }}><ChevronRight className="h-4 w-4 text-muted-foreground" aria-hidden /></Button>
+                          <Button variant="outline" size="sm" className="gap-1.5" aria-label={`Open order ${shortRef(order.reference)}: ${nextOrderActionLabel(order)}`} onClick={(event) => { event.stopPropagation(); openDetail(order) }}>
+                            {nextOrderActionLabel(order)} <ChevronRight className="h-3.5 w-3.5" aria-hidden />
+                          </Button>
                         </TableCell>
                       </TableRow>
                     )
@@ -492,6 +506,7 @@ export function OrdersSection({ refreshKey, onRefresh, onNavigateSection }: Sect
                           {order.items.length} item{order.items.length === 1 ? "" : "s"} · {order.items[0]?.name ?? "—"}
                         </p>
                         <p className="text-xs text-muted-foreground">{timeAgo(order.createdAt)}</p>
+                        <p className="mt-1 text-xs font-semibold text-primary">Next: {nextOrderActionLabel(order)}</p>
                       </div>
                       <p className="text-base font-bold tabular-nums">{formatKES(order.total)}</p>
                     </div>
