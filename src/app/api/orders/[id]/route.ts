@@ -62,6 +62,15 @@ export async function PATCH(request: Request, { params }: Params) {
     if (order.status === status) return NextResponse.json(toOrderDTO(order))
     if (status === "CANCELLED") return NextResponse.json({ error: "Use the cancellation action so reserved stock and loyalty are restored safely." }, { status: 409 })
     if (status === "REFUNDED") return NextResponse.json({ error: "Use the refund action so the payment provider confirms the refund." }, { status: 409 })
+    if (status === "READY_FOR_PICKUP" && order.prescriptions.some((rx) => !["APPROVED", "PARTIALLY_APPROVED"].includes(rx.status))) {
+      return NextResponse.json({ error: "Review all prescription items before marking this order ready for collection or dispatch." }, { status: 409 })
+    }
+    if (status === "COMPLETED_PICKUP" && order.fulfillment !== "PICKUP") {
+      return NextResponse.json({ error: "Delivery orders must be dispatched to a rider, not completed as pickups." }, { status: 409 })
+    }
+    if (status === "COMPLETED_DELIVERY" && order.fulfillment !== "DELIVERY") {
+      return NextResponse.json({ error: "Pickup orders cannot be marked as delivered." }, { status: 409 })
+    }
     if (status === "OUT_FOR_DELIVERY" && (order.fulfillment !== "DELIVERY" || !order.riderId)) {
       return NextResponse.json({ error: "Assign an active rider to this delivery before dispatching it." }, { status: 409 })
     }
