@@ -93,7 +93,7 @@ export async function PUT(request: Request) {
       }
       // These are internal draft records; updating them never constitutes verification or publication.
       await saveSettingsSection("compliance", compliance)
-      await audit(session.staffName ?? "Admin", "ADMIN", "COMPLIANCE_UPDATED", "Setting", "compliance", "Compliance/licence details updated")
+      await audit(session.staffName ?? "Admin", "ADMIN", "COMPLIANCE_UPDATED", "Setting", "compliance", "Internal compliance record updated (not PPB-verified)")
     }
     const settings = await getSettings()
     return NextResponse.json({ ok: true, ...settings })
