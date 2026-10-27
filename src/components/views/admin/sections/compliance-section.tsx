@@ -17,7 +17,7 @@ import { formatDate, formatDateTime, timeAgo } from "@/lib/format"
 import { useAuthStore } from "@/store/use-auth-store"
 import { toast } from "sonner"
 import { AdminSectionHeader, apiErrorMessage, SectionError, type SectionProps } from "../admin-shared"
-import { AlertTriangle, ArrowRight, CalendarClock, Check, CheckCircle2, ClipboardCheck, FileClock, FileText, Info, Loader2, LockKeyhole, RefreshCw, RotateCcw, Save, ShieldAlert, ShieldCheck, UserRound } from "lucide-react"
+import { AlertTriangle, ArrowRight, CalendarClock, Check, CheckCircle2, ClipboardCheck, FileText, Info, Loader2, LockKeyhole, RefreshCw, RotateCcw, Save, ShieldAlert, ShieldCheck, UserRound } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 const EMPTY_COMPLIANCE: ComplianceInfo = {
