@@ -407,7 +407,7 @@ export function DispatchControlRoom({ refreshKey, onRefresh, onNavigateSection }
               const currentRiderPick = picks[order.id] || ""
               const canAssign = !completed && riders.some((r) => r.id !== order.riderId)
               const statusAction = order.status === "PAID" ? { label: "Start preparing", status: "PREPARING" as const }
-                : order.status === "PREPARING" ? { label: "Mark ready for handoff", status: "READY_FOR_PICKUP" as const }
+                : order.status === "PREPARING" ? { label: "Mark ready for dispatch", status: "READY_FOR_PICKUP" as const }
                 : order.status === "READY_FOR_PICKUP" && !!order.riderId ? { label: "Dispatch rider", status: "OUT_FOR_DELIVERY" as const }
                 : null
               return (
