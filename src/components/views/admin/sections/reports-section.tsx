@@ -13,7 +13,6 @@ import {
 } from "recharts"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { ScrollArea } from "@/components/ui/scroll-area"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -200,46 +199,46 @@ export function ReportsSection({ refreshKey }: SectionProps) {
         </CardContent>
       </Card>
 
-      <div className="grid gap-4 lg:grid-cols-5">
+      <div className="grid min-w-0 items-start gap-4 lg:grid-cols-5">
         {/* top products table */}
-        <Card className="lg:col-span-3">
+        <Card className="min-w-0 overflow-hidden lg:col-span-3">
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center gap-2 text-sm font-semibold">
               <Package className="h-4 w-4 text-muted-foreground" aria-hidden /> Top 10 products
             </CardTitle>
           </CardHeader>
-          <CardContent className="p-0">
+          <CardContent className="min-w-0 p-0">
             {stats.topProducts.length === 0 ? (
               <p className="p-4 text-sm text-muted-foreground">No product sales yet.</p>
             ) : (
-              <ScrollArea className="scroll-slim max-h-80">
-                <Table>
+              <div className="scroll-slim max-h-[22rem] min-w-0 overflow-y-auto overscroll-contain" role="region" aria-label="Top products ranking" tabIndex={0}>
+                <Table className="min-w-[26rem] table-fixed">
                   <TableHeader>
                     <TableRow>
-                      <TableHead>#</TableHead>
+                      <TableHead className="w-10">#</TableHead>
                       <TableHead>Product</TableHead>
-                      <TableHead className="text-right">Qty</TableHead>
-                      <TableHead className="text-right">Revenue</TableHead>
+                      <TableHead className="w-14 text-right">Qty</TableHead>
+                      <TableHead className="w-28 text-right">Revenue</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {stats.topProducts.slice(0, 10).map((p, i) => (
                       <TableRow key={p.name}>
                         <TableCell className="w-8 text-xs text-muted-foreground tabular-nums">{i + 1}</TableCell>
-                        <TableCell className="max-w-52 truncate text-sm font-medium">{p.name}</TableCell>
+                        <TableCell className="min-w-0 text-sm font-medium"><span className="block truncate" title={p.name}>{p.name}</span></TableCell>
                         <TableCell className="text-right text-sm tabular-nums">{p.qty}</TableCell>
                         <TableCell className="text-right text-sm font-semibold tabular-nums">{formatKES(p.revenue)}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
                 </Table>
-              </ScrollArea>
+              </div>
             )}
           </CardContent>
         </Card>
 
         {/* rx vs otc + prescription volume */}
-        <Card className="lg:col-span-2">
+        <Card className="min-w-0 overflow-hidden lg:col-span-2">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-semibold">Order mix &amp; prescription volume</CardTitle>
           </CardHeader>
