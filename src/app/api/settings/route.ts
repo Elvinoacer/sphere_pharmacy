@@ -7,8 +7,14 @@ import { rejectOversizedRequest } from "@/lib/security/request"
 export async function GET() {
   const { pharmacy, delivery, compliance } = await getSettings()
   const session = await getSession()
-  const canManage = session?.staffRole === "ADMIN"
-  return NextResponse.json({ pharmacy, delivery, compliance: canManage ? compliance : { premiseLicenceNumber: compliance.premiseLicenceNumber, premiseLicenceExpiry: compliance.premiseLicenceExpiry, superintendentName: "", superintendentReg: "", notes: "" } }, { headers: { "Cache-Control": canManage ? "private, no-store" : "public, s-maxage=300, stale-while-revalidate=600" } })
+  const canViewRecord = session?.staffRole === "ADMIN" || session?.staffRole === "PHARMACIST"
+  // Recording compliance details is not PPB verification or authorization to publish.
+  // Do not expose unverified licence or superintendent records to public clients.
+  const publicCompliance = { premiseLicenceNumber: "", premiseLicenceExpiry: "", superintendentName: "", superintendentReg: "", notes: "" }
+  return NextResponse.json(
+    { pharmacy, delivery, compliance: canViewRecord ? compliance : publicCompliance },
+    { headers: { "Cache-Control": "private, no-store" } }
+  )
 }
 
 export async function PUT(request: Request) {
