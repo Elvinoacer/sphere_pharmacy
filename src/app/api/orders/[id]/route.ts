@@ -95,7 +95,9 @@ export async function PATCH(request: Request, { params }: Params) {
     }, { timeout: 15000, maxWait: 5000 })
     await audit(actor, role, `ORDER_STATUS_${status}`, "Order", order.reference, note)
 
-    const { title, message } = statusNotification(status, order.reference)
+    const { title, message } = status === "READY_FOR_PICKUP" && order.fulfillment === "DELIVERY"
+      ? { title: `Order ${order.reference}: Ready for dispatch`, message: `Your order ${order.reference} is packed and ready for dispatch. We will notify you when a rider starts delivery.` }
+      : statusNotification(status, order.reference)
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://spherepharmacy.co.ke"
     const orderUrl = `${appUrl}/orders/${order.id}`
     const customer = order.userId
