@@ -7,7 +7,7 @@ const DEFAULT_COMPLIANCE: ComplianceInfo = {
   premiseLicenceExpiry: "",
   superintendentName: "",
   superintendentReg: "",
-  notes: "No licence details are displayed publicly yet. Complete this section once the client supplies their current licence.",
+  notes: "",
 }
 
 export function distanceKm(lat1:number,lon1:number,lat2:number,lon2:number) {
