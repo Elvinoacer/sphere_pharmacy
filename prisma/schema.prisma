@@ -17,6 +17,11 @@ model User {
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @updatedAt
   loyaltyPoints    Int               @default(0)
+  // BandaGo C_BPartner Mapping
+  externalBPartnerId   String?          @unique @map("external_bpartner_id")
+  loyaltyPointsBalance Int              @default(0) @map("loyalty_points_balance")
+  posCreditBalance     Decimal          @default(0.00) @map("pos_credit_balance") @db.Decimal(10, 2)
+  isChronicPatient     Boolean          @default(false) @map("is_chronic_patient")
   avatar           String?
   addresses        Address[]
   notifications    Notification[]
@@ -30,6 +35,8 @@ model User {
   serviceReviews   ServiceReview[]
   sessions         Session[]
   loyaltyEntries   LoyaltyLedger[]
+
+  @@index([externalBPartnerId])
 }
 
 model Address {
@@ -112,17 +119,30 @@ model Category {
 model Product {
   id                   String         @id @default(cuid())
   name                 String
+  slug                 String?        @unique
   sku                  String         @unique
+  barcode              String?
   categoryId           String?
   brand                String?
   packSize             String?
   price                Decimal        @db.Decimal(12, 2)
   compareAtPrice       Decimal?       @db.Decimal(12, 2)
+  costPrice            Decimal?       @map("cost_price") @db.Decimal(12, 2)
   stockStatus          String         @default("IN_STOCK")
   stockQty             Int            @default(0)
+  stock                Int?           @default(0)
+  virtualReservedStock Int            @default(0) @map("virtual_reserved_stock")
+  safetyStockBuffer    Int            @default(2) @map("safety_stock_buffer")
+  inStock              Boolean        @default(true) @map("in_stock")
   lowStockThreshold    Int            @default(5)
   requiresPrescription Boolean        @default(false)
-  description          String
+  dosageForm           String?        @map("dosage_form")
+  strength             String?
+  nearestExpiryDate    DateTime?      @map("nearest_expiry_date")
+  externalPosId        String?        @unique @map("external_pos_id")
+  posSource            String?        @default("BANDAGO") @map("pos_source")
+  lastSyncedAt         DateTime?      @map("last_synced_at")
+  description          String         @default("")
   usageInfo            String?
   warnings             String?
   image                String?
@@ -133,6 +153,11 @@ model Product {
   category             Category?      @relation(fields: [categoryId], references: [id])
   stockAlerts          ProductAlert[]
   reviews              Review[]
+  batches              ProductBatch[]
+
+  @@index([externalPosId])
+  @@index([inStock, stock])
+  @@index([categoryId])
 }
 
 model Review {
@@ -636,3 +661,68 @@ model EmailDeliveryEvent {
   createdAt DateTime @default(now())
   @@index([processed, createdAt])
 }
+
+// =========================================================================
+// ENUMS FOR POS INTEGRATION
+// =========================================================================
+
+enum PosSyncStatus {
+  SUCCESS
+  PARTIAL
+  FAILED
+}
+
+enum PosSyncTrigger {
+  EXTENSION_STREAM
+  BACKGROUND_POLL
+  CSV_IMPORT
+  MANUAL_RECONCILE
+}
+
+// =========================================================================
+// PRODUCT & BATCH EXTENSIONS
+// =========================================================================
+
+model ProductBatch {
+  id                String    @id @default(cuid())
+  productId         String    @map("product_id")
+  product           Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  batchNumber       String    @map("batch_number") // iDempiere Lot/Batch
+  quantityOnHand    Int       @map("quantity_on_hand")
+  expiryDate        DateTime  @map("expiry_date") // iDempiere M_AttributeSetInstance.GuaranteeDate
+  externalBatchId   String?   @map("external_batch_id")
+  isExpired         Boolean   @default(false) @map("is_expired")
+  
+  createdAt         DateTime  @default(now()) @map("created_at")
+  updatedAt         DateTime  @updatedAt @map("updated_at")
+
+  @@unique([productId, batchNumber])
+  @@index([productId, expiryDate])
+  @@map("product_batches")
+}
+
+// =========================================================================
+// POS INTEGRATION TELEMETRY & AUDIT LOGS
+// =========================================================================
+
+model PosSyncLog {
+  id               String         @id @default(cuid())
+  posSource        String         @default("BANDAGO") @map("pos_source")
+  trigger          PosSyncTrigger @default(EXTENSION_STREAM)
+  status           PosSyncStatus  @default(SUCCESS)
+  
+  itemsReceived    Int            @default(0) @map("items_received")
+  itemsUpserted    Int            @default(0) @map("items_upserted")
+  itemsFailed      Int            @default(0) @map("items_failed")
+  
+  details          Json?          // Stores error stacks, category assignments, diff logs
+  startedAt        DateTime       @default(now()) @map("started_at")
+  completedAt      DateTime?      @map("completed_at")
+  durationMs       Int?           @map("duration_ms")
+
+  @@index([startedAt])
+  @@index([status])
+  @@map("pos_sync_logs")
+}
+

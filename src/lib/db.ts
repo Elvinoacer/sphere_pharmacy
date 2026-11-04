@@ -42,4 +42,17 @@ export const db =
     log: ["warn", "error"],
   })
 
+// Enable prisma.productCategory alias to category for blueprint compatibility
+if (!(db as any).productCategory) {
+  Object.defineProperty(db, "productCategory", {
+    get() {
+      return (this as any).category
+    },
+    configurable: true,
+  })
+}
+
 globalForPrisma.prisma = db
+
+export const prisma = db
+

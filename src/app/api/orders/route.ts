@@ -11,6 +11,7 @@ import { money } from "@/lib/security/payment"
 import { enforceRateLimit, rejectOversizedRequest } from "@/lib/security/request"
 import { getSession, requireStaff } from "@/lib/session"
 import { computeDeliveryFee, getSettings } from "@/lib/settings"
+import { InventoryGuard } from "@/lib/inventory-guard"
 
 const PHONE_RE = /^(?:\+?254|0)?(7\d{8}|1\d{8})$/
 const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/
@@ -92,7 +93,7 @@ export async function POST(request: NextRequest) {
     const products = await db.product.findMany({ where: { id: { in: [...requested.keys()] } } })
     if (products.length !== requested.size) return NextResponse.json({ error: "A product no longer exists." }, { status: 409 })
     const lines = products.map((product) => ({ product, qty: requested.get(product.id)! }))
-    for (const { product, qty } of lines) if (!product.active || product.stockStatus === "DISCONTINUED" || product.stockQty < qty) return NextResponse.json({ error: `${product.name} does not have enough stock.` }, { status: 409 })
+    for (const { product, qty } of lines) if (!product.active || product.stockStatus === "DISCONTINUED" || InventoryGuard.getAvailableStock(product) < qty) return NextResponse.json({ error: `${product.name} does not have enough stock.` }, { status: 409 })
 
     const session = await getSession()
     const userId = session?.role === "CUSTOMER" ? session.userId : null
@@ -185,11 +186,18 @@ export async function POST(request: NextRequest) {
       )
       const reservedProducts = await tx.$queryRaw<Array<{ id: string }>>(Prisma.sql`
         UPDATE "Product" AS product
-        SET "stockQty" = product."stockQty" - requested.qty
+        SET "stockQty" = product."stockQty" - requested.qty,
+            "stock" = GREATEST(0, COALESCE(product."stock", product."stockQty") - requested.qty),
+            "in_stock" = (product."stockQty" - requested.qty) > 0,
+            "stockStatus" = CASE
+              WHEN (product."stockQty" - requested.qty) <= 0 THEN 'OUT_OF_STOCK'
+              WHEN (product."stockQty" - requested.qty) <= product."lowStockThreshold" THEN 'LOW_STOCK'
+              ELSE 'IN_STOCK'
+            END
         FROM (VALUES ${requestedStock}) AS requested(id, qty)
         WHERE product.id = requested.id
           AND product.active = true
-          AND product."stockQty" >= requested.qty
+          AND (LEAST(product."stockQty", COALESCE(product."stock", product."stockQty")) - COALESCE(product.safety_stock_buffer, 2) - COALESCE(product.virtual_reserved_stock, 0)) >= requested.qty
         RETURNING product.id
       `)
       if (reservedProducts.length !== lines.length) {

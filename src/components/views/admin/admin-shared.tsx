@@ -31,6 +31,7 @@ export type AdminSectionKey =
   | "reports"
   | "compliance"
   | "settings"
+  | "pos-sync"
 
 export interface SectionProps {
   /** Bump to force the section to refetch its data. */

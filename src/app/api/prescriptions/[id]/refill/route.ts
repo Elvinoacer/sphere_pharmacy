@@ -6,6 +6,7 @@ import { audit, notifyCustomer, notifyStaff } from "@/lib/notify"
 import { requireCustomer } from "@/lib/session"
 import { money } from "@/lib/security/payment"
 import { enforceRateLimit, publicError } from "@/lib/security/request"
+import { InventoryGuard } from "@/lib/inventory-guard"
 
 type Params = { params: Promise<{ id: string }> }
 
@@ -28,7 +29,7 @@ export async function POST(request: Request, { params }: Params) {
     if (!sourceOrder || sourceItems.length === 0) return NextResponse.json({ error: "No prescription medicines are linked to this document." }, { status: 409 })
     const products = await db.product.findMany({ where: { id: { in: sourceItems.map((item) => item.productId!) } } })
     const lines = sourceItems.map((item) => ({ item, product: products.find((product) => product.id === item.productId) }))
-    if (lines.some(({ item, product }) => !product || !product.active || product.stockStatus === "DISCONTINUED" || product.stockQty < item.qty)) {
+    if (lines.some(({ item, product }) => !product || !product.active || product.stockStatus === "DISCONTINUED" || InventoryGuard.getAvailableStock(product) < item.qty)) {
       return NextResponse.json({ error: "One or more prescribed medicines are unavailable in the required quantity." }, { status: 409 })
     }
 
@@ -41,8 +42,32 @@ export async function POST(request: Request, { params }: Params) {
       })
       if (claimed.count !== 1) throw new Error("REFILL_CONFLICT")
       for (const line of lines) {
-        const reserved = await tx.product.updateMany({ where: { id: line.product!.id, active: true, stockQty: { gte: line.item.qty } }, data: { stockQty: { decrement: line.item.qty } } })
+        const reserved = await tx.product.updateMany({
+          where: { id: line.product!.id, active: true, stockQty: { gte: line.item.qty } },
+          data: {
+            stockQty: { decrement: line.item.qty },
+            stock: { decrement: line.item.qty },
+          },
+        })
         if (reserved.count !== 1) throw new Error("STOCK_CONFLICT")
+
+        const updatedProduct = await tx.product.findUnique({
+          where: { id: line.product!.id },
+          select: { stockQty: true, lowStockThreshold: true },
+        })
+        if (updatedProduct) {
+          const inStock = updatedProduct.stockQty > 0
+          const stockStatus =
+            updatedProduct.stockQty <= 0
+              ? 'OUT_OF_STOCK'
+              : updatedProduct.stockQty <= updatedProduct.lowStockThreshold
+              ? 'LOW_STOCK'
+              : 'IN_STOCK'
+          await tx.product.update({
+            where: { id: line.product!.id },
+            data: { inStock, stockStatus },
+          })
+        }
       }
       const created = await tx.order.create({
         data: {

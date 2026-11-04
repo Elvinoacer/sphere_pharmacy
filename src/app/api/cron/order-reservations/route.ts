@@ -18,7 +18,27 @@ export async function GET(request: Request) {
         const claim = await tx.order.updateMany({ where: { id: order.id, version: order.version, inventoryReleasedAt: null, status: { in: EXPIRABLE } }, data: { status: "CANCELLED", inventoryReleasedAt: new Date(), version: { increment: 1 } } })
         if (claim.count !== 1) return
         const sortedItems = [...order.items].filter((item) => item.productId).sort((a, b) => a.productId!.localeCompare(b.productId!))
-        for (const item of sortedItems) await tx.product.update({ where: { id: item.productId! }, data: { stockQty: { increment: item.qty } } })
+        for (const item of sortedItems) {
+          const updated = await tx.product.update({
+            where: { id: item.productId! },
+            data: {
+              stockQty: { increment: item.qty },
+              stock: { increment: item.qty },
+              inStock: true,
+            },
+            select: { stockQty: true, lowStockThreshold: true },
+          });
+          const stockStatus =
+            updated.stockQty <= 0
+              ? 'OUT_OF_STOCK'
+              : updated.stockQty <= updated.lowStockThreshold
+              ? 'LOW_STOCK'
+              : 'IN_STOCK';
+          await tx.product.update({
+            where: { id: item.productId! },
+            data: { stockStatus },
+          });
+        }
         if (order.userId && order.pointsRedeemed > 0) {
           await tx.loyaltyLedger.upsert({
             where: { eventKey: `expire:${order.id}` },

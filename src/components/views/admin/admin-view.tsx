@@ -49,6 +49,7 @@ import { SettingsSection } from "./sections/settings-section"
 import { ServicesSection } from "./sections/services-section"
 import { ServiceBookingsSection } from "./sections/service-bookings-section"
 import { ServiceAnalyticsSection } from "./sections/service-analytics-section"
+import { PosSyncSection } from "./sections/pos-sync-section"
 
 const STAFF_ROLES: Role[] = ["ADMIN", "PHARMACIST", "STAFF", "RIDER"]
 const ALL_STAFF: Role[] = ["ADMIN", "PHARMACIST", "STAFF", "RIDER"]
@@ -127,6 +128,10 @@ const NAV: NavItem[] = [
     key: "settings", label: "Settings", title: "Settings", subtitle: "Pharmacy profile, delivery fees and demo data",
     icon: Settings, roles: ["ADMIN"],
   },
+  {
+    key: "pos-sync", label: "POS Sync", title: "BandaGo POS Integration Hub", subtitle: "Real-time telemetry, stock sync ledger, and lot/expiry compliance",
+    icon: RefreshCw, roles: ["ADMIN", "PHARMACIST"],
+  },
 ]
 
 function navItem(key: AdminSectionKey): NavItem | undefined {
@@ -137,7 +142,7 @@ const NAV_GROUPS = [
   { label: "Workspace", keys: ["overview", "orders", "dispatch"] },
   { label: "Patient care", keys: ["prescriptions", "medicine-requests", "service-bookings", "services"] },
   { label: "Business", keys: ["catalogue", "promotions", "reviews", "reports", "service-analytics"] },
-  { label: "Management", keys: ["staff", "compliance", "settings"] },
+  { label: "Management", keys: ["staff", "compliance", "settings", "pos-sync"] },
 ]
 
 type AdminLiveCursor = { change: string | null; arrival: string | null; arrivedAt: string | null }
@@ -392,6 +397,8 @@ export function AdminView() {
         return <ComplianceSection {...sectionProps} />
       case "settings":
         return <SettingsSection {...sectionProps} />
+      case "pos-sync":
+        return <PosSyncSection {...sectionProps} />
     }
   }
 

@@ -65,7 +65,14 @@ export async function POST(request: Request, { params }: Params) {
               .filter((item) => item.productId)
               .sort((a, b) => a.productId!.localeCompare(b.productId!))
             for (const item of sortedItems) {
-              await tx.product.update({ where: { id: item.productId! }, data: { stockQty: { increment: item.qty } } })
+              await tx.product.update({
+                where: { id: item.productId! },
+                data: {
+                  stockQty: { increment: item.qty },
+                  stock: { increment: item.qty },
+                  inStock: true,
+                },
+              });
             }
           }
           if (order.userId && order.pointsRedeemed > 0) {
