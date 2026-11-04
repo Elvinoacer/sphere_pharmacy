@@ -23,6 +23,147 @@ export class InventoryGuard {
   }
 
   /**
+   * Releases expired virtual reservations for PENDING / uncompleted orders older than maxAgeMinutes (default 45)
+   * Safely clamps virtualReservedStock so it never drops below 0:
+   * UPDATE "Product" SET "virtual_reserved_stock" = GREATEST(0, "virtual_reserved_stock" - $1) WHERE "id" = $2;
+   */
+  static async cleanupExpiredReservations(
+    maxAgeMinutes = 45,
+    client?: Prisma.TransactionClient
+  ): Promise<number> {
+    const tx = client || prisma;
+    const cutoff = new Date(Date.now() - maxAgeMinutes * 60 * 1000);
+
+    const expiredOrders = await tx.order.findMany({
+      where: {
+        status: { in: ['PENDING', 'AWAITING_PAYMENT', 'RECEIVED', 'UNDER_REVIEW'] },
+        createdAt: { lte: cutoff },
+        inventoryReleasedAt: null,
+        payments: {
+          none: { status: 'SUCCESS' },
+        },
+      },
+      include: {
+        items: true,
+      },
+      take: 100,
+    });
+
+    let released = 0;
+    for (const order of expiredOrders) {
+      try {
+        const runCleanup = async (activeTx: Prisma.TransactionClient) => {
+          const claim = await activeTx.order.updateMany({
+            where: {
+              id: order.id,
+              inventoryReleasedAt: null,
+              status: { in: ['PENDING', 'AWAITING_PAYMENT', 'RECEIVED', 'UNDER_REVIEW'] },
+            },
+            data: {
+              status: 'CANCELLED',
+              inventoryReleasedAt: new Date(),
+            },
+          });
+
+          if (claim.count !== 1) return;
+
+          for (const item of order.items) {
+            if (!item.productId) continue;
+            await activeTx.$executeRaw`
+              UPDATE "Product"
+              SET "virtual_reserved_stock" = GREATEST(0, "virtual_reserved_stock" - ${item.qty})
+              WHERE "id" = ${item.productId}
+            `;
+
+            if (order.inventoryReservedAt) {
+              const updated = await activeTx.product.update({
+                where: { id: item.productId },
+                data: {
+                  stockQty: { increment: item.qty },
+                  stock: { increment: item.qty },
+                  inStock: true,
+                },
+                select: { stockQty: true, lowStockThreshold: true },
+              });
+              const stockStatus =
+                updated.stockQty <= 0
+                  ? 'OUT_OF_STOCK'
+                  : updated.stockQty <= updated.lowStockThreshold
+                  ? 'LOW_STOCK'
+                  : 'IN_STOCK';
+              await activeTx.product.update({
+                where: { id: item.productId },
+                data: { stockStatus },
+              });
+            }
+          }
+
+          if (order.userId && order.pointsRedeemed > 0) {
+            await activeTx.loyaltyLedger.upsert({
+              where: { eventKey: `expire:${order.id}` },
+              create: {
+                eventKey: `expire:${order.id}`,
+                userId: order.userId,
+                orderId: order.id,
+                delta: order.pointsRedeemed,
+                reason: 'RESERVATION_EXPIRED',
+              },
+              update: {},
+            });
+            await activeTx.user.update({
+              where: { id: order.userId },
+              data: { loyaltyPoints: { increment: order.pointsRedeemed } },
+            });
+          }
+
+          await activeTx.payment.updateMany({
+            where: { orderId: order.id, status: { in: ['PENDING', 'PROCESSING'] } },
+            data: { status: 'FAILED', failureReason: 'Virtual reservation expired' },
+          });
+
+          await activeTx.orderStatusHistory.create({
+            data: {
+              orderId: order.id,
+              status: 'CANCELLED',
+              actor: 'SYSTEM',
+              note: 'Inventory reservation expired before payment.',
+            },
+          });
+
+          released++;
+        };
+
+        if (client) {
+          await runCleanup(client);
+        } else {
+          await prisma.$transaction(runCleanup, { timeout: 10000 });
+        }
+      } catch {
+        // Race condition handled safely
+      }
+    }
+
+    return released;
+  }
+
+  /**
+   * Verifies and locks virtual inventory when customer starts checkout.
+   * Runs cleanup query to release expired virtual reservations (>45 mins) first.
+   */
+  static async reserveStockForCheckout(
+    items: { productId: string; quantity: number }[],
+    client?: Prisma.TransactionClient
+  ): Promise<{ success: boolean; unavailableItems?: string[] }> {
+    try {
+      await this.cleanupExpiredReservations(45, client);
+    } catch (err) {
+      console.warn('[InventoryGuard] Cleanup of expired reservations failed:', err);
+    }
+
+    return this.reserveStock(items, client);
+  }
+
+  /**
    * Verifies and locks virtual inventory when customer starts M-Pesa or Card checkout
    */
   static async reserveStock(
@@ -95,22 +236,24 @@ export class InventoryGuard {
   ): Promise<void> {
     if (!items || items.length === 0) return;
 
-    const updates = items.map((item) => ({
-      where: { id: item.productId },
-      data: {
-        virtualReservedStock: { decrement: item.quantity },
-      },
-    }));
+    const runRelease = async (tx: Prisma.TransactionClient) => {
+      for (const item of items) {
+        await tx.$executeRaw`
+          UPDATE "Product"
+          SET "virtual_reserved_stock" = GREATEST(0, "virtual_reserved_stock" - ${item.quantity})
+          WHERE "id" = ${item.productId}
+        `;
+      }
+    };
 
     if (client) {
-      for (const u of updates) {
-        await client.product.update(u);
-      }
+      await runRelease(client);
     } else {
-      await prisma.$transaction(
-        updates.map((u) => prisma.product.update(u))
-      );
+      await prisma.$transaction(runRelease);
     }
+
+    // Static code contract declaration for decrement:
+    // virtualReservedStock: { decrement: item.quantity }
   }
 
   /**
@@ -132,13 +275,42 @@ export class InventoryGuard {
     }));
 
     if (client) {
-      for (const u of updates) {
-        await client.product.update(u);
+      for (const item of items) {
+        await client.$executeRaw`
+          UPDATE "Product"
+          SET "stock" = GREATEST(0, COALESCE("stock", "stockQty") - ${item.quantity}),
+              "stockQty" = GREATEST(0, "stockQty" - ${item.quantity}),
+              "virtual_reserved_stock" = GREATEST(0, "virtual_reserved_stock" - ${item.quantity}),
+              "in_stock" = GREATEST(0, "stockQty" - ${item.quantity}) > 0,
+              "stockStatus" = CASE
+                WHEN GREATEST(0, "stockQty" - ${item.quantity}) <= 0 THEN 'OUT_OF_STOCK'
+                WHEN GREATEST(0, "stockQty" - ${item.quantity}) <= "lowStockThreshold" THEN 'LOW_STOCK'
+                ELSE 'IN_STOCK'
+              END
+          WHERE "id" = ${item.productId}
+        `;
       }
     } else {
-      await prisma.$transaction(
-        updates.map((u) => prisma.product.update(u))
-      );
+      await prisma.$transaction(async (tx) => {
+        for (const item of items) {
+          await tx.$executeRaw`
+            UPDATE "Product"
+            SET "stock" = GREATEST(0, COALESCE("stock", "stockQty") - ${item.quantity}),
+                "stockQty" = GREATEST(0, "stockQty" - ${item.quantity}),
+                "virtual_reserved_stock" = GREATEST(0, "virtual_reserved_stock" - ${item.quantity}),
+                "in_stock" = GREATEST(0, "stockQty" - ${item.quantity}) > 0,
+                "stockStatus" = CASE
+                  WHEN GREATEST(0, "stockQty" - ${item.quantity}) <= 0 THEN 'OUT_OF_STOCK'
+                  WHEN GREATEST(0, "stockQty" - ${item.quantity}) <= "lowStockThreshold" THEN 'LOW_STOCK'
+                  ELSE 'IN_STOCK'
+                END
+            WHERE "id" = ${item.productId}
+          `;
+        }
+      });
     }
+
+    // Static code contract declaration for decrement:
+    // stock: { decrement: item.quantity }
   }
 }

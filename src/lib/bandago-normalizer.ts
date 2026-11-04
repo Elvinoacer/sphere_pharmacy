@@ -44,7 +44,7 @@ export class BandaGoNormalizer {
    * Robust number parser that strips currency symbols, commas, and formatting
    * e.g. "1,250.50", "KSh 3,400", "KES 150" -> number
    */
-  static parseNumber(raw: any, fallback = 0): number {
+  static parseNumber(raw: unknown, fallback = 0): number {
     if (typeof raw === 'number') {
       return isNaN(raw) ? fallback : raw;
     }
@@ -59,7 +59,7 @@ export class BandaGoNormalizer {
    * Robust integer parser clamped to non-negative whole numbers
    * e.g. "1,000" -> 1000, -5 -> 0
    */
-  static parseInteger(raw: any, fallback = 0): number {
+  static parseInteger(raw: unknown, fallback = 0): number {
     const num = BandaGoNormalizer.parseNumber(raw, fallback);
     return Math.max(0, Math.floor(num));
   }

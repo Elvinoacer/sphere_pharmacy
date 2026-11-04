@@ -41,7 +41,7 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - run: npm run db:generate
+      - run: npx prisma generate
       # Static checks must run even when a database migration is broken.
       - run: npm run typecheck
       - run: npm run lint -- --max-warnings=0

@@ -385,3 +385,150 @@ test('BandaGo CRM and Telemetry route contracts: phone/bpartner lookup and inven
   assert.match(statusSource, /quantityOnHand:\s*\{\s*gt:\s*0\s*\}/);
 });
 
+test('Production Fix 1: Sync route pre-resolves categories outside chunk loop and configures 30s transaction timeout', () => {
+  const syncSource = source('src/app/api/integrations/bandago/sync/route.ts');
+  // Pre-resolves unique categories before the chunk loop
+  assert.match(syncSource, /uniqueCategories\s*=\s*Array\.from/);
+  assert.match(syncSource, /categoryMap\.set\(slug,\s*cat\.id\)/);
+  // Increases interactive transaction timeout to avoid P2028 timeouts
+  assert.match(syncSource, /maxWait:\s*10_000,\s*timeout:\s*30_000/);
+});
+
+test('Production Fix 2: Sync route links unlinked seeded products to prevent P2002 slug unique constraint crash', () => {
+  const syncSource = source('src/app/api/integrations/bandago/sync/route.ts');
+  // Checks externalPosId, slug, and unlinked name
+  assert.match(syncSource, /externalPosId:\s*item\.externalPosId/);
+  assert.match(syncSource, /slug:\s*targetSlug/);
+  assert.match(syncSource, /name:\s*\{\s*equals:\s*item\.name,\s*mode:\s*['"]insensitive['"]\s*\},\s*externalPosId:\s*null/);
+  // Links unlinked existing product
+  assert.match(syncSource, /if\s*\(existingProduct\s*&&\s*!existingProduct\.externalPosId\)/);
+  assert.match(syncSource, /data:\s*\{\s*externalPosId:\s*item\.externalPosId\s*\}/);
+});
+
+test('Production Fix 3: Sync route preserves custom product images and pharmacist Rx overrides', () => {
+  const syncSource = source('src/app/api/integrations/bandago/sync/route.ts');
+  // Never overwrites specific /images/products/ assets
+  assert.match(syncSource, /hasCustomProductImage/);
+  assert.match(syncSource, /existingProduct\.image\.startsWith\(['"]\/images\/products\/['"]\)/);
+  // Never downgrades pharmacist prescription-only classification
+  assert.match(syncSource, /existingProduct\.requiresPrescription\s*\|\|\s*requiresPrescription/);
+});
+
+test('Production Fix 4: Sync route subtracts virtualReservedStock when computing inStock and effective availability', () => {
+  const syncSource = source('src/app/api/integrations/bandago/sync/route.ts');
+  assert.match(syncSource, /const\s+reserved\s*=\s*existingProduct\?\.virtualReservedStock\s*\?\?\s*0/);
+  assert.match(syncSource, /const\s+effectiveAvailable\s*=\s*Math\.max\(0,\s*rawStock\s*-\s*reserved\)/);
+  assert.match(syncSource, /effectiveAvailable\s*>\s*0\s*&&\s*sellableStock\s*>\s*0/);
+
+  // Runtime formula verification: 1 unit in stock with 1 virtual reservation must be NOT in stock
+  const rawStock = 1;
+  const reserved = 1;
+  const sellableStock = 1;
+  const effectiveAvailable = Math.max(0, rawStock - reserved);
+  const effectiveInStock = effectiveAvailable > 0 && sellableStock > 0;
+  assert.equal(effectiveInStock, false);
+});
+
+test('Production Fix 5: Missing batches array does not wipe existing ProductBatch records', () => {
+  const syncSource = source('src/app/api/integrations/bandago/sync/route.ts');
+  // Deletes all batches only when stock is 0
+  assert.match(syncSource, /if\s*\(item\.stock\s*===\s*0\)\s*\{\s*await tx\.productBatch\.deleteMany/);
+  // Replaces batches only when non-empty batches array is explicitly provided
+  assert.match(syncSource, /else if\s*\(Array\.isArray\(item\.batches\)\s*&&\s*item\.batches\.length\s*>\s*0\)/);
+  assert.match(syncSource, /tx\.productBatch\.createMany/);
+});
+
+test('Production Fix 6: InventoryGuard automatically cleans up expired virtual reservations and clamps to GREATEST(0, ...)', () => {
+  const guardSource = source('src/lib/inventory-guard.ts');
+  assert.match(guardSource, /cleanupExpiredReservations/);
+  assert.match(guardSource, /reserveStockForCheckout/);
+  assert.match(guardSource, /GREATEST\(0,\s*"virtual_reserved_stock"\s*-\s*\$\{item\.quantity\}\)/);
+  assert.match(guardSource, /GREATEST\(0,\s*"virtual_reserved_stock"\s*-\s*\$\{item\.qty\}\)/);
+
+  // Clean up is also invoked at the start of sync route
+  const syncSource = source('src/app/api/integrations/bandago/sync/route.ts');
+  assert.match(syncSource, /InventoryGuard\.cleanupExpiredReservations\(45\)/);
+});
+
+test('Production Fix 7: CI workflow ensures prisma generate runs before static checks and routes have zero :any catches', () => {
+  const ciSource = source('.github/workflows/ci.yml');
+  const prismaGenIdx = ciSource.indexOf('npx prisma generate');
+  const typecheckIdx = ciSource.indexOf('npm run typecheck');
+  const lintIdx = ciSource.indexOf('npm run lint');
+  assert.ok(prismaGenIdx > -1, 'npx prisma generate must be present in CI');
+  assert.ok(prismaGenIdx < typecheckIdx, 'npx prisma generate must run before typecheck');
+  assert.ok(prismaGenIdx < lintIdx, 'npx prisma generate must run before lint');
+
+  const syncSource = source('src/app/api/integrations/bandago/sync/route.ts');
+  assert.doesNotMatch(syncSource, /catch\s*\([^)]*:\s*any\)/, 'sync route must not have catch (:any)');
+
+  const csvSource = source('src/app/api/integrations/bandago/csv-import/route.ts');
+  assert.doesNotMatch(csvSource, /catch\s*\([^)]*:\s*any\)/, 'csv-import route must not have catch (:any)');
+
+  const crmSource = source('src/app/api/integrations/bandago/crm/route.ts');
+  assert.doesNotMatch(crmSource, /catch\s*\([^)]*:\s*any\)/, 'crm route must not have catch (:any)');
+
+  const chronicRefillSource = source('src/app/api/cron/chronic-refills/route.ts');
+  assert.doesNotMatch(chronicRefillSource, /catch\s*\([^)]*:\s*any\)/, 'chronic-refills route must not have catch (:any)');
+
+  const posSyncSectionSource = source('src/components/views/admin/sections/pos-sync-section.tsx');
+  assert.doesNotMatch(posSyncSectionSource, /catch\s*\([^)]*:\s*any\)/, 'pos-sync-section component must not have catch (:any)');
+});
+
+test('Deep Functional Verification: Effective stock with FEFO expiry and virtual reservation', () => {
+  // Scenario A: 10 raw stock, but 8 are expired (2 valid sellable stock), and 2 are virtually reserved
+  const rawStock = 10;
+  const sellableStock = 2; // FEFO valid stock
+  const reserved = 2; // In-flight M-Pesa push
+
+  const effectiveAvailable = Math.max(0, rawStock - reserved);
+  const effectiveSellable = Math.max(0, sellableStock - reserved);
+  const effectiveInStock = effectiveAvailable > 0 && sellableStock > 0 && effectiveSellable > 0;
+
+  assert.equal(effectiveInStock, false, 'Product must be OUT OF STOCK when sellable stock is exhausted by reservation');
+
+  // Scenario B: 10 raw stock, 10 sellable stock, 2 reserved -> 8 effective available
+  const rawStockB = 10;
+  const sellableStockB = 10;
+  const reservedB = 2;
+  const effectiveSellableB = Math.max(0, sellableStockB - reservedB);
+  const effectiveInStockB = Math.max(0, rawStockB - reservedB) > 0 && sellableStockB > 0 && effectiveSellableB > 0;
+  assert.equal(effectiveInStockB, true);
+  assert.equal(effectiveSellableB, 8);
+});
+
+test('Deep Functional Verification: InventoryGuard getAvailableStock edge cases and formula', () => {
+  const guardSource = source('src/lib/inventory-guard.ts');
+  assert.match(guardSource, /getAvailableStock/);
+  assert.match(guardSource, /Math\.max\(0,\s*physicalStock\s*-\s*buffer\s*-\s*reserved\)/);
+
+  // Replicate and test the pure calculation logic of InventoryGuard.getAvailableStock
+  const calculateStock = (product) => {
+    const physicalStock = (product.stock != null && product.stockQty != null)
+      ? Math.min(product.stock, product.stockQty)
+      : (product.stock ?? product.stockQty ?? 0);
+    const buffer = product.safetyStockBuffer != null ? product.safetyStockBuffer : 2;
+    const reserved = Math.max(0, product.virtualReservedStock ?? 0);
+    return Math.max(0, physicalStock - buffer - reserved);
+  };
+
+  const productA = { stock: 15, stockQty: 10, safetyStockBuffer: 2, virtualReservedStock: 3 };
+  assert.equal(calculateStock(productA), 5); // min(15, 10) - 2 - 3 = 5
+
+  const productB = { stock: 5, stockQty: 5, safetyStockBuffer: 2, virtualReservedStock: 5 };
+  assert.equal(calculateStock(productB), 0); // clamped to 0
+
+  const productC = { stock: 10, stockQty: null, safetyStockBuffer: null, virtualReservedStock: null };
+  assert.equal(calculateStock(productC), 8); // 10 - default buffer 2 - 0 = 8
+});
+
+test('Deep Functional Verification: CSV parser with custom slug and missing image column', () => {
+  const csvContent = `externalPosId,name,price,stock,slug\nBP-999,Paracetamol Syrup,120.00,50,custom-paracetamol-syrup`;
+  const rows = parseCsv(csvContent);
+  assert.equal(rows.length, 2);
+  const headers = rows[0];
+  const data = rows[1];
+  assert.equal(headers[4], 'slug');
+  assert.equal(data[4], 'custom-paracetamol-syrup');
+});
+

@@ -77,7 +77,10 @@ export async function POST(req: NextRequest) {
       const sku = getCol('sku', 'value', 'code', 'barcode') || null;
       const dosageForm = getCol('dosageForm', 'dosage', 'form') || undefined;
       const strength = getCol('strength', 'dose') || undefined;
-      const imageUrl = getCol('imageUrl', 'image', 'photo') || '/images/products/generic-medicine.webp';
+      const rawImageUrl = getCol('imageUrl', 'image', 'photo');
+      const imageUrl = rawImageUrl || undefined;
+      const customSlug = getCol('slug', 'urlSlug');
+      const slug = customSlug || BandaGoNormalizer.slugify(name);
 
       if (externalPosId && name && !isNaN(price)) {
         const requiresPrescription = BandaGoNormalizer.classifyRequiresPrescription(
@@ -100,7 +103,7 @@ export async function POST(req: NextRequest) {
           externalPosId,
           name,
           sku,
-          slug: BandaGoNormalizer.slugify(name, externalPosId),
+          slug,
           categorySlug,
           price,
           costPrice: costPrice && !isNaN(costPrice) ? costPrice : null,
@@ -136,7 +139,8 @@ export async function POST(req: NextRequest) {
     });
 
     return await handleSync(syncReq);
-  } catch (err: any) {
-    return NextResponse.json({ error: 'Failed to process CSV file', details: err.message }, { status: 500 });
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : 'Unknown error';
+    return NextResponse.json({ error: 'Failed to process CSV file', details: message }, { status: 500 });
   }
 }

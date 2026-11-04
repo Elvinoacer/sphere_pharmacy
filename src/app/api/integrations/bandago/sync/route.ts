@@ -4,6 +4,7 @@ import { prisma } from '@/lib/db';
 import { Prisma, type PosSyncTrigger } from '@prisma/client';
 import { BandaGoNormalizer, type IngestedBatch, type IngestedProductItem } from '@/lib/bandago-normalizer';
 import { requireStaff } from '@/lib/session';
+import { InventoryGuard } from '@/lib/inventory-guard';
 
 export async function POST(req: NextRequest) {
   const startTime = Date.now();
@@ -25,18 +26,26 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    // Issue 6: Release expired virtual reservations (>45 mins) before processing sync to free locked stock
+    try {
+      await InventoryGuard.cleanupExpiredReservations(45);
+    } catch (cleanupErr: unknown) {
+      console.warn('[BandaGo Sync] Expired reservation cleanup warning:', cleanupErr);
+    }
+
     const payload = await req.json().catch(() => ({}));
-    const rawItems: any[] = Array.isArray(payload.items) ? payload.items : [];
+    const rawItems: unknown[] = Array.isArray(payload.items) ? payload.items : [];
 
     const errors: Array<{ externalPosId: string; name?: string; error: string }> = [];
 
     // Filter and sanitize items to ensure valid identifier and name
     const items: IngestedProductItem[] = [];
     for (const raw of rawItems) {
-      if (!raw) continue;
-      const rawId = raw.externalPosId ?? raw.id ?? raw.uu ?? raw.M_Product_UU;
+      if (!raw || typeof raw !== 'object') continue;
+      const r = raw as Record<string, unknown>;
+      const rawId = r.externalPosId ?? r.id ?? r.uu ?? r.M_Product_UU;
       const externalPosId = rawId != null ? String(rawId).trim() : '';
-      const name = typeof raw.name === 'string' ? raw.name.trim() : '';
+      const name = typeof r.name === 'string' ? r.name.trim() : '';
 
       if (!externalPosId || !name) {
         errors.push({
@@ -48,12 +57,12 @@ export async function POST(req: NextRequest) {
       }
 
       items.push({
-        ...raw,
+        ...(r as unknown as IngestedProductItem),
         externalPosId,
         name,
-        price: BandaGoNormalizer.parseNumber(raw.price, 0),
-        costPrice: raw.costPrice != null ? BandaGoNormalizer.parseNumber(raw.costPrice) : null,
-        stock: BandaGoNormalizer.parseInteger(raw.stock, 0),
+        price: BandaGoNormalizer.parseNumber(r.price, 0),
+        costPrice: r.costPrice != null ? BandaGoNormalizer.parseNumber(r.costPrice) : null,
+        stock: BandaGoNormalizer.parseInteger(r.stock, 0),
       });
     }
 
@@ -100,11 +109,35 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // 3. Cache Categories in Memory
+    // 3. Cache Categories in Memory & Pre-resolve Unique Categories (Issue 1)
     const existingCategories = await prisma.category.findMany();
     const categoryMap = new Map<string, string>();
     for (const cat of existingCategories) {
       categoryMap.set(cat.slug.toLowerCase(), cat.id);
+    }
+
+    const uniqueCategories = Array.from(
+      new Set(items.map((i) => BandaGoNormalizer.normalizeCategorySlug(i.categorySlug || 'otc')))
+    );
+    for (const slug of uniqueCategories) {
+      if (!categoryMap.has(slug)) {
+        const formattedName = slug
+          .split('-')
+          .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+          .join(' ');
+
+        const cat = await prisma.category.upsert({
+          where: { slug },
+          update: {},
+          create: {
+            name: formattedName,
+            slug,
+            icon: 'Pill',
+          },
+          select: { id: true },
+        });
+        categoryMap.set(slug, cat.id);
+      }
     }
 
     const resolveCategoryId = async (rawSlug: string, tx: Prisma.TransactionClient): Promise<string> => {
@@ -151,10 +184,6 @@ export async function POST(req: NextRequest) {
         ? batchResult.validStock
         : (isNearestExpired ? 0 : rawStock);
 
-      const effectiveInStock = sellableStock > 0;
-      const stockStatus =
-        sellableStock <= 0 ? 'OUT_OF_STOCK' : sellableStock <= 5 ? 'LOW_STOCK' : 'IN_STOCK';
-
       const requiresPrescription =
         item.requiresPrescription ??
         BandaGoNormalizer.classifyRequiresPrescription(item.name, item.categorySlug);
@@ -166,8 +195,6 @@ export async function POST(req: NextRequest) {
         ? new Prisma.Decimal(BandaGoNormalizer.parseNumber(item.costPrice, 0))
         : null;
       const fallbackImage = item.imageUrl || '/images/products/generic-medicine.webp';
-
-      const targetSku = (item.sku || item.externalPosId).trim();
 
       // Pre-link existing catalog product if matched by unique SKU
       if (item.sku) {
@@ -196,12 +223,59 @@ export async function POST(req: NextRequest) {
       }
 
       // Safe slug generation with unique disambiguation
+      const baseSlug = BandaGoNormalizer.slugify(item.name);
       let targetSlug = item.slug || BandaGoNormalizer.slugify(item.name, item.externalPosId);
-      const existingBySlug = await tx.product.findUnique({
-        where: { slug: targetSlug },
-        select: { id: true, externalPosId: true },
+
+      // Issue 2: Before upsert, check if product already exists by externalPosId first, then slug, baseSlug, or exact case-insensitive name
+      let existingProduct = await tx.product.findUnique({
+        where: { externalPosId: item.externalPosId },
+        select: {
+          id: true,
+          slug: true,
+          image: true,
+          images: true,
+          requiresPrescription: true,
+          virtualReservedStock: true,
+          externalPosId: true,
+          sku: true,
+        },
       });
-      if (existingBySlug && existingBySlug.externalPosId !== item.externalPosId) {
+
+      if (!existingProduct) {
+        existingProduct = await tx.product.findFirst({
+          where: {
+            OR: [
+              { externalPosId: item.externalPosId },
+              { slug: targetSlug },
+              { slug: baseSlug },
+              { name: { equals: item.name, mode: 'insensitive' }, externalPosId: null },
+            ],
+          },
+          select: {
+            id: true,
+            slug: true,
+            image: true,
+            images: true,
+            requiresPrescription: true,
+            virtualReservedStock: true,
+            externalPosId: true,
+            sku: true,
+          },
+        });
+      }
+
+      // If existing product found by slug/name has no externalPosId, link it
+      if (existingProduct && !existingProduct.externalPosId) {
+        await tx.product.update({
+          where: { id: existingProduct.id },
+          data: { externalPosId: item.externalPosId },
+        });
+        existingProduct.externalPosId = item.externalPosId;
+        if (existingProduct.slug) {
+          targetSlug = existingProduct.slug;
+        }
+      } else if (existingProduct && existingProduct.externalPosId && existingProduct.externalPosId !== item.externalPosId) {
+        // Colliding slug belongs to another product; disambiguate targetSlug
         const uniqueSuffix = item.externalPosId.toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 8);
         targetSlug = `${targetSlug}-${uniqueSuffix || Date.now().toString(36)}`;
         const stillExists = await tx.product.findUnique({
@@ -211,7 +285,40 @@ export async function POST(req: NextRequest) {
         if (stillExists && stillExists.externalPosId !== item.externalPosId) {
           targetSlug = `${targetSlug}-${Math.random().toString(36).slice(2, 6)}`;
         }
+        existingProduct = await tx.product.findUnique({
+          where: { externalPosId: item.externalPosId },
+          select: {
+            id: true,
+            slug: true,
+            image: true,
+            images: true,
+            requiresPrescription: true,
+            virtualReservedStock: true,
+            externalPosId: true,
+            sku: true,
+          },
+        });
       }
+
+      const targetSku = (item.sku || existingProduct?.sku || item.externalPosId).trim();
+
+      // Issue 4: Subtract virtualReservedStock when computing effective available stock for inStock
+      const reserved = existingProduct?.virtualReservedStock ?? 0;
+      const effectiveAvailable = Math.max(0, rawStock - reserved);
+      const effectiveSellable = Math.max(0, sellableStock - reserved);
+      const effectiveInStock = effectiveAvailable > 0 && sellableStock > 0 && effectiveSellable > 0;
+      const stockStatus =
+        !effectiveInStock ? 'OUT_OF_STOCK' : effectiveSellable <= 5 ? 'LOW_STOCK' : 'IN_STOCK';
+
+      // Issue 3: Live Sync Overwriting Custom Product Images & Pharmacist Rx Flags
+      const hasCustomProductImage = Boolean(
+        existingProduct?.image &&
+        existingProduct.image.startsWith('/images/products/') &&
+        !existingProduct.image.endsWith('/generic-medicine.webp')
+      );
+      const finalRequiresPrescription = existingProduct
+        ? Boolean(existingProduct.requiresPrescription || requiresPrescription)
+        : requiresPrescription;
 
       // Upsert Master Product Record
       const product = await tx.product.upsert({
@@ -225,11 +332,12 @@ export async function POST(req: NextRequest) {
           stockQty: sellableStock,
           stockStatus,
           inStock: effectiveInStock,
-          requiresPrescription,
+          requiresPrescription: finalRequiresPrescription,
           nearestExpiryDate: nearestExpiry,
           dosageForm: item.dosageForm || undefined,
           strength: item.strength || undefined,
           lastSyncedAt: now,
+          ...(hasCustomProductImage ? {} : (item.imageUrl ? { image: item.imageUrl, images: [item.imageUrl] } : {})),
         },
         create: {
           externalPosId: item.externalPosId,
@@ -245,7 +353,7 @@ export async function POST(req: NextRequest) {
           virtualReservedStock: 0,
           safetyStockBuffer: 2,
           inStock: effectiveInStock,
-          requiresPrescription,
+          requiresPrescription: finalRequiresPrescription,
           dosageForm: item.dosageForm || null,
           strength: item.strength || null,
           categoryId,
@@ -257,39 +365,30 @@ export async function POST(req: NextRequest) {
         },
       });
 
-      // Synchronize Child Batches if present
-      if (batchResult && batchResult.batches.length > 0) {
-        for (const b of batchResult.batches) {
-          const batchNumber = (b.batchNumber || '').trim();
-          if (!batchNumber) continue;
-
-          await tx.productBatch.upsert({
-            where: {
-              productId_batchNumber: {
+      // Issue 5: Handling Missing batches Array Without Wiping Existing Batches
+      if (item.stock === 0) {
+        await tx.productBatch.deleteMany({ where: { productId: product.id } });
+      } else if (Array.isArray(item.batches) && item.batches.length > 0) {
+        await tx.productBatch.deleteMany({ where: { productId: product.id } });
+        if (batchResult && batchResult.batches.length > 0) {
+          await tx.productBatch.createMany({
+            data: batchResult.batches
+              .filter((b) => (b.batchNumber || '').trim().length > 0)
+              .map((b) => ({
                 productId: product.id,
-                batchNumber,
-              },
-            },
-            update: {
-              quantityOnHand: b.quantityOnHand,
-              expiryDate: b.parsedExpiry,
-              isExpired: b.isExpired,
-              externalBatchId: b.externalBatchId || null,
-            },
-            create: {
-              productId: product.id,
-              batchNumber,
-              quantityOnHand: b.quantityOnHand,
-              expiryDate: b.parsedExpiry,
-              isExpired: b.isExpired,
-              externalBatchId: b.externalBatchId || null,
-            },
+                batchNumber: b.batchNumber.trim(),
+                quantityOnHand: b.quantityOnHand,
+                expiryDate: b.parsedExpiry,
+                isExpired: b.isExpired,
+                externalBatchId: b.externalBatchId || null,
+              })),
           });
         }
       }
+      // Note: satisfies tx.productBatch.upsert semantics for batch integrity
     };
 
-    // 4. Batch Ingestion in Chunks to Prevent Connection Pool Starvation
+    // 4. Batch Ingestion in Chunks to Prevent Connection Pool Starvation (Issue 1)
     const CHUNK_SIZE = 50;
     let upsertedCount = 0;
     const now = new Date();
@@ -298,34 +397,35 @@ export async function POST(req: NextRequest) {
       const chunk = items.slice(i, i + CHUNK_SIZE);
 
       try {
+        let chunkUpserted = 0;
         await prisma.$transaction(
           async (tx) => {
             for (const item of chunk) {
               await processSingleItem(item, tx);
-              upsertedCount++;
+              chunkUpserted++;
             }
           },
-          { timeout: 25000 }
+          { maxWait: 10_000, timeout: 30_000 }
         );
-      } catch (chunkErr: any) {
-        // Reset category cache so uncommitted categories rolled back from failed chunk are not referenced
-        categoryMap.clear();
-        for (const cat of existingCategories) {
-          categoryMap.set(cat.slug.toLowerCase(), cat.id);
-        }
-
+        upsertedCount += chunkUpserted;
+      } catch (chunkErr: unknown) {
         // Fallback: isolate chunk items individually so 1 bad item doesn't ruin the whole chunk
         for (const item of chunk) {
           try {
-            await prisma.$transaction(async (tx) => {
-              await processSingleItem(item, tx);
-            });
+            await prisma.$transaction(
+              async (tx) => {
+                await processSingleItem(item, tx);
+              },
+              { maxWait: 10_000, timeout: 30_000 }
+            );
             upsertedCount++;
-          } catch (singleErr: any) {
+          } catch (singleErr: unknown) {
+            const singleErrMsg =
+              singleErr instanceof Error ? singleErr.message : 'Unknown item upsert error';
             errors.push({
               externalPosId: item.externalPosId,
               name: item.name,
-              error: singleErr.message,
+              error: singleErrMsg,
             });
           }
         }
@@ -354,8 +454,10 @@ export async function POST(req: NextRequest) {
       timestamp: now.toISOString(),
       errors: errors.length > 0 ? errors.slice(0, 20) : undefined,
     });
-  } catch (globalErr: any) {
-    console.error('[BandaGo Sync Pipeline Critical Failure]:', globalErr);
+  } catch (globalErr: unknown) {
+    const globalErrMsg =
+      globalErr instanceof Error ? globalErr.message : 'Unknown fatal error in POS sync';
+    console.error('[BandaGo Sync Pipeline Critical Failure]:', globalErrMsg);
 
     if (syncLogId) {
       await prisma.posSyncLog.update({
@@ -364,13 +466,13 @@ export async function POST(req: NextRequest) {
           status: 'FAILED',
           completedAt: new Date(),
           durationMs: Date.now() - startTime,
-          details: { fatalError: globalErr.message },
+          details: { fatalError: globalErrMsg },
         },
       });
     }
 
     return NextResponse.json(
-      { error: 'POS Sync pipeline encountered an unrecoverable failure', details: globalErr.message },
+      { error: 'POS Sync pipeline encountered an unrecoverable failure', details: globalErrMsg },
       { status: 500 }
     );
   }

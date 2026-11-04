@@ -34,6 +34,7 @@ mkdir -p "$BUILD_DIR"
 # 安装依赖
 echo "📦 安装依赖..."
 bun install
+bunx prisma generate
 
 # 构建 Next.js 应用
 echo "🔨 构建 Next.js 应用..."

@@ -63,7 +63,8 @@ export async function GET(request: Request) {
     }
 
     return NextResponse.json({ ok: true, eligible: dueRefills.length, notified });
-  } catch (err: any) {
-    return NextResponse.json({ error: 'Failed to process chronic refills', details: err.message }, { status: 500 });
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : 'Unknown error';
+    return NextResponse.json({ error: 'Failed to process chronic refills', details: message }, { status: 500 });
   }
 }

@@ -52,8 +52,9 @@ export async function POST(req: NextRequest) {
           isChronicPatient: typeof c.isChronicPatient === 'boolean' ? c.isChronicPatient : undefined,
         });
         reconciledCount++;
-      } catch (err: any) {
-        errors.push({ phone: c.phone, error: err.message });
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : 'Unknown error';
+        errors.push({ phone: c.phone, error: message });
       }
     }
 
@@ -79,9 +80,10 @@ export async function POST(req: NextRequest) {
       errors: errors.length > 0 ? errors : undefined,
       durationMs: Date.now() - startTime,
     });
-  } catch (err: any) {
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : 'Unknown error';
     return NextResponse.json(
-      { error: 'Failed to process CRM reconciliation', details: err.message },
+      { error: 'Failed to process CRM reconciliation', details: message },
       { status: 500 }
     );
   }
@@ -187,9 +189,10 @@ export async function GET(req: NextRequest) {
       daysThreshold: threshold,
       dueRefills,
     });
-  } catch (err: any) {
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : 'Unknown error';
     return NextResponse.json(
-      { error: 'Failed to query CRM records', details: err.message },
+      { error: 'Failed to query CRM records', details: message },
       { status: 500 }
     );
   }

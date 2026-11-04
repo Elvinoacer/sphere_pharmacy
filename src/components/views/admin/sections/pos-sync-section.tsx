@@ -92,10 +92,11 @@ export function PosSyncSection({ refreshKey }: Partial<SectionProps> = {}) {
       } else {
         throw new Error(result.error || 'Upload failed');
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Upload failed';
       toast({
         title: 'CSV Import Failed',
-        description: err.message,
+        description: message,
         variant: 'destructive',
       });
     } finally {
