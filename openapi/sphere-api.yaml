@@ -1,0 +1,2825 @@
+openapi: 3.1.0
+info:
+  title: Sphere Pharmacy API
+  version: 0.1.0
+  description: |
+    REST API for Sphere Pharmacy, a full-stack retail pharmacy operations platform
+    serving a community pharmacy in Roysambu, Nairobi, Kenya. Covers catalog and
+    products, checkout and orders, M-Pesa Daraja and IntaSend card payments,
+    prescription review and refills, clinical service bookings, promotions and
+    Sphere Points loyalty, notifications, staff/admin operations, BandaGo POS/CRM
+    integration, and cron jobs.
+
+    Authentication model:
+    - Customer and staff sessions use the opaque sphere_session cookie
+      (httpOnly, SameSite=Lax, secure in production). Customer sessions last 30
+      days; staff sessions 7 days absolute with a 12-hour idle timeout.
+    - Guests who place orders receive a one-time x-order-access-token header
+      token (valid 7 days) for order tracking and payment initiation.
+    - Cron endpoints require Authorization Bearer CRON_SECRET.
+    - BandaGo integration accepts Authorization Bearer BANDAGO_SYNC_API_KEY or
+      an ADMIN/PHARMACIST staff session.
+    - Provider webhooks (M-Pesa, IntaSend, Resend) use their own signature or
+      token verification and always re-verify state server-side.
+
+    All monetary amounts are Kenyan Shillings (KES). Every error response is a
+    single JSON object of shape { "error": "human-readable message" }. Sensitive
+    endpoints send Cache-Control no-store. Payment initiation requires a client
+    idempotencyKey matching ^[a-zA-Z0-9_-]{16,100}$. See docs/api/api-reference.md
+    for the full human-readable contract.
+servers:
+  - url: /
+tags:
+  - name: Auth
+    description: Customer and staff sign-in, sessions, OTP phone verification.
+  - name: Addresses
+    description: Customer saved delivery addresses.
+  - name: Categories
+    description: Public product categories.
+  - name: Products
+    description: Catalog, product CRUD, reviews, stock alerts, CSV import.
+  - name: Orders
+    description: Checkout, order lifecycle, dispatch, riders, loyalty summary.
+  - name: Prescriptions
+    description: Upload, pharmacist review, refills, presigned file access.
+  - name: Payments
+    description: M-Pesa STK push, IntaSend hosted checkout, webhooks, refunds.
+  - name: Services
+    description: Clinical care services, availability, slots, reviews.
+  - name: ServiceBookings
+    description: Customer bookings and service payments.
+  - name: Promotions
+    description: Promo codes and validation.
+  - name: MedicineRequests
+    description: Guest "find this medicine" requests.
+  - name: Notifications
+    description: In-app inbox, preferences, push tokens, email webhook, tests.
+  - name: Admin
+    description: Staff workspace - stats, audit, staff, reviews, bookings, health.
+  - name: BandaGoIntegration
+    description: BandaGo POS product/batch sync and CRM reconciliation.
+  - name: Location
+    description: OpenStreetMap Nominatim geocoding proxy.
+  - name: Settings
+    description: Pharmacy profile, delivery pricing, compliance record.
+  - name: Upload
+    description: R2 file uploads (direct multipart or presigned PUT).
+  - name: Assistant
+    description: Public AI assistant chat (Groq-backed, deterministic fallback).
+  - name: Cron
+    description: Scheduled jobs guarded by Bearer CRON_SECRET.
+
+paths:
+  /api/auth/register:
+    post:
+      tags: [Auth]
+      summary: Register a customer account and open a session
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/RegisterRequest' }
+      responses:
+        '200':
+          description: Customer session payload and session cookie
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SessionPayload' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '413': { $ref: '#/components/responses/PayloadTooLarge' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  /api/auth/login:
+    post:
+      tags: [Auth]
+      summary: Customer password sign-in (email or phone)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/LoginRequest' }
+      responses:
+        '200':
+          description: Customer session payload and session cookie
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SessionPayload' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  /api/auth/staff-login:
+    post:
+      tags: [Auth]
+      summary: Staff password sign-in
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/StaffLoginRequest' }
+      responses:
+        '200':
+          description: Staff session payload and session cookie
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SessionPayload' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { description: Account is deactivated }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  /api/auth/logout:
+    post:
+      tags: [Auth]
+      summary: Destroy the session and deregister a push token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token: { type: string, description: Push token to deregister if owned by caller }
+      responses:
+        '200': { description: '{ ok: true }' }
+  /api/auth/me:
+    get:
+      tags: [Auth]
+      summary: Session bootstrap (anonymous returns ok true and role null)
+      responses:
+        '200':
+          description: Anonymous marker or session payload; no-store
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SessionPayload' }
+  /api/auth/profile:
+    patch:
+      tags: [Auth]
+      summary: Update customer profile (name, avatar, email, phone, password)
+      security: [{ sessionCookie: [] }]
+      requestBody:
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ProfileUpdateRequest' }
+      responses:
+        '200':
+          description: Updated customer session payload
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SessionPayload' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '409': { $ref: '#/components/responses/Conflict' }
+  /api/auth/otp/request:
+    post:
+      tags: [Auth]
+      summary: Send a 6-digit SMS OTP to a Kenyan phone
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/OtpRequest' }
+      responses:
+        '200': { description: '{ sent: true }' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+        '500': { $ref: '#/components/responses/ServerError' }
+  /api/auth/otp/verify:
+    post:
+      tags: [Auth]
+      summary: Verify an OTP, auto-create the account, claim guest orders
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/OtpVerify' }
+      responses:
+        '200':
+          description: Customer session payload (guest orders claimed)
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SessionPayload' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '409': { description: Code already used }
+        '429': { $ref: '#/components/responses/RateLimited' }
+
+  /api/addresses:
+    get:
+      tags: [Addresses]
+      summary: List the customer's saved addresses (default first, cap 50)
+      security: [{ sessionCookie: [] }]
+      responses:
+        '200':
+          description: AddressDTO[]
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/AddressDTO' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+    post:
+      tags: [Addresses]
+      summary: Create a saved address
+      security: [{ sessionCookie: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/AddressCreate' }
+      responses:
+        '200':
+          description: Created address
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AddressDTO' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+  /api/addresses/{id}:
+    patch:
+      tags: [Addresses]
+      summary: Update an owned address
+      security: [{ sessionCookie: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdPath' }]
+      requestBody:
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/AddressCreate' }
+      responses:
+        '200':
+          description: Updated address
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AddressDTO' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+    delete:
+      tags: [Addresses]
+      summary: Delete an owned address
+      security: [{ sessionCookie: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdPath' }]
+      responses:
+        '200': { description: '{ ok: true }' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  /api/categories:
+    get:
+      tags: [Categories]
+      summary: Active categories ordered by sortOrder with product counts
+      responses:
+        '200':
+          description: CategoryDTO[]
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/CategoryDTO' }
+
+  /api/products:
+    get:
+      tags: [Products]
+      summary: Search, filter, sort and page the catalog
+      parameters:
+        - { name: search, in: query, schema: { type: string }, description: Multi-term case-insensitive search }
+        - { name: category, in: query, schema: { type: string }, description: Category id or slug }
+        - { name: rx, in: query, schema: { type: string, enum: [any, 'yes', 'no'] } }
+        - { name: availability, in: query, schema: { type: string, enum: [any, in, low, out] } }
+        - { name: stockStatus, in: query, schema: { type: string }, description: Admin view only }
+        - { name: sort, in: query, schema: { type: string, enum: [popular, price-asc, price-desc, name, name-desc, newest, oldest, stock-asc, stock-desc] } }
+        - { name: page, in: query, schema: { type: integer, minimum: 1, default: 1 } }
+        - { name: pageSize, in: query, schema: { type: integer, minimum: 1, maximum: 100, default: 12 } }
+        - { name: ids, in: query, schema: { type: string }, description: Comma-separated product ids (max 50) }
+        - { name: admin, in: query, schema: { type: string, enum: ['yes'] }, description: Pass yes to require a staff session and include inactive products }
+      responses:
+        '200':
+          description: Paginated products
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ProductsPage' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+    post:
+      tags: [Products]
+      summary: Create a product
+      security: [{ sessionCookie: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ProductUpsert' }
+      responses:
+        '200':
+          description: Created product
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ProductDTO' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '409': { description: SKU already exists }
+  /api/products/{id}:
+    get:
+      tags: [Products]
+      summary: Product detail (active only, with rating aggregates)
+      parameters: [{ $ref: '#/components/parameters/IdPath' }]
+      responses:
+        '200':
+          description: Product
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ProductDTO' }
+        '404': { $ref: '#/components/responses/NotFound' }
+    patch:
+      tags: [Products]
+      summary: Update product fields, stock and flags
+      security: [{ sessionCookie: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdPath' }]
+      requestBody:
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ProductUpsert' }
+      responses:
+        '200':
+          description: Updated product (back-in-stock and low-stock alerts may fire)
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ProductDTO' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+    delete:
+      tags: [Products]
+      summary: Delete product, or discontinue it when order history exists
+      security: [{ sessionCookie: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdPath' }]
+      responses:
+        '200': { description: '{ ok: true }' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /api/products/{id}/reviews:
+    get:
+      tags: [Products]
+      summary: Published review summary, breakdown and own review
+      parameters: [{ $ref: '#/components/parameters/IdPath' }]
+      responses:
+        '200':
+          description: Review summary
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ReviewSummary' }
+        '404': { $ref: '#/components/responses/NotFound' }
+    post:
+      tags: [Products]
+      summary: Leave a review (requires a completed purchase)
+      security: [{ sessionCookie: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdPath' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ReviewCreate' }
+      responses:
+        '201':
+          description: Created review
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ReviewDTO' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { description: No completed purchase for this product }
+        '409': { description: Already reviewed }
+  /api/products/{id}/stock-alert:
+    post:
+      tags: [Products]
+      summary: Watch an out-of-stock product for restock
+      security: [{ sessionCookie: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdPath' }]
+      responses:
+        '201':
+          description: Created or re-armed alert
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/StockAlert' }
+        '400': { description: Product is currently in stock }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { description: Already watching }
+  /api/products/stock-alerts:
+    get:
+      tags: [Products]
+      summary: The customer's watchlist
+      security: [{ sessionCookie: [] }]
+      responses:
+        '200':
+          description: StockAlert[]
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/StockAlert' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+    delete:
+      tags: [Products]
+      summary: Stop watching a product
+      security: [{ sessionCookie: [] }]
+      parameters:
+        - { name: id, in: query, required: true, schema: { type: string }, description: Alert id }
+      responses:
+        '200': { description: '{ ok: true }' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /api/products/bulk:
+    post:
+      tags: [Products]
+      summary: CSV product import (header + up to 1000 rows, upsert by SKU)
+      security: [{ sessionCookie: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [csv]
+              properties:
+                csv: { type: string, description: CSV text with name and price columns required }
+      responses:
+        '200': { description: '{ created, updated, errors[] }' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '413': { $ref: '#/components/responses/PayloadTooLarge' }
+
+  /api/orders:
+    get:
+      tags: [Orders]
+      summary: List orders by scope
+      security: [{ sessionCookie: [] }]
+      parameters:
+        - { name: scope, in: query, schema: { type: string, enum: [all, dispatch, dispatch-history, rider] }, description: 'Omitted scope lists the customer''s own orders' }
+        - { name: status, in: query, schema: { type: string }, description: scope=all filter }
+        - { name: type, in: query, schema: { type: string }, description: scope=all filter }
+        - { name: search, in: query, schema: { type: string, maxLength: 80 }, description: Reference, contact, area or customer search }
+        - { name: cursor, in: query, schema: { type: string }, description: Cursor pagination id for scope=all }
+        - { name: limit, in: query, schema: { type: integer, minimum: 1, maximum: 100, default: 50 } }
+      responses:
+        '200':
+          description: OrderDTO[] (private no-store)
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/OrderDTO' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+    post:
+      tags: [Orders]
+      summary: Place an order (guest checkout supported, OTC only for guests)
+      security: [{ sessionCookie: [] }, { guestOrderToken: [] }, {}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CreateOrderRequest' }
+      responses:
+        '201':
+          description: Created order; guest responses include the one-time guestAccessToken
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/OrderDTO' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { description: Prescription items require a verified account }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '413': { $ref: '#/components/responses/PayloadTooLarge' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+        '500': { $ref: '#/components/responses/ServerError' }
+  /api/orders/{id}:
+    get:
+      tags: [Orders]
+      summary: Order detail for owner, staff, assigned rider or guest token
+      security: [{ sessionCookie: [] }, { guestOrderToken: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdPath' }]
+      responses:
+        '200':
+          description: Order with items, payments, prescriptions and history
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/OrderDTO' }
+        '401': { description: No session or access token }
+        '403': { description: Signed in but not permitted for this order }
+        '404': { $ref: '#/components/responses/NotFound' }
+    patch:
+      tags: [Orders]
+      summary: Staff status transition with workflow guards
+      security: [{ sessionCookie: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdPath' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/OrderStatusUpdate' }
+      responses:
+        '200':
+          description: Updated order
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/OrderDTO' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { description: Illegal transition or concurrent order change }
+  /api/orders/{id}/cancel:
+    post:
+      tags: [Orders]
+      summary: Cancel an unpaid order and restore stock and points
+      security: [{ sessionCookie: [] }, { guestOrderToken: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdPath' }]
+      responses:
+        '200':
+          description: Cancelled order
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/OrderDTO' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { description: Not cancellable or a captured payment exists }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  /api/orders/{id}/assign:
+    post:
+      tags: [Orders]
+      summary: Assign an active rider to a dispatch-ready delivery
+      security: [{ sessionCookie: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdPath' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [riderId]
+              properties:
+                riderId: { type: string }
+      responses:
+        '200':
+          description: Order with rider assigned
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/OrderDTO' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { description: Not a dispatchable delivery or version conflict }
+  /api/orders/{id}/prepare:
+    post:
+      tags: [Orders]
+      summary: Accept the order and begin packing (moves to PREPARING)
+      security: [{ sessionCookie: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdPath' }]
+      responses:
+        '200':
+          description: Order now PREPARING
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/OrderDTO' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { description: Not eligible for preparation }
+  /api/orders/{id}/cash-confirm:
+    post:
+      tags: [Orders]
+      summary: Record cash received (creates a SUCCESS CASH payment)
+      security: [{ sessionCookie: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdPath' }]
+      responses:
+        '200':
+          description: Updated order with the cash payment
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/OrderDTO' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { description: Cash not allowed in this state or payment in flight }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  /api/orders/{id}/request-payment:
+    post:
+      tags: [Orders]
+      summary: Staff triggers an M-Pesa STK push to the customer's phone
+      security: [{ sessionCookie: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdPath' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                phone: { type: string, description: Kenyan phone; defaults to order contact }
+                idempotencyKey: { type: string, pattern: '^[a-zA-Z0-9_-]{16,100}$' }
+      responses:
+        '200': { description: '{ paymentId, checkoutRequestId, message }' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+        '503': { $ref: '#/components/responses/ServiceUnavailable' }
+  /api/orders/loyalty:
+    get:
+      tags: [Orders]
+      summary: Sphere Points balance, rules and per-order history
+      security: [{ sessionCookie: [] }]
+      responses:
+        '200':
+          description: Loyalty summary (lifetime figures over the most recent 30 active orders)
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/LoyaltySummary' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+  /api/orders/riders:
+    get:
+      tags: [Orders]
+      summary: Active riders for assignment
+      security: [{ sessionCookie: [] }]
+      responses:
+        '200':
+          description: StaffDTO[] of active RIDER staff
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/StaffDTO' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+
+  /api/prescriptions:
+    get:
+      tags: [Prescriptions]
+      summary: Own prescriptions, or the pharmacist queue with scope=queue
+      security: [{ sessionCookie: [] }]
+      parameters:
+        - { name: scope, in: query, schema: { type: string, enum: [queue] }, description: 'queue requires PHARMACIST or ADMIN' }
+        - { name: limit, in: query, schema: { type: integer, minimum: 1, maximum: 100, default: 50 } }
+      responses:
+        '200':
+          description: PrescriptionDTO[] (no file URLs in lists)
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/PrescriptionDTO' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+    post:
+      tags: [Prescriptions]
+      summary: Register an uploaded prescription (R2 storageKey or base64)
+      security: [{ sessionCookie: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/PrescriptionUploadRequest' }
+      responses:
+        '201':
+          description: Created prescription
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PrescriptionDTO' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  /api/prescriptions/{id}:
+    get:
+      tags: [Prescriptions]
+      summary: Prescription detail with a presigned file URL (access logged)
+      security: [{ sessionCookie: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/IdPath' }
+        - { name: download, in: query, schema: { type: string, enum: ['1'] }, description: '1 triggers a 302 redirect with attachment disposition' }
+      responses:
+        '200':
+          description: Prescription with short-lived presigned fileUrl
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PrescriptionDTO' }
+        '302': { description: Redirect to the presigned download (download=1) }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '503': { description: Presign failure }
+    patch:
+      tags: [Prescriptions]
+      summary: Pharmacist review decision (aggregates to the linked order)
+      security: [{ sessionCookie: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdPath' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ReviewPrescriptionRequest' }
+      responses:
+        '200':
+          description: Reviewed prescription
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PrescriptionDTO' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+    delete:
+      tags: [Prescriptions]
+      summary: Soft delete (order-linked prescriptions require ADMIN)
+      security: [{ sessionCookie: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdPath' }]
+      responses:
+        '200': { description: '{ ok: true }' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { description: Linked to an order (non-admin) }
+  /api/prescriptions/{id}/refill:
+    post:
+      tags: [Prescriptions]
+      summary: Convert an approved prescription into a new refill order
+      security: [{ sessionCookie: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdPath' }]
+      responses:
+        '201':
+          description: Created refill order
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  orderId: { type: string }
+                  reference: { type: string }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404': { description: Not found or not owned }
+        '409': { description: 'Not refillable, expired or stock conflict' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+
+  /api/payments/mpesa/initiate:
+    post:
+      tags: [Payments]
+      summary: Start an M-Pesa STK push for an order
+      security: [{ sessionCookie: [] }, { guestOrderToken: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/MpesaInitiateRequest' }
+      responses:
+        '200':
+          description: STK push accepted (or idempotent replay of the in-flight request)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  paymentId: { type: string }
+                  checkoutRequestId: { type: string }
+                  merchantRequestId: { type: string }
+                  message: { type: string }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '403': { description: 'You can only pay for your own order.' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { description: 'Not awaiting payment, already paid, or a request is in flight' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+        '503': { description: Daraja not configured or provider response uncertain }
+  /api/payments/mpesa/callback:
+    post:
+      tags: [Payments]
+      summary: Daraja STK callback for order payments (token-verified, re-queried)
+      parameters:
+        - { name: token, in: query, required: true, schema: { type: string }, description: Must equal MPESA_CALLBACK_TOKEN (timing-safe) }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Daraja stkCallback envelope; the server re-queries the STK status and verifies amount, currency, phone and receipt before trusting it
+      responses:
+        '200': { description: Processed (idempotent per eventId) }
+        '404': { description: Unknown CheckoutRequestID }
+        '409': { description: Conflicting replayed webhook event }
+  /api/payments/mpesa/query:
+    get:
+      tags: [Payments]
+      summary: Read-only local status of an STK payment
+      security: [{ sessionCookie: [] }, { guestOrderToken: [] }]
+      parameters:
+        - { name: checkoutRequestId, in: query, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: Local payment state (no provider reconciliation here)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string }
+                  payment:
+                    type: object
+                    properties:
+                      id: { type: string }
+                      status: { type: string }
+                      reference: { type: string }
+                      failureReason: { type: [string, 'null'] }
+                  orderStatus: { type: string }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  /api/payments/mpesa/service-callback:
+    post:
+      tags: [Payments]
+      summary: Daraja STK callback for service bookings (token-verified)
+      parameters:
+        - { name: token, in: query, required: true, schema: { type: string }, description: Must equal MPESA_CALLBACK_TOKEN (timing-safe) }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { type: object, description: Daraja stkCallback envelope for booking payments }
+      responses:
+        '200': { description: Processed (idempotent per eventId) }
+        '404': { description: Unknown CheckoutRequestID }
+        '409': { description: Conflicting replayed webhook event }
+  /api/payments/intasend/initiate:
+    post:
+      tags: [Payments]
+      summary: Create an IntaSend hosted checkout session for an order
+      security: [{ sessionCookie: [] }, { guestOrderToken: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/IntaSendInitiateRequest' }
+      responses:
+        '200':
+          description: Hosted checkout URL (redirect the customer; the webhook confirms success)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  paymentId: { type: string }
+                  status: { type: string, example: PROCESSING }
+                  checkoutUrl: { type: string, format: uri }
+                  sessionId: { type: string }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '403': { description: 'You can only pay for your own order.' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { description: 'Not awaiting payment, already paid, or a request is in flight' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+        '503': { description: IntaSend not configured or checkout response uncertain }
+  /api/payments/intasend/webhook:
+    post:
+      tags: [Payments]
+      summary: IntaSend signed webhook for orders and service bookings
+      parameters:
+        - { name: x-intasend-signature, in: header, schema: { type: string }, description: HMAC-SHA256 of the raw body (sha256= prefix stripped) }
+        - { name: x-webhook-signature, in: header, schema: { type: string }, description: Alternative signature header }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Invoice event; the server always re-fetches the invoice server-to-server before trusting state
+      responses:
+        '200': { description: Processed (idempotent per eventId) }
+        '401': { description: Signature verification failed }
+        '409': { description: Conflicting replayed webhook event }
+  /api/payments/refund:
+    post:
+      tags: [Payments]
+      summary: Record or execute a refund (ADMIN only)
+      security: [{ sessionCookie: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/RefundRequest' }
+      responses:
+        '200': { description: 'Refund recorded, requested or finalized' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { description: 'M-Pesa refunds must be completed in the provider portal first; or state conflict' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+
+  /api/services:
+    get:
+      tags: [Services]
+      summary: List services (active only; includeInactive for staff)
+      parameters:
+        - { name: includeInactive, in: query, schema: { type: string, enum: ['true'] }, description: Pass true to include inactive services (staff session required) }
+      responses:
+        '200':
+          description: ServiceDTO[]
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/ServiceDTO' }
+    post:
+      tags: [Services]
+      summary: Create a service
+      security: [{ sessionCookie: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ServiceUpsert' }
+      responses:
+        '200':
+          description: Created service
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ServiceDTO' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+  /api/services/{id}:
+    get:
+      tags: [Services]
+      summary: Service detail (public when active)
+      parameters: [{ $ref: '#/components/parameters/IdPath' }]
+      responses:
+        '200':
+          description: Service
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ServiceDTO' }
+        '404': { $ref: '#/components/responses/NotFound' }
+    patch:
+      tags: [Services]
+      summary: Update a service
+      security: [{ sessionCookie: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdPath' }]
+      requestBody:
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ServiceUpsert' }
+      responses:
+        '200':
+          description: Updated service
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ServiceDTO' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+    delete:
+      tags: [Services]
+      summary: Deactivate a service (soft delete)
+      security: [{ sessionCookie: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdPath' }]
+      responses:
+        '200': { description: '{ ok: true }' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+  /api/services/{id}/availability:
+    get:
+      tags: [Services]
+      summary: Weekly availability rules
+      parameters: [{ $ref: '#/components/parameters/IdPath' }]
+      responses:
+        '200':
+          description: ServiceAvailabilityDTO[]
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/ServiceAvailability' }
+    put:
+      tags: [Services]
+      summary: Replace the weekly availability rule set
+      security: [{ sessionCookie: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdPath' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              maxItems: 35
+              items: { $ref: '#/components/schemas/ServiceAvailability' }
+      responses:
+        '200': { description: Rules replaced }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+  /api/services/{id}/slots:
+    get:
+      tags: [Services]
+      summary: Bookable slots for a date (capacity 1, Nairobi UTC+3)
+      parameters:
+        - { $ref: '#/components/parameters/IdPath' }
+        - { name: date, in: query, required: true, schema: { type: string, format: date } }
+      responses:
+        '200':
+          description: Slots
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/ServiceSlot' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+  /api/services/{id}/reviews:
+    get:
+      tags: [Services]
+      summary: Anonymized service review summary
+      parameters: [{ $ref: '#/components/parameters/IdPath' }]
+      responses:
+        '200':
+          description: '{ average, count, reviews[] }'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  average: { type: number }
+                  count: { type: integer }
+                  reviews:
+                    type: array
+                    items: { $ref: '#/components/schemas/ReviewDTO' }
+
+  /api/service-bookings:
+    get:
+      tags: [ServiceBookings]
+      summary: The customer's bookings with service info and status history
+      security: [{ sessionCookie: [] }]
+      responses:
+        '200':
+          description: ServiceBookingDTO[]
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/ServiceBookingDTO' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+    post:
+      tags: [ServiceBookings]
+      summary: Book a service slot (price and duration re-verified)
+      security: [{ sessionCookie: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ServiceBookingCreate' }
+      responses:
+        '201':
+          description: Created booking (status PENDING, paymentStatus UNPAID)
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ServiceBookingDTO' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404': { description: Service not available }
+        '409': { description: 'Price changed, outside availability, or slot just booked' }
+        '413': { $ref: '#/components/responses/PayloadTooLarge' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  /api/service-bookings/mine:
+    get:
+      tags: [ServiceBookings]
+      summary: The customer's appointments
+      security: [{ sessionCookie: [] }]
+      responses:
+        '200':
+          description: ServiceBookingDTO[]
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/ServiceBookingDTO' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+  /api/service-bookings/{id}/pay-at-pharmacy:
+    post:
+      tags: [ServiceBookings]
+      summary: Mark intent to pay at the pharmacy (not a settlement)
+      security: [{ sessionCookie: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdPath' }]
+      responses:
+        '200': { description: paymentStatus set to PAY_AT_PHARMACY (idempotent) }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404': { description: Not found or not owned }
+        '409': { description: 'Already paid, terminal status, or online payment in flight' }
+  /api/service-bookings/{id}/pay/card:
+    post:
+      tags: [ServiceBookings]
+      summary: Start an IntaSend hosted checkout for a booking
+      security: [{ sessionCookie: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdPath' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [idempotencyKey]
+              properties:
+                idempotencyKey: { type: string, pattern: '^[a-zA-Z0-9_-]{16,100}$' }
+      responses:
+        '200':
+          description: Hosted checkout session
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  paymentId: { type: string }
+                  status: { type: string, example: PROCESSING }
+                  checkoutUrl: { type: string, format: uri }
+                  sessionId: { type: string }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404': { description: Not found or not owned }
+        '409': { description: Not payable }
+        '429': { $ref: '#/components/responses/RateLimited' }
+        '503': { $ref: '#/components/responses/ServiceUnavailable' }
+  /api/service-bookings/{id}/pay/mpesa:
+    post:
+      tags: [ServiceBookings]
+      summary: Start an M-Pesa STK push for a booking
+      security: [{ sessionCookie: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdPath' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [phone, idempotencyKey]
+              properties:
+                phone: { type: string, description: Kenyan phone number }
+                idempotencyKey: { type: string, pattern: '^[a-zA-Z0-9_-]{16,100}$' }
+      responses:
+        '200': { description: '{ paymentId, checkoutRequestId, message }' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404': { description: Not found or not owned }
+        '409': { description: Not payable }
+        '429': { $ref: '#/components/responses/RateLimited' }
+        '503': { $ref: '#/components/responses/ServiceUnavailable' }
+  /api/service-bookings/{id}/payment-status:
+    get:
+      tags: [ServiceBookings]
+      summary: Read-only local payment status for a booking
+      security: [{ sessionCookie: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdPath' }]
+      responses:
+        '200': { description: Local payment or booking paymentStatus; private no-store }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404': { description: Not found or not owned }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  /api/service-bookings/{id}/review:
+    post:
+      tags: [ServiceBookings]
+      summary: Review a completed booking
+      security: [{ sessionCookie: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdPath' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/BookingReview' }
+      responses:
+        '201': { description: Review published }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404': { description: 'Not found, not owned, or not completed' }
+        '409': { description: Already reviewed }
+
+  /api/promotions:
+    get:
+      tags: [Promotions]
+      summary: Active public promotions (all=1 for staff, up to 500)
+      parameters:
+        - { name: all, in: query, schema: { type: string, enum: ['1'] }, description: Pass 1 to list all promotions (ADMIN or STAFF required) }
+      responses:
+        '200':
+          description: PromotionDTO[]
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/PromotionDTO' }
+    post:
+      tags: [Promotions]
+      summary: Create a percentage-discount promotion
+      security: [{ sessionCookie: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/PromotionUpsert' }
+      responses:
+        '200':
+          description: Created promotion
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PromotionDTO' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+  /api/promotions/{id}:
+    patch:
+      tags: [Promotions]
+      summary: Update a promotion
+      security: [{ sessionCookie: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdPath' }]
+      requestBody:
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/PromotionUpsert' }
+      responses:
+        '200':
+          description: Updated promotion
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PromotionDTO' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+    delete:
+      tags: [Promotions]
+      summary: Delete (zero redemptions) or archive a promotion
+      security: [{ sessionCookie: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdPath' }]
+      responses:
+        '200': { description: Deleted or archived }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /api/promotions/validate:
+    post:
+      tags: [Promotions]
+      summary: Validate a promo code against the current subtotal
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/PromotionValidate' }
+      responses:
+        '200':
+          description: Valid promotion and computed discount (sets sphere_promo_device cookie)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  promotion: { $ref: '#/components/schemas/PromotionDTO' }
+                  discountAmount: { type: number }
+        '400': { description: Missing/invalid code or subtotal below minimum }
+        '401': { description: Per-customer limit requires sign-in }
+        '404': { description: Code not found }
+        '409': { description: 'Paused, not started, exhausted or limit reached' }
+        '410': { $ref: '#/components/responses/Gone' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+        '503': { description: Infrastructure failure (fails closed for IP-limited offers) }
+
+  /api/medicine-requests:
+    post:
+      tags: [MedicineRequests]
+      summary: Guest request to source a medicine (photo optional)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/MedicineRequestCreate' }
+      responses:
+        '201':
+          description: Request created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id: { type: string }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '413': { description: 'Photo is too large - 3MB maximum' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+
+  /api/notifications:
+    get:
+      tags: [Notifications]
+      summary: The caller's in-app inbox (last 100, private no-store)
+      security: [{ sessionCookie: [] }]
+      responses:
+        '200':
+          description: NotificationDTO[]
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/NotificationDTO' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+    patch:
+      tags: [Notifications]
+      summary: Mark one notification or all as read
+      security: [{ sessionCookie: [] }]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id: { type: string, description: Omit to mark all read }
+      responses:
+        '200': { description: '{ ok: true }' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+  /api/notifications/prefs:
+    get:
+      tags: [Notifications]
+      summary: Channel preferences (only email and push affect delivery)
+      security: [{ sessionCookie: [] }]
+      responses:
+        '200':
+          description: Preferences
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/NotificationPrefs' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+    put:
+      tags: [Notifications]
+      summary: Update channel preferences (partial booleans)
+      security: [{ sessionCookie: [] }]
+      requestBody:
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/NotificationPrefs' }
+      responses:
+        '200':
+          description: Updated preferences
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/NotificationPrefs' }
+        '400': { description: Nothing to update }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+  /api/notifications/push-token:
+    post:
+      tags: [Notifications]
+      summary: Register or update a device push token
+      security: [{ sessionCookie: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [token]
+              properties:
+                token: { type: string, minLength: 32, maxLength: 4096 }
+                platform: { type: [string, 'null'], maxLength: 200 }
+      responses:
+        '200': { description: '{ ok: true, id }' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+    delete:
+      tags: [Notifications]
+      summary: Remove a push token (scoped to the caller)
+      security: [{ sessionCookie: [] }]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token: { type: string }
+      responses:
+        '200': { description: '{ ok: true }' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+  /api/notifications/email-webhook:
+    post:
+      tags: [Notifications]
+      summary: Resend delivery-event webhook (Svix-verified)
+      parameters:
+        - { name: svix-id, in: header, required: true, schema: { type: string } }
+        - { name: svix-timestamp, in: header, required: true, schema: { type: string } }
+        - { name: svix-signature, in: header, required: true, schema: { type: string } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { type: object, description: Resend delivery event; persisted before acknowledging }
+      responses:
+        '200': { description: Accepted }
+        '400': { description: Invalid signature or timestamp outside 300s window }
+  /api/notifications/dispatch-test:
+    get:
+      tags: [Notifications]
+      summary: Notification configuration probe
+      security: [{ sessionCookie: [] }]
+      responses:
+        '200': { description: Email/push configuration and device counts }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+    post:
+      tags: [Notifications]
+      summary: Send a real test email and/or push to the admin
+      security: [{ sessionCookie: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [type]
+              properties:
+                type: { type: string, enum: [EMAIL, PUSH, BOTH] }
+                title: { type: string, maxLength: 100 }
+                message: { type: string, maxLength: 500 }
+      responses:
+        '200': { description: Test dispatched }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '422': { description: Provider rejection or no push-enabled device }
+        '429': { $ref: '#/components/responses/RateLimited' }
+
+  /api/admin/stats:
+    get:
+      tags: [Admin]
+      summary: Dashboard KPIs, 14-day series, top products, status breakdown
+      security: [{ sessionCookie: [] }]
+      responses:
+        '200': { description: AdminStats }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+  /api/admin/audit:
+    get:
+      tags: [Admin]
+      summary: Audit trail (latest 200, newest first)
+      security: [{ sessionCookie: [] }]
+      responses:
+        '200':
+          description: AuditLog[]
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/AuditLog' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+  /api/admin/staff:
+    get:
+      tags: [Admin]
+      summary: List staff accounts
+      security: [{ sessionCookie: [] }]
+      responses:
+        '200':
+          description: StaffDTO[]
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/StaffDTO' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+    post:
+      tags: [Admin]
+      summary: Create a staff account
+      security: [{ sessionCookie: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/StaffUpsert' }
+      responses:
+        '200':
+          description: Created staff
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/StaffDTO' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '409': { description: Email already in use }
+  /api/admin/staff/{id}:
+    patch:
+      tags: [Admin]
+      summary: Update staff (role/active/password changes revoke sessions)
+      security: [{ sessionCookie: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdPath' }]
+      requestBody:
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/StaffUpsert' }
+      responses:
+        '200':
+          description: Updated staff
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/StaffDTO' }
+        '400': { description: Invalid fields or self-deactivation attempt }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { description: Email in use by another account }
+    delete:
+      tags: [Admin]
+      summary: Delete staff, or deactivate when sessions exist
+      security: [{ sessionCookie: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdPath' }]
+      responses:
+        '200': { description: '{ ok: true, deactivated? }' }
+        '400': { description: Cannot delete your own account }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /api/admin/reviews:
+    get:
+      tags: [Admin]
+      summary: Review moderation queue (status filter, latest 300)
+      security: [{ sessionCookie: [] }]
+      parameters:
+        - { name: status, in: query, schema: { type: string, enum: [PUBLISHED, HIDDEN] } }
+      responses:
+        '200': { description: 'AdminReviewDTO[]' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+  /api/admin/reviews/{id}:
+    patch:
+      tags: [Admin]
+      summary: Publish or hide a review
+      security: [{ sessionCookie: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdPath' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [status]
+              properties:
+                status: { type: string, enum: [PUBLISHED, HIDDEN] }
+      responses:
+        '200': { description: Updated review }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+  /api/admin/medicine-requests:
+    get:
+      tags: [Admin]
+      summary: Medicine request queue (status filter, search, page size 25)
+      security: [{ sessionCookie: [] }]
+      parameters:
+        - { name: status, in: query, schema: { type: string, enum: [NEW, CONTACTED, FULFILLED, UNAVAILABLE] } }
+        - { name: search, in: query, schema: { type: string, maxLength: 200 } }
+        - { name: page, in: query, schema: { type: integer, minimum: 1, maximum: 10000, default: 1 } }
+      responses:
+        '200': { description: Paged medicine requests with proxied photoUrl }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+    patch:
+      tags: [Admin]
+      summary: Update medicine request status and staff notes
+      security: [{ sessionCookie: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [id, status]
+              properties:
+                id: { type: string }
+                status: { type: string, enum: [NEW, CONTACTED, FULFILLED, UNAVAILABLE] }
+                staffNotes: { type: string, maxLength: 1000 }
+      responses:
+        '200': { description: Updated request (audited with previous and new values) }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+  /api/admin/medicine-requests/{id}/photo:
+    get:
+      tags: [Admin]
+      summary: Stream a private medicine-request photo (inline, no-store)
+      security: [{ sessionCookie: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdPath' }]
+      responses:
+        '200': { description: Photo bytes with original Content-Type }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+  /api/admin/service-analytics:
+    get:
+      tags: [Admin]
+      summary: Service booking analytics (from/to, default 30 days)
+      security: [{ sessionCookie: [] }]
+      parameters:
+        - { name: from, in: query, schema: { type: string, format: date } }
+        - { name: to, in: query, schema: { type: string, format: date } }
+      responses:
+        '200': { description: '{ totalBookings, completed, cancelled, revenue, completionRate, byService }' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+  /api/admin/service-bookings:
+    get:
+      tags: [Admin]
+      summary: Booking management (scope overview, manage or detail)
+      security: [{ sessionCookie: [] }]
+      parameters:
+        - { name: scope, in: query, schema: { type: string, enum: [overview, manage, detail] } }
+        - { name: view, in: query, schema: { type: string, enum: [queue, upcoming, history, all] } }
+        - { name: status, in: query, schema: { type: string } }
+        - { name: range, in: query, schema: { type: string, enum: [today, next7, custom] } }
+        - { name: staffId, in: query, schema: { type: string } }
+        - { name: q, in: query, schema: { type: string, maxLength: 120 } }
+        - { name: page, in: query, schema: { type: integer } }
+        - { name: pageSize, in: query, schema: { type: integer, minimum: 5, maximum: 50, default: 20 } }
+      responses:
+        '200': { description: 'Overview counts, paged bookings, or detail history' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+    patch:
+      tags: [Admin]
+      summary: Transition booking status or reschedule
+      security: [{ sessionCookie: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id: { type: string }
+                status: { $ref: '#/components/schemas/ServiceBookingStatus' }
+                scheduledStart: { type: string, format: date-time, description: Reschedule target }
+                scheduledEnd: { type: string, format: date-time, description: Reschedule target }
+                staffNotes: { type: [string, 'null'] }
+      responses:
+        '200': { description: Updated booking }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { description: Illegal transition or slot conflict }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+  /api/admin/service-bookings/{id}/assign:
+    patch:
+      tags: [Admin]
+      summary: Assign (or clear) staff for a booking
+      security: [{ sessionCookie: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdPath' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                staffId: { type: [string, 'null'], description: Null clears the assignment }
+      responses:
+        '200': { description: Updated booking; assignee notified }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+  /api/admin/service-staff:
+    get:
+      tags: [Admin]
+      summary: Active ADMIN/PHARMACIST/STAFF list for assignment dropdowns
+      security: [{ sessionCookie: [] }]
+      responses:
+        '200':
+          description: StaffDTO[]
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/StaffDTO' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+  /api/admin/pos-status:
+    get:
+      tags: [Admin]
+      summary: BandaGo POS telemetry and recent sync logs
+      security: [{ sessionCookie: [] }]
+      responses:
+        '200': { description: '{ totalSyncedProducts, totalBatches, nearExpiryCount, lastSyncTimestamp, recentLogs }' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+  /api/admin/live-changes:
+    get:
+      tags: [Admin]
+      summary: Metadata-only change cursors for workspace polling
+      security: [{ sessionCookie: [] }]
+      responses:
+        '200': { description: Order and booking change cursors; Vary Cookie }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '503': { $ref: '#/components/responses/ServiceUnavailable' }
+  /api/admin/notification-health:
+    get:
+      tags: [Admin]
+      summary: Notification delivery health (no bodies or addresses exposed)
+      security: [{ sessionCookie: [] }]
+      responses:
+        '200': { description: 'Job counts by channel/status, oldest pending, recent failures, config flags' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+
+  /api/integrations/bandago/sync:
+    post:
+      tags: [BandaGoIntegration]
+      summary: Upsert BandaGo POS products and batches (PPB-aware FEFO)
+      security: [{ bandagoBearer: [] }, { sessionCookie: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/BandaGoSyncRequest' }
+      responses:
+        '200':
+          description: Sync result (HTTP 200 even for partial success)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  upsertedCount: { type: integer }
+                  failedCount: { type: integer }
+                  durationMs: { type: integer }
+                  timestamp: { type: string }
+                  errors: { type: array, items: { type: string }, maxItems: 20 }
+        '401': { description: Invalid POS sync credentials }
+        '500': { description: Unrecoverable pipeline failure }
+  /api/integrations/bandago/csv-import:
+    post:
+      tags: [BandaGoIntegration]
+      summary: Import a BandaGo CSV export (robust parser, column aliases)
+      security: [{ bandagoBearer: [] }, { sessionCookie: [] }]
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file: { type: string, format: binary, description: CSV with at least a header and one data row }
+      responses:
+        '200': { description: Delegates internally to the sync pipeline }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { description: Invalid POS sync credentials }
+  /api/integrations/bandago/crm:
+    get:
+      tags: [BandaGoIntegration]
+      summary: CRM lookup by phone or bpartner id, or chronic-refill eligibility
+      security: [{ bandagoBearer: [] }, { sessionCookie: [] }]
+      parameters:
+        - { name: phone, in: query, schema: { type: string }, description: Kenyan phone, normalized to E.164 }
+        - { name: bpartnerId, in: query, schema: { type: string } }
+        - { name: daysThreshold, in: query, schema: { type: integer, default: 30 } }
+      responses:
+        '200': { description: 'Customer profile with last 5 orders, or eligibility list' }
+        '404': { description: Customer not found }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+    post:
+      tags: [BandaGoIntegration]
+      summary: Reconcile customer CRM profiles (per-record error isolation)
+      security: [{ bandagoBearer: [] }, { sessionCookie: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - { $ref: '#/components/schemas/BandaGoCrmCustomer' }
+                - type: object
+                  properties:
+                    customers:
+                      type: array
+                      items: { $ref: '#/components/schemas/BandaGoCrmCustomer' }
+                - type: array
+                  items: { $ref: '#/components/schemas/BandaGoCrmCustomer' }
+      responses:
+        '200': { description: '{ success, reconciledCount, failedCount, errors?, durationMs }' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+
+  /api/location/search:
+    get:
+      tags: [Location]
+      summary: Forward geocode search (Nominatim, Kenya only)
+      parameters:
+        - { name: q, in: query, required: true, schema: { type: string, minLength: 2, maxLength: 120 } }
+      responses:
+        '200':
+          description: Up to 5 results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        displayName: { type: string }
+                        latitude: { type: number }
+                        longitude: { type: number }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+        '502': { description: Upstream geocoder failure }
+  /api/location/reverse-geocode:
+    post:
+      tags: [Location]
+      summary: Reverse geocode coordinates (Nominatim)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [latitude, longitude]
+              properties:
+                latitude: { type: number, minimum: -90, maximum: 90 }
+                longitude: { type: number, minimum: -180, maximum: 180 }
+      responses:
+        '200':
+          description: '{ displayName, area, city, latitude, longitude }'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  displayName: { type: string }
+                  area: { type: [string, 'null'] }
+                  city: { type: [string, 'null'] }
+                  latitude: { type: number }
+                  longitude: { type: number }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+        '502': { description: Upstream geocoder failure }
+
+  /api/settings:
+    get:
+      tags: [Settings]
+      summary: Public settings; compliance redacted below ADMIN/PHARMACIST
+      responses:
+        '200':
+          description: Pharmacy, delivery and compliance settings (private no-store)
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SettingsResponse' }
+    put:
+      tags: [Settings]
+      summary: Update pharmacy, delivery and compliance settings (audited)
+      security: [{ sessionCookie: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/SettingsUpdate' }
+      responses:
+        '200': { description: Settings saved (audit rows written) }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '413': { $ref: '#/components/responses/PayloadTooLarge' }
+  /api/settings/delivery-fee:
+    get:
+      tags: [Settings]
+      summary: Delivery fee quote for an area or coordinates
+      parameters:
+        - { name: area, in: query, schema: { type: string } }
+        - { name: lat, in: query, schema: { type: number } }
+        - { name: lon, in: query, schema: { type: number } }
+        - { name: subtotal, in: query, schema: { type: number } }
+      responses:
+        '200':
+          description: Fee quote
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  fee: { type: number }
+                  freeOver: { type: [number, 'null'] }
+                  mode: { type: string }
+                  pricingMode: { type: string }
+                  distanceKm: { type: [number, 'null'] }
+
+  /api/upload:
+    post:
+      tags: [Upload]
+      summary: Upload a file to R2 (multipart) or request a presigned PUT
+      security: [{ sessionCookie: [] }]
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [folder, fileName, fileType]
+              properties:
+                folder: { type: string, enum: [products, prescriptions, avatars, services, general] }
+                fileName: { type: string, maxLength: 80 }
+                fileType: { type: string, enum: [image/jpeg, image/png, image/webp, image/gif, image/heic, image/heif, application/pdf] }
+                file: { type: string, format: binary, description: Required unless action is presign }
+                action: { type: string, enum: [presign], description: Use presign to get a signed PUT URL (prescriptions folder only) }
+                fileSize: { type: integer, minimum: 1, maximum: 10485760 }
+      responses:
+        '200': { description: Storage key and public URL (public folders) or presigned URL }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { description: Folder not permitted for this session role }
+        '413': { description: File exceeds 10MB }
+        '429': { $ref: '#/components/responses/RateLimited' }
+
+  /api/assistant:
+    post:
+      tags: [Assistant]
+      summary: AI assistant chat (public data only; no session is read)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/AssistantChatRequest' }
+      responses:
+        '200':
+          description: Reply with clickable action cards; escalated flags pharmacy-team handoff
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AssistantChatResponse' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '413': { $ref: '#/components/responses/PayloadTooLarge' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+
+  /api/cron/notifications:
+    get:
+      tags: [Cron]
+      summary: Dispatch due notification delivery jobs (run every minute)
+      security: [{ cronBearer: [] }]
+      responses:
+        '200': { description: '{ accepted, failed, skipped }' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+  /api/cron/order-reservations:
+    get:
+      tags: [Cron]
+      summary: Cancel stale unpaid orders and restore stock and points
+      security: [{ cronBearer: [] }]
+      responses:
+        '200': { description: '{ ok, released }' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '503': { description: ORDER_RESERVATION_TTL_MINUTES not configured }
+  /api/cron/chronic-refills:
+    get:
+      tags: [Cron]
+      summary: Queue chronic refill reminders from BandaGo CRM eligibility
+      security: [{ cronBearer: [] }]
+      responses:
+        '200': { description: '{ ok, eligible, notified }' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+  /api/cron/prescription-retention:
+    get:
+      tags: [Cron]
+      summary: Hard-delete soft-deleted prescriptions past retention
+      security: [{ cronBearer: [] }]
+      responses:
+        '200': { description: '{ ok, removed }' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '503': { description: PRESCRIPTION_RETENTION_DAYS not configured }
+  /api/cron/service-booking-reminders:
+    get:
+      tags: [Cron]
+      summary: Queue 24h and 2h service booking reminders (fail-fast)
+      security: [{ cronBearer: [] }]
+      responses:
+        '200': { description: '{ ok, queued }' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '503': { description: Could not queue all reminders; retry the job }
+
+components:
+  securitySchemes:
+    sessionCookie:
+      type: apiKey
+      in: cookie
+      name: sphere_session
+      description: Opaque DB-backed session cookie (httpOnly, SameSite=Lax, secure in production). Customers 30 days; staff 7 days absolute plus 12-hour idle timeout.
+    guestOrderToken:
+      type: apiKey
+      in: header
+      name: x-order-access-token
+      description: One-time guest order access token (max 256 chars, 7-day expiry, HMAC-hashed at rest) returned once by POST /api/orders.
+    cronBearer:
+      type: http
+      scheme: bearer
+      description: Bearer CRON_SECRET (at least 32 characters).
+    bandagoBearer:
+      type: http
+      scheme: bearer
+      description: Bearer BANDAGO_SYNC_API_KEY for BandaGo POS sync endpoints (staff session also accepted).
+  responses:
+    BadRequest:
+      description: Validation failure
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    Unauthorized:
+      description: Authentication required or invalid credentials
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    Forbidden:
+      description: Authenticated but not permitted (role or ownership)
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    NotFound:
+      description: Resource not found (also used to avoid disclosure)
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    Conflict:
+      description: State conflict (stock, transitions, duplicates, limits, concurrency)
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    Gone:
+      description: Expired (promotion code)
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    PayloadTooLarge:
+      description: Request body exceeds the endpoint cap
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    RateLimited:
+      description: Rate limit exceeded (Retry-After header included)
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    ServerError:
+      description: Unexpected server error (errorId for correlation)
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    ServiceUnavailable:
+      description: Provider or configuration unavailable
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+  parameters:
+    IdPath:
+      name: id
+      in: path
+      required: true
+      schema: { type: string }
+      description: Resource identifier (cuid)
+  schemas:
+    Error:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: string
+          description: Human-readable message; 500s include an errorId for log correlation.
+    Role:
+      type: string
+      enum: [ADMIN, PHARMACIST, STAFF, RIDER, CUSTOMER]
+    OrderStatus:
+      type: string
+      enum: [RECEIVED, UNDER_REVIEW, PRESCRIPTION_VERIFIED, AVAILABILITY_CONFIRMED, AWAITING_PAYMENT, PAID, PREPARING, READY_FOR_PICKUP, OUT_FOR_DELIVERY, COMPLETED_PICKUP, COMPLETED_DELIVERY, REJECTED, CANCELLED, REFUNDED]
+    RxStatus:
+      type: string
+      enum: [PENDING, APPROVED, REJECTED, CLARIFICATION_REQUESTED, PARTIALLY_APPROVED]
+    PaymentProvider:
+      type: string
+      enum: [MPESA, INTASEND, CASH]
+    PaymentStatus:
+      type: string
+      enum: [PENDING, PROCESSING, SUCCESS, FAILED, REFUND_PENDING, REFUNDED]
+    StockStatus:
+      type: string
+      enum: [IN_STOCK, LOW_STOCK, OUT_OF_STOCK, DISCONTINUED]
+    ServiceBookingStatus:
+      type: string
+      enum: [PENDING, CONFIRMED, RESCHEDULED, ARRIVED, IN_PROGRESS, COMPLETED, CANCELLED, NO_SHOW, REJECTED]
+    UserDTO:
+      type: object
+      properties:
+        id: { type: string }
+        name: { type: [string, 'null'] }
+        phone: { type: [string, 'null'], description: E.164 +254XXXXXXXXX }
+        email: { type: [string, 'null'] }
+        avatar: { type: [string, 'null'] }
+        createdAt: { type: string, format: date-time }
+        loyaltyPoints: { type: integer, description: Live web balance of Sphere Points }
+    StaffDTO:
+      type: object
+      properties:
+        id: { type: string }
+        name: { type: string }
+        email: { type: string }
+        phone: { type: [string, 'null'] }
+        role: { $ref: '#/components/schemas/Role' }
+        title: { type: [string, 'null'] }
+        avatar: { type: [string, 'null'] }
+        active: { type: boolean }
+        createdAt: { type: string, format: date-time }
+    SessionPayload:
+      type: object
+      properties:
+        ok: { type: boolean, description: Present on GET /api/auth/me responses }
+        role: { $ref: '#/components/schemas/Role' }
+        user: { $ref: '#/components/schemas/UserDTO' }
+        staff: { $ref: '#/components/schemas/StaffDTO' }
+    AddressDTO:
+      type: object
+      properties:
+        id: { type: string }
+        label: { type: string }
+        text: { type: string }
+        area: { type: [string, 'null'] }
+        notes: { type: [string, 'null'] }
+        isDefault: { type: boolean }
+        latitude: { type: [number, 'null'] }
+        longitude: { type: [number, 'null'] }
+    CategoryDTO:
+      type: object
+      properties:
+        id: { type: string }
+        name: { type: string }
+        slug: { type: string }
+        description: { type: [string, 'null'] }
+        icon: { type: [string, 'null'] }
+        productCount: { type: integer }
+    ProductDTO:
+      type: object
+      properties:
+        id: { type: string }
+        name: { type: string }
+        sku: { type: string }
+        brand: { type: [string, 'null'] }
+        packSize: { type: [string, 'null'] }
+        price: { type: number, description: KES }
+        compareAtPrice: { type: [number, 'null'] }
+        stockStatus: { $ref: '#/components/schemas/StockStatus' }
+        stockQty: { type: integer }
+        requiresPrescription: { type: boolean }
+        description: { type: string }
+        usageInfo: { type: [string, 'null'] }
+        warnings: { type: [string, 'null'] }
+        image: { type: [string, 'null'] }
+        images: { type: array, items: { type: string } }
+        categoryId: { type: [string, 'null'] }
+        categoryName: { type: [string, 'null'] }
+        categorySlug: { type: [string, 'null'] }
+        avgRating: { type: [number, 'null'] }
+        reviewCount: { type: integer }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+    ProductsPage:
+      type: object
+      properties:
+        items: { type: array, items: { $ref: '#/components/schemas/ProductDTO' } }
+        total: { type: integer }
+        page: { type: integer }
+        pageSize: { type: integer }
+    ReviewDTO:
+      type: object
+      properties:
+        id: { type: string }
+        productId: { type: string }
+        rating: { type: integer, minimum: 1, maximum: 5 }
+        comment: { type: [string, 'null'] }
+        authorName: { type: string }
+        createdAt: { type: string, format: date-time }
+    ReviewSummary:
+      type: object
+      properties:
+        average: { type: number }
+        count: { type: integer }
+        breakdown: { type: array, items: { type: object, properties: { rating: { type: integer }, count: { type: integer } } } }
+        reviews: { type: array, items: { $ref: '#/components/schemas/ReviewDTO' } }
+        mine:
+          type: object
+          description: The signed-in caller's own review with moderation status
+          properties:
+            status: { type: string, enum: [PUBLISHED, HIDDEN, PENDING] }
+    StockAlert:
+      type: object
+      properties:
+        id: { type: string }
+        productId: { type: string }
+        productName: { type: string }
+        active: { type: boolean }
+        createdAt: { type: string, format: date-time }
+    OrderItemDTO:
+      type: object
+      properties:
+        id: { type: string }
+        productId: { type: [string, 'null'] }
+        name: { type: string }
+        price: { type: number }
+        qty: { type: integer }
+        requiresPrescription: { type: boolean }
+        lineTotal: { type: number }
+    OrderStatusEvent:
+      type: object
+      properties:
+        id: { type: string }
+        status: { $ref: '#/components/schemas/OrderStatus' }
+        note: { type: [string, 'null'] }
+        actor: { type: string }
+        createdAt: { type: string, format: date-time }
+    PaymentDTO:
+      type: object
+      properties:
+        id: { type: string }
+        provider: { $ref: '#/components/schemas/PaymentProvider' }
+        method: { type: [string, 'null'], description: STK_PUSH, HOSTED_CHECKOUT, CASH_ON_DELIVERY or CASH_ON_PICKUP }
+        status: { $ref: '#/components/schemas/PaymentStatus' }
+        amount: { type: number }
+        phone: { type: [string, 'null'] }
+        cardLast4: { type: [string, 'null'], description: Declared but never populated today }
+        providerReference: { type: [string, 'null'] }
+        failureReason: { type: [string, 'null'] }
+        createdAt: { type: string, format: date-time }
+    PrescriptionDTO:
+      type: object
+      properties:
+        id: { type: string }
+        fileName: { type: string }
+        fileType: { type: string }
+        notes: { type: [string, 'null'] }
+        status: { $ref: '#/components/schemas/RxStatus' }
+        reviewNotes: { type: [string, 'null'] }
+        reviewedByName: { type: [string, 'null'] }
+        reviewedAt: { type: [string, 'null'], format: date-time }
+        refillsAllowed: { type: integer, minimum: 0, maximum: 6 }
+        refillsUsed: { type: integer }
+        validUntil: { type: [string, 'null'], format: date-time }
+        createdAt: { type: string, format: date-time }
+        orderId: { type: [string, 'null'] }
+        orderReference: { type: [string, 'null'] }
+        fileUrl: { type: [string, 'null'], description: Short-lived presigned URL on detail GET only }
+        storageKey: { type: [string, 'null'], description: Stripped from API responses }
+        customerName: { type: [string, 'null'] }
+        customerPhone: { type: [string, 'null'] }
+    OrderDTO:
+      type: object
+      properties:
+        id: { type: string }
+        reference: { type: string, description: 'SPH-<12 hex>' }
+        type: { type: string, enum: [OTC, PRESCRIPTION, MIXED, RESERVATION] }
+        status: { $ref: '#/components/schemas/OrderStatus' }
+        fulfillment: { type: string, enum: [PICKUP, DELIVERY] }
+        paymentMethod: { type: [string, 'null'] }
+        deliveryLatitude: { type: [number, 'null'] }
+        deliveryLongitude: { type: [number, 'null'] }
+        deliveryAddress: { type: [string, 'null'] }
+        deliveryArea: { type: [string, 'null'] }
+        deliveryNotes: { type: [string, 'null'] }
+        deliveryFee: { type: number }
+        subtotal: { type: number }
+        discountAmount: { type: number }
+        promotionCode: { type: [string, 'null'] }
+        total: { type: number }
+        notes: { type: [string, 'null'] }
+        pickupCode: { type: [string, 'null'], description: 8-digit code for PICKUP orders }
+        customerName: { type: [string, 'null'] }
+        customerPhone: { type: [string, 'null'] }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+        pointsEarned: { type: integer }
+        pointsRedeemed: { type: integer }
+        riderId: { type: [string, 'null'] }
+        riderName: { type: [string, 'null'] }
+        items: { type: array, items: { $ref: '#/components/schemas/OrderItemDTO' } }
+        statusHistory: { type: array, items: { $ref: '#/components/schemas/OrderStatusEvent' } }
+        payments: { type: array, items: { $ref: '#/components/schemas/PaymentDTO' } }
+        prescriptions: { type: array, items: { $ref: '#/components/schemas/PrescriptionDTO' } }
+        guestAccessToken: { type: string, description: One-time guest access token, present only in the creation response }
+    LoyaltySummary:
+      type: object
+      description: Sphere Points (1 point per KSh 100; 1 point = KSh 1; redeem from 100 points; max 25 percent of subtotal)
+      properties:
+        balance: { type: integer }
+        lifetimeEarned: { type: integer, description: Over the most recent 30 active orders, not a true lifetime total }
+        pendingEarned: { type: integer }
+        redeemedTotal: { type: integer }
+        pointValue: { type: number }
+        minRedeem: { type: integer }
+        maxRedeemPct: { type: integer }
+        history:
+          type: array
+          items:
+            type: object
+            properties:
+              orderId: { type: string }
+              reference: { type: string }
+              status: { $ref: '#/components/schemas/OrderStatus' }
+              pointsEarned: { type: integer }
+              pointsRedeemed: { type: integer }
+              createdAt: { type: string, format: date-time }
+        rules: { type: object, description: LOYALTY constants echoed for the client }
+    PromotionDTO:
+      type: object
+      properties:
+        id: { type: string }
+        title: { type: string }
+        description: { type: string }
+        badge: { type: [string, 'null'] }
+        code: { type: [string, 'null'], description: 'Pattern ^[A-Z0-9_-]{3,32}$' }
+        discountPct: { type: [number, 'null'], description: 1-90 percentage of subtotal }
+        color: { type: [string, 'null'] }
+        active: { type: boolean }
+        isPublic: { type: boolean }
+        startsAt: { type: [string, 'null'], format: date-time }
+        endsAt: { type: [string, 'null'], format: date-time }
+        maxUses: { type: [integer, 'null'] }
+        perUserLimit: { type: [integer, 'null'] }
+        perIpLimit: { type: [integer, 'null'] }
+        perBrowserLimit: { type: [integer, 'null'] }
+        usageCount: { type: integer }
+        minimumSpend: { type: [number, 'null'] }
+    ServiceDTO:
+      type: object
+      properties:
+        id: { type: string }
+        name: { type: string }
+        slug: { type: string }
+        shortDescription: { type: [string, 'null'] }
+        description: { type: [string, 'null'] }
+        category: { type: [string, 'null'] }
+        durationMinutes: { type: integer, minimum: 5, maximum: 480 }
+        price: { type: [number, 'null'], description: Null means free or price on application }
+        priceLabel: { type: [string, 'null'] }
+        heroImage: { type: [string, 'null'], description: Managed image only (site path or R2 public URL) }
+        featured: { type: boolean }
+        active: { type: boolean }
+        sortOrder: { type: integer, minimum: -10000, maximum: 10000 }
+        images:
+          type: array
+          items:
+            type: object
+            properties:
+              id: { type: string }
+              url: { type: string }
+              storageKey: { type: [string, 'null'] }
+              alt: { type: [string, 'null'] }
+              sortOrder: { type: integer }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+    ServiceAvailability:
+      type: object
+      properties:
+        id: { type: string }
+        serviceId: { type: string }
+        dayOfWeek: { type: integer, minimum: 0, maximum: 6 }
+        startTime: { type: string, description: 'HH:MM' }
+        endTime: { type: string, description: 'HH:MM' }
+        enabled: { type: boolean }
+    ServiceSlot:
+      type: object
+      properties:
+        start: { type: string }
+        end: { type: string }
+        label: { type: string, description: Human-readable Nairobi time }
+    ServiceBookingDTO:
+      type: object
+      properties:
+        id: { type: string }
+        reference: { type: string, description: 'SPB-<12 hex uppercase>' }
+        serviceId: { type: string }
+        serviceName: { type: string }
+        userId: { type: string }
+        customerName: { type: [string, 'null'] }
+        customerPhone: { type: [string, 'null'] }
+        customerEmail: { type: [string, 'null'] }
+        scheduledStart: { type: string, format: date-time }
+        scheduledEnd: { type: string, format: date-time }
+        status: { $ref: '#/components/schemas/ServiceBookingStatus' }
+        customerNotes: { type: [string, 'null'] }
+        staffNotes: { type: [string, 'null'] }
+        price: { type: [number, 'null'] }
+        paymentStatus: { type: string, description: UNPAID, PAID, PAY_AT_PHARMACY or a failure state }
+        assignedStaffId: { type: [string, 'null'] }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+        statusHistory:
+          type: array
+          items:
+            type: object
+            properties:
+              id: { type: string }
+              status: { type: string }
+              note: { type: [string, 'null'] }
+              actor: { type: string }
+              createdAt: { type: string, format: date-time }
+    NotificationDTO:
+      type: object
+      properties:
+        id: { type: string }
+        channel: { type: string, description: Always IN_APP on the Notification row }
+        event: { type: [string, 'null'] }
+        title: { type: string }
+        message: { type: string }
+        read: { type: boolean }
+        createdAt: { type: string, format: date-time }
+        metadata: { type: [string, 'null'] }
+        staffId: { type: [string, 'null'] }
+    NotificationPrefs:
+      type: object
+      description: Only email and push affect delivery; sms and whatsapp are stored but never dispatched
+      properties:
+        sms: { type: boolean }
+        whatsapp: { type: boolean }
+        email: { type: boolean }
+        push: { type: boolean }
+    AuditLog:
+      type: object
+      properties:
+        id: { type: string }
+        actor: { type: string }
+        actorRole: { type: [string, 'null'] }
+        action: { type: string, description: 'e.g. ORDER_STATUS_PAID, PRODUCT_UPDATED, STAFF_CREATED' }
+        entity: { type: string }
+        entityId: { type: [string, 'null'] }
+        details: { type: [string, 'null'] }
+        createdAt: { type: string, format: date-time }
+    RegisterRequest:
+      type: object
+      required: [name, password]
+      properties:
+        name: { type: string, minLength: 2 }
+        email: { type: string, format: email }
+        phone: { type: string, description: Kenyan phone normalized to +254XXXXXXXXX }
+        password: { type: string, minLength: 10, maxLength: 128, description: At least one letter and one digit }
+    LoginRequest:
+      type: object
+      required: [identifier, password]
+      properties:
+        identifier: { type: string, description: Email or phone (case-insensitive) }
+        password: { type: string }
+    StaffLoginRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email: { type: string, format: email }
+        password: { type: string }
+    ProfileUpdateRequest:
+      type: object
+      properties:
+        name: { type: string, minLength: 2 }
+        avatar: { type: [string, 'null'] }
+        email: { type: string, format: email }
+        phone: { type: string }
+        currentPassword: { type: string, description: Required when newPassword is present }
+        newPassword: { type: string }
+    OtpRequest:
+      type: object
+      required: [phone]
+      properties:
+        phone: { type: string, description: Kenyan phone number }
+    OtpVerify:
+      type: object
+      required: [phone, code]
+      properties:
+        phone: { type: string }
+        code: { type: string, pattern: '^\d{6}$' }
+    AddressCreate:
+      type: object
+      description: POST requires text; PATCH accepts partial fields
+      properties:
+        label: { type: string, maxLength: 80 }
+        text: { type: string, minLength: 5, maxLength: 500 }
+        area: { type: [string, 'null'], maxLength: 120 }
+        notes: { type: [string, 'null'], maxLength: 500 }
+        isDefault: { type: boolean }
+        latitude: { type: [number, 'null'] }
+        longitude: { type: [number, 'null'] }
+    ProductUpsert:
+      type: object
+      description: POST requires name and price; PATCH accepts partial fields
+      properties:
+        name: { type: string, minLength: 2, maxLength: 160 }
+        price: { type: number, minimum: 0, maximum: 10000000 }
+        compareAtPrice: { type: [number, 'null'], description: Must exceed price }
+        sku: { type: string, pattern: '^[A-Z0-9._-]{3,64}$' }
+        categoryId: { type: [string, 'null'] }
+        brand: { type: [string, 'null'] }
+        packSize: { type: [string, 'null'] }
+        stockQty: { type: integer, minimum: 0 }
+        lowStockThreshold: { type: integer, minimum: 0 }
+        stockStatus: { $ref: '#/components/schemas/StockStatus' }
+        requiresPrescription: { type: boolean }
+        active: { type: boolean }
+        description: { type: string, maxLength: 5000 }
+        usageInfo: { type: [string, 'null'] }
+        warnings: { type: [string, 'null'] }
+        image: { type: [string, 'null'], description: Managed image (site /images path or R2 public URL) }
+    ReviewCreate:
+      type: object
+      required: [rating]
+      properties:
+        rating: { type: integer, minimum: 1, maximum: 5 }
+        comment: { type: [string, 'null'], minLength: 3, maxLength: 500 }
+    CreateOrderRequest:
+      type: object
+      required: [items, fulfillment, paymentMethod]
+      properties:
+        items:
+          type: array
+          minItems: 1
+          maxItems: 50
+          items:
+            type: object
+            required: [productId, qty]
+            properties:
+              productId: { type: string }
+              qty: { type: integer, minimum: 1, maximum: 99 }
+        fulfillment: { type: string, enum: [PICKUP, DELIVERY] }
+        paymentMethod: { type: string, enum: [MPESA, CARD, CASH, LATER] }
+        customer:
+          type: object
+          description: Guest contact details (ignored for signed-in customers)
+          properties:
+            name: { type: string, minLength: 2, maxLength: 100 }
+            phone: { type: string, description: Kenyan phone }
+            email: { type: [string, 'null'] }
+        addressId: { type: string, description: Saved address for delivery orders }
+        address: { type: [string, 'null'], description: Free-text delivery address }
+        area: { type: [string, 'null'] }
+        notes: { type: [string, 'null'], maxLength: 1000 }
+        latitude: { type: [number, 'null'] }
+        longitude: { type: [number, 'null'] }
+        prescriptionIds: { type: array, items: { type: string }, description: Owned, unused prescriptions for Rx items }
+        promotionCode: { type: [string, 'null'], description: Re-validated server-side under an advisory lock }
+        redeemPoints: { type: [integer, 'null'], description: Sphere Points to redeem (capped at 25 percent) }
+    OrderStatusUpdate:
+      type: object
+      required: [status]
+      properties:
+        status: { $ref: '#/components/schemas/OrderStatus' }
+        note: { type: string, maxLength: 500 }
+    MpesaInitiateRequest:
+      type: object
+      required: [orderId, phone, idempotencyKey]
+      properties:
+        orderId: { type: string }
+        phone: { type: string, description: Kenyan phone number }
+        idempotencyKey: { type: string, pattern: '^[a-zA-Z0-9_-]{16,100}$' }
+        accessToken: { type: string, description: Alternative to the x-order-access-token header }
+    IntaSendInitiateRequest:
+      type: object
+      required: [orderId, idempotencyKey]
+      properties:
+        orderId: { type: string }
+        idempotencyKey: { type: string, pattern: '^[a-zA-Z0-9_-]{16,100}$' }
+        mode: { type: string, enum: [checkout], description: Card details are entered only on the hosted checkout }
+        accessToken: { type: string, description: Alternative to the x-order-access-token header }
+    RefundRequest:
+      type: object
+      required: [paymentId, reason]
+      properties:
+        paymentId: { type: string }
+        reason: { type: string, maxLength: 100 }
+        details: { type: string, maxLength: 500 }
+        cashConfirmed: { type: boolean, description: Required for CASH refunds }
+        cashRefundReference: { type: string, pattern: '^[A-Za-z0-9_-]{6,100}$' }
+    PrescriptionUploadRequest:
+      type: object
+      required: [fileName, fileType]
+      properties:
+        fileName: { type: string, maxLength: 120 }
+        fileType: { type: string, enum: [png, jpeg, jpg, webp, heic, pdf] }
+        storageKey: { type: string, description: R2-first path; verified against prefix, owner metadata and size }
+        fileData: { type: string, description: base64 fallback (or data URL); magic-byte validated }
+        notes: { type: [string, 'null'], maxLength: 1000 }
+        orderId: { type: [string, 'null'], description: Optional attach to one of the customer's own orders }
+    ReviewPrescriptionRequest:
+      type: object
+      required: [status]
+      properties:
+        status: { $ref: '#/components/schemas/RxStatus' }
+        reviewNotes: { type: [string, 'null'], maxLength: 2000, description: Required unless APPROVED or PARTIALLY_APPROVED }
+        refillsAllowed: { type: integer, minimum: 0, maximum: 6 }
+        validDays: { type: integer, enum: [30, 60, 90, 180], default: 90 }
+    ServiceUpsert:
+      type: object
+      properties:
+        name: { type: string }
+        shortDescription: { type: [string, 'null'] }
+        description: { type: [string, 'null'] }
+        category: { type: [string, 'null'] }
+        durationMinutes: { type: integer, minimum: 5, maximum: 480, default: 15 }
+        price: { type: [number, 'null'], maximum: 10000000, description: Null means free or POA }
+        heroImage: { type: [string, 'null'] }
+        images: { type: array, maxItems: 10, items: { type: object, properties: { url: { type: string }, alt: { type: [string, 'null'] }, sortOrder: { type: integer } } } }
+        featured: { type: boolean }
+        active: { type: boolean }
+        sortOrder: { type: integer }
+    ServiceBookingCreate:
+      type: object
+      required: [serviceId, start, end]
+      properties:
+        serviceId: { type: string }
+        start: { type: string, format: date-time }
+        end: { type: string, format: date-time, description: Must equal start plus durationMinutes }
+        expectedPrice: { type: [number, 'null'], description: Must equal the current price exactly (409 otherwise) }
+        customerNotes: { type: [string, 'null'], maxLength: 1000 }
+    BookingReview:
+      type: object
+      required: [rating]
+      properties:
+        rating: { type: integer, minimum: 1, maximum: 5 }
+        comment: { type: [string, 'null'], maxLength: 1000 }
+    PromotionUpsert:
+      type: object
+      properties:
+        title: { type: string }
+        description: { type: string }
+        badge: { type: [string, 'null'] }
+        code: { type: [string, 'null'], pattern: '^[A-Z0-9_-]{3,32}$', description: Required for private promotions }
+        discountPct: { type: integer, minimum: 1, maximum: 90 }
+        color: { type: [string, 'null'] }
+        active: { type: boolean }
+        isPublic: { type: boolean }
+        startsAt: { type: [string, 'null'], description: Parsed as a Kenya-local day }
+        endsAt: { type: [string, 'null'], description: Parsed as a Kenya-local day }
+        maxUses: { type: [integer, 'null'], minimum: 1, maximum: 1000000 }
+        perUserLimit: { type: [integer, 'null'], minimum: 1, maximum: 1000000 }
+        perIpLimit: { type: [integer, 'null'], minimum: 1, maximum: 1000000 }
+        perBrowserLimit: { type: [integer, 'null'], minimum: 1, maximum: 1000000 }
+        minimumSpend: { type: [number, 'null'], minimum: 0, maximum: 10000000 }
+    PromotionValidate:
+      type: object
+      required: [code, subtotal]
+      properties:
+        code: { type: string, pattern: '^[A-Z0-9_-]{3,32}$' }
+        subtotal: { type: number, exclusiveMinimum: 0, maximum: 10000000 }
+    MedicineRequestCreate:
+      type: object
+      required: [medicineName, phone]
+      properties:
+        medicineName: { type: string, minLength: 2, maxLength: 200 }
+        phone: { type: string, maxLength: 30, description: Digits, spaces and +() - characters; normalized to +254XXXXXXXXX }
+        photo:
+          type: object
+          properties:
+            name: { type: string, minLength: 1, maxLength: 120 }
+            type: { type: string, enum: [image/jpeg, image/png, image/webp] }
+            base64: { type: string, description: Max about 4MB encoded; 3MB decoded }
+    StaffUpsert:
+      type: object
+      description: POST requires name, email, role and password; PATCH accepts partial fields
+      properties:
+        name: { type: string, minLength: 2 }
+        email: { type: string, format: email }
+        role: { type: string, enum: [ADMIN, PHARMACIST, STAFF, RIDER] }
+        password: { type: string, description: Policy 10-128 chars with at least one letter and one digit }
+        phone: { type: [string, 'null'] }
+        title: { type: [string, 'null'] }
+        active: { type: boolean }
+    BandaGoSyncRequest:
+      type: object
+      required: [items]
+      properties:
+        trigger: { type: string, enum: [EXTENSION_STREAM, BACKGROUND_POLL, CSV_IMPORT, MANUAL_RECONCILE], description: Defaults to EXTENSION_STREAM when invalid }
+        items:
+          type: array
+          items:
+            type: object
+            required: [externalPosId, name]
+            properties:
+              externalPosId: { type: string, description: iDempiere M_Product_UU }
+              name: { type: string }
+              sku: { type: [string, 'null'] }
+              slug: { type: [string, 'null'] }
+              categorySlug: { type: [string, 'null'], description: Unknown categories auto-created }
+              price: { type: number, description: 'Parser strips currency text such as KSh 3,400' }
+              costPrice: { type: [number, 'null'] }
+              stock: { type: number }
+              requiresPrescription: { type: [boolean, 'null'], description: Kenya PPB classification; never downgraded by sync }
+              imageUrl: { type: [string, 'null'] }
+              nearestExpiryDate: { type: [string, 'null'] }
+              dosageForm: { type: [string, 'null'] }
+              strength: { type: [string, 'null'] }
+              batches:
+                type: array
+                description: FEFO lots; expired batches never count as sellable stock
+                items:
+                  type: object
+                  properties:
+                    batchNumber: { type: string }
+                    qtyOnHand: { type: number }
+                    expiryDate: { type: [string, 'null'] }
+                    externalBatchId: { type: [string, 'null'] }
+    BandaGoCrmCustomer:
+      type: object
+      required: [phone]
+      properties:
+        phone: { type: string, description: Canonical Kenya E.164 phone (the matching key) }
+        name: { type: [string, 'null'] }
+        email: { type: [string, 'null'] }
+        externalBPartnerId: { type: [string, 'null'], description: iDempiere C_BPartner id }
+        loyaltyDelta: { type: [number, 'null'], description: Increments both loyaltyPoints and loyaltyPointsBalance }
+        posCreditBalance: { type: [number, 'null'] }
+        isChronicPatient: { type: [boolean, 'null'] }
+    SettingsResponse:
+      type: object
+      properties:
+        pharmacy:
+          type: object
+          properties:
+            name: { type: string }
+            tagline: { type: string }
+            phone: { type: string }
+            whatsapp: { type: string }
+            email: { type: string }
+            address: { type: string }
+            hoursLabel: { type: string }
+            mapsUrl: { type: string }
+        delivery:
+          type: object
+          properties:
+            mode: { type: string, enum: [flat, zone] }
+            pricingMode: { type: string, enum: [zone, distance] }
+            flatFee: { type: number }
+            freeOver: { type: [number, 'null'] }
+            nightDelivery: { type: boolean }
+            zones: { type: array, items: { type: object, properties: { name: { type: string }, fee: { type: number }, latitude: { type: [number, 'null'] }, longitude: { type: [number, 'null'] } } } }
+            pharmacyLocation: { type: object, properties: { latitude: { type: [number, 'null'] }, longitude: { type: [number, 'null'] }, label: { type: string } } }
+            distanceBands: { type: array, items: { type: object, properties: { id: { type: string }, minKm: { type: number }, maxKm: { type: [number, 'null'] }, fee: { type: number }, label: { type: string } } } }
+        compliance:
+          type: object
+          description: Redacted to empty strings below ADMIN/PHARMACIST
+          properties:
+            premiseLicenceNumber: { type: string }
+            premiseLicenceExpiry: { type: string }
+            superintendentName: { type: string }
+            superintendentReg: { type: string }
+            notes: { type: string }
+    SettingsUpdate:
+      type: object
+      properties:
+        pharmacy: { type: object, description: Partial pharmacy profile fields }
+        delivery:
+          type: object
+          description: 'Full delivery block; distance pricing needs pharmacyLocation and at least one band'
+          properties:
+            mode: { type: string, enum: [flat, zone] }
+            pricingMode: { type: string, enum: [zone, distance] }
+            flatFee: { type: number, minimum: 0 }
+            freeOver: { type: [number, 'null'] }
+            nightDelivery: { type: boolean }
+            zones: { type: array, maxItems: 50, items: { type: object, properties: { name: { type: string, maxLength: 100 }, fee: { type: number, minimum: 0 } } } }
+            pharmacyLocation: { type: object, properties: { latitude: { type: number }, longitude: { type: number }, label: { type: string } } }
+            distanceBands: { type: array, maxItems: 30, items: { type: object, properties: { id: { type: string }, minKm: { type: number }, maxKm: { type: [number, 'null'] }, fee: { type: number }, label: { type: string } } } }
+        compliance:
+          type: object
+          description: Internal PPB record; audited and never published
+          properties:
+            premiseLicenceNumber: { type: string }
+            premiseLicenceExpiry: { type: string }
+            superintendentName: { type: string }
+            superintendentReg: { type: string }
+            notes: { type: string, maxLength: 1000 }
+    AssistantChatRequest:
+      type: object
+      required: [messages]
+      properties:
+        messages:
+          type: array
+          description: Conversation history; the server keeps the last 8 and truncates the final user message to 1800 characters
+          items:
+            type: object
+            required: [role, content]
+            properties:
+              role: { type: string, enum: [user, assistant] }
+              content: { type: string, maxLength: 1800 }
+    AssistantChatResponse:
+      type: object
+      properties:
+        reply: { type: string, description: Brief markdown; credentials redacted; never claims completed actions }
+        actions:
+          type: array
+          description: Client-side action cards; account and payment actions are executed client-side through authenticated endpoints
+          items:
+            type: object
+            properties:
+              type: { type: string, enum: [navigate, search, product, book, pay, appointments] }
+              label: { type: string }
+              view: { type: string, enum: [home, catalog, services, cart, checkout, orders, prescriptions, account, auth] }
+              query: { type: string, maxLength: 100 }
+              id: { type: string }
+              price: { type: [number, 'null'] }
+              packSize: { type: [string, 'null'] }
+              stockStatus: { type: [string, 'null'] }
+              requiresPrescription: { type: boolean }
+              duration: { type: [integer, 'null'] }
+        escalated: { type: boolean, description: True when a pharmacy team member is the right next step }
