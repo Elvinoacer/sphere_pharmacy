@@ -20,6 +20,18 @@ import {
 import { toast } from '@/hooks/use-toast';
 import type { SectionProps } from '../admin-shared';
 
+interface PosSyncLogErrorItem {
+  externalPosId?: string;
+  name?: string;
+  error?: string;
+}
+
+interface PosSyncLogDetails {
+  message?: string;
+  fatalError?: string;
+  errors?: PosSyncLogErrorItem[];
+}
+
 interface PosSyncStats {
   totalSyncedProducts: number;
   totalBatches: number;
@@ -31,6 +43,8 @@ interface PosSyncStats {
     status: 'SUCCESS' | 'PARTIAL' | 'FAILED';
     itemsReceived: number;
     itemsUpserted: number;
+    itemsFailed?: number;
+    details?: PosSyncLogDetails | null;
     durationMs: number;
     startedAt: string;
   }>;
@@ -83,14 +97,21 @@ export function PosSyncSection({ refreshKey }: Partial<SectionProps> = {}) {
       });
 
       const result = await res.json();
-      if (res.ok) {
+      if (res.ok && result.success !== false) {
+        const failedNotice =
+          result.failedCount && result.failedCount > 0
+            ? ` (${result.failedCount} row(s) skipped due to errors)`
+            : '';
         toast({
           title: 'CSV Import Completed',
-          description: `Successfully upserted ${result.upsertedCount ?? 0} medications from BandaGo export.`,
+          description: `Successfully upserted ${result.upsertedCount ?? 0} medications from BandaGo export.${failedNotice}`,
         });
         fetchStats();
       } else {
-        throw new Error(result.error || 'Upload failed');
+        const firstItemErr = Array.isArray(result.errors) && result.errors[0]?.error
+          ? `${result.errors[0].name || result.errors[0].externalPosId}: ${result.errors[0].error}`
+          : null;
+        throw new Error(result.error || firstItemErr || 'Upload failed');
       }
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Upload failed';
@@ -210,41 +231,67 @@ export function PosSyncSection({ refreshKey }: Partial<SectionProps> = {}) {
                   <th className="py-3 px-4">Trigger</th>
                   <th className="py-3 px-4">Items Received</th>
                   <th className="py-3 px-4">Upserted</th>
+                  <th className="py-3 px-4">Failed / Errors</th>
                   <th className="py-3 px-4">Duration</th>
                   <th className="py-3 px-4">Timestamp</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-800 font-mono text-xs">
                 {stats?.recentLogs && stats.recentLogs.length > 0 ? (
-                  stats.recentLogs.map((log) => (
-                    <tr key={log.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/40">
-                      <td className="py-3 px-4 font-sans">
-                        {log.status === 'SUCCESS' && (
-                          <Badge variant="outline" className="border-emerald-300 text-emerald-700 bg-emerald-50 dark:bg-emerald-950/40 dark:text-emerald-400">
-                            <CheckCircle2 className="w-3 h-3 mr-1" /> Success
-                          </Badge>
-                        )}
-                        {log.status === 'PARTIAL' && (
-                          <Badge variant="outline" className="border-amber-300 text-amber-700 bg-amber-50 dark:bg-amber-950/40 dark:text-amber-400">
-                            <AlertTriangle className="w-3 h-3 mr-1" /> Partial
-                          </Badge>
-                        )}
-                        {log.status === 'FAILED' && (
-                          <Badge variant="outline" className="border-rose-300 text-rose-700 bg-rose-50 dark:bg-rose-950/40 dark:text-rose-400">
-                            <XCircle className="w-3 h-3 mr-1" /> Failed
-                          </Badge>
-                        )}
-                      </td>
-                      <td className="py-3 px-4 text-slate-700 dark:text-slate-300">{log.trigger}</td>
-                      <td className="py-3 px-4">{log.itemsReceived}</td>
-                      <td className="py-3 px-4 text-emerald-600 dark:text-emerald-400 font-semibold">{log.itemsUpserted}</td>
-                      <td className="py-3 px-4">{log.durationMs}ms</td>
-                      <td className="py-3 px-4 text-slate-500 dark:text-slate-400">{new Date(log.startedAt).toLocaleString()}</td>
-                    </tr>
-                  ))
+                  stats.recentLogs.map((log) => {
+                    const failedCount = log.itemsFailed ?? 0;
+                    const firstErr =
+                      log.details?.fatalError ||
+                      log.details?.message ||
+                      (Array.isArray(log.details?.errors) && log.details.errors[0]
+                        ? `${log.details.errors[0].name || log.details.errors[0].externalPosId || 'Item'}: ${log.details.errors[0].error}`
+                        : null);
+                    return (
+                      <tr key={log.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/40">
+                        <td className="py-3 px-4 font-sans">
+                          {log.status === 'SUCCESS' && (
+                            <Badge variant="outline" className="border-emerald-300 text-emerald-700 bg-emerald-50 dark:bg-emerald-950/40 dark:text-emerald-400">
+                              <CheckCircle2 className="w-3 h-3 mr-1" /> Success
+                            </Badge>
+                          )}
+                          {log.status === 'PARTIAL' && (
+                            <Badge variant="outline" className="border-amber-300 text-amber-700 bg-amber-50 dark:bg-emerald-950/40 dark:text-amber-400">
+                              <AlertTriangle className="w-3 h-3 mr-1" /> Partial
+                            </Badge>
+                          )}
+                          {log.status === 'FAILED' && (
+                            <Badge variant="outline" className="border-rose-300 text-rose-700 bg-rose-50 dark:bg-rose-950/40 dark:text-rose-400">
+                              <XCircle className="w-3 h-3 mr-1" /> Failed
+                            </Badge>
+                          )}
+                        </td>
+                        <td className="py-3 px-4 text-slate-700 dark:text-slate-300">{log.trigger}</td>
+                        <td className="py-3 px-4">{log.itemsReceived}</td>
+                        <td className="py-3 px-4 text-emerald-600 dark:text-emerald-400 font-semibold">{log.itemsUpserted}</td>
+                        <td className="py-3 px-4">
+                          {failedCount > 0 || firstErr ? (
+                            <div className="space-y-0.5 max-w-xs">
+                              <span className="text-rose-600 dark:text-rose-400 font-semibold">
+                                {failedCount} failed
+                              </span>
+                              {firstErr && (
+                                <p className="text-[11px] text-rose-700 dark:text-rose-300 font-sans truncate" title={firstErr}>
+                                  {firstErr}
+                                </p>
+                              )}
+                            </div>
+                          ) : (
+                            <span className="text-slate-400">0</span>
+                          )}
+                        </td>
+                        <td className="py-3 px-4">{log.durationMs}ms</td>
+                        <td className="py-3 px-4 text-slate-500 dark:text-slate-400">{new Date(log.startedAt).toLocaleString()}</td>
+                      </tr>
+                    );
+                  })
                 ) : (
                   <tr>
-                    <td colSpan={6} className="py-8 text-center text-slate-400 font-sans">
+                    <td colSpan={7} className="py-8 text-center text-slate-400 font-sans">
                       No synchronization events recorded yet. Connect api_data_transformer to begin.
                     </td>
                   </tr>

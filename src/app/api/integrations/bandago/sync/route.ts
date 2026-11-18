@@ -319,6 +319,11 @@ export async function POST(req: NextRequest) {
       const finalRequiresPrescription = existingProduct
         ? Boolean(existingProduct.requiresPrescription || requiresPrescription)
         : requiresPrescription;
+      const hasExplicitBatches = Array.isArray(item.batches) && item.batches.length > 0;
+      const updatedNearestExpiry =
+        item.stock === 0 || hasExplicitBatches || nearestExpiry !== null
+          ? nearestExpiry
+          : undefined;
 
       // Upsert Master Product Record
       const product = await tx.product.upsert({
@@ -333,7 +338,7 @@ export async function POST(req: NextRequest) {
           stockStatus,
           inStock: effectiveInStock,
           requiresPrescription: finalRequiresPrescription,
-          nearestExpiryDate: nearestExpiry,
+          nearestExpiryDate: updatedNearestExpiry,
           dosageForm: item.dosageForm || undefined,
           strength: item.strength || undefined,
           lastSyncedAt: now,
