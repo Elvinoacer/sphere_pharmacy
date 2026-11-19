@@ -168,6 +168,12 @@ Catalogue item. The stock field family's authority rules are documented in [sche
 | `externalPosId` | String? | `@unique @map("external_pos_id")` | iDempiere/BandaGo product key. |
 | `posSource` | String? | `@default("BANDAGO") @map("pos_source")` | Which POS system the row syncs from. |
 | `lastSyncedAt` | DateTime? | `@map("last_synced_at")` | Last successful POS sync. |
+| `lastPosStock` | Int? | `@map("last_pos_stock")` | Last raw stock quantity reported by BandaGo POS (drift-protection baseline). |
+| `lastPosSellableStock` | Int? | `@map("last_pos_sellable_stock")` | Last FEFO-sellable quantity reported by BandaGo POS. |
+| `externalWarehouseId` | String? | `@map("external_warehouse_id")` | Default iDempiere `M_Warehouse.UU` for outbound writeback. |
+| `externalLocatorId` | String? | `@map("external_locator_id")` | Default sellable `M_Locator.UU` for outbound writeback. |
+| `externalOrgId` | String? | `@map("external_org_id")` | iDempiere `AD_Org.UU` for outbound writeback. |
+| `externalClientId` | String? | `@map("external_client_id")` | iDempiere `AD_Client.UU` tenant pin observed during sync. |
 | `description` | String | `@default("")` | Long description. |
 | `usageInfo` | String? | — | Usage guidance. |
 | `warnings` | String? | — | Safety warnings. |
@@ -177,7 +183,7 @@ Catalogue item. The stock field family's authority rules are documented in [sche
 | `updatedAt` | DateTime | `@updatedAt` | Auto-updated. |
 | `images` | String[] | `@default([])` | Additional image URLs. |
 
-**Relations:** `category` (optional, non-cascade), `stockAlerts` (1:N `ProductAlert`), `reviews` (1:N `Review`), `batches` (1:N `ProductBatch`, cascade).
+**Relations:** `category` (optional, non-cascade), `stockAlerts` (1:N `ProductAlert`), `reviews` (1:N `Review`), `batches` (1:N `ProductBatch`, cascade), `posOutboundJobs` (1:N `PosOutboundJob`, cascade).
 
 **Indexes:** `@@index([externalPosId])`, `@@index([inStock, stock])`, `@@index([categoryId])`; uniques on `slug`, `sku`, `externalPosId`.
 
@@ -795,7 +801,8 @@ BandaGo POS sync telemetry per run.
 | --- | --- | --- | --- |
 | `id` | String | `@id @default(cuid())` | Primary key. |
 | `posSource` | String | `@default("BANDAGO") @map("pos_source")` | POS system tag. |
-| `trigger` | `PosSyncTrigger` | `@default(EXTENSION_STREAM)` | `EXTENSION_STREAM` / `BACKGROUND_POLL` / `CSV_IMPORT` / `MANUAL_RECONCILE`. |
+| `direction` | `PosSyncDirection` | `@default(INBOUND)` | `INBOUND` (POS → Website) or `OUTBOUND` (Website → POS). |
+| `trigger` | `PosSyncTrigger` | `@default(EXTENSION_STREAM)` | `EXTENSION_STREAM` / `BACKGROUND_POLL` / `CSV_IMPORT` / `MANUAL_RECONCILE` / `OUTBOUND_WRITEBACK` / `MANUAL_EXPORT_RECONCILE` / `BRIDGE_ERROR`. |
 | `status` | `PosSyncStatus` | `@default(SUCCESS)` | `SUCCESS` / `PARTIAL` / `FAILED`. |
 | `itemsReceived` | Int | `@default(0) @map("items_received")` | Items in the payload. |
 | `itemsUpserted` | Int | `@default(0) @map("items_upserted")` | Items applied. |
@@ -807,14 +814,69 @@ BandaGo POS sync telemetry per run.
 
 **Indexes:** `@@index([startedAt])`, `@@index([status])`. **Relations:** none — standalone telemetry.
 
+### `PosOutboundJob` (table `pos_outbound_jobs`)
+
+Durable idempotent ledger for online sales deductions, refund restocks, and admin stock edits awaiting export or automatic BandaGo Physical Inventory writeback.
+
+| Field | Type | Constraints/Default | Description |
+| --- | --- | --- | --- |
+| `id` | String | `@id @default(cuid())` | Primary key. |
+| `idempotencyKey` | String | `@unique @map("idempotency_key")` | Structural dedupe key per event and product. |
+| `eventType` | `PosOutboundEventType` | `@map("event_type")` | `ONLINE_SALE` / `ADMIN_STOCK_ADJUST` / `REFUND_RESTOCK` / `ADMIN_PRICE_UPDATE`. |
+| `status` | `PosOutboundStatus` | `@default(PENDING)` | `PENDING` / `PROCESSING` / `SYNCED` / `EXPORTED` / `RECONCILED_MANUAL` / `FAILED` / `CANCELLED` / `SKIPPED_UNMAPPED`. |
+| `orderId` | String? | `@map("order_id")` FK → `Order` (SetNull) | Linked customer order, if any. |
+| `orderReference` | String? | `@map("order_reference")` | Human-readable `ORD-...` reference (Zero-PHI). |
+| `productId` | String | `@map("product_id")` FK → `Product` (Cascade) | Linked Sphere product. |
+| `externalPosId` | String? | `@map("external_pos_id")` | Target BandaGo `M_Product_UU`. |
+| `productName` | String | `@map("product_name")` | Snapshot product title. |
+| `sku` | String? | — | Snapshot SKU. |
+| `qtyDelta` | Int | `@map("qty_delta")` | Signed stock delta (negative for sales, positive for restocks). |
+| `targetStock` | Int? | `@map("target_stock")` | Desired total stock for `ADMIN_STOCK_ADJUST`. |
+| `unitPrice` | Decimal(12,2)? | `@map("unit_price")` | Snapshot KES price. |
+| `lineTotal` | Decimal(12,2)? | `@map("line_total")` | Snapshot KES line value. |
+| `paymentMethod` | String? | `@map("payment_method")` | `MPESA` / `CARD` / `CASH` summary. |
+| `posStockSnapshot` | Int? | `@map("pos_stock_snapshot")` | Last POS stock observed when queued. |
+| `attempts` / `maxAttempts` | Int | `0` / `5` | Retry budget counters. |
+| `lockedAt` / `lockToken` | DateTime? / String? | `@map("locked_at")` / `@map("lock_token")` | Cooperative claim lock with 5-min stale timeout. |
+| `externalDocumentNo` | String? | `@map("external_document_no")` | Completed BandaGo `M_Inventory.DocumentNo`. |
+| `externalInventoryUU` | String? | `@map("external_inventory_uu")` | Deterministic idempotent `M_Inventory.UU`. |
+| `reconciledBy` / `reconciledNote` | String? | `@map("reconciled_by")` / `@map("reconciled_note")` | Staff actor or `BANDAGO_BRIDGE` note. |
+| `exportBatchId` | String? | `@map("export_batch_id")` | Daily sales export batch tag (`EXP-...`). |
+| `lastErrorCode` / `lastError` | String? | `@map("last_error_code")` / `@map("last_error")` | Latest failure code and message. |
+| `syncedAt` | DateTime? | `@map("synced_at")` | Completion timestamp. |
+
+**Indexes:** `@@index([status, createdAt])`, `@@index([productId, status])`, `@@index([orderId])`, `@@index([exportBatchId])`.
+
+### `PosSyncIncident` (table `pos_sync_incidents`)
+
+Deduplicated Zero-PHI operational incidents from inbound pollers, `/sync` pipeline, or outbound writeback workers.
+
+| Field | Type | Constraints/Default | Description |
+| --- | --- | --- | --- |
+| `id` | String | `@id @default(cuid())` | Primary key. |
+| `direction` | `PosSyncDirection` | `@default(INBOUND)` | `INBOUND` or `OUTBOUND`. |
+| `source` | String | — | Component tag (`BANDAGO_POLLER`, `BANDAGO_WRITEBACK`, etc.). |
+| `severity` | String | `@default("ERROR")` | `CRITICAL`, `ERROR`, or `WARNING`. |
+| `code` | String | — | Machine-readable remediation key (`AUTH_EXPIRED`, `TENANT_MISMATCH`, etc.). |
+| `message` | String | — | Operator-facing description (no patient PII). |
+| `remediation` | String? | — | Actionable fix instructions. |
+| `externalPosId` / `productName` / `orderReference` | String? | — | Optional affected item or order ref. |
+| `occurrences` | Int | `@default(1)` | Deduplicated repeat count. |
+| `resolved` / `resolvedBy` / `resolvedAt` | Boolean / String? / DateTime? | `false` | Triage resolution state. |
+
+**Indexes:** `@@index([resolved, severity, lastSeenAt])`, `@@index([code, resolved])`.
+
 ### Enums
 
 | Enum | Values |
 | --- | --- |
-| `PosSyncTrigger` | `EXTENSION_STREAM`, `BACKGROUND_POLL`, `CSV_IMPORT`, `MANUAL_RECONCILE` |
+| `PosSyncTrigger` | `EXTENSION_STREAM`, `BACKGROUND_POLL`, `CSV_IMPORT`, `MANUAL_RECONCILE`, `OUTBOUND_WRITEBACK`, `MANUAL_EXPORT_RECONCILE`, `BRIDGE_ERROR` |
 | `PosSyncStatus` | `SUCCESS`, `PARTIAL`, `FAILED` |
+| `PosSyncDirection` | `INBOUND`, `OUTBOUND` |
+| `PosOutboundStatus` | `PENDING`, `PROCESSING`, `SYNCED`, `EXPORTED`, `RECONCILED_MANUAL`, `FAILED`, `CANCELLED`, `SKIPPED_UNMAPPED` |
+| `PosOutboundEventType` | `ONLINE_SALE`, `ADMIN_STOCK_ADJUST`, `REFUND_RESTOCK`, `ADMIN_PRICE_UPDATE` |
 
-These are the **only** two Prisma enums in the schema; every other status-like column is a plain `String` with canonical values defined in `src/lib/constants.ts` (see [schema-overview.md](schema-overview.md#3-string-statuses-canonical-values-in-srclibconstants-ts)).
+Outside the BandaGo POS integration block, every other status-like column remains a plain `String` with canonical values defined in `src/lib/constants.ts` (see [schema-overview.md](schema-overview.md#3-string-statuses-canonical-values-in-srclibconstants-ts)).
 
 ---
 

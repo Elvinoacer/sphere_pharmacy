@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { BandaGoNormalizer, parseCsv, type IngestedProductItem } from '@/lib/bandago-normalizer';
+import { verifyBandagoBearerHeader } from '@/lib/security/bandago-auth';
 import { requireStaff } from '@/lib/session';
 import { POST as handleSync } from '../sync/route';
 
@@ -8,8 +9,8 @@ export async function POST(req: NextRequest) {
     const authHeader = req.headers.get('authorization');
     const expectedSecret = process.env.BANDAGO_SYNC_API_KEY;
 
-    // Authenticate via Bearer token OR active staff session (for browser admin CSV uploads)
-    const isBearerValid = Boolean(expectedSecret && authHeader === `Bearer ${expectedSecret}`);
+    // Authenticate via timing-safe Bearer token OR active staff session (for browser admin CSV uploads)
+    const isBearerValid = verifyBandagoBearerHeader(authHeader, expectedSecret);
     if (!isBearerValid) {
       const { session, error } = await requireStaff(['ADMIN', 'PHARMACIST']);
       if (error || !session) {
@@ -118,12 +119,14 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // Delegate into the main sync handler logic internally
-    const effectiveSecret = expectedSecret || process.env.BANDAGO_SYNC_API_KEY || 'sphere_bandago_live_sync_secret_key_2026';
+    // Delegate into the main sync handler logic internally using caller's authenticated staff cookie
+    // (and Bearer header only if BANDAGO_SYNC_API_KEY is configured — never a hard-coded fallback).
     const syncHeaders: Record<string, string> = {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${effectiveSecret}`,
     };
+    if (isBearerValid && expectedSecret) {
+      syncHeaders['Authorization'] = `Bearer ${expectedSecret}`;
+    }
     const incomingCookie = req.headers.get('cookie');
     if (incomingCookie) {
       syncHeaders['cookie'] = incomingCookie;

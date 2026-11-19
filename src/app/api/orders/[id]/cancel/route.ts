@@ -6,6 +6,7 @@ import { audit, notifyCustomer, notifyStaff, statusNotification } from "@/lib/no
 import { getSession } from "@/lib/session"
 import { tokenHash } from "@/lib/hash"
 import { escapeHtml, enforceRateLimit, rejectOversizedRequest, publicError } from "@/lib/security/request"
+import { cancelOrderPosDeduction } from "@/lib/pos-reconciliation"
 
 type Params = { params: Promise<{ id: string }> }
 const CANCELLABLE = ["RECEIVED", "UNDER_REVIEW", "PRESCRIPTION_VERIFIED", "AVAILABILITY_CONFIRMED", "AWAITING_PAYMENT"]
@@ -85,6 +86,7 @@ export async function POST(request: Request, { params }: Params) {
           }
           await tx.payment.updateMany({ where: { orderId: order.id, status: { in: ["PENDING", "PROCESSING"] } }, data: { status: "FAILED", failureReason: "Order cancelled before payment" } })
           await tx.orderStatusHistory.create({ data: { orderId: order.id, status: "CANCELLED", actor, note: reason ? `Cancelled: ${reason}` : "Cancelled by customer" } })
+          await cancelOrderPosDeduction(tx, order.id, actor)
         }, { timeout: 15000, maxWait: 5000 })
         break
       } catch (err) {

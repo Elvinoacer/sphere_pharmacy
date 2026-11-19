@@ -5,6 +5,7 @@ import { audit, notifyCustomer } from "@/lib/notify"
 import { requireStaff } from "@/lib/session"
 import { createIntaSendRefund, getIntaSendRefund } from "@/lib/intasend/client"
 import { enforceRateLimit, escapeHtml, rejectOversizedRequest, publicError } from "@/lib/security/request"
+import { cancelOrderPosDeduction } from "@/lib/pos-reconciliation"
 
 const COMPLETE = new Set(["COMPLETED"])
 
@@ -17,6 +18,7 @@ async function finalizeRefund(paymentId: string, refundReference: string, actor:
     if (!changed.count) return { payment, changed: false }
     await tx.order.update({ where: { id: payment.orderId }, data: { status: "REFUNDED", version: { increment: 1 } } })
     await tx.orderStatusHistory.create({ data: { orderId: payment.orderId, status: "REFUNDED", actor, note: `Provider-confirmed refund ${refundReference}` } })
+    await cancelOrderPosDeduction(tx, payment.orderId, actor)
     if (payment.order.userId) {
       const user = await tx.user.findUnique({ where: { id: payment.order.userId }, select: { loyaltyPoints: true } })
       const clawback = Math.min(payment.order.pointsEarned, user?.loyaltyPoints || 0)

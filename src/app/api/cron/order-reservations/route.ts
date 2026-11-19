@@ -1,6 +1,7 @@
 import { Prisma } from "@prisma/client"
 import { NextResponse } from "next/server"
 import { db } from "@/lib/db"
+import { cancelOrderPosDeduction } from "@/lib/pos-reconciliation"
 
 const EXPIRABLE = ["RECEIVED", "UNDER_REVIEW", "PRESCRIPTION_VERIFIED", "AVAILABILITY_CONFIRMED", "AWAITING_PAYMENT"]
 
@@ -49,6 +50,7 @@ export async function GET(request: Request) {
         }
         await tx.payment.updateMany({ where: { orderId: order.id, status: { in: ["PENDING", "PROCESSING"] } }, data: { status: "FAILED", failureReason: "Inventory reservation expired" } })
         await tx.orderStatusHistory.create({ data: { orderId: order.id, status: "CANCELLED", actor: "SYSTEM", note: "Inventory reservation expired before payment." } })
+        await cancelOrderPosDeduction(tx, order.id, "SYSTEM")
         released++
       }, { timeout: 15000, maxWait: 5000 })
     } catch { /* another worker or request won the race */ }

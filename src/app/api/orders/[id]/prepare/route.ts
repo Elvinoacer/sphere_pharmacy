@@ -4,6 +4,7 @@ import { ORDER_INCLUDE, toOrderDTO } from "@/lib/dto"
 import { audit, notifyCustomer } from "@/lib/notify"
 import { requireStaff } from "@/lib/session"
 import { rejectOversizedRequest, publicError } from "@/lib/security/request"
+import { enqueueOrderPosDeduction } from "@/lib/pos-reconciliation"
 
 type Params = { params: Promise<{ id: string }> }
 
@@ -53,6 +54,7 @@ export async function POST(request: Request, { params }: Params) {
       })
       if (updated.count !== 1) throw new Error("ORDER_CONFLICT")
       await tx.orderStatusHistory.create({ data: { orderId: id, status: "PREPARING", actor, note } })
+      await enqueueOrderPosDeduction(tx, order.id, order.paymentMethod ?? "CASH")
     })
     await audit(actor, session.staffRole, "ORDER_PREPARATION_STARTED", "Order", order.reference, note)
     await notifyCustomer(order.userId, "ORDER_STATUS", "Order being prepared",

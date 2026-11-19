@@ -34,6 +34,7 @@ Ten migrations, year-2026 timestamps. `prisma migrate deploy` applies them in th
 | 8 | `20261028190000_private_promotion_visibility` | `Promotion.isPublic` — code-only (private) promotions. |
 | 9 | `20261028194500_admin_live_cursor_indexes` | Cursor pagination indexes for the staff live monitor. |
 | 10 | `20261104200000_add_bandago_pos_support` | BandaGo/iDempiere POS integration: enums, POS columns, `product_batches`, `pos_sync_logs`. |
+| 11 | `20261119120000_add_bandago_bidirectional_sync` | Bi-directional POS reconciliation & telemetry: `pos_outbound_jobs`, `pos_sync_incidents`, POS drift baseline columns, `PosSyncDirection` & outbound enums. |
 
 ### 1. `20260902000000_initial`
 
@@ -89,6 +90,15 @@ The BandaGo/iDempiere POS integration layer:
 - **`User`:** `external_bpartner_id` (unique + index), `loyalty_points_balance`, `pos_credit_balance DECIMAL(10,2)`, `is_chronic_patient`.
 - **`Product`:** `slug` (unique), `barcode`, `cost_price`, `stock`, `virtual_reserved_stock`, `safety_stock_buffer`, `in_stock`, `dosage_form`, `strength`, `nearest_expiry_date`, `external_pos_id` (unique + index), `pos_source` (default `BANDAGO`), `last_synced_at`, plus the `(in_stock, stock)` index.
 - **New tables:** `product_batches` (unique `(product_id, batch_number)`, index `(product_id, expiry_date)`) and `pos_sync_logs` (indexes `started_at`, `status`), both snake_case-mapped.
+
+### 11. `20261119120000_add_bandago_bidirectional_sync`
+
+Adds durable bi-directional POS reconciliation, daily sales export batching, and error reporting:
+
+- **Enums:** adds `PosSyncDirection`, `PosOutboundStatus`, `PosOutboundEventType`, and extends `PosSyncTrigger` (`OUTBOUND_WRITEBACK`, `MANUAL_EXPORT_RECONCILE`, `BRIDGE_ERROR`).
+- **`Product`:** adds `last_pos_stock`, `last_pos_sellable_stock`, `external_warehouse_id`, `external_locator_id`, `external_org_id`, `external_client_id`.
+- **`PosSyncLog`:** adds `direction` (`PosSyncDirection`, default `INBOUND`).
+- **New tables:** `pos_outbound_jobs` (unique `idempotency_key`, indexes `(status, created_at)`, `(product_id, status)`, `order_id`, `export_batch_id`) and `pos_sync_incidents` (indexes `(resolved, severity, last_seen_at)`, `(code, resolved)`).
 
 ## Adding a new model or field
 

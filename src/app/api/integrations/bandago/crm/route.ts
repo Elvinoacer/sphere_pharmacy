@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { BandaGoCrmReconciler } from '@/lib/crm/bandago-crm';
+import { verifyBandagoBearerHeader } from '@/lib/security/bandago-auth';
 import { requireStaff } from '@/lib/session';
 
 export async function POST(req: NextRequest) {
@@ -9,7 +10,7 @@ export async function POST(req: NextRequest) {
     const authHeader = req.headers.get('authorization');
     const expectedSecret = process.env.BANDAGO_SYNC_API_KEY;
 
-    const isBearerValid = Boolean(expectedSecret && authHeader === `Bearer ${expectedSecret}`);
+    const isBearerValid = verifyBandagoBearerHeader(authHeader, expectedSecret);
     if (!isBearerValid) {
       const { session, error } = await requireStaff(['ADMIN', 'PHARMACIST']);
       if (error || !session) {
@@ -94,7 +95,7 @@ export async function GET(req: NextRequest) {
     const authHeader = req.headers.get('authorization');
     const expectedSecret = process.env.BANDAGO_SYNC_API_KEY;
 
-    const isBearerValid = Boolean(expectedSecret && authHeader === `Bearer ${expectedSecret}`);
+    const isBearerValid = verifyBandagoBearerHeader(authHeader, expectedSecret);
     if (!isBearerValid) {
       const { session, error } = await requireStaff(['ADMIN', 'PHARMACIST', 'STAFF']);
       if (error || !session) {

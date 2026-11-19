@@ -25,6 +25,13 @@ export interface IngestedProductItem {
   costPrice?: number | null;
   stock: number;
   requiresPrescription: boolean;
+  isActive?: boolean;
+  discontinued?: boolean;
+  tenantUU?: string | null;
+  clientUU?: string | null;
+  externalWarehouseId?: string | null;
+  externalLocatorId?: string | null;
+  externalOrgId?: string | null;
   imageUrl?: string;
   nearestExpiryDate?: string | Date | null;
   dosageForm?: string;
@@ -169,8 +176,13 @@ export class BandaGoNormalizer {
    * - Calculates nearest expiry date among active batches
    * - Flags near-expiry (<90 days) for regulatory auditing
    */
-  static processBatches(batches: IngestedBatch[] = [], referenceDate = new Date()): ProcessedBatchesResult {
+  static processBatches(
+    batches: IngestedBatch[] = [],
+    referenceDate = new Date(),
+    minShelfLifeDays = 0
+  ): ProcessedBatchesResult {
     const now = referenceDate.getTime();
+    const minShelfCutoff = now + Math.max(0, minShelfLifeDays) * 24 * 60 * 60 * 1000;
     const ninetyDaysMs = 90 * 24 * 60 * 60 * 1000;
     const ninetyDaysThreshold = now + ninetyDaysMs;
 
@@ -213,8 +225,9 @@ export class BandaGoNormalizer {
 
     for (const entry of aggregated.values()) {
       const isExpired = entry.earliestExpiry.getTime() <= now;
+      const isWithinShelfBuffer = entry.earliestExpiry.getTime() <= minShelfCutoff;
 
-      if (!isExpired) {
+      if (!isExpired && !isWithinShelfBuffer) {
         validStock += entry.qty;
 
         if (!nearestExpiryDate || entry.earliestExpiry.getTime() < nearestExpiryDate.getTime()) {

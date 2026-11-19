@@ -188,12 +188,18 @@ Full reasoning, ownership rules, and the rider transition subset: [../security/a
 | GET/PATCH | /api/admin/service-bookings | Manage list / status+reschedule | Staff (ADMIN, PHARMACIST, STAFF) | — |
 | PATCH | /api/admin/service-bookings/[id]/assign | Assign staff to booking | Staff (ADMIN, PHARMACIST, STAFF) | — |
 | GET | /api/admin/service-staff | Assignable staff dropdown | Staff (ADMIN, PHARMACIST, STAFF) | — |
-| GET | /api/admin/pos-status | BandaGo telemetry | Staff (ADMIN, PHARMACIST, STAFF) | — |
+| GET | /api/admin/pos-status | BandaGo telemetry, policy & outbound counts | Staff (ADMIN, PHARMACIST, STAFF) | — |
+| GET/PUT | /api/admin/pos-sync/policy | Read / update POS sync strategy policy | GET: Staff; PUT: ADMIN | — |
+| GET/POST | /api/admin/pos-sync/reconcile | Outbound jobs, variance & incidents | GET: Staff; POST: ADMIN, PHARMACIST | — |
+| GET | /api/admin/pos-sync/sales-export | Daily online sales sheet (PDF/CSV/JSON) | Staff (ADMIN, PHARMACIST) | — |
 | GET | /api/admin/live-changes | Change cursors for polling | Staff (ADMIN, PHARMACIST, STAFF) | — |
 | GET | /api/admin/notification-health | Delivery health | Staff (ADMIN) | — |
-| POST | /api/integrations/bandago/sync | POS product/batch sync | Bearer key or Staff (ADMIN, PHARMACIST) | — |
+| POST | /api/integrations/bandago/sync | POS product/batch sync (with drift protection) | Bearer key or Staff (ADMIN, PHARMACIST) | — |
 | POST | /api/integrations/bandago/csv-import | POS CSV upload | Bearer key or Staff (ADMIN, PHARMACIST) | — |
 | GET/POST | /api/integrations/bandago/crm | CRM lookup / reconcile | Bearer key or Staff (POST: ADMIN, PHARMACIST; GET adds STAFF) | — |
+| GET | /api/integrations/bandago/outbound | Claim pending Website → POS writeback jobs | Bearer key or Staff (ADMIN, PHARMACIST) | — |
+| POST | /api/integrations/bandago/outbound/ack | Acknowledge POS writebacks / leases | Bearer key or Staff (ADMIN, PHARMACIST) | — |
+| POST | /api/integrations/bandago/telemetry | Extension Zero-PHI heartbeat & errors | Bearer key or Staff (ADMIN, PHARMACIST) | — |
 | GET | /api/location/search | Nominatim forward search (Kenya) | Public | 30/10 min/IP |
 | POST | /api/location/reverse-geocode | Nominatim reverse geocode | Public | 30/10 min/IP |
 | GET/PUT | /api/settings | Read / update store settings | Public (compliance redacted) / Staff (ADMIN) | — |
@@ -392,20 +398,29 @@ Order-placement enforcement re-validates everything inside the Serializable crea
 **PATCH /api/admin/service-bookings** — Staff; status transitions per the booking state machine (PENDING→CONFIRMED/CANCELLED/REJECTED/RESCHEDULED; CONFIRMED→ARRIVED/CANCELLED/RESCHEDULED; ARRIVED→IN_PROGRESS/NO_SHOW; IN_PROGRESS→COMPLETED; RESCHEDULED→CONFIRMED/CANCELLED; terminal→none; invalid → 409). Reschedule = same PATCH with `scheduledStart/scheduledEnd` (validation mirrors creation). Notifies on reschedule.
 **PATCH /api/admin/service-bookings/[id]/assign** — Staff; `{ staffId | null }`; target must be active ADMIN/PHARMACIST/STAFF; notifies the assignee (`SERVICE_ASSIGNED`).
 **GET /api/admin/service-staff** — Staff; active assignable staff list.
-**GET /api/admin/pos-status** — Staff ADMIN/PHARMACIST/STAFF; BandaGo telemetry: mapped products, batches, near-expiry count (<90 d), last sync, recent 20 PosSyncLogs.
+**GET /api/admin/pos-status** — Staff ADMIN/PHARMACIST/STAFF; BandaGo telemetry: mapped products, batches, near-expiry count (<90 d), last sync, recent 25 PosSyncLogs (with `direction`), active `policy`, `bridgeHeartbeat`, outbound counts (`pendingOutboundCount`, `exportedAwaitingConfirmCount`, `failedOutboundCount`, `syncedOutboundTodayCount`, `unreconciledUnitsTotal`), incident counts, and key configuration health flags.
+**GET/PUT /api/admin/pos-sync/policy** — GET (Staff) returns `{ policy, bridgeHeartbeat, apiKeyConfigured, usingDefaultKeyWarning }`; PUT (ADMIN-only, Zod-validated) updates `PosSyncPolicy` (`outboundSyncMode`: `MANUAL_EXPORT` | `AUTO_SYNC`, `protectUnreconciledSales`, `inboundEnabled`, `expectedTenantUU`, `minShelfLifeDays`, etc.) and writes an `AuditLog` entry.
+**GET/POST /api/admin/pos-sync/reconcile** — GET (Staff) returns `{ jobs, varianceItems, incidents, summary }` computed via `getUnreconciledOffsetsByProduct`; POST (ADMIN/PHARMACIST) handles `MARK_RECONCILED`, `RETRY_JOBS`, `CANCEL_JOBS`, `RESOLVE_INCIDENT`, `RESOLVE_ALL_INCIDENTS`, `QUEUE_STOCK_PUSH`, and ADMIN-only `SET_BASELINE_NOW`.
+**GET /api/admin/pos-sync/sales-export** — ADMIN/PHARMACIST; Zero-PHI export of online sales and stock adjustments (`?format=pdf|csv|json`, `?scope=unreconciled|today|range`, `?from=`, `?to=`, `?groupBy=PRODUCT_SUMMARY|ITEMIZED_ORDERS`, `?markExported=1`). Returns A4 PDF (`buildDailySalesPdfBuffer`), formula-safe UTF-8 BOM CSV, or JSON with `X-Export-Batch-Id`.
 **GET /api/admin/live-changes** — Staff ADMIN/PHARMACIST/STAFF; metadata-only change cursors for orders/bookings (arrival + change); `Vary: Cookie`. Polled by the admin workspace every 15 s.
 **GET /api/admin/notification-health** — ADMIN; delivery job counts by channel/status, oldest pending, last 20 failures, provider configuration flags. Exposes no message bodies, addresses, or tokens.
 
 ### 3.14 BandaGo POS integration — `/api/integrations/bandago/*`
 
-Auth is dual-mode: `Authorization: Bearer <BANDAGO_SYNC_API_KEY>` or an active ADMIN/PHARMACIST staff session (CRM GET adds STAFF). See [../integrations/](../integrations/) for the full architecture. **Requires live verification** against the real BandaGo instance; the Chrome MV3 extension (`api_data_transformer`) is external to this repo.
+Auth is dual-mode via timing-safe `verifyBandagoBearerHeader` / `authorizeBandagoRequest`: `Authorization: Bearer <BANDAGO_SYNC_API_KEY>` (fails closed if unset) or an active ADMIN/PHARMACIST staff session (CRM GET adds STAFF). See [../integrations/](../integrations/) for the full bi-directional architecture.
 
-**POST /api/integrations/bandago/sync** — Upsert product/batch inventory. Body: `{ trigger ∈ EXTENSION_STREAM|BACKGROUND_POLL|CSV_IMPORT|MANUAL_RECONCILE, items: [{ externalPosId, name, price, costPrice?, stock, sku?, slug?, categorySlug?, requiresPrescription?, imageUrl?, nearestExpiryDate?, dosageForm?, strength?, batches? [{ batchNumber, qtyOnHand, expiryDate?, externalBatchId? }] }] }`. Pipeline: expired-lot cleanup → normalizer (PPB Rx classification never downgrades; FEFO batch aggregation; slug/SKU collision handling; custom local images preserved) → chunked transactions (50/chunk with per-item fallback). Always HTTP 200 with `{ success, upsertedCount, failedCount, durationMs, timestamp, errors? (≤20) }` where `success` reflects SUCCESS/PARTIAL/FAILED. PosSyncLog telemetry is written at start and finalization. Fatal pipeline errors → 500.
+**POST /api/integrations/bandago/sync** — Upsert product/batch inventory with stagnant-POS drift protection (`computeReconciledStock`), tenant pinning (`expectedTenantUU` -> `403` `TENANT_MISMATCH`), pause support (`policy.inboundEnabled`), and inactive/discontinued unpublishing. Body: `{ trigger ∈ EXTENSION_STREAM|BACKGROUND_POLL|CSV_IMPORT|MANUAL_RECONCILE|CDP_INTERCEPT, tenantUU?, items: [{ externalPosId, name, price, costPrice?, stock, sku?, slug?, categorySlug?, requiresPrescription?, imageUrl?, nearestExpiryDate?, isActive?, discontinued?, externalWarehouseId?, externalLocatorId?, externalOrgId?, tenantUU?, dosageForm?, strength?, batches? }] }`. Returns HTTP 200 `{ success, upsertedCount, failedCount, durationMs, timestamp, policySummary, errors? (≤20) }` or paused notice.
 
-**POST /api/integrations/bandago/csv-import** — `multipart/form-data` file (≥1 header + 1 data row); robust CSV parsing (multiline quotes, escaped `""`, CRLF, BOM) with column aliases for iDempiere headers; delegates internally to the sync route with `trigger: CSV_IMPORT`. Known concern: a hard-coded fallback secret applies when the env var is unset.
+**POST /api/integrations/bandago/csv-import** — `multipart/form-data` file (≥1 header + 1 data row); robust CSV parsing with iDempiere header aliases; delegates internally to the sync route with `trigger: CSV_IMPORT` (no hardcoded fallback secret; fails closed when Bearer secret unset unless staff session present).
 
 **GET /api/integrations/bandago/crm** — `?phone=` (normalized E.164) or `?bpartnerId=` → customer profile + last 5 orders; 404 "Customer not found". Default `?daysThreshold=30` → chronic-refill eligibility list.
 **POST /api/integrations/bandago/crm** — Array, `{ customers: [...] }`, or single object of `{ phone (required), name?, email?, externalBPartnerId?, loyaltyDelta?, posCreditBalance?, isChronicPatient? }`; per-record errors keyed by phone; own PosSyncLog row; `{ success: true, reconciledCount, failedCount, errors?, durationMs }`.
+
+**GET /api/integrations/bandago/outbound** — Dual-auth (Bearer key or ADMIN/PHARMACIST); returns `{ policy, jobs }` and atomically claims up to `?limit=` (1–50) `PENDING` jobs (`PROCESSING` with 5-min `lockToken` lease) when `?claim=1` and `policy.outboundSyncMode === 'AUTO_SYNC'`. Automatically releases >5-min stale locks and records `UNMAPPED_PRODUCT` warnings.
+
+**POST /api/integrations/bandago/outbound/ack** — Dual-auth; accepts `{ results: [{ jobId, lockToken?, status: 'SYNCED'|'FAILED'|'RELEASE', externalDocumentNo?, externalInventoryUU?, posStockAfter?, warningCode?, errorCode?, errorMessage?, remediation? }], durationMs? }`. `RELEASE` restores jobs to `PENDING` without burning attempts; `SYNCED` updates `Product.lastPosStock` and auto-resolves transient incidents; `FAILED` retries until `maxAttempts` or permanent non-retryable code (`POS_PERMISSION_DENIED`, `TENANT_MISMATCH`, `UNMAPPED_PRODUCT`).
+
+**POST /api/integrations/bandago/telemetry** — Dual-auth; persists Zero-PHI `PosBridgeHeartbeat` telemetry and deduplicated `PosSyncIncident`s (`CRITICAL` incidents trigger throttled staff alerts), returning `{ ok: true, policy, pendingOutboundCount }`.
 
 ### 3.15 Location — `/api/location/*`
 

@@ -8,6 +8,7 @@ import { canTransitionOrder } from "@/lib/security/order-workflow"
 import { ORDER_STATUS_LABELS, ORDER_STATUSES, type OrderStatus, type Role } from "@/lib/constants"
 import { orderStatusUpdateTemplate } from "@/lib/email/templates"
 import { escapeHtml, publicError, rejectOversizedRequest } from "@/lib/security/request"
+import { cancelOrderPosDeduction } from "@/lib/pos-reconciliation"
 
 type Params = { params: Promise<{ id: string }> }
 
@@ -95,6 +96,9 @@ export async function PATCH(request: Request, { params }: Params) {
       })
       if (changed.count !== 1) throw new Error("ORDER_CONFLICT")
       await tx.orderStatusHistory.create({ data: { orderId: order.id, status, actor, note } })
+      if (status === "REJECTED") {
+        await cancelOrderPosDeduction(tx, order.id, actor)
+      }
     }, { timeout: 15000, maxWait: 5000 })
     await audit(actor, role, `ORDER_STATUS_${status}`, "Order", order.reference, note)
 

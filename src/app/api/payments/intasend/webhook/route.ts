@@ -1,4 +1,5 @@
 import { notifyPaymentOutcome } from "@/lib/notifications/payment"
+import { enqueueOrderPosDeduction } from "@/lib/pos-reconciliation"
 import { createHash } from "crypto"
 import { NextResponse } from "next/server"
 import { Prisma } from "@prisma/client"
@@ -38,6 +39,7 @@ export async function POST(request: Request) {
           await notifyPaymentOutcome(tx, { paymentId: payment.id, orderId: payment.orderId, success: true })
           const moved = await tx.order.updateMany({ where: { id: payment.orderId, status: { in: ["AWAITING_PAYMENT", "AVAILABILITY_CONFIRMED", "PRESCRIPTION_VERIFIED"] } }, data: { status: "PAID", version: { increment: 1 } } })
           if (moved.count) await tx.orderStatusHistory.create({ data: { orderId: payment.orderId, status: "PAID", actor: "System", note: `IntaSend payment confirmed (${invoice.id})` } })
+          await enqueueOrderPosDeduction(tx, payment.orderId, "CARD")
           if (payment.order.userId) {
             awarded = pointsForAmount(Number(payment.amount))
             if (awarded > 0) {

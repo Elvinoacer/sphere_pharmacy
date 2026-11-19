@@ -71,11 +71,17 @@ The chronic-refill cron closes the care loop: 30 days after a prescription order
 
 | Endpoint | Methods | Auth | Purpose |
 | --- | --- | --- | --- |
-| `/api/integrations/bandago/sync` | `POST` | Bearer key or `ADMIN`/`PHARMACIST` session | Product, price, stock, and batch ingestion. |
-| `/api/integrations/bandago/csv-import` | `POST` | Bearer key or `ADMIN`/`PHARMACIST` session | CSV bulk upload (multipart), delegates internally to sync. |
-| `/api/integrations/bandago/crm` | `POST`, `GET` | Bearer key or staff session (`POST` `ADMIN`/`PHARMACIST`; `GET` adds `STAFF`) | Customer profile reconciliation and lookup. |
+| `/api/integrations/bandago/sync` | `POST` | Timing-safe Bearer or `ADMIN`/`PHARMACIST` session | Product, price, stock, and batch ingestion with stagnant-POS drift protection. |
+| `/api/integrations/bandago/csv-import` | `POST` | Timing-safe Bearer or `ADMIN`/`PHARMACIST` session | CSV bulk upload (multipart), delegates internally to sync. |
+| `/api/integrations/bandago/crm` | `POST`, `GET` | Timing-safe Bearer or staff (`POST` `ADMIN`/`PHARMACIST`; `GET` adds `STAFF`) | Customer profile reconciliation and lookup. |
+| `/api/integrations/bandago/outbound` | `GET` | Timing-safe Bearer or `ADMIN`/`PHARMACIST` session | Claim pending Website → POS deduction/adjustment jobs (`?claim=1`). |
+| `/api/integrations/bandago/outbound/ack` | `POST` | Timing-safe Bearer or `ADMIN`/`PHARMACIST` session | Acknowledge POS writebacks (`SYNCED`, `RELEASE`, `FAILED`) & update POS baseline. |
+| `/api/integrations/bandago/telemetry` | `POST` | Timing-safe Bearer or `ADMIN`/`PHARMACIST` session | Ingest extension Zero-PHI heartbeat & deduplicated error incidents. |
+| `/api/admin/pos-sync/policy` | `GET`, `PUT` | `GET`: Staff; `PUT`: `ADMIN` | Read / update `OutboundSyncMode`, drift guard, tenant pin, FEFO threshold. |
+| `/api/admin/pos-sync/reconcile` | `GET`, `POST` | `GET`: Staff; `POST`: `ADMIN`/`PHARMACIST` | Reconcile exported sheets, retry failed jobs, queue stock push, resolve incidents. |
+| `/api/admin/pos-sync/sales-export` | `GET` | `ADMIN`/`PHARMACIST` | Export daily Zero-PHI sales sheets (`pdf`, `csv`, `json`). |
 | `/api/cron/chronic-refills` | `GET` | Bearer `CRON_SECRET` | Refill eligibility + reminder dispatch. |
-| `/api/admin/pos-status` | `GET` | `ADMIN`/`PHARMACIST`/`STAFF` | Telemetry for the admin hub. |
+| `/api/admin/pos-status` | `GET` | `ADMIN`/`PHARMACIST`/`STAFF` | Telemetry, heartbeat, policy, and audit logs for the admin hub. |
 
 Key source files: `src/app/api/integrations/bandago/*`, `src/lib/bandago-normalizer.ts`, `src/lib/crm/bandago-crm.ts`, `src/lib/inventory-guard.ts`, `src/components/views/admin/sections/pos-sync-section.tsx`, `prisma/migrations/20261104200000_add_bandago_pos_support/`.
 
@@ -278,34 +284,33 @@ Scheduled externally, authenticated with `Bearer CRON_SECRET` (≥32 chars). The
 - Reminders are throttled to **at most one `CHRONIC_REFILL_REMINDER` per patient per 7 days**, delivered in-app plus email, linking to `${NEXT_PUBLIC_APP_URL}/orders/{id}`.
 - Returns `{ok, eligible, notified}`. Eligibility is purely time-based — no dosage inference.
 
-## Admin POS hub and compliance alerts
+## Admin POS hub, stagnant-POS drift protection & bi-directional sync
 
-`GET /api/admin/pos-status` (`ADMIN`/`PHARMACIST`/`STAFF`) exposes `totalSyncedProducts` (`externalPosId != null`), `totalBatches`, `nearExpiryCount` (non-expired stock expiring within 90 days, taken as the max of batch- and product-level dates), `lastSyncTimestamp`, and the last 20 `PosSyncLog` rows including `details`.
+`GET /api/admin/pos-status` (`ADMIN`/`PHARMACIST`/`STAFF`) exposes mapped products, batch counts, near-expiry count (<90 days), latest sync timestamp, recent 25 `PosSyncLog` rows (with `direction`), live `PosSyncPolicy`, extension heartbeat (`PosBridgeHeartbeat`), pending/exported/failed outbound counts, and open incident counts.
 
-The admin UI section `pos-sync-section.tsx` — "BandaGo POS Integration Hub" — renders four metric cards (POS Products Mapped, Active Batches (Lots), Near-Expiry Flags <90d labelled as a *Kenya PPB audit alert*, Last Live Signal, which shows "Awaiting extension" before the first sync), auto-refreshing every 30 seconds, plus a manual CSV dropzone and the audit trail table. Its empty state reads "No synchronization events recorded yet. Connect api_data_transformer to begin."
+The admin UI (`pos-sync-section.tsx` — "BandaGo POS Integration Hub") renders four workspaces:
+1. **Overview & Policy**: Bridge connection health, `BANDAGO_SYNC_API_KEY` hygiene alerts, outbound strategy toggle (`MANUAL_EXPORT` default vs `AUTO_SYNC` gated by confirmation modal), Stagnant-POS Drift Protection toggle, Expected Tenant UU (`AD_Client_UU`) pin, and FEFO minimum shelf life.
+2. **Sales Export & Reconciliation**: Downloadable Zero-PHI Daily Sales Export in **PDF** (multi-page A4 sheet with pharmacist sign-off block), formula-safe **CSV**, or **JSON**; one-click **Confirm Entered in BandaGo POS**; outbound job retry/cancel actions; Live Stock Variance Inspector (`Queue Push to POS`, ADMIN baseline cutover).
+3. **Error Console**: Deduplicated `PosSyncIncident` list with severity triage (`CRITICAL`, `ERROR`, `WARNING`) and actionable remediation steps.
+4. **Synchronization Audit Trail**: Bidirectional `INBOUND`/`OUTBOUND` log history and authenticated staff-cookie CSV catalog import fallback.
 
-## Security model
+### Stagnant-POS drift protection (`computeReconciledStock`)
 
-- Dual auth on all three integration routes: bearer secret (machine) or `ADMIN`/`PHARMACIST` staff session (human). CRM `GET` additionally allows `STAFF`.
-- The sync payload is treated as untrusted: numbers re-parsed, identifiers stringified and trimmed, and items without both `externalPosId` and `name` rejected.
-- Idempotence comes from `externalPosId`/phone-keyed upserts rather than request de-duplication — repeated pushes converge to the same state.
-- Clinical data never enters this pipeline (see [Regulatory notes](#regulatory-notes)).
+When online purchases deduct Sphere `stock` / `stockQty` while BandaGo POS sits stagnant between shifts, a naive inbound POS snapshot must never overwrite Sphere back up. Before committing inbound stock in `POST /api/integrations/bandago/sync`:
+- `pendingOutboundNetDelta` sums open `PosOutboundJob` rows (`PENDING`, `PROCESSING`, `EXPORTED`, `FAILED`) — e.g. `-2` for an unreconciled online sale.
+- `unpaidOrderHoldQty` sums pre-payment order holds not yet represented by an outbound job.
+- When `protectUnreconciledSales` is enabled, `signedOffset = pendingOutboundNetDelta - unpaidOrderHoldQty`, yielding `effectiveStock = max(0, incomingPosStock + signedOffset)`. Genuine walk-in sales/restocks reported by BandaGo still adjust stock normally, and once exported sales are confirmed or auto-synced (`SYNCED` / `RECONCILED_MANUAL`), the offset clears cleanly.
 
-## Security warning (requires remediation)
+### Outbound BandaGo writeback (`AUTO_SYNC`)
 
-> **Status: Requires remediation.** Three related credential-handling defects ship in the current code. They are documented here so operators can compensate until fixed.
+When enabled by an `ADMIN` in Policy **and** permitted in the extension, `BandaGoWritebackEngine` claims `PosOutboundJob` items from `/api/integrations/bandago/outbound?claim=1` every 2 minutes and executes idempotent iDempiere Physical Inventory documents inside the authenticated `go.bandahealth.org` tab (`M_InventoryGet` idempotency lookup → `C_DocTypeGet("MMI", "PI")` → `M_StorageOnHandGet` FEFO lot split → `M_InventorySave` → `M_InventoryLineSaveMany` → `M_InventoryProcess("CO")`), posting outcomes to `/api/integrations/bandago/outbound/ack`.
 
-1. **`NEXT_PUBLIC_POS_SYNC_SECRET` is browser-exposed.** The admin CSV dropzone (`pos-sync-section.tsx`) sends `Authorization: Bearer ${process.env.NEXT_PUBLIC_POS_SYNC_SECRET}` from the browser. Any `NEXT_PUBLIC_*` variable is inlined into the client bundle, so anyone who can load the storefront can extract this value and call `/api/integrations/bandago/*` with valid bearer credentials.
-2. **Hard-coded fallback in `csv-import/route.ts`** (line 122): when `BANDAGO_SYNC_API_KEY` is unset, the effective secret falls back to a literal string in source, so the internal delegation to `/sync` passes bearer auth even in an unconfigured deployment. Anyone who has read this repository knows the fallback value.
-3. **`.env.example` ships a same-value default** for both `BANDAGO_SYNC_API_KEY` and `NEXT_PUBLIC_POS_SYNC_SECRET`, so deployments that copy the example verbatim share a publicly known credential.
+## Security & key hygiene (remediated)
 
-**Remediation guidance:**
-
-- Remove the browser-exposed `NEXT_PUBLIC_POS_SYNC_SECRET` entirely; the routes already accept staff sessions, which is the correct auth path for the admin hub.
-- Remove the hard-coded fallback in `csv-import/route.ts` and fail closed when `BANDAGO_SYNC_API_KEY` is unset.
-- Remove the default values from `.env.example` (document the variable, do not pre-fill it).
-- **Rotate** `BANDAGO_SYNC_API_KEY` in any deployment that ever ran with the example value, since it must be considered public.
-- Lower severity, same family: bearer comparisons in these routes use plain `===` rather than `timingSafeEqual`.
+- **Timing-safe dual auth:** All `/api/integrations/bandago/*` endpoints validate `Authorization: Bearer <BANDAGO_SYNC_API_KEY>` via constant-time `timingSafeEqual` (`src/lib/security/bandago-bearer.ts`) or fall back to an active `ADMIN`/`PHARMACIST` staff session (`authorizeBandagoRequest`). CRM `GET` additionally allows `STAFF`.
+- **Browser secret & fallback removed (H1 fixed):** `NEXT_PUBLIC_POS_SYNC_SECRET` was removed from both `.env.example` and `pos-sync-section.tsx` (the admin hub now relies strictly on the httpOnly `sphere_session` cookie). The hardcoded secret literal fallback in `csv-import/route.ts` was deleted; unconfigured deployments fail closed on Bearer auth and alert admins in the POS Hub if the env var is unset or matches the retired placeholder.
+- **Zero-PHI boundaries:** Extension passive interceptors (`MAIN`/`ISOLATED` world content scripts) allowlist only catalog reads and signal-only stock mutation notifications — patient visits, clinical notes, and invoices never cross the bridge.
+- Untrusted payload hardening and `externalPosId`/idempotency keys apply across both inbound and outbound pipelines.
 
 ## Blueprint: implemented here vs external
 
@@ -347,8 +352,7 @@ The admin live-sync surface additionally has `tests/admin-live-sync.test.mjs`. T
 - **The reservation engine is partially legacy.** Order creation today uses physical deduct-and-restore SQL; of the `InventoryGuard` virtual path only `getAvailableStock` and `cleanupExpiredReservations(45)` (called by this sync) are actually invoked.
 - **Partial failures return HTTP 200** — automation must read `success`/`failedCount`, not the status code.
 - **Chronic refill matching is time-based only** and still queries the legacy `DELIVERED` status alongside the current terminal statuses.
-- **No outbound order push.** Sphere never writes orders back to BandaGo; the loop depends on counter-side deduction and the extension stream.
-- **The CSV dropzone currently authenticates with the browser-exposed secret** (see the security warning) rather than the staff session.
+- **Auto writeback requires an active pharmacy browser tab:** Browser-delegated `AUTO_SYNC` executes via an open authenticated `go.bandahealth.org` Chrome tab; when closed, jobs stay queued and release cleanly until a dispensary workstation is online (or use Daily Sales Export).
 
 ## Related documentation
 

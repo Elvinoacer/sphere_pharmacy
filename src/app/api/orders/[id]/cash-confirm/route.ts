@@ -1,4 +1,5 @@
 import { notifyPaymentOutcome } from "@/lib/notifications/payment"
+import { enqueueOrderPosDeduction } from "@/lib/pos-reconciliation"
 import { Prisma } from "@prisma/client"
 import { NextResponse } from "next/server"
 import { db } from "@/lib/db"
@@ -44,6 +45,7 @@ export async function POST(request: Request, { params }: Params) {
         },
       })
       await notifyPaymentOutcome(tx, { paymentId: cashPayment.id, orderId: order.id, success: true })
+      await enqueueOrderPosDeduction(tx, order.id, cashPayment.method)
       if (["AVAILABILITY_CONFIRMED", "AWAITING_PAYMENT"].includes(order.status)) {
         const changed = await tx.order.updateMany({ where: { id: order.id, version: order.version, status: order.status }, data: { status: "PAID", pointsEarned: earned, version: { increment: 1 } } })
         if (changed.count !== 1) throw new Error("ORDER_CONFLICT")

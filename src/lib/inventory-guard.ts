@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/db';
 import type { Prisma } from '@prisma/client';
+import { cancelOrderPosDeduction } from '@/lib/pos-reconciliation';
 
 export class InventoryGuard {
   /**
@@ -129,6 +130,7 @@ export class InventoryGuard {
               note: 'Inventory reservation expired before payment.',
             },
           });
+          await cancelOrderPosDeduction(activeTx, order.id, 'SYSTEM');
 
           released++;
         };

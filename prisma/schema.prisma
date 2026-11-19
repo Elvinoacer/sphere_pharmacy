@@ -142,6 +142,12 @@ model Product {
   externalPosId        String?        @unique @map("external_pos_id")
   posSource            String?        @default("BANDAGO") @map("pos_source")
   lastSyncedAt         DateTime?      @map("last_synced_at")
+  lastPosStock         Int?           @map("last_pos_stock")
+  lastPosSellableStock Int?           @map("last_pos_sellable_stock")
+  externalWarehouseId  String?        @map("external_warehouse_id")
+  externalLocatorId    String?        @map("external_locator_id")
+  externalOrgId        String?        @map("external_org_id")
+  externalClientId     String?        @map("external_client_id")
   description          String         @default("")
   usageInfo            String?
   warnings             String?
@@ -154,6 +160,7 @@ model Product {
   stockAlerts          ProductAlert[]
   reviews              Review[]
   batches              ProductBatch[]
+  posOutboundJobs      PosOutboundJob[]
 
   @@index([externalPosId])
   @@index([inStock, stock])
@@ -227,6 +234,7 @@ model Order {
   payments             Payment[]
   prescriptions        Prescription[]
   loyaltyEntries       LoyaltyLedger[]
+  posOutboundJobs      PosOutboundJob[]
 
   @@index([status, createdAt])
   @@index([userId, createdAt])
@@ -677,6 +685,32 @@ enum PosSyncTrigger {
   BACKGROUND_POLL
   CSV_IMPORT
   MANUAL_RECONCILE
+  OUTBOUND_WRITEBACK
+  MANUAL_EXPORT_RECONCILE
+  BRIDGE_ERROR
+}
+
+enum PosSyncDirection {
+  INBOUND
+  OUTBOUND
+}
+
+enum PosOutboundStatus {
+  PENDING
+  PROCESSING
+  SYNCED
+  EXPORTED
+  RECONCILED_MANUAL
+  FAILED
+  CANCELLED
+  SKIPPED_UNMAPPED
+}
+
+enum PosOutboundEventType {
+  ONLINE_SALE
+  ADMIN_STOCK_ADJUST
+  REFUND_RESTOCK
+  ADMIN_PRICE_UPDATE
 }
 
 // =========================================================================
@@ -707,22 +741,93 @@ model ProductBatch {
 // =========================================================================
 
 model PosSyncLog {
-  id               String         @id @default(cuid())
-  posSource        String         @default("BANDAGO") @map("pos_source")
-  trigger          PosSyncTrigger @default(EXTENSION_STREAM)
-  status           PosSyncStatus  @default(SUCCESS)
+  id               String           @id @default(cuid())
+  posSource        String           @default("BANDAGO") @map("pos_source")
+  direction        PosSyncDirection @default(INBOUND)
+  trigger          PosSyncTrigger   @default(EXTENSION_STREAM)
+  status           PosSyncStatus    @default(SUCCESS)
   
-  itemsReceived    Int            @default(0) @map("items_received")
-  itemsUpserted    Int            @default(0) @map("items_upserted")
-  itemsFailed      Int            @default(0) @map("items_failed")
+  itemsReceived    Int              @default(0) @map("items_received")
+  itemsUpserted    Int              @default(0) @map("items_upserted")
+  itemsFailed      Int              @default(0) @map("items_failed")
   
-  details          Json?          // Stores error stacks, category assignments, diff logs
-  startedAt        DateTime       @default(now()) @map("started_at")
-  completedAt      DateTime?      @map("completed_at")
-  durationMs       Int?           @map("duration_ms")
+  details          Json?            // Stores error stacks, category assignments, diff logs
+  startedAt        DateTime         @default(now()) @map("started_at")
+  completedAt      DateTime?        @map("completed_at")
+  durationMs       Int?             @map("duration_ms")
 
   @@index([startedAt])
   @@index([status])
   @@map("pos_sync_logs")
+}
+
+// =========================================================================
+// BI-DIRECTIONAL OUTBOUND SYNC & INCIDENT TELEMETRY
+// =========================================================================
+
+model PosOutboundJob {
+  id                  String               @id @default(cuid())
+  idempotencyKey      String               @unique @map("idempotency_key")
+  eventType           PosOutboundEventType @map("event_type")
+  status              PosOutboundStatus    @default(PENDING)
+  orderId             String?              @map("order_id")
+  orderReference      String?              @map("order_reference")
+  productId           String               @map("product_id")
+  externalPosId       String?              @map("external_pos_id")
+  productName         String               @map("product_name")
+  sku                 String?
+  qtyDelta            Int                  @map("qty_delta")
+  targetStock         Int?                 @map("target_stock")
+  unitPrice           Decimal?             @map("unit_price") @db.Decimal(12, 2)
+  lineTotal           Decimal?             @map("line_total") @db.Decimal(12, 2)
+  paymentMethod       String?              @map("payment_method")
+  posStockSnapshot    Int?                 @map("pos_stock_snapshot")
+  attempts            Int                  @default(0)
+  maxAttempts         Int                  @default(5) @map("max_attempts")
+  lockedAt            DateTime?            @map("locked_at")
+  lockToken           String?              @map("lock_token")
+  externalDocumentNo  String?              @map("external_document_no")
+  externalInventoryUU String?              @map("external_inventory_uu")
+  reconciledBy        String?              @map("reconciled_by")
+  reconciledNote      String?              @map("reconciled_note")
+  exportBatchId       String?              @map("export_batch_id")
+  lastErrorCode       String?              @map("last_error_code")
+  lastError           String?              @map("last_error")
+  createdAt           DateTime             @default(now()) @map("created_at")
+  updatedAt           DateTime             @updatedAt @map("updated_at")
+  syncedAt            DateTime?            @map("synced_at")
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  order   Order?  @relation(fields: [orderId], references: [id], onDelete: SetNull)
+
+  @@index([status, createdAt])
+  @@index([productId, status])
+  @@index([orderId])
+  @@index([exportBatchId])
+  @@map("pos_outbound_jobs")
+}
+
+model PosSyncIncident {
+  id             String           @id @default(cuid())
+  direction      PosSyncDirection @default(INBOUND)
+  source         String
+  severity       String           @default("ERROR")
+  code           String
+  message        String
+  remediation    String?
+  externalPosId  String?          @map("external_pos_id")
+  productName    String?          @map("product_name")
+  orderReference String?          @map("order_reference")
+  occurrences    Int              @default(1)
+  resolved       Boolean          @default(false)
+  resolvedBy     String?          @map("resolved_by")
+  resolvedAt     DateTime?        @map("resolved_at")
+  meta           Json?
+  firstSeenAt    DateTime         @default(now()) @map("first_seen_at")
+  lastSeenAt     DateTime         @default(now()) @map("last_seen_at")
+
+  @@index([resolved, severity, lastSeenAt])
+  @@index([code, resolved])
+  @@map("pos_sync_incidents")
 }
 

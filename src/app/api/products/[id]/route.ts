@@ -6,6 +6,7 @@ import { requireStaff } from "@/lib/session"
 import { STOCK_STATUSES } from "@/lib/constants"
 import { managedImage } from "@/lib/security/service"
 import { rejectOversizedRequest } from "@/lib/security/request"
+import { enqueueAdminStockEdit } from "@/lib/pos-reconciliation"
 
 type Params = { params: Promise<{ id: string }> }
 
@@ -59,6 +60,8 @@ export async function PATCH(request: Request, { params }: Params) {
       const qty = Number(body.stockQty)
       if (!Number.isSafeInteger(qty) || qty < 0) return NextResponse.json({ error: "Stock quantity must be a non-negative whole number." }, { status: 400 })
       data.stockQty = qty
+      data.stock = qty
+      data.inStock = qty > 0
       if (!body.stockStatus) {
         data.stockStatus = qty <= 0 ? "OUT_OF_STOCK" : qty <= existing.lowStockThreshold ? "LOW_STOCK" : "IN_STOCK"
       }
@@ -143,6 +146,12 @@ export async function PATCH(request: Request, { params }: Params) {
       )
     }
     if (data.stockQty !== undefined && Number(data.stockQty) !== existing.stockQty) {
+      await enqueueAdminStockEdit(db, {
+        productId: existing.id,
+        previousQty: existing.stockQty,
+        newQty: Number(data.stockQty),
+        actor: session.staffName ?? "Admin",
+      })
       await audit(
         session.staffName ?? "Staff", session.staffRole, "STOCK_UPDATE", "Product", existing.sku,
         `Stock qty ${existing.stockQty} → ${data.stockQty} (${existing.name})`

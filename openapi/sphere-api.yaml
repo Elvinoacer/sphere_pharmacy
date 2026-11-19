@@ -1703,7 +1703,57 @@ paths:
       summary: BandaGo POS telemetry and recent sync logs
       security: [{ sessionCookie: [] }]
       responses:
-        '200': { description: '{ totalSyncedProducts, totalBatches, nearExpiryCount, lastSyncTimestamp, recentLogs }' }
+        '200': { description: 'Bi-directional POS telemetry, policy, heartbeat, outbound counts, incidents & recent 25 logs' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+  /api/admin/pos-sync/policy:
+    get:
+      tags: [Admin]
+      summary: Read BandaGo POS sync policy and extension heartbeat
+      security: [{ sessionCookie: [] }]
+      responses:
+        '200': { description: '{ policy, bridgeHeartbeat, apiKeyConfigured, usingDefaultKeyWarning }' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+    put:
+      tags: [Admin]
+      summary: Update BandaGo POS synchronization policy (ADMIN only)
+      security: [{ sessionCookie: [] }]
+      responses:
+        '200': { description: '{ ok, policy }' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+  /api/admin/pos-sync/reconcile:
+    get:
+      tags: [Admin]
+      summary: List outbound reconciliation jobs, stock variances, and POS incidents
+      security: [{ sessionCookie: [] }]
+      responses:
+        '200': { description: '{ jobs, varianceItems, incidents, summary }' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+    post:
+      tags: [Admin]
+      summary: Execute reconciliation command (MARK_RECONCILED, RETRY_JOBS, CANCEL_JOBS, RESOLVE_INCIDENT, QUEUE_STOCK_PUSH, SET_BASELINE_NOW)
+      security: [{ sessionCookie: [] }]
+      responses:
+        '200': { description: '{ ok, affectedCount? }' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+  /api/admin/pos-sync/sales-export:
+    get:
+      tags: [Admin]
+      summary: Export Zero-PHI daily online sales & stock adjustments (PDF, CSV, or JSON)
+      security: [{ sessionCookie: [] }]
+      parameters:
+        - { name: format, in: query, schema: { type: string, enum: [pdf, csv, json] } }
+        - { name: scope, in: query, schema: { type: string, enum: [unreconciled, today, range] } }
+        - { name: groupBy, in: query, schema: { type: string, enum: [PRODUCT_SUMMARY, ITEMIZED_ORDERS] } }
+        - { name: markExported, in: query, schema: { type: string, enum: ['0', '1'] } }
+      responses:
+        '200': { description: 'Downloadable PDF, UTF-8 BOM formula-safe CSV, or JSON batch' }
         '401': { $ref: '#/components/responses/Unauthorized' }
         '403': { $ref: '#/components/responses/Forbidden' }
   /api/admin/live-changes:
@@ -1803,6 +1853,33 @@ paths:
                   items: { $ref: '#/components/schemas/BandaGoCrmCustomer' }
       responses:
         '200': { description: '{ success, reconciledCount, failedCount, errors?, durationMs }' }
+  /api/integrations/bandago/outbound:
+    get:
+      tags: [BandaGoIntegration]
+      summary: Claim or inspect pending Website -> BandaGo outbound stock adjustment jobs
+      security: [{ bandagoBearer: [] }, { sessionCookie: [] }]
+      parameters:
+        - { name: claim, in: query, schema: { type: string, enum: ['0', '1'] } }
+        - { name: limit, in: query, schema: { type: integer, default: 20 } }
+      responses:
+        '200': { description: '{ policy, jobs }' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+  /api/integrations/bandago/outbound/ack:
+    post:
+      tags: [BandaGoIntegration]
+      summary: Acknowledge BandaGo Physical Inventory writeback results (SYNCED, RELEASE, FAILED)
+      security: [{ bandagoBearer: [] }, { sessionCookie: [] }]
+      responses:
+        '200': { description: '{ ok, syncedCount, releasedCount, failedCount }' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+  /api/integrations/bandago/telemetry:
+    post:
+      tags: [BandaGoIntegration]
+      summary: Receive extension Zero-PHI heartbeat & error incidents; returns live policy
+      security: [{ bandagoBearer: [] }, { sessionCookie: [] }]
+      responses:
+        '200': { description: '{ ok, policy, pendingOutboundCount }' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
         '401': { $ref: '#/components/responses/Unauthorized' }
         '403': { $ref: '#/components/responses/Forbidden' }
 

@@ -117,7 +117,9 @@ Neon pooled endpoints (hostname containing `-pooler.`) sit behind PgBouncer. Pri
 | `AuditLog` | Staff/system action audit (`actor`, `action`, `entity`, `entityId`, `details`). |
 | `Setting` | Key/value app settings (JSON values for `pharmacy`/`delivery`/`compliance` keys). |
 | `RateLimitBucket` | Fixed-window rate-limit counters (natural key). |
-| `PosSyncLog` | BandaGo POS sync telemetry (table `pos_sync_logs`; uses the schema's only two Prisma enums). |
+| `PosSyncLog` | BandaGo POS sync telemetry (table `pos_sync_logs`; uses Prisma enums for direction, trigger, and status). |
+| `PosOutboundJob` | Outbound Website → BandaGo deduction/restock/stock-edit ledger and daily export batching (`pos_outbound_jobs`). |
+| `PosSyncIncident` | Deduplicated Zero-PHI bridge & sync error console incidents (`pos_sync_incidents`). |
 
 ## Design decisions
 

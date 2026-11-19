@@ -18,7 +18,7 @@ Prioritized register of known debt and defects, verified against the November 20
 
 | # | What | Where | Impact | Recommended action | Status |
 | --- | --- | --- | --- | --- | --- |
-| H1 | Browser-exposed POS sync secret + hard-coded fallback + shared default (detail below) | `pos-sync-section.tsx`, `api/integrations/bandago/csv-import/route.ts`, `.env.example` | Credential exposure to any browser; fail-closed defeated | Remove browser secret, remove fallback, rotate reused credentials | Open |
+| H1 | Browser-exposed POS sync secret + hard-coded fallback + shared default (detail below) | `pos-sync-section.tsx`, `api/integrations/bandago/csv-import/route.ts`, `.env.example` | Credential exposure to any browser; fail-closed defeated | Remove browser secret, remove fallback, rotate reused credentials | **Fixed** (browser secret & hardcoded fallback removed; admin UI uses staff cookie; rotate deployed secrets before go-live) |
 | H2 | No in-repo cron scheduler; scheduling is external and undocumented per environment | `/api/cron/*`, deployment layer | Silent operational failure across five jobs | Checklist enforcement + ship a scheduler reference | Open |
 | H3 | Payment-audit release blockers (six items) | payments/service-payment paths | Production payments uncertifiable | Implement per audit, preserving ADR-007/008/009 invariants | Open |
 
@@ -67,7 +67,7 @@ From [../payment-notification-audit.md](../payment-notification-audit.md) (5 Sep
 
 | # | What | Where | Impact | Recommended action | Status |
 | --- | --- | --- | --- | --- | --- |
-| L1 | Non-constant-time Bearer comparison (`===`) in 4 of 5 cron routes and the BandaGo routes; only `/api/cron/notifications` uses `authorizedJob()` timing-safe compare | cron + bandago route handlers | Theoretical timing side-channel | Route all bearer checks through one `timingSafeEqual` helper | Open |
+| L1 | Non-constant-time Bearer comparison (`===`) in cron routes and BandaGo routes | cron + bandago route handlers | Theoretical timing side-channel | Route all bearer checks through one `timingSafeEqual` helper | **Partial** (all BandaGo routes fixed via `verifyBandagoBearerHeader`; 4 cron routes still use plain compare) |
 | L2 | Chronic-refills queries legacy `'DELIVERED'` order status alongside `COMPLETED_DELIVERY`/`COMPLETED_PICKUP` | `src/lib/crm/bandago-crm.ts` | Legacy rows skew eligibility; semantic ambiguity | Keep for history, but normalize legacy values at the constants layer (ADR-004) | Open |
 | L3 | `GET /api/prescriptions` header comment says "GET /api/orders" (copy-paste artifact) | `api/prescriptions/route.ts` | Minor reader confusion | Fix the comment | Open |
 | L4 | `Payment.cardLast4` declared but never populated by any code path | `prisma/schema.prisma` | Dead column; misleading schema | Populate from IntaSend webhook data or drop via migration | Open |
