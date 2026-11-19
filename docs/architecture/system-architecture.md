@@ -49,7 +49,7 @@ flowchart TB
     PRISMA["Prisma 6 client<br/>src/lib/db.ts singleton"]
   end
 
-  subgraph DB[("PostgreSQL — Neon")]
+  subgraph DB["PostgreSQL — Neon"]
     MODELS["39 models<br/>orders, payments, prescriptions,<br/>loyalty, notifications, POS sync"]
   end
 

@@ -530,6 +530,9 @@ export function SphereLanding() {
           <button onClick={() => navigate("account")}>
             My account <ArrowUpRight size={14} />
           </button>
+          <a href="/docs">
+            Documentation <ArrowUpRight size={14} />
+          </a>
         </div>
       </footer>
     </div>

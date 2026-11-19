@@ -4,15 +4,12 @@ const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined
 }
 
-const databaseUrl =
-  process.env.DATABASE_URL ??
-  process.env.sphere_pharmacy_PRISMA_DATABASE_URL ??
-  process.env.sphere_pharmacy_DATABASE_URL ??
-  process.env.sphere_pharmacy_POSTGRES_URL
-
-if (!databaseUrl) {
-  throw new Error(
-    "Database configuration missing. Set DATABASE_URL, sphere_pharmacy_PRISMA_DATABASE_URL, sphere_pharmacy_DATABASE_URL, or sphere_pharmacy_POSTGRES_URL."
+function resolveDatabaseUrl(): string | undefined {
+  return (
+    process.env.DATABASE_URL ??
+    process.env.sphere_pharmacy_PRISMA_DATABASE_URL ??
+    process.env.sphere_pharmacy_DATABASE_URL ??
+    process.env.sphere_pharmacy_POSTGRES_URL
   )
 }
 
@@ -35,24 +32,52 @@ function databaseUrlForPrisma(value: string) {
   }
 }
 
-export const db =
-  globalForPrisma.prisma ??
-  new PrismaClient({
+function createPrismaClient(databaseUrl: string): PrismaClient {
+  const client = new PrismaClient({
     datasourceUrl: databaseUrlForPrisma(databaseUrl),
     log: ["warn", "error"],
   })
 
-// Enable prisma.productCategory alias to category for blueprint compatibility
-if (!(db as any).productCategory) {
-  Object.defineProperty(db, "productCategory", {
-    get() {
-      return (this as any).category
-    },
-    configurable: true,
-  })
+  // Enable prisma.productCategory alias to category for blueprint compatibility
+  if (!(client as any).productCategory) {
+    Object.defineProperty(client, "productCategory", {
+      get() {
+        return (this as any).category
+      },
+      configurable: true,
+    })
+  }
+
+  return client
 }
 
-globalForPrisma.prisma = db
+function getClient(): PrismaClient {
+  if (globalForPrisma.prisma) {
+    return globalForPrisma.prisma
+  }
+  const databaseUrl = resolveDatabaseUrl()
+  if (!databaseUrl) {
+    throw new Error(
+      "Database configuration missing. Set DATABASE_URL, sphere_pharmacy_PRISMA_DATABASE_URL, sphere_pharmacy_DATABASE_URL, or sphere_pharmacy_POSTGRES_URL."
+    )
+  }
+  const client = createPrismaClient(databaseUrl)
+  globalForPrisma.prisma = client
+  return client
+}
+
+const initialUrl = resolveDatabaseUrl()
+const initialClient = initialUrl ? getClient() : undefined
+
+export const db: PrismaClient =
+  initialClient ??
+  new Proxy({} as PrismaClient, {
+    get(_target, prop) {
+      const client = getClient()
+      const value = Reflect.get(client, prop, client)
+      return typeof value === "function" ? value.bind(client) : value
+    },
+  })
 
 export const prisma = db
 

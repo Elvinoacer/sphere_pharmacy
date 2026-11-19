@@ -2,7 +2,7 @@
 
 This folder is the **canonical, version-controlled documentation** for Sphere Pharmacy. It lives in the same repository as the code it describes, so every documentation change has Git history, can be reviewed in pull requests alongside code changes, and can be read directly by developers and AI coding agents.
 
-> **Format strategy:** Markdown is the source of truth (with Mermaid for diagrams and OpenAPI for the API contract). A documentation portal (Docusaurus or similar) can be built from these same files later — the website would be a presentation layer, never a second place where documentation is written. PDFs are export-only.
+> **Format strategy:** Markdown is the source of truth (with Mermaid for diagrams and OpenAPI for the API contract). The in-app documentation portal at **/docs** renders these same files — it is a presentation, navigation, search and AI-retrieval layer, never a second place where documentation is written. PDFs are export-only.
 
 ## Audiences
 
@@ -111,9 +111,9 @@ Each follows the same 14-section template: purpose, users, screens, frontend, ba
 
 ## Conventions
 
-- Every document opens with a metadata table: `| Audience | Status | Verified |`. The **Verified** date states when it was last checked against the code.
+- Every document opens with a metadata table: `| Audience | Status | Verified |`. The **Verified** date states when it was last checked against the code. Journey documents under [journeys/](journeys/README.md) additionally carry YAML frontmatter (id, actor, area, status, cross-references).
 - Status labels, used consistently: **Implemented** · **Environment-dependent** (code complete, needs provider credentials or environment) · **Planned or not shipped** · **Requires live verification**.
-- Diagrams are Mermaid inside fenced code blocks; the API contract is OpenAPI 3.1 in [`openapi/sphere-api.yaml`](../openapi/sphere-api.yaml).
+- Diagrams are Mermaid inside fenced code blocks; the API contract is OpenAPI 3.1 in [`openapi/sphere-api.yaml`](../openapi/sphere-api.yaml). The portal renders these diagrams interactively (zoom, pan, fullscreen, SVG download) at `/docs`.
 - When documentation and code disagree, **the code wins — then fix the documentation** (and record why in the PR).
 - Nothing in this public repository may contain real credentials, customer or prescription data, or unredacted security findings. Restricted internal documents belong in a private location.
 

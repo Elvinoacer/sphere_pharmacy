@@ -4,7 +4,7 @@ import { Separator } from "@/components/ui/separator"
 import { LogoFull } from "@/components/shared/logo"
 import { PHARMACY } from "@/lib/constants"
 import { useAppStore } from "@/store/use-app-store"
-import { Phone, MapPin, Clock, Mail, LayoutDashboard, ShieldAlert, MessageCircle } from "lucide-react"
+import { Phone, MapPin, Clock, Mail, LayoutDashboard, ShieldAlert, MessageCircle, BookOpen } from "lucide-react"
 
 export function Footer() {
   const navigate = useAppStore((s) => s.navigate)
@@ -81,6 +81,9 @@ export function Footer() {
             <button onClick={() => navigate("admin")} className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground">
               <LayoutDashboard className="h-3.5 w-3.5" /> Staff dashboard
             </button>
+            <a href="/docs" className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground">
+              <BookOpen className="h-3.5 w-3.5" /> Documentation
+            </a>
           </div>
         </div>
 

@@ -141,3 +141,14 @@ test("catalog desktop sidebar is independently scrollable and reveals filters wi
   assert.match(catalog, /Sort products/)
   assert.match(catalog, /aria-expanded=\{categoriesOpen\}/)
 })
+
+test("database client defers missing-URL throw to runtime property access and docs loader avoids root-wide tracing", () => {
+  const dbSource = read("src/lib/db.ts")
+  assert.match(dbSource, /new Proxy/)
+  assert.match(dbSource, /Database configuration missing/)
+
+  const docsContent = read("src/lib/docs/content.ts")
+  assert.doesNotMatch(docsContent, /join\(ROOT,\s*sourcePath\)/)
+  assert.doesNotMatch(docsContent, /resolve\(ROOT,/)
+  assert.match(docsContent, /join\(ROOT,\s*"docs",\s*rel\)/)
+})

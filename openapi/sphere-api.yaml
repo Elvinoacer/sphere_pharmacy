@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Sphere Pharmacy API
-  version: 0.1.0
+  version: 0.3.0
   description: |
     REST API for Sphere Pharmacy, a full-stack retail pharmacy operations platform
     serving a community pharmacy in Roysambu, Nairobi, Kenya. Covers catalog and
@@ -1953,6 +1953,29 @@ paths:
             application/json:
               schema: { $ref: '#/components/schemas/AssistantChatResponse' }
         '400': { $ref: '#/components/responses/BadRequest' }
+        '413': { $ref: '#/components/responses/PayloadTooLarge' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+
+  /api/docs-index:
+    get:
+      tags: [Assistant]
+      summary: Documentation portal lexical search index (public corpus only)
+      responses:
+        '200':
+          description: '{ v, generatedAt, entries[] }'
+
+  /api/docs-assistant:
+    post:
+      tags: [Assistant]
+      summary: Ask Sphere Docs AI assistant (public documentation corpus only; no session is read)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/AssistantChatRequest' }
+      responses:
+        '200':
+          description: '{ reply, citations[], provider }'
         '413': { $ref: '#/components/responses/PayloadTooLarge' }
         '429': { $ref: '#/components/responses/RateLimited' }
 

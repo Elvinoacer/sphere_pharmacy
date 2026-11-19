@@ -3,6 +3,14 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   ...(process.env.STANDALONE === "true" ? { output: "standalone" } : {}),
   reactStrictMode: true,
+  // The documentation portal reads the canonical corpus at build time and the
+  // docs assistant re-reads it at runtime — include those files in standalone
+  // output traces so the deployed server can access them.
+  outputFileTracingIncludes: {
+    "/docs/**": ["./docs/**/*", "./openapi/**/*", "./prisma/schema.prisma", "./README.md", "./AGENTS.md"],
+    "/api/docs-index": ["./docs/**/*", "./openapi/**/*", "./prisma/schema.prisma", "./README.md", "./AGENTS.md"],
+    "/api/docs-assistant": ["./docs/**/*", "./README.md", "./AGENTS.md"],
+  },
   async headers() {
     return [{
       source: "/(.*)",

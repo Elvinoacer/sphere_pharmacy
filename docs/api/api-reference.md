@@ -423,9 +423,13 @@ OpenStreetMap Nominatim proxy (no Google). **Environment-dependent** on the publ
 
 **POST /api/upload** — Any signed-in session; 20/15 min/principal. Folders and permissions: `prescriptions` (customer-only), `avatars` (any session), `products`/`services` (ADMIN/PHARMACIST), `general` (ADMIN/STAFF). Direct multipart upload: MIME allowlist jpeg/png/webp/gif/heic-heif/pdf, ≤10 MB, magic-byte sniffing, extension/MIME match; keys `{folder}/{ownerId}/{uuid}.{ext}`; metadata `ownerid`/`originalname`/`category`; `safeName` ≤80. `action: "presign"` (presigned PUT, prescriptions folder only): body `{ folder: "prescriptions", fileName, fileType, fileSize (1–10 MB) }` → signed URL valid 30–300 s. Output includes the storage key / public URL as applicable.
 
-### 3.18 Assistant — `/api/assistant`
+### 3.18 Assistant & Documentation Portal — `/api/assistant`, `/api/docs-index`, `/api/docs-assistant`
 
 **POST /api/assistant** — Public (no session is ever read); 40/h/IP; ≤20 KB. Body `{ messages: [{ role: "user"|"assistant", content }] }` (last 8 kept, final user message truncated to 1,800 chars). Pipeline: credential patterns → safety triage (emergency/medical-suitability escalation) → deterministic intent → optional Groq LLM (`GROQ_API_KEY`/`GROQ_MODEL`, 15 s timeout, 650 max tokens; skipped for direct-request patterns and provider outages) → output hardening (zod intent, no credentials, no false success claims). Output `{ reply, actions[], escalated }` where actions are client-side navigation/search/product/book/pay cards. The route can only query PUBLIC catalog/service data; account and payment actions are executed client-side through authenticated endpoints. **Environment-dependent** (degrades deterministically without `GROQ_API_KEY`).
+
+**GET /api/docs-index** — Public (`Cache-Control: public, max-age=600, stale-while-revalidate=86400`). Returns `{ v: 1, generatedAt, entries[] }` containing the lexical search index over the public documentation corpus (`docs/**`, `README.md`, `AGENTS.md`) and OpenAPI endpoints for the documentation portal command palette (⌘K).
+
+**POST /api/docs-assistant** — Public (no session is ever read); 20/h/IP (`docs-assistant` bucket); ≤20 KB. Body `{ messages: [{ role: "user"|"assistant", content }] }` (last 6 kept, final question truncated to 1,200 chars). Retrieves top documentation excerpts via heading-aware lexical scoring over the public documentation corpus and optionally synthesizes a cited Markdown answer via Groq (`GROQ_API_KEY`/`GROQ_MODEL`, 20 s timeout, 700 max tokens), falling back deterministically to the retrieved sections when no key is configured or the provider is unavailable. Output `{ reply, citations[], provider }`.
 
 ### 3.19 Cron — `/api/cron/*`
 
@@ -483,6 +487,7 @@ All buckets are fixed-window, keyed `scope:sha256(clientIp + ":" + identity)`; b
 | `refund` | 10 / 60 min | staffId | POST /api/payments/refund |
 | `notification-test` | 10 / 60 min | admin | POST /api/notifications/dispatch-test |
 | `assistant` | 40 / 60 min | IP | POST /api/assistant |
+| `docs-assistant` | 20 / 60 min | IP | POST /api/docs-assistant |
 | `location-search` | 30 / 10 min | IP | GET /api/location/search |
 | `reverse-geocode` | 30 / 10 min | IP | POST /api/location/reverse-geocode |
 

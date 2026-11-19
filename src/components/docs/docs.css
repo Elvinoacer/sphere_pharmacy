@@ -1,0 +1,547 @@
+/* Sphere Pharmacy — documentation portal styles.
+   Built exclusively on the project's semantic design tokens (globals.css):
+   teal/emerald OKLCH palette, light + dark. No new colors. */
+
+/* ---------- Shell ---------- */
+
+.docs-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+.docs-body {
+  flex: 1;
+  width: 100%;
+  max-width: 90rem;
+  margin-inline: auto;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+}
+
+@media (min-width: 1024px) {
+  .docs-body {
+    grid-template-columns: 17rem minmax(0, 1fr);
+  }
+}
+
+/* Pages compose their own content + TOC grid at xl */
+.docs-with-toc {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+}
+
+@media (min-width: 1280px) {
+  .docs-with-toc {
+    grid-template-columns: minmax(0, 1fr) 15rem;
+    gap: 2.5rem;
+  }
+}
+
+.docs-scrollarea {
+  height: calc(100vh - 3.5rem);
+  height: calc(100dvh - 3.5rem);
+  position: sticky;
+  top: 3.5rem;
+}
+
+/* ---------- Prose ---------- */
+
+.docs-prose {
+  font-size: 0.9375rem;
+  line-height: 1.75;
+  color: var(--foreground);
+}
+
+/* Reading width applies to flowing text; tables, code and diagrams use the
+   full content column for legibility (Stripe/GitHub-style breakout). */
+.docs-prose > p,
+.docs-prose > ul,
+.docs-prose > ol,
+.docs-prose > blockquote,
+.docs-prose > h2,
+.docs-prose > h3,
+.docs-prose > h4 {
+  max-width: 74ch;
+}
+
+.docs-prose h1,
+.docs-prose h2,
+.docs-prose h3,
+.docs-prose h4 {
+  color: var(--foreground);
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  scroll-margin-top: 5.5rem;
+}
+
+.docs-prose h1 {
+  font-size: clamp(1.75rem, 3.5vw, 2.25rem);
+  line-height: 1.2;
+  margin: 0 0 0.75rem;
+}
+
+.docs-prose h2 {
+  font-size: 1.375rem;
+  margin: 2.75rem 0 0.875rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.docs-prose h3 {
+  font-size: 1.0625rem;
+  margin: 2rem 0 0.625rem;
+}
+
+.docs-prose h4 {
+  font-size: 0.9375rem;
+  margin: 1.5rem 0 0.5rem;
+  color: var(--muted-foreground);
+}
+
+.docs-prose p {
+  margin: 0.875rem 0;
+}
+
+.docs-prose > p:first-of-type {
+  margin-top: 0.5rem;
+}
+
+.docs-prose a {
+  color: var(--primary);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in oklab, var(--primary) 35%, transparent);
+  text-underline-offset: 3px;
+  border-radius: 2px;
+}
+
+.docs-prose a:hover {
+  text-decoration-color: var(--primary);
+}
+
+.docs-prose strong {
+  font-weight: 650;
+  color: var(--foreground);
+}
+
+.docs-prose ul,
+.docs-prose ol {
+  margin: 0.875rem 0;
+  padding-left: 1.375rem;
+}
+
+.docs-prose ul {
+  list-style: disc;
+}
+
+.docs-prose ol {
+  list-style: decimal;
+}
+
+.docs-prose li {
+  margin: 0.375rem 0;
+}
+
+.docs-prose li::marker {
+  color: var(--muted-foreground);
+}
+
+.docs-prose blockquote {
+  margin: 1.25rem 0;
+  padding: 0.75rem 1rem;
+  border-left: 3px solid var(--primary);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  background: color-mix(in oklab, var(--muted) 55%, transparent);
+  color: var(--foreground);
+}
+
+.docs-prose blockquote p {
+  margin: 0.25rem 0;
+}
+
+.docs-prose blockquote p:first-child {
+  margin-top: 0;
+}
+
+.docs-prose blockquote p:last-child {
+  margin-bottom: 0;
+}
+
+/* GitHub-style alert callouts */
+.docs-prose .docs-callout {
+  margin: 1.25rem 0;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--muted-foreground);
+  background: color-mix(in oklab, var(--muted) 45%, transparent);
+}
+
+.docs-prose .docs-callout-title {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+  margin-bottom: 0.25rem;
+}
+
+.docs-prose .docs-callout[data-callout="warning"],
+.docs-prose .docs-callout[data-callout="caution"] {
+  border-left-color: var(--destructive);
+}
+
+.docs-prose .docs-callout[data-callout="note"],
+.docs-prose .docs-callout[data-callout="tip"] {
+  border-left-color: var(--primary);
+}
+
+/* ---------- Tables ---------- */
+
+.docs-table-wrap {
+  overflow-x: auto;
+  margin: 1.25rem 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  -webkit-overflow-scrolling: touch;
+}
+
+.docs-table-wrap table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.84375rem;
+  line-height: 1.55;
+  min-width: 34rem;
+}
+
+.docs-table-wrap thead {
+  background: color-mix(in oklab, var(--muted) 60%, transparent);
+}
+
+.docs-table-wrap th {
+  text-align: left;
+  font-weight: 650;
+  color: var(--foreground);
+  padding: 0.625rem 0.875rem;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.docs-table-wrap td {
+  padding: 0.5625rem 0.875rem;
+  border-bottom: 1px solid color-mix(in oklab, var(--border) 60%, transparent);
+  vertical-align: top;
+}
+
+.docs-table-wrap tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.docs-table-wrap tbody tr:hover {
+  background: color-mix(in oklab, var(--accent) 40%, transparent);
+}
+
+/* ---------- Code ---------- */
+
+.docs-code-wrap {
+  position: relative;
+  margin: 1.25rem 0;
+}
+
+.docs-prose code {
+  font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  font-size: 0.84375em;
+}
+
+.docs-prose :not(pre) > code {
+  background: color-mix(in oklab, var(--muted) 80%, transparent);
+  border: 1px solid color-mix(in oklab, var(--border) 70%, transparent);
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.375rem;
+  color: var(--foreground);
+  overflow-wrap: anywhere;
+}
+
+.docs-code-wrap pre {
+  margin: 0;
+  padding: 1rem 1.125rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  background: color-mix(in oklab, var(--muted) 55%, var(--card));
+  overflow-x: auto;
+  font-size: 0.8125rem;
+  line-height: 1.65;
+  tab-size: 2;
+}
+
+.docs-code-wrap pre code {
+  background: transparent;
+  border: none;
+  padding: 0;
+  font-size: inherit;
+}
+
+/* ---------- Mermaid ---------- */
+
+.docs-mermaid-frame {
+  margin: 1.5rem 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--card);
+  overflow: hidden;
+}
+
+.docs-mermaid-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.4375rem 0.75rem;
+  border-bottom: 1px solid var(--border);
+  background: color-mix(in oklab, var(--muted) 50%, transparent);
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+}
+
+.docs-mermaid-viewport {
+  overflow: hidden;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 7rem;
+  cursor: grab;
+  touch-action: pan-x pan-y pinch-zoom;
+}
+
+.docs-mermaid-viewport:active {
+  cursor: grabbing;
+}
+
+.docs-mermaid-viewport svg {
+  max-width: 100%;
+  height: auto;
+  transition: transform 120ms ease;
+}
+
+.docs-mermaid-viewport.is-zoomed svg {
+  max-width: none;
+}
+
+.docs-mermaid-viewport:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: -2px;
+}
+
+/* ---------- Headings anchors ---------- */
+
+.docs-heading-anchor {
+  opacity: 0;
+  margin-left: 0.375rem;
+  color: var(--muted-foreground);
+  text-decoration: none;
+  font-weight: 400;
+}
+
+.docs-prose h1:hover .docs-heading-anchor,
+.docs-prose h2:hover .docs-heading-anchor,
+.docs-prose h3:hover .docs-heading-anchor,
+.docs-prose h4:hover .docs-heading-anchor,
+.docs-heading-anchor:focus-visible {
+  opacity: 1;
+}
+
+/* ---------- Sidebar ---------- */
+
+.docs-nav-link {
+  display: block;
+  padding: 0.375rem 0.75rem 0.375rem 1.75rem;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: var(--muted-foreground);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  position: relative;
+  transition: color 120ms ease, background 120ms ease;
+}
+
+.docs-nav-link:hover {
+  color: var(--foreground);
+  background: color-mix(in oklab, var(--accent) 55%, transparent);
+  text-decoration: none;
+}
+
+.docs-nav-link[data-active="true"] {
+  color: var(--primary);
+  font-weight: 600;
+  background: color-mix(in oklab, var(--accent) 80%, transparent);
+}
+
+.docs-nav-link[data-active="true"]::before {
+  content: "";
+  position: absolute;
+  left: 0.5rem;
+  top: 0.3125rem;
+  bottom: 0.3125rem;
+  width: 3px;
+  border-radius: 999px;
+  background: var(--primary);
+}
+
+/* ---------- TOC ---------- */
+
+.docs-toc-link {
+  display: block;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.78125rem;
+  line-height: 1.45;
+  color: var(--muted-foreground);
+  text-decoration: none;
+  border-left: 2px solid transparent;
+  transition: color 120ms ease, border-color 120ms ease;
+}
+
+.docs-toc-link:hover {
+  color: var(--foreground);
+  text-decoration: none;
+}
+
+.docs-toc-link[data-level="3"] {
+  padding-left: 1.5rem;
+}
+
+.docs-toc-link[data-active="true"] {
+  color: var(--primary);
+  border-left-color: var(--primary);
+  font-weight: 550;
+}
+
+/* ---------- Misc ---------- */
+
+.docs-repo-file {
+  font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  font-size: 0.84375em;
+  background: color-mix(in oklab, var(--muted) 80%, transparent);
+  border: 1px dashed color-mix(in oklab, var(--border) 80%, transparent);
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.375rem;
+  color: var(--muted-foreground);
+  overflow-wrap: anywhere;
+}
+
+.docs-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklab, var(--muted-foreground) 45%, transparent) transparent;
+}
+
+.docs-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.docs-scrollbar::-webkit-scrollbar-thumb {
+  background: color-mix(in oklab, var(--muted-foreground) 40%, transparent);
+  border-radius: 999px;
+}
+
+.docs-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .docs-prose *,
+  .docs-mermaid-viewport svg {
+    transition: none !important;
+  }
+}
+
+.docs-prose.docs-prose-compact {
+  font-size: 0.875rem;
+}
+
+.docs-prose.docs-prose-compact p {
+  margin: 0.5rem 0;
+}
+
+.docs-prose.docs-prose-compact ol,
+.docs-prose.docs-prose-compact ul {
+  margin: 0.5rem 0;
+}
+
+/* Long-list handling for directory pages */
+.docs-max-scroll {
+  max-height: 26rem;
+  overflow-y: auto;
+}
+
+/* API reference */
+.docs-method-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 3.5rem;
+  padding: 0.125rem 0.5rem;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  font-size: 0.71875rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--primary-foreground);
+  background: var(--muted-foreground);
+}
+
+.docs-method-badge[data-method="GET"] { background: color-mix(in oklab, var(--primary) 85%, white 15%); }
+.docs-method-badge[data-method="POST"] { background: var(--primary); }
+.docs-method-badge[data-method="PATCH"] { background: color-mix(in oklab, var(--primary) 70%, black 12%); }
+.docs-method-badge[data-method="PUT"] { background: color-mix(in oklab, var(--primary) 70%, black 12%); }
+.docs-method-badge[data-method="DELETE"] { background: var(--destructive); }
+
+/* Journey metadata chips */
+.docs-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.1875rem 0.625rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: color-mix(in oklab, var(--muted) 55%, transparent);
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+  text-decoration: none;
+  line-height: 1.5;
+}
+
+a.docs-chip:hover {
+  color: var(--primary);
+  border-color: color-mix(in oklab, var(--primary) 45%, var(--border));
+  text-decoration: none;
+}
+
+.docs-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.docs-status::before {
+  content: "";
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: currentColor;
+}
+
+.docs-status[data-status="implemented"] { color: oklch(0.55 0.13 155); }
+.docs-status[data-status="environment-dependent"] { color: oklch(0.68 0.14 70); }
+.docs-status[data-status="planned"] { color: var(--muted-foreground); }
+.docs-status[data-status="needs-verification"] { color: oklch(0.62 0.15 40); }
+
+.dark .docs-status[data-status="implemented"] { color: oklch(0.75 0.13 155); }
+.dark .docs-status[data-status="environment-dependent"] { color: oklch(0.8 0.13 85); }
+.dark .docs-status[data-status="needs-verification"] { color: oklch(0.78 0.13 45); }

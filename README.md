@@ -22,8 +22,10 @@ This repository is more than a storefront. It is a pharmacy operations platform 
 The canonical documentation lives in this repository, next to the code it describes. Start at **[docs/README.md](docs/README.md)** — the complete index for three audiences:
 
 - **Engineering** — architecture, frontend, backend, database, API reference, security, integrations, workflows, testing, operations
-- **Pharmacy operations** — product overview, feature catalogue, roles, customer journeys, the operator guide
+- **Pharmacy operations** — product overview, feature catalogue, roles, customer journeys, the operator guide, and the complete user-journey explorer
 - **Governance** — architecture decisions, documentation policy, technical debt, release history
+
+The documentation is also rendered as an interactive portal inside the app at **`/docs`** — audience navigation, full-text search (⌘K), the user-journey explorer with interactive flowcharts, an API reference generated from the OpenAPI contract, a database explorer generated from the Prisma schema, and an AI documentation assistant ("Ask Sphere Docs"). The Markdown files remain the single source of truth; the portal is a rendering layer over them.
 
 Key entry points:
 
