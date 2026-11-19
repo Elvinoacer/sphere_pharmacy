@@ -52,162 +52,181 @@ export async function GET() {
   const { error } = await requireStaff(['ADMIN', 'PHARMACIST', 'STAFF']);
   if (error) return error;
 
-  const policy = await getPosSyncPolicy();
+  try {
+    const policy = await getPosSyncPolicy();
 
-  const [jobs, incidents, mappedProducts] = await Promise.all([
-    prisma.posOutboundJob.findMany({
-      orderBy: { createdAt: 'desc' },
-      take: 150,
-      select: {
-        id: true,
-        idempotencyKey: true,
-        eventType: true,
-        status: true,
-        orderId: true,
-        orderReference: true,
-        productId: true,
-        externalPosId: true,
-        productName: true,
-        sku: true,
-        qtyDelta: true,
-        targetStock: true,
-        unitPrice: true,
-        lineTotal: true,
-        paymentMethod: true,
-        posStockSnapshot: true,
-        attempts: true,
-        maxAttempts: true,
-        externalDocumentNo: true,
-        externalInventoryUU: true,
-        reconciledBy: true,
-        reconciledNote: true,
-        exportBatchId: true,
-        lastErrorCode: true,
-        lastError: true,
-        createdAt: true,
-        updatedAt: true,
-        syncedAt: true,
-        product: {
-          select: {
-            stock: true,
-            stockQty: true,
-            lastPosStock: true,
-            externalPosId: true,
+    const [jobs, incidents, mappedProducts] = await Promise.all([
+      prisma.posOutboundJob.findMany({
+        orderBy: { createdAt: 'desc' },
+        take: 150,
+        select: {
+          id: true,
+          idempotencyKey: true,
+          eventType: true,
+          status: true,
+          orderId: true,
+          orderReference: true,
+          productId: true,
+          externalPosId: true,
+          productName: true,
+          sku: true,
+          qtyDelta: true,
+          targetStock: true,
+          unitPrice: true,
+          lineTotal: true,
+          paymentMethod: true,
+          posStockSnapshot: true,
+          attempts: true,
+          maxAttempts: true,
+          externalDocumentNo: true,
+          externalInventoryUU: true,
+          reconciledBy: true,
+          reconciledNote: true,
+          exportBatchId: true,
+          lastErrorCode: true,
+          lastError: true,
+          createdAt: true,
+          updatedAt: true,
+          syncedAt: true,
+          product: {
+            select: {
+              stock: true,
+              stockQty: true,
+              lastPosStock: true,
+              externalPosId: true,
+            },
           },
         },
+      }),
+      prisma.posSyncIncident.findMany({
+        orderBy: [{ resolved: 'asc' }, { lastSeenAt: 'desc' }],
+        take: 100,
+      }),
+      prisma.product.findMany({
+        where: { externalPosId: { not: null } },
+        select: {
+          id: true,
+          name: true,
+          sku: true,
+          externalPosId: true,
+          stock: true,
+          stockQty: true,
+          lastPosStock: true,
+          lastPosSellableStock: true,
+          virtualReservedStock: true,
+          lastSyncedAt: true,
+        },
+        orderBy: { name: 'asc' },
+      }),
+    ]);
+
+    const offsets = await getUnreconciledOffsetsByProduct(
+      mappedProducts.map((p) => p.id),
+      policy.reconciliationBaselineAt
+    );
+
+    const varianceItems = mappedProducts
+      .map((p) => {
+        const off = offsets.get(p.id) ?? {
+          pendingNetDelta: 0,
+          pendingSalesQty: 0,
+          unpaidOrderHoldQty: 0,
+        };
+        const hasStockGap = p.lastPosStock != null && p.lastPosStock !== p.stockQty;
+        const hasOffsets =
+          off.pendingNetDelta !== 0 || off.unpaidOrderHoldQty > 0 || p.virtualReservedStock > 0;
+        if (!hasStockGap && !hasOffsets) return null;
+
+        const status =
+          off.pendingNetDelta !== 0 || off.unpaidOrderHoldQty > 0
+            ? 'DRIFT_PROTECTED'
+            : hasStockGap
+              ? 'VARIANCE'
+              : 'MATCHED';
+
+        return {
+          productId: p.id,
+          name: p.name,
+          sku: p.sku,
+          externalPosId: p.externalPosId,
+          lastPosStock: p.lastPosStock,
+          lastPosSellableStock: p.lastPosSellableStock,
+          sphereStock: p.stock,
+          sphereStockQty: p.stockQty,
+          pendingOutboundNetDelta: off.pendingNetDelta,
+          pendingOutboundSalesQty: off.pendingSalesQty,
+          unpaidOrderHoldQty: off.unpaidOrderHoldQty,
+          virtualReservedStock: p.virtualReservedStock,
+          lastSyncedAt: p.lastSyncedAt?.toISOString() ?? null,
+          status,
+        };
+      })
+      .filter((item): item is NonNullable<typeof item> => item !== null);
+
+    let pendingCount = 0;
+    let exportedCount = 0;
+    let failedCount = 0;
+    let syncedCount = 0;
+    let reconciledManualCount = 0;
+
+    for (const job of jobs) {
+      if (job.status === 'PENDING' || job.status === 'PROCESSING') pendingCount++;
+      else if (job.status === 'EXPORTED') exportedCount++;
+      else if (job.status === 'FAILED') failedCount++;
+      else if (job.status === 'SYNCED') syncedCount++;
+      else if (job.status === 'RECONCILED_MANUAL') reconciledManualCount++;
+    }
+
+    const openIncidentsCount = incidents.filter((inc) => !inc.resolved).length;
+    const criticalIncidentsCount = incidents.filter(
+      (inc) => !inc.resolved && inc.severity === 'CRITICAL'
+    ).length;
+
+    return NextResponse.json({
+      jobs: jobs.map((job) => ({
+        ...job,
+        unitPrice: job.unitPrice != null ? Number(job.unitPrice) : null,
+        lineTotal: job.lineTotal != null ? Number(job.lineTotal) : null,
+        createdAt: job.createdAt.toISOString(),
+        updatedAt: job.updatedAt.toISOString(),
+        syncedAt: job.syncedAt?.toISOString() ?? null,
+      })),
+      varianceItems,
+      incidents: incidents.map((inc) => ({
+        ...inc,
+        firstSeenAt: inc.firstSeenAt.toISOString(),
+        lastSeenAt: inc.lastSeenAt.toISOString(),
+        resolvedAt: inc.resolvedAt?.toISOString() ?? null,
+      })),
+      summary: {
+        pendingCount,
+        exportedCount,
+        failedCount,
+        syncedCount,
+        reconciledManualCount,
+        openIncidentsCount,
+        criticalIncidentsCount,
+        varianceCount: varianceItems.length,
       },
-    }),
-    prisma.posSyncIncident.findMany({
-      orderBy: [{ resolved: 'asc' }, { lastSeenAt: 'desc' }],
-      take: 100,
-    }),
-    prisma.product.findMany({
-      where: { externalPosId: { not: null } },
-      select: {
-        id: true,
-        name: true,
-        sku: true,
-        externalPosId: true,
-        stock: true,
-        stockQty: true,
-        lastPosStock: true,
-        lastPosSellableStock: true,
-        virtualReservedStock: true,
-        lastSyncedAt: true,
-      },
-      orderBy: { name: 'asc' },
-    }),
-  ]);
-
-  const offsets = await getUnreconciledOffsetsByProduct(
-    mappedProducts.map((p) => p.id),
-    policy.reconciliationBaselineAt
-  );
-
-  const varianceItems = mappedProducts
-    .map((p) => {
-      const off = offsets.get(p.id) ?? {
-        pendingNetDelta: 0,
-        pendingSalesQty: 0,
-        unpaidOrderHoldQty: 0,
-      };
-      const hasStockGap = p.lastPosStock != null && p.lastPosStock !== p.stockQty;
-      const hasOffsets =
-        off.pendingNetDelta !== 0 || off.unpaidOrderHoldQty > 0 || p.virtualReservedStock > 0;
-      if (!hasStockGap && !hasOffsets) return null;
-
-      const status =
-        off.pendingNetDelta !== 0 || off.unpaidOrderHoldQty > 0
-          ? 'DRIFT_PROTECTED'
-          : hasStockGap
-            ? 'VARIANCE'
-            : 'MATCHED';
-
-      return {
-        productId: p.id,
-        name: p.name,
-        sku: p.sku,
-        externalPosId: p.externalPosId,
-        lastPosStock: p.lastPosStock,
-        lastPosSellableStock: p.lastPosSellableStock,
-        sphereStock: p.stock,
-        sphereStockQty: p.stockQty,
-        pendingOutboundNetDelta: off.pendingNetDelta,
-        pendingOutboundSalesQty: off.pendingSalesQty,
-        unpaidOrderHoldQty: off.unpaidOrderHoldQty,
-        virtualReservedStock: p.virtualReservedStock,
-        lastSyncedAt: p.lastSyncedAt?.toISOString() ?? null,
-        status,
-      };
-    })
-    .filter((item): item is NonNullable<typeof item> => item !== null);
-
-  let pendingCount = 0;
-  let exportedCount = 0;
-  let failedCount = 0;
-  let syncedCount = 0;
-  let reconciledManualCount = 0;
-
-  for (const job of jobs) {
-    if (job.status === 'PENDING' || job.status === 'PROCESSING') pendingCount++;
-    else if (job.status === 'EXPORTED') exportedCount++;
-    else if (job.status === 'FAILED') failedCount++;
-    else if (job.status === 'SYNCED') syncedCount++;
-    else if (job.status === 'RECONCILED_MANUAL') reconciledManualCount++;
+    });
+  } catch (err) {
+    const code = (err as { code?: string })?.code;
+    if (code === 'P2021' || code === 'P2022') {
+      return NextResponse.json(
+        {
+          error:
+            'POS reconciliation database tables/columns are missing in this environment. Run `npx prisma migrate deploy` against the production database.',
+          code: 'MIGRATION_REQUIRED',
+        },
+        { status: 503 }
+      );
+    }
+    console.error('[GET /api/admin/pos-sync/reconcile] failed:', err);
+    return NextResponse.json(
+      { error: 'Unable to load POS reconciliation data right now.' },
+      { status: 500 }
+    );
   }
-
-  const openIncidentsCount = incidents.filter((inc) => !inc.resolved).length;
-  const criticalIncidentsCount = incidents.filter(
-    (inc) => !inc.resolved && inc.severity === 'CRITICAL'
-  ).length;
-
-  return NextResponse.json({
-    jobs: jobs.map((job) => ({
-      ...job,
-      unitPrice: job.unitPrice != null ? Number(job.unitPrice) : null,
-      lineTotal: job.lineTotal != null ? Number(job.lineTotal) : null,
-      createdAt: job.createdAt.toISOString(),
-      updatedAt: job.updatedAt.toISOString(),
-      syncedAt: job.syncedAt?.toISOString() ?? null,
-    })),
-    varianceItems,
-    incidents: incidents.map((inc) => ({
-      ...inc,
-      firstSeenAt: inc.firstSeenAt.toISOString(),
-      lastSeenAt: inc.lastSeenAt.toISOString(),
-      resolvedAt: inc.resolvedAt?.toISOString() ?? null,
-    })),
-    summary: {
-      pendingCount,
-      exportedCount,
-      failedCount,
-      syncedCount,
-      reconciledManualCount,
-      openIncidentsCount,
-      criticalIncidentsCount,
-      varianceCount: varianceItems.length,
-    },
-  });
 }
 
 export async function POST(request: NextRequest) {

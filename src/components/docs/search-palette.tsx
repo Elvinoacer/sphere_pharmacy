@@ -51,27 +51,37 @@ function termVariantsClient(term: string): string[] {
     if (term.endsWith("ing")) variants.add(term.slice(0, -3))
     if (term.endsWith("ed")) variants.add(term.slice(0, -2))
   }
-  return [...variants].filter((v) => v.length >= 3)
+  return [...variants].filter((v) => v.length >= 2)
 }
 
-function score(entry: SearchEntry, terms: string[]): number {
-  if (!terms.length) return 0
+function score(entry: SearchEntry, terms: string[], rawQuery: string): number {
+  const needle = rawQuery.trim().toLowerCase()
+  if (!terms.length && needle.length < 2) return 0
   const title = entry.t.toLowerCase()
   const heading = (entry.h || "").toLowerCase()
   const body = entry.b.toLowerCase()
-  let score = 0
+  const url = entry.p.toLowerCase()
+  let total = 0
   let matched = 0
+
+  if (needle.length >= 2) {
+    if (title.includes(needle)) total += 12
+    else if (heading.includes(needle)) total += 8
+    else if (url.includes(needle)) total += 6
+  }
+
   for (const term of terms) {
     const variants = termVariantsClient(term)
     let hit = false
-    if (variants.some((v) => title === v)) { score += 14; hit = true }
-    else if (variants.some((v) => title.includes(v))) { score += 8; hit = true }
-    if (variants.some((v) => heading.includes(v))) { score += 5; hit = true }
-    if (variants.some((v) => body.includes(v))) { score += 2; hit = true }
+    if (variants.some((v) => title === v)) { total += 14; hit = true }
+    else if (variants.some((v) => title.includes(v))) { total += 8; hit = true }
+    if (variants.some((v) => heading.includes(v))) { total += 5; hit = true }
+    if (variants.some((v) => url.includes(v))) { total += 4; hit = true }
+    if (variants.some((v) => body.includes(v))) { total += 2; hit = true }
     if (hit) matched++
   }
-  if (matched === terms.length) score += 6
-  return score
+  if (terms.length > 0 && matched === terms.length) total += 6
+  return total
 }
 
 function highlight(text: string, terms: string[]): Array<{ text: string; hit: boolean }> {
@@ -80,11 +90,13 @@ function highlight(text: string, terms: string[]): Array<{ text: string; hit: bo
     .map((t) => t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
     .sort((a, b) => b.length - a.length)
     .join("|")
+  if (!pattern) return [{ text, hit: false }]
   const regex = new RegExp(`(${pattern})`, "gi")
+  const lowerTerms = terms.map((t) => t.toLowerCase())
   return text
     .split(regex)
     .filter((part) => part !== "")
-    .map((part) => ({ text: part, hit: regex.test(part) }))
+    .map((part) => ({ text: part, hit: lowerTerms.includes(part.toLowerCase()) }))
 }
 
 function snippetFor(entry: SearchEntry, terms: string[]): string {
@@ -106,35 +118,56 @@ export interface SearchPaletteProps {
   onOpenChange: (open: boolean) => void
 }
 
-export function useDocsSearch() {
+export function useDocsSearch(open: boolean) {
   const [index, setIndex] = useState<SearchEntry[] | null>(null)
-  const [error, setError] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [attempt, setAttempt] = useState(0)
+
+  const retry = useCallback(() => {
+    setError(null)
+    setAttempt((n) => n + 1)
+  }, [])
 
   useEffect(() => {
     let cancelled = false
-    if (index || error) return
-    fetch("/api/docs-index")
+    if (index) return
+    if (!open && attempt === 0) {
+      // Prefetch quietly on mount, and retry automatically if opened after a failure
+    }
+    fetch("/api/docs-index", {
+      credentials: "same-origin",
+      cache: "no-store",
+      headers: { Accept: "application/json" },
+    })
       .then((response) => {
-        if (!response.ok) throw new Error(`index ${response.status}`)
+        if (response.status === 401 || response.status === 403) {
+          throw new Error("Staff session required. Please sign in again to search documentation.")
+        }
+        if (!response.ok) throw new Error(`Could not load search index (HTTP ${response.status}).`)
         return response.json() as Promise<{ entries: SearchEntry[] }>
       })
       .then((data) => {
-        if (!cancelled) setIndex(data.entries ?? [])
+        if (!cancelled) {
+          setError(null)
+          setIndex(data.entries ?? [])
+        }
       })
-      .catch(() => {
-        if (!cancelled) setError(true)
+      .catch((err) => {
+        if (!cancelled) {
+          setError(err instanceof Error ? err.message : "The search index could not be loaded.")
+        }
       })
     return () => {
       cancelled = true
     }
-  }, [index, error])
+  }, [index, open, attempt])
 
-  return { index, error }
+  return { index, error, retry }
 }
 
 export function SearchPalette({ open, onOpenChange }: SearchPaletteProps) {
   const router = useRouter()
-  const { index, error } = useDocsSearch()
+  const { index, error, retry } = useDocsSearch(open)
   const [query, setQuery] = useState("")
   const [audience, setAudience] = useState("all")
   const [selected, setSelected] = useState(0)
@@ -153,9 +186,10 @@ export function SearchPalette({ open, onOpenChange }: SearchPaletteProps) {
   const results = useMemo(() => {
     if (!index) return []
     const terms = tokenizeClient(query)
+    if (!terms.length && query.trim().length < 2) return []
     const filtered = audience === "all" ? index : index.filter((entry) => entry.g.includes(audience as SearchEntry["g"][number]))
     const scored = filtered
-      .map((entry) => ({ entry, score: score(entry, terms) }))
+      .map((entry) => ({ entry, score: score(entry, terms, query) }))
       .filter((item) => item.score > 0)
       .sort((a, b) => b.score - a.score || a.entry.t.localeCompare(b.entry.t))
       .slice(0, 24)
@@ -266,9 +300,16 @@ export function SearchPalette({ open, onOpenChange }: SearchPaletteProps) {
           {!index && !error ? (
             <p className="px-3 py-8 text-center text-sm text-muted-foreground" aria-live="polite">Loading search index…</p>
           ) : error ? (
-            <p className="px-3 py-8 text-center text-sm text-muted-foreground" role="alert">
-              The search index could not be loaded. Refresh the page and try again.
-            </p>
+            <div className="px-3 py-8 text-center text-sm text-muted-foreground" role="alert">
+              <p>{error}</p>
+              <button
+                type="button"
+                onClick={retry}
+                className="mt-3 inline-flex items-center rounded-md border border-border bg-card px-3 py-1.5 text-xs font-medium text-foreground hover:border-ring"
+              >
+                Retry loading search index
+              </button>
+            </div>
           ) : !query.trim() ? (
             <div className="px-3 py-4 text-sm text-muted-foreground">
               <p className="mb-2 font-medium text-foreground">Try searching for…</p>
@@ -322,8 +363,8 @@ export function SearchPalette({ open, onOpenChange }: SearchPaletteProps) {
                           </span>
                           {entry.h ? <span className="block truncate text-xs font-medium text-muted-foreground">{entry.h}</span> : null}
                           <span className="mt-0.5 block line-clamp-2 text-xs text-muted-foreground">
-                            {snippet.split(new RegExp(`(${terms.map((t) => t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|")})`, "gi")).map((part, i) =>
-                              terms.some((t) => part.toLowerCase() === t) ? <mark key={i} className="rounded-sm bg-accent px-0.5 text-foreground">{part}</mark> : <span key={i}>{part}</span>,
+                            {highlight(snippet, terms).map((part, i) =>
+                              part.hit ? <mark key={i} className="rounded-sm bg-accent px-0.5 text-foreground">{part.text}</mark> : <span key={i}>{part.text}</span>,
                             )}
                           </span>
                         </span>

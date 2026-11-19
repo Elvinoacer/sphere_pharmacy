@@ -9,7 +9,8 @@ const nextConfig: NextConfig = {
   outputFileTracingIncludes: {
     "/docs/**": ["./docs/**/*", "./openapi/**/*", "./prisma/schema.prisma", "./README.md", "./AGENTS.md"],
     "/api/docs-index": ["./docs/**/*", "./openapi/**/*", "./prisma/schema.prisma", "./README.md", "./AGENTS.md"],
-    "/api/docs-assistant": ["./docs/**/*", "./README.md", "./AGENTS.md"],
+    "/api/docs-assistant": ["./docs/**/*", "./openapi/**/*", "./prisma/schema.prisma", "./README.md", "./AGENTS.md"],
+    "/api/docs-export/pdf": ["./docs/**/*", "./openapi/**/*", "./prisma/schema.prisma", "./README.md", "./AGENTS.md"],
   },
   async headers() {
     return [{

@@ -2,9 +2,9 @@
 
 > **Comprehensive Single-File Source Code Repository**  
 > **Platform:** Sphere Pharmacy (Lumumba Drive, Roysambu, Nairobi, Kenya)  
-> **Generated:** 2026-11-20 00:12:40  
+> **Generated:** 2026-11-20 01:01:22  
 > **Total Source Code Files:** 494 files  
-> **Total Lines of Source Code:** 97,918 lines  
+> **Total Lines of Source Code:** 97,998 lines  
 > **Total Uncompressed Size:** 5.43 MB  
 
 ---
@@ -833,7 +833,7 @@ This single file encapsulates the complete source code, architectural structure,
 | [components.json](#file-components-json) | JSON | 21 | 430 B |
 | [eslint.config.mjs](#file-eslint-config-mjs) | JavaScript (ESM) | 51 | 1.6 KB |
 | [next-env.d.ts](#file-next-env-d-ts) | Next.js Type Declarations | 7 | 288 B |
-| [next.config.ts](#file-next-config-ts) | TypeScript | 46 | 1.9 KB |
+| [next.config.ts](#file-next-config-ts) | TypeScript | 47 | 2.1 KB |
 | [package.json](#file-package-json) | JSON | 116 | 3.9 KB |
 | [postcss.config.mjs](#file-postcss-config-mjs) | JavaScript (ESM) | 5 | 81 B |
 | [tailwind.config.ts](#file-tailwind-config-ts) | TypeScript | 64 | 1.7 KB |
@@ -903,9 +903,9 @@ This single file encapsulates the complete source code, architectural structure,
 | [src/app/api/admin/medicine-requests/[id]/photo/route.ts](#file-src-app-api-admin-medicine-requests--id--photo-route-ts) | TypeScript | 22 | 1004 B |
 | [src/app/api/admin/medicine-requests/route.ts](#file-src-app-api-admin-medicine-requests-route-ts) | TypeScript | 64 | 3.2 KB |
 | [src/app/api/admin/notification-health/route.ts](#file-src-app-api-admin-notification-health-route-ts) | TypeScript | 15 | 1.2 KB |
-| [src/app/api/admin/pos-status/route.ts](#file-src-app-api-admin-pos-status-route-ts) | TypeScript | 160 | 4.6 KB |
+| [src/app/api/admin/pos-status/route.ts](#file-src-app-api-admin-pos-status-route-ts) | TypeScript | 179 | 5.4 KB |
 | [src/app/api/admin/pos-sync/policy/route.ts](#file-src-app-api-admin-pos-sync-policy-route-ts) | TypeScript | 80 | 2.6 KB |
-| [src/app/api/admin/pos-sync/reconcile/route.ts](#file-src-app-api-admin-pos-sync-reconcile-route-ts) | TypeScript | 497 | 14.6 KB |
+| [src/app/api/admin/pos-sync/reconcile/route.ts](#file-src-app-api-admin-pos-sync-reconcile-route-ts) | TypeScript | 516 | 15.5 KB |
 | [src/app/api/admin/pos-sync/sales-export/route.ts](#file-src-app-api-admin-pos-sync-sales-export-route-ts) | TypeScript | 417 | 13.6 KB |
 | [src/app/api/admin/reviews/[id]/route.ts](#file-src-app-api-admin-reviews--id--route-ts) | TypeScript | 52 | 2.0 KB |
 | [src/app/api/admin/reviews/route.ts](#file-src-app-api-admin-reviews-route-ts) | TypeScript | 42 | 1.5 KB |
@@ -1057,7 +1057,7 @@ This single file encapsulates the complete source code, architectural structure,
 | [src/components/docs/journey-directory.tsx](#file-src-components-docs-journey-directory-tsx) | TypeScript React | 211 | 9.4 KB |
 | [src/components/docs/markdown.tsx](#file-src-components-docs-markdown-tsx) | TypeScript React | 149 | 5.7 KB |
 | [src/components/docs/mermaid-diagram.tsx](#file-src-components-docs-mermaid-diagram-tsx) | TypeScript React | 220 | 8.9 KB |
-| [src/components/docs/search-palette.tsx](#file-src-components-docs-search-palette-tsx) | TypeScript React | 352 | 14.1 KB |
+| [src/components/docs/search-palette.tsx](#file-src-components-docs-search-palette-tsx) | TypeScript React | 393 | 15.6 KB |
 | [src/components/home/luxury-categories-showcase.tsx](#file-src-components-home-luxury-categories-showcase-tsx) | TypeScript React | 329 | 12.7 KB |
 | [src/components/home/priority-products-section.tsx](#file-src-components-home-priority-products-section-tsx) | TypeScript React | 237 | 8.7 KB |
 | [src/components/home/reference-home-hero.tsx](#file-src-components-home-reference-home-hero-tsx) | TypeScript React | 221 | 10.3 KB |
@@ -1579,7 +1579,7 @@ This single file encapsulates the complete source code, architectural structure,
 | 149 | [eslint.config.mjs](#file-eslint-config-mjs) | Project Configuration & Root Tooling | 51 | 1.6 KB |
 | 150 | [gitignoresfiles/SPHERE_PHARMACY_OWNER_OPERATIONS_MANUAL.md](#file-gitignoresfiles-sphere_pharmacy_owner_operations_manual-md) | Documentation & Blueprints | 461 | 15.9 KB |
 | 151 | [next-env.d.ts](#file-next-env-d-ts) | Project Configuration & Root Tooling | 7 | 288 B |
-| 152 | [next.config.ts](#file-next-config-ts) | Project Configuration & Root Tooling | 46 | 1.9 KB |
+| 152 | [next.config.ts](#file-next-config-ts) | Project Configuration & Root Tooling | 47 | 2.1 KB |
 | 153 | [openapi/sphere-api.yaml](#file-openapi-sphere-api-yaml) | Documentation & Blueprints | 2,945 | 121.1 KB |
 | 154 | [package.json](#file-package-json) | Project Configuration & Root Tooling | 116 | 3.9 KB |
 | 155 | [postcss.config.mjs](#file-postcss-config-mjs) | Project Configuration & Root Tooling | 5 | 81 B |
@@ -1616,9 +1616,9 @@ This single file encapsulates the complete source code, architectural structure,
 | 186 | [src/app/api/admin/medicine-requests/[id]/photo/route.ts](#file-src-app-api-admin-medicine-requests--id--photo-route-ts) | Backend API Routes (Next.js App Router) | 22 | 1004 B |
 | 187 | [src/app/api/admin/medicine-requests/route.ts](#file-src-app-api-admin-medicine-requests-route-ts) | Backend API Routes (Next.js App Router) | 64 | 3.2 KB |
 | 188 | [src/app/api/admin/notification-health/route.ts](#file-src-app-api-admin-notification-health-route-ts) | Backend API Routes (Next.js App Router) | 15 | 1.2 KB |
-| 189 | [src/app/api/admin/pos-status/route.ts](#file-src-app-api-admin-pos-status-route-ts) | Backend API Routes (Next.js App Router) | 160 | 4.6 KB |
+| 189 | [src/app/api/admin/pos-status/route.ts](#file-src-app-api-admin-pos-status-route-ts) | Backend API Routes (Next.js App Router) | 179 | 5.4 KB |
 | 190 | [src/app/api/admin/pos-sync/policy/route.ts](#file-src-app-api-admin-pos-sync-policy-route-ts) | Backend API Routes (Next.js App Router) | 80 | 2.6 KB |
-| 191 | [src/app/api/admin/pos-sync/reconcile/route.ts](#file-src-app-api-admin-pos-sync-reconcile-route-ts) | Backend API Routes (Next.js App Router) | 497 | 14.6 KB |
+| 191 | [src/app/api/admin/pos-sync/reconcile/route.ts](#file-src-app-api-admin-pos-sync-reconcile-route-ts) | Backend API Routes (Next.js App Router) | 516 | 15.5 KB |
 | 192 | [src/app/api/admin/pos-sync/sales-export/route.ts](#file-src-app-api-admin-pos-sync-sales-export-route-ts) | Backend API Routes (Next.js App Router) | 417 | 13.6 KB |
 | 193 | [src/app/api/admin/reviews/[id]/route.ts](#file-src-app-api-admin-reviews--id--route-ts) | Backend API Routes (Next.js App Router) | 52 | 2.0 KB |
 | 194 | [src/app/api/admin/reviews/route.ts](#file-src-app-api-admin-reviews-route-ts) | Backend API Routes (Next.js App Router) | 42 | 1.5 KB |
@@ -1743,7 +1743,7 @@ This single file encapsulates the complete source code, architectural structure,
 | 313 | [src/components/docs/journey-directory.tsx](#file-src-components-docs-journey-directory-tsx) | Shared Layout & Domain Components | 211 | 9.4 KB |
 | 314 | [src/components/docs/markdown.tsx](#file-src-components-docs-markdown-tsx) | Shared Layout & Domain Components | 149 | 5.7 KB |
 | 315 | [src/components/docs/mermaid-diagram.tsx](#file-src-components-docs-mermaid-diagram-tsx) | Shared Layout & Domain Components | 220 | 8.9 KB |
-| 316 | [src/components/docs/search-palette.tsx](#file-src-components-docs-search-palette-tsx) | Shared Layout & Domain Components | 352 | 14.1 KB |
+| 316 | [src/components/docs/search-palette.tsx](#file-src-components-docs-search-palette-tsx) | Shared Layout & Domain Components | 393 | 15.6 KB |
 | 317 | [src/components/home/luxury-categories-showcase.tsx](#file-src-components-home-luxury-categories-showcase-tsx) | Shared Layout & Domain Components | 329 | 12.7 KB |
 | 318 | [src/components/home/priority-products-section.tsx](#file-src-components-home-priority-products-section-tsx) | Shared Layout & Domain Components | 237 | 8.7 KB |
 | 319 | [src/components/home/reference-home-hero.tsx](#file-src-components-home-reference-home-hero-tsx) | Shared Layout & Domain Components | 221 | 10.3 KB |
@@ -32648,8 +32648,8 @@ import "./.next/types/root-params.d.ts";
 - **Relative Path:** `next.config.ts`
 - **Category:** Project Configuration & Root Tooling
 - **Language:** TypeScript
-- **Lines:** 46
-- **Size:** 1.9 KB (1,941 bytes)
+- **Lines:** 47
+- **Size:** 2.1 KB (2,104 bytes)
 
 `````typescript
 import type { NextConfig } from "next";
@@ -32663,7 +32663,8 @@ const nextConfig: NextConfig = {
   outputFileTracingIncludes: {
     "/docs/**": ["./docs/**/*", "./openapi/**/*", "./prisma/schema.prisma", "./README.md", "./AGENTS.md"],
     "/api/docs-index": ["./docs/**/*", "./openapi/**/*", "./prisma/schema.prisma", "./README.md", "./AGENTS.md"],
-    "/api/docs-assistant": ["./docs/**/*", "./README.md", "./AGENTS.md"],
+    "/api/docs-assistant": ["./docs/**/*", "./openapi/**/*", "./prisma/schema.prisma", "./README.md", "./AGENTS.md"],
+    "/api/docs-export/pdf": ["./docs/**/*", "./openapi/**/*", "./prisma/schema.prisma", "./README.md", "./AGENTS.md"],
   },
   async headers() {
     return [{
@@ -42105,8 +42106,8 @@ export async function GET() {
 - **Relative Path:** `src/app/api/admin/pos-status/route.ts`
 - **Category:** Backend API Routes (Next.js App Router)
 - **Language:** TypeScript
-- **Lines:** 160
-- **Size:** 4.6 KB (4,677 bytes)
+- **Lines:** 179
+- **Size:** 5.4 KB (5,559 bytes)
 
 `````typescript
 // src/app/api/admin/pos-status/route.ts
@@ -42127,147 +42128,166 @@ export async function GET() {
   const { error } = await requireStaff(['ADMIN', 'PHARMACIST', 'STAFF']);
   if (error) return error;
 
-  const now = new Date();
-  const ninetyDaysFromNow = new Date(now.getTime() + 90 * 24 * 60 * 60 * 1000);
-  const eatDayStart = getEatDayStart(now);
+  try {
+    const now = new Date();
+    const ninetyDaysFromNow = new Date(now.getTime() + 90 * 24 * 60 * 60 * 1000);
+    const eatDayStart = getEatDayStart(now);
 
-  const [
-    totalSyncedProducts,
-    totalBatches,
-    nearExpiryCount,
-    latestLog,
-    recentLogs,
-    policy,
-    bridgeHeartbeat,
-    pendingOutboundCount,
-    exportedAwaitingConfirmCount,
-    failedOutboundCount,
-    syncedOutboundTodayCount,
-    openSaleJobs,
-    openIncidentsCount,
-    criticalIncidentsCount,
-  ] = await Promise.all([
-    // Products mapped via BandaGo POS
-    prisma.product.count({
-      where: {
-        externalPosId: { not: null },
-      },
-    }),
-    // Total active lots/batches
-    prisma.productBatch.count(),
-    // Near-expiry flag (<90 days, not already expired) covering both lot batches and master products
-    Promise.all([
-      prisma.productBatch.count({
-        where: {
-          isExpired: false,
-          quantityOnHand: { gt: 0 },
-          expiryDate: {
-            gt: now,
-            lte: ninetyDaysFromNow,
-          },
-        },
-      }),
+    const [
+      totalSyncedProducts,
+      totalBatches,
+      nearExpiryCount,
+      latestLog,
+      recentLogs,
+      policy,
+      bridgeHeartbeat,
+      pendingOutboundCount,
+      exportedAwaitingConfirmCount,
+      failedOutboundCount,
+      syncedOutboundTodayCount,
+      openSaleJobs,
+      openIncidentsCount,
+      criticalIncidentsCount,
+    ] = await Promise.all([
+      // Products mapped via BandaGo POS
       prisma.product.count({
         where: {
-          OR: [
-            { stock: { gt: 0 } },
-            { stockQty: { gt: 0 } },
-          ],
-          nearestExpiryDate: {
-            gt: now,
-            lte: ninetyDaysFromNow,
-          },
+          externalPosId: { not: null },
         },
       }),
-    ]).then(([batchCount, prodCount]) => Math.max(batchCount, prodCount)),
-    // Last synchronization attempt
-    prisma.posSyncLog.findFirst({
-      orderBy: { startedAt: 'desc' },
-      select: { startedAt: true },
-    }),
-    // Recent 25 sync logs for audit trail
-    prisma.posSyncLog.findMany({
-      orderBy: { startedAt: 'desc' },
-      take: 25,
-      select: {
-        id: true,
-        direction: true,
-        trigger: true,
-        status: true,
-        itemsReceived: true,
-        itemsUpserted: true,
-        itemsFailed: true,
-        details: true,
-        durationMs: true,
-        startedAt: true,
-      },
-    }),
-    getPosSyncPolicy(),
-    getPosBridgeHeartbeat(),
-    prisma.posOutboundJob.count({
-      where: { status: { in: ['PENDING', 'PROCESSING'] } },
-    }),
-    prisma.posOutboundJob.count({
-      where: { status: 'EXPORTED' },
-    }),
-    prisma.posOutboundJob.count({
-      where: { status: 'FAILED' },
-    }),
-    prisma.posOutboundJob.count({
-      where: {
-        status: { in: ['SYNCED', 'RECONCILED_MANUAL'] },
-        syncedAt: { gte: eatDayStart },
-      },
-    }),
-    prisma.posOutboundJob.findMany({
-      where: {
-        eventType: 'ONLINE_SALE',
-        status: { in: ['PENDING', 'PROCESSING', 'EXPORTED', 'FAILED'] },
-      },
-      select: { qtyDelta: true },
-    }),
-    prisma.posSyncIncident.count({
-      where: { resolved: false },
-    }),
-    prisma.posSyncIncident.count({
-      where: { resolved: false, severity: 'CRITICAL' },
-    }),
-  ]);
+      // Total active lots/batches
+      prisma.productBatch.count(),
+      // Near-expiry flag (<90 days, not already expired) covering both lot batches and master products
+      Promise.all([
+        prisma.productBatch.count({
+          where: {
+            isExpired: false,
+            quantityOnHand: { gt: 0 },
+            expiryDate: {
+              gt: now,
+              lte: ninetyDaysFromNow,
+            },
+          },
+        }),
+        prisma.product.count({
+          where: {
+            OR: [
+              { stock: { gt: 0 } },
+              { stockQty: { gt: 0 } },
+            ],
+            nearestExpiryDate: {
+              gt: now,
+              lte: ninetyDaysFromNow,
+            },
+          },
+        }),
+      ]).then(([batchCount, prodCount]) => Math.max(batchCount, prodCount)),
+      // Last synchronization attempt
+      prisma.posSyncLog.findFirst({
+        orderBy: { startedAt: 'desc' },
+        select: { startedAt: true },
+      }),
+      // Recent 25 sync logs for audit trail
+      prisma.posSyncLog.findMany({
+        orderBy: { startedAt: 'desc' },
+        take: 25,
+        select: {
+          id: true,
+          direction: true,
+          trigger: true,
+          status: true,
+          itemsReceived: true,
+          itemsUpserted: true,
+          itemsFailed: true,
+          details: true,
+          durationMs: true,
+          startedAt: true,
+        },
+      }),
+      getPosSyncPolicy(),
+      getPosBridgeHeartbeat(),
+      prisma.posOutboundJob.count({
+        where: { status: { in: ['PENDING', 'PROCESSING'] } },
+      }),
+      prisma.posOutboundJob.count({
+        where: { status: 'EXPORTED' },
+      }),
+      prisma.posOutboundJob.count({
+        where: { status: 'FAILED' },
+      }),
+      prisma.posOutboundJob.count({
+        where: {
+          status: { in: ['SYNCED', 'RECONCILED_MANUAL'] },
+          syncedAt: { gte: eatDayStart },
+        },
+      }),
+      prisma.posOutboundJob.findMany({
+        where: {
+          eventType: 'ONLINE_SALE',
+          status: { in: ['PENDING', 'PROCESSING', 'EXPORTED', 'FAILED'] },
+        },
+        select: { qtyDelta: true },
+      }),
+      prisma.posSyncIncident.count({
+        where: { resolved: false },
+      }),
+      prisma.posSyncIncident.count({
+        where: { resolved: false, severity: 'CRITICAL' },
+      }),
+    ]);
 
-  const unreconciledUnitsTotal = openSaleJobs.reduce(
-    (sum, job) => sum + Math.abs(job.qtyDelta),
-    0
-  );
+    const unreconciledUnitsTotal = openSaleJobs.reduce(
+      (sum, job) => sum + Math.abs(job.qtyDelta),
+      0
+    );
 
-  return NextResponse.json({
-    totalSyncedProducts,
-    totalBatches,
-    nearExpiryCount,
-    lastSyncTimestamp: latestLog ? latestLog.startedAt.toISOString() : null,
-    recentLogs: recentLogs.map((log) => ({
-      id: log.id,
-      direction: log.direction,
-      trigger: log.trigger,
-      status: log.status,
-      itemsReceived: log.itemsReceived,
-      itemsUpserted: log.itemsUpserted,
-      itemsFailed: log.itemsFailed ?? 0,
-      details: log.details ?? null,
-      durationMs: log.durationMs ?? 0,
-      startedAt: log.startedAt.toISOString(),
-    })),
-    policy,
-    bridgeHeartbeat,
-    pendingOutboundCount,
-    exportedAwaitingConfirmCount,
-    failedOutboundCount,
-    syncedOutboundTodayCount,
-    unreconciledUnitsTotal,
-    openIncidentsCount,
-    criticalIncidentsCount,
-    apiKeyConfigured: Boolean(process.env.BANDAGO_SYNC_API_KEY?.trim()),
-    usingDefaultKeyWarning: isUsingInsecureDefaultBandagoKey(),
-  });
+    return NextResponse.json({
+      totalSyncedProducts,
+      totalBatches,
+      nearExpiryCount,
+      lastSyncTimestamp: latestLog ? latestLog.startedAt.toISOString() : null,
+      recentLogs: recentLogs.map((log) => ({
+        id: log.id,
+        direction: log.direction,
+        trigger: log.trigger,
+        status: log.status,
+        itemsReceived: log.itemsReceived,
+        itemsUpserted: log.itemsUpserted,
+        itemsFailed: log.itemsFailed ?? 0,
+        details: log.details ?? null,
+        durationMs: log.durationMs ?? 0,
+        startedAt: log.startedAt.toISOString(),
+      })),
+      policy,
+      bridgeHeartbeat,
+      pendingOutboundCount,
+      exportedAwaitingConfirmCount,
+      failedOutboundCount,
+      syncedOutboundTodayCount,
+      unreconciledUnitsTotal,
+      openIncidentsCount,
+      criticalIncidentsCount,
+      apiKeyConfigured: Boolean(process.env.BANDAGO_SYNC_API_KEY?.trim()),
+      usingDefaultKeyWarning: isUsingInsecureDefaultBandagoKey(),
+    });
+  } catch (err) {
+    const code = (err as { code?: string })?.code;
+    if (code === 'P2021' || code === 'P2022') {
+      return NextResponse.json(
+        {
+          error:
+            'POS sync database tables/columns are missing in this environment. Run `npx prisma migrate deploy` against the production database.',
+          code: 'MIGRATION_REQUIRED',
+        },
+        { status: 503 }
+      );
+    }
+    console.error('[GET /api/admin/pos-status] failed:', err);
+    return NextResponse.json(
+      { error: 'Unable to load POS sync status right now.' },
+      { status: 500 }
+    );
+  }
 }
 `````
 
@@ -42379,8 +42399,8 @@ export async function PUT(request: NextRequest) {
 - **Relative Path:** `src/app/api/admin/pos-sync/reconcile/route.ts`
 - **Category:** Backend API Routes (Next.js App Router)
 - **Language:** TypeScript
-- **Lines:** 497
-- **Size:** 14.6 KB (14,903 bytes)
+- **Lines:** 516
+- **Size:** 15.5 KB (15,829 bytes)
 
 `````typescript
 import { NextRequest, NextResponse } from 'next/server';
@@ -42437,162 +42457,181 @@ export async function GET() {
   const { error } = await requireStaff(['ADMIN', 'PHARMACIST', 'STAFF']);
   if (error) return error;
 
-  const policy = await getPosSyncPolicy();
+  try {
+    const policy = await getPosSyncPolicy();
 
-  const [jobs, incidents, mappedProducts] = await Promise.all([
-    prisma.posOutboundJob.findMany({
-      orderBy: { createdAt: 'desc' },
-      take: 150,
-      select: {
-        id: true,
-        idempotencyKey: true,
-        eventType: true,
-        status: true,
-        orderId: true,
-        orderReference: true,
-        productId: true,
-        externalPosId: true,
-        productName: true,
-        sku: true,
-        qtyDelta: true,
-        targetStock: true,
-        unitPrice: true,
-        lineTotal: true,
-        paymentMethod: true,
-        posStockSnapshot: true,
-        attempts: true,
-        maxAttempts: true,
-        externalDocumentNo: true,
-        externalInventoryUU: true,
-        reconciledBy: true,
-        reconciledNote: true,
-        exportBatchId: true,
-        lastErrorCode: true,
-        lastError: true,
-        createdAt: true,
-        updatedAt: true,
-        syncedAt: true,
-        product: {
-          select: {
-            stock: true,
-            stockQty: true,
-            lastPosStock: true,
-            externalPosId: true,
+    const [jobs, incidents, mappedProducts] = await Promise.all([
+      prisma.posOutboundJob.findMany({
+        orderBy: { createdAt: 'desc' },
+        take: 150,
+        select: {
+          id: true,
+          idempotencyKey: true,
+          eventType: true,
+          status: true,
+          orderId: true,
+          orderReference: true,
+          productId: true,
+          externalPosId: true,
+          productName: true,
+          sku: true,
+          qtyDelta: true,
+          targetStock: true,
+          unitPrice: true,
+          lineTotal: true,
+          paymentMethod: true,
+          posStockSnapshot: true,
+          attempts: true,
+          maxAttempts: true,
+          externalDocumentNo: true,
+          externalInventoryUU: true,
+          reconciledBy: true,
+          reconciledNote: true,
+          exportBatchId: true,
+          lastErrorCode: true,
+          lastError: true,
+          createdAt: true,
+          updatedAt: true,
+          syncedAt: true,
+          product: {
+            select: {
+              stock: true,
+              stockQty: true,
+              lastPosStock: true,
+              externalPosId: true,
+            },
           },
         },
+      }),
+      prisma.posSyncIncident.findMany({
+        orderBy: [{ resolved: 'asc' }, { lastSeenAt: 'desc' }],
+        take: 100,
+      }),
+      prisma.product.findMany({
+        where: { externalPosId: { not: null } },
+        select: {
+          id: true,
+          name: true,
+          sku: true,
+          externalPosId: true,
+          stock: true,
+          stockQty: true,
+          lastPosStock: true,
+          lastPosSellableStock: true,
+          virtualReservedStock: true,
+          lastSyncedAt: true,
+        },
+        orderBy: { name: 'asc' },
+      }),
+    ]);
+
+    const offsets = await getUnreconciledOffsetsByProduct(
+      mappedProducts.map((p) => p.id),
+      policy.reconciliationBaselineAt
+    );
+
+    const varianceItems = mappedProducts
+      .map((p) => {
+        const off = offsets.get(p.id) ?? {
+          pendingNetDelta: 0,
+          pendingSalesQty: 0,
+          unpaidOrderHoldQty: 0,
+        };
+        const hasStockGap = p.lastPosStock != null && p.lastPosStock !== p.stockQty;
+        const hasOffsets =
+          off.pendingNetDelta !== 0 || off.unpaidOrderHoldQty > 0 || p.virtualReservedStock > 0;
+        if (!hasStockGap && !hasOffsets) return null;
+
+        const status =
+          off.pendingNetDelta !== 0 || off.unpaidOrderHoldQty > 0
+            ? 'DRIFT_PROTECTED'
+            : hasStockGap
+              ? 'VARIANCE'
+              : 'MATCHED';
+
+        return {
+          productId: p.id,
+          name: p.name,
+          sku: p.sku,
+          externalPosId: p.externalPosId,
+          lastPosStock: p.lastPosStock,
+          lastPosSellableStock: p.lastPosSellableStock,
+          sphereStock: p.stock,
+          sphereStockQty: p.stockQty,
+          pendingOutboundNetDelta: off.pendingNetDelta,
+          pendingOutboundSalesQty: off.pendingSalesQty,
+          unpaidOrderHoldQty: off.unpaidOrderHoldQty,
+          virtualReservedStock: p.virtualReservedStock,
+          lastSyncedAt: p.lastSyncedAt?.toISOString() ?? null,
+          status,
+        };
+      })
+      .filter((item): item is NonNullable<typeof item> => item !== null);
+
+    let pendingCount = 0;
+    let exportedCount = 0;
+    let failedCount = 0;
+    let syncedCount = 0;
+    let reconciledManualCount = 0;
+
+    for (const job of jobs) {
+      if (job.status === 'PENDING' || job.status === 'PROCESSING') pendingCount++;
+      else if (job.status === 'EXPORTED') exportedCount++;
+      else if (job.status === 'FAILED') failedCount++;
+      else if (job.status === 'SYNCED') syncedCount++;
+      else if (job.status === 'RECONCILED_MANUAL') reconciledManualCount++;
+    }
+
+    const openIncidentsCount = incidents.filter((inc) => !inc.resolved).length;
+    const criticalIncidentsCount = incidents.filter(
+      (inc) => !inc.resolved && inc.severity === 'CRITICAL'
+    ).length;
+
+    return NextResponse.json({
+      jobs: jobs.map((job) => ({
+        ...job,
+        unitPrice: job.unitPrice != null ? Number(job.unitPrice) : null,
+        lineTotal: job.lineTotal != null ? Number(job.lineTotal) : null,
+        createdAt: job.createdAt.toISOString(),
+        updatedAt: job.updatedAt.toISOString(),
+        syncedAt: job.syncedAt?.toISOString() ?? null,
+      })),
+      varianceItems,
+      incidents: incidents.map((inc) => ({
+        ...inc,
+        firstSeenAt: inc.firstSeenAt.toISOString(),
+        lastSeenAt: inc.lastSeenAt.toISOString(),
+        resolvedAt: inc.resolvedAt?.toISOString() ?? null,
+      })),
+      summary: {
+        pendingCount,
+        exportedCount,
+        failedCount,
+        syncedCount,
+        reconciledManualCount,
+        openIncidentsCount,
+        criticalIncidentsCount,
+        varianceCount: varianceItems.length,
       },
-    }),
-    prisma.posSyncIncident.findMany({
-      orderBy: [{ resolved: 'asc' }, { lastSeenAt: 'desc' }],
-      take: 100,
-    }),
-    prisma.product.findMany({
-      where: { externalPosId: { not: null } },
-      select: {
-        id: true,
-        name: true,
-        sku: true,
-        externalPosId: true,
-        stock: true,
-        stockQty: true,
-        lastPosStock: true,
-        lastPosSellableStock: true,
-        virtualReservedStock: true,
-        lastSyncedAt: true,
-      },
-      orderBy: { name: 'asc' },
-    }),
-  ]);
-
-  const offsets = await getUnreconciledOffsetsByProduct(
-    mappedProducts.map((p) => p.id),
-    policy.reconciliationBaselineAt
-  );
-
-  const varianceItems = mappedProducts
-    .map((p) => {
-      const off = offsets.get(p.id) ?? {
-        pendingNetDelta: 0,
-        pendingSalesQty: 0,
-        unpaidOrderHoldQty: 0,
-      };
-      const hasStockGap = p.lastPosStock != null && p.lastPosStock !== p.stockQty;
-      const hasOffsets =
-        off.pendingNetDelta !== 0 || off.unpaidOrderHoldQty > 0 || p.virtualReservedStock > 0;
-      if (!hasStockGap && !hasOffsets) return null;
-
-      const status =
-        off.pendingNetDelta !== 0 || off.unpaidOrderHoldQty > 0
-          ? 'DRIFT_PROTECTED'
-          : hasStockGap
-            ? 'VARIANCE'
-            : 'MATCHED';
-
-      return {
-        productId: p.id,
-        name: p.name,
-        sku: p.sku,
-        externalPosId: p.externalPosId,
-        lastPosStock: p.lastPosStock,
-        lastPosSellableStock: p.lastPosSellableStock,
-        sphereStock: p.stock,
-        sphereStockQty: p.stockQty,
-        pendingOutboundNetDelta: off.pendingNetDelta,
-        pendingOutboundSalesQty: off.pendingSalesQty,
-        unpaidOrderHoldQty: off.unpaidOrderHoldQty,
-        virtualReservedStock: p.virtualReservedStock,
-        lastSyncedAt: p.lastSyncedAt?.toISOString() ?? null,
-        status,
-      };
-    })
-    .filter((item): item is NonNullable<typeof item> => item !== null);
-
-  let pendingCount = 0;
-  let exportedCount = 0;
-  let failedCount = 0;
-  let syncedCount = 0;
-  let reconciledManualCount = 0;
-
-  for (const job of jobs) {
-    if (job.status === 'PENDING' || job.status === 'PROCESSING') pendingCount++;
-    else if (job.status === 'EXPORTED') exportedCount++;
-    else if (job.status === 'FAILED') failedCount++;
-    else if (job.status === 'SYNCED') syncedCount++;
-    else if (job.status === 'RECONCILED_MANUAL') reconciledManualCount++;
+    });
+  } catch (err) {
+    const code = (err as { code?: string })?.code;
+    if (code === 'P2021' || code === 'P2022') {
+      return NextResponse.json(
+        {
+          error:
+            'POS reconciliation database tables/columns are missing in this environment. Run `npx prisma migrate deploy` against the production database.',
+          code: 'MIGRATION_REQUIRED',
+        },
+        { status: 503 }
+      );
+    }
+    console.error('[GET /api/admin/pos-sync/reconcile] failed:', err);
+    return NextResponse.json(
+      { error: 'Unable to load POS reconciliation data right now.' },
+      { status: 500 }
+    );
   }
-
-  const openIncidentsCount = incidents.filter((inc) => !inc.resolved).length;
-  const criticalIncidentsCount = incidents.filter(
-    (inc) => !inc.resolved && inc.severity === 'CRITICAL'
-  ).length;
-
-  return NextResponse.json({
-    jobs: jobs.map((job) => ({
-      ...job,
-      unitPrice: job.unitPrice != null ? Number(job.unitPrice) : null,
-      lineTotal: job.lineTotal != null ? Number(job.lineTotal) : null,
-      createdAt: job.createdAt.toISOString(),
-      updatedAt: job.updatedAt.toISOString(),
-      syncedAt: job.syncedAt?.toISOString() ?? null,
-    })),
-    varianceItems,
-    incidents: incidents.map((inc) => ({
-      ...inc,
-      firstSeenAt: inc.firstSeenAt.toISOString(),
-      lastSeenAt: inc.lastSeenAt.toISOString(),
-      resolvedAt: inc.resolvedAt?.toISOString() ?? null,
-    })),
-    summary: {
-      pendingCount,
-      exportedCount,
-      failedCount,
-      syncedCount,
-      reconciledManualCount,
-      openIncidentsCount,
-      criticalIncidentsCount,
-      varianceCount: varianceItems.length,
-    },
-  });
 }
 
 export async function POST(request: NextRequest) {
@@ -60591,8 +60630,8 @@ export function MermaidDiagram({ code, title }: { code: string; title?: string }
 - **Relative Path:** `src/components/docs/search-palette.tsx`
 - **Category:** Shared Layout & Domain Components
 - **Language:** TypeScript React
-- **Lines:** 352
-- **Size:** 14.1 KB (14,416 bytes)
+- **Lines:** 393
+- **Size:** 15.6 KB (15,941 bytes)
 
 `````tsx
 "use client"
@@ -60648,27 +60687,37 @@ function termVariantsClient(term: string): string[] {
     if (term.endsWith("ing")) variants.add(term.slice(0, -3))
     if (term.endsWith("ed")) variants.add(term.slice(0, -2))
   }
-  return [...variants].filter((v) => v.length >= 3)
+  return [...variants].filter((v) => v.length >= 2)
 }
 
-function score(entry: SearchEntry, terms: string[]): number {
-  if (!terms.length) return 0
+function score(entry: SearchEntry, terms: string[], rawQuery: string): number {
+  const needle = rawQuery.trim().toLowerCase()
+  if (!terms.length && needle.length < 2) return 0
   const title = entry.t.toLowerCase()
   const heading = (entry.h || "").toLowerCase()
   const body = entry.b.toLowerCase()
-  let score = 0
+  const url = entry.p.toLowerCase()
+  let total = 0
   let matched = 0
+
+  if (needle.length >= 2) {
+    if (title.includes(needle)) total += 12
+    else if (heading.includes(needle)) total += 8
+    else if (url.includes(needle)) total += 6
+  }
+
   for (const term of terms) {
     const variants = termVariantsClient(term)
     let hit = false
-    if (variants.some((v) => title === v)) { score += 14; hit = true }
-    else if (variants.some((v) => title.includes(v))) { score += 8; hit = true }
-    if (variants.some((v) => heading.includes(v))) { score += 5; hit = true }
-    if (variants.some((v) => body.includes(v))) { score += 2; hit = true }
+    if (variants.some((v) => title === v)) { total += 14; hit = true }
+    else if (variants.some((v) => title.includes(v))) { total += 8; hit = true }
+    if (variants.some((v) => heading.includes(v))) { total += 5; hit = true }
+    if (variants.some((v) => url.includes(v))) { total += 4; hit = true }
+    if (variants.some((v) => body.includes(v))) { total += 2; hit = true }
     if (hit) matched++
   }
-  if (matched === terms.length) score += 6
-  return score
+  if (terms.length > 0 && matched === terms.length) total += 6
+  return total
 }
 
 function highlight(text: string, terms: string[]): Array<{ text: string; hit: boolean }> {
@@ -60677,11 +60726,13 @@ function highlight(text: string, terms: string[]): Array<{ text: string; hit: bo
     .map((t) => t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
     .sort((a, b) => b.length - a.length)
     .join("|")
+  if (!pattern) return [{ text, hit: false }]
   const regex = new RegExp(`(${pattern})`, "gi")
+  const lowerTerms = terms.map((t) => t.toLowerCase())
   return text
     .split(regex)
     .filter((part) => part !== "")
-    .map((part) => ({ text: part, hit: regex.test(part) }))
+    .map((part) => ({ text: part, hit: lowerTerms.includes(part.toLowerCase()) }))
 }
 
 function snippetFor(entry: SearchEntry, terms: string[]): string {
@@ -60703,35 +60754,56 @@ export interface SearchPaletteProps {
   onOpenChange: (open: boolean) => void
 }
 
-export function useDocsSearch() {
+export function useDocsSearch(open: boolean) {
   const [index, setIndex] = useState<SearchEntry[] | null>(null)
-  const [error, setError] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [attempt, setAttempt] = useState(0)
+
+  const retry = useCallback(() => {
+    setError(null)
+    setAttempt((n) => n + 1)
+  }, [])
 
   useEffect(() => {
     let cancelled = false
-    if (index || error) return
-    fetch("/api/docs-index")
+    if (index) return
+    if (!open && attempt === 0) {
+      // Prefetch quietly on mount, and retry automatically if opened after a failure
+    }
+    fetch("/api/docs-index", {
+      credentials: "same-origin",
+      cache: "no-store",
+      headers: { Accept: "application/json" },
+    })
       .then((response) => {
-        if (!response.ok) throw new Error(`index ${response.status}`)
+        if (response.status === 401 || response.status === 403) {
+          throw new Error("Staff session required. Please sign in again to search documentation.")
+        }
+        if (!response.ok) throw new Error(`Could not load search index (HTTP ${response.status}).`)
         return response.json() as Promise<{ entries: SearchEntry[] }>
       })
       .then((data) => {
-        if (!cancelled) setIndex(data.entries ?? [])
+        if (!cancelled) {
+          setError(null)
+          setIndex(data.entries ?? [])
+        }
       })
-      .catch(() => {
-        if (!cancelled) setError(true)
+      .catch((err) => {
+        if (!cancelled) {
+          setError(err instanceof Error ? err.message : "The search index could not be loaded.")
+        }
       })
     return () => {
       cancelled = true
     }
-  }, [index, error])
+  }, [index, open, attempt])
 
-  return { index, error }
+  return { index, error, retry }
 }
 
 export function SearchPalette({ open, onOpenChange }: SearchPaletteProps) {
   const router = useRouter()
-  const { index, error } = useDocsSearch()
+  const { index, error, retry } = useDocsSearch(open)
   const [query, setQuery] = useState("")
   const [audience, setAudience] = useState("all")
   const [selected, setSelected] = useState(0)
@@ -60750,9 +60822,10 @@ export function SearchPalette({ open, onOpenChange }: SearchPaletteProps) {
   const results = useMemo(() => {
     if (!index) return []
     const terms = tokenizeClient(query)
+    if (!terms.length && query.trim().length < 2) return []
     const filtered = audience === "all" ? index : index.filter((entry) => entry.g.includes(audience as SearchEntry["g"][number]))
     const scored = filtered
-      .map((entry) => ({ entry, score: score(entry, terms) }))
+      .map((entry) => ({ entry, score: score(entry, terms, query) }))
       .filter((item) => item.score > 0)
       .sort((a, b) => b.score - a.score || a.entry.t.localeCompare(b.entry.t))
       .slice(0, 24)
@@ -60863,9 +60936,16 @@ export function SearchPalette({ open, onOpenChange }: SearchPaletteProps) {
           {!index && !error ? (
             <p className="px-3 py-8 text-center text-sm text-muted-foreground" aria-live="polite">Loading search index…</p>
           ) : error ? (
-            <p className="px-3 py-8 text-center text-sm text-muted-foreground" role="alert">
-              The search index could not be loaded. Refresh the page and try again.
-            </p>
+            <div className="px-3 py-8 text-center text-sm text-muted-foreground" role="alert">
+              <p>{error}</p>
+              <button
+                type="button"
+                onClick={retry}
+                className="mt-3 inline-flex items-center rounded-md border border-border bg-card px-3 py-1.5 text-xs font-medium text-foreground hover:border-ring"
+              >
+                Retry loading search index
+              </button>
+            </div>
           ) : !query.trim() ? (
             <div className="px-3 py-4 text-sm text-muted-foreground">
               <p className="mb-2 font-medium text-foreground">Try searching for…</p>
@@ -60919,8 +60999,8 @@ export function SearchPalette({ open, onOpenChange }: SearchPaletteProps) {
                           </span>
                           {entry.h ? <span className="block truncate text-xs font-medium text-muted-foreground">{entry.h}</span> : null}
                           <span className="mt-0.5 block line-clamp-2 text-xs text-muted-foreground">
-                            {snippet.split(new RegExp(`(${terms.map((t) => t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|")})`, "gi")).map((part, i) =>
-                              terms.some((t) => part.toLowerCase() === t) ? <mark key={i} className="rounded-sm bg-accent px-0.5 text-foreground">{part}</mark> : <span key={i}>{part}</span>,
+                            {highlight(snippet, terms).map((part, i) =>
+                              part.hit ? <mark key={i} className="rounded-sm bg-accent px-0.5 text-foreground">{part.text}</mark> : <span key={i}>{part.text}</span>,
                             )}
                           </span>
                         </span>
@@ -98692,7 +98772,7 @@ export interface SearchIndex {
   entries: SearchEntry[]
 }
 
-const BODY_LIMIT = 900
+const BODY_LIMIT = 420
 const STOPWORDS = new Set([
   "the", "a", "an", "and", "or", "of", "to", "in", "on", "for", "is", "are", "be", "with", "as", "by", "at", "it",
   "this", "that", "from", "how", "what", "when", "which", "do", "does", "can", "i", "you", "we", "my",
@@ -98717,7 +98797,7 @@ export function termVariants(term: string): string[] {
     if (term.endsWith("ing")) variants.add(term.slice(0, -3))
     if (term.endsWith("ed")) variants.add(term.slice(0, -2))
   }
-  return [...variants].filter((v) => v.length >= 3)
+  return [...variants].filter((v) => v.length >= 2)
 }
 
 function sectionBody(doc: DocRecord, heading: DocHeading | null, next: DocHeading | null): string {

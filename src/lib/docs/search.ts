@@ -38,7 +38,7 @@ export interface SearchIndex {
   entries: SearchEntry[]
 }
 
-const BODY_LIMIT = 900
+const BODY_LIMIT = 420
 const STOPWORDS = new Set([
   "the", "a", "an", "and", "or", "of", "to", "in", "on", "for", "is", "are", "be", "with", "as", "by", "at", "it",
   "this", "that", "from", "how", "what", "when", "which", "do", "does", "can", "i", "you", "we", "my",
@@ -63,7 +63,7 @@ export function termVariants(term: string): string[] {
     if (term.endsWith("ing")) variants.add(term.slice(0, -3))
     if (term.endsWith("ed")) variants.add(term.slice(0, -2))
   }
-  return [...variants].filter((v) => v.length >= 3)
+  return [...variants].filter((v) => v.length >= 2)
 }
 
 function sectionBody(doc: DocRecord, heading: DocHeading | null, next: DocHeading | null): string {
