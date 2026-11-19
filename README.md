@@ -40,14 +40,14 @@ Key entry points:
 | [docs/operations/deployment.md](docs/operations/deployment.md) | Standalone + Caddy pipeline (authoritative) and Vercel notes |
 | [docs/governance/documentation-policy.md](docs/governance/documentation-policy.md) | How documentation must evolve with the code |
 
-Pre-existing references, retained deliberately: [PROJECT_README.md](PROJECT_README.md) (original build guide — historical demo-account and payment claims corrected in the new docs), [SPHERE_PHARMACY_OWNER_OPERATIONS_MANUAL.pdf](SPHERE_PHARMACY_OWNER_OPERATIONS_MANUAL.pdf) (owner manual), [sphere_pharmacy_bandago_pos_crm_integration_blueprint.md](sphere_pharmacy_bandago_pos_crm_integration_blueprint.md) (BandaGo blueprint), [worklog.md](worklog.md) (historical sandbox-era build log), [docs/payment-notification-audit.md](docs/payment-notification-audit.md), and [docs/recording/](docs/recording/) (51 customer/staff journeys used as the acceptance matrix).
+Pre-existing references, retained deliberately: [reference/archive/PROJECT_README.md](reference/archive/PROJECT_README.md) (original build guide — historical demo-account and payment claims corrected in the new docs), [reference/SPHERE_PHARMACY_OWNER_OPERATIONS_MANUAL.pdf](reference/SPHERE_PHARMACY_OWNER_OPERATIONS_MANUAL.pdf) (owner manual), [reference/bandago-pos-crm-blueprint.md](reference/bandago-pos-crm-blueprint.md) (BandaGo blueprint), [reference/bandago-api-and-integration-architecture.md](reference/bandago-api-and-integration-architecture.md) (BandaGo API architecture), [reference/archive/worklog.md](reference/archive/worklog.md) (historical sandbox-era build log), [docs/payment-notification-audit.md](docs/payment-notification-audit.md), and [docs/recording/](docs/recording/) (51 customer/staff journeys used as the acceptance matrix).
 
 ## Getting started
 
 ```bash
 npm install            # postinstall runs: prisma generate
 cp .env.example .env   # then fill in secrets — see docs/operations/environment-variables.md
-npm run db:migrate     # apply the 10 migrations (or db:push for a throwaway dev DB)
+npm run db:migrate     # apply the 11 migrations (or db:push for a throwaway dev DB)
 npm run dev            # http://localhost:3000
 ```
 

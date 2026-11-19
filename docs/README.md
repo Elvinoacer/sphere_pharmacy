@@ -104,10 +104,11 @@ Each follows the same 14-section template: purpose, users, screens, frontend, ba
 | --- | --- |
 | [payment-notification-audit.md](payment-notification-audit.md) | Payment/notification audit (Sep 2026) — re-run and update periodically |
 | [recording/](recording/) | 51-journey recording script, checklist, captions — the functional acceptance matrix |
-| [../PROJECT_README.md](../PROJECT_README.md) | Original build guide — historical; demo-account and "simulated payments" claims are corrected by these docs |
-| [../sphere_pharmacy_bandago_pos_crm_integration_blueprint.md](../sphere_pharmacy_bandago_pos_crm_integration_blueprint.md) | BandaGo integration architecture blueprint |
-| [../worklog.md](../worklog.md) | Sandbox-era build log — historical |
-| [../SPHERE_PHARMACY_OWNER_OPERATIONS_MANUAL.pdf](../SPHERE_PHARMACY_OWNER_OPERATIONS_MANUAL.pdf) | Printable owner manual (export copy) |
+| [../reference/archive/PROJECT_README.md](../reference/archive/PROJECT_README.md) | Original build guide — historical; demo-account and "simulated payments" claims are corrected by these docs |
+| [../reference/bandago-pos-crm-blueprint.md](../reference/bandago-pos-crm-blueprint.md) | BandaGo integration architecture blueprint |
+| [../reference/bandago-api-and-integration-architecture.md](../reference/bandago-api-and-integration-architecture.md) | BandaGo API & iDempiere GraphQL integration architecture reference |
+| [../reference/archive/worklog.md](../reference/archive/worklog.md) | Sandbox-era build log — historical |
+| [../reference/SPHERE_PHARMACY_OWNER_OPERATIONS_MANUAL.pdf](../reference/SPHERE_PHARMACY_OWNER_OPERATIONS_MANUAL.pdf) | Printable owner manual (export copy) |
 
 ## Conventions
 
