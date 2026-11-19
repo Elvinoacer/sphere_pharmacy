@@ -91,6 +91,7 @@ Grouped by who may call. Within a group, narrower ownership rules still apply (n
 | `POST /api/orders/[id]/request-payment` | Riders restricted to their assigned orders |
 | `POST /api/orders/[id]/cash-confirm` | Riders: cash-on-delivery, own `OUT_FOR_DELIVERY` orders |
 | `PATCH /api/orders/[id]` | Riders: per-order restricted, two transitions only (below) |
+| `/docs/**`, `GET /api/docs-index`, `POST /api/docs-assistant` | Staff-only documentation portal, search index & "Ask Sphere Docs" AI assistant (`requireStaff` / server `getSession` staff gate) |
 
 ### RIDER only
 
@@ -114,8 +115,7 @@ Grouped by who may call. Within a group, narrower ownership rules still apply (n
 | `POST /api/medicine-requests` | Guest by design (phone-only) |
 | `POST /api/promotions/validate` | Rate-limited |
 | `GET /api/location/search`, `POST /api/location/reverse-geocode` | Rate-limited |
-| `POST /api/assistant` | Never reads the session — see [ai-access-and-authorized-sessions.md](ai-access-and-authorized-sessions.md) |
-| `GET /api/docs-index`, `POST /api/docs-assistant` | Public documentation portal search & AI Q&A (public corpus only; never reads session) |
+| `POST /api/assistant` | Never reads the session; answers only public catalogue, live public settings (`pharmacy`/`delivery`), and customer-safe storefront navigation — see [ai-access-and-authorized-sessions.md](ai-access-and-authorized-sessions.md) |
 | Payment initiate/status with guest token | Ownership via `x-order-access-token` |
 | Webhooks + cron | Own secret-based auth |
 

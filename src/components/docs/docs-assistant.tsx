@@ -1,260 +1,279 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
 import Link from "next/link"
+import { useEffect, useRef, useState } from "react"
 import ReactMarkdown from "react-markdown"
-import { ArrowUp, Check, Copy, Eraser, ExternalLink, MessageCircleQuestion, Sparkles, Zap } from "lucide-react"
+import remarkGfm from "remark-gfm"
+import { ArrowUpRight, Bot, FileText, Loader2, RotateCcw, Send, Sparkles, User, Zap } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import "./docs.css"
 
-interface Citation {
-  n: number
+export interface Citation {
+  index: number
   title: string
   heading: string
   url: string
+  anchor: string
+  category: string
+  status: string
   snippet: string
 }
 
-interface AssistantMessage {
+interface Turn {
   role: "user" | "assistant"
   content: string
   citations?: Citation[]
-  provider?: string
+  synthesized?: boolean
+  elapsedMs?: number
 }
 
-const SUGGESTED_QUESTIONS = [
-  "How do I approve a prescription?",
-  "What happens when a customer cancels an order?",
-  "How are riders assigned deliveries?",
-  "How does the M-Pesa callback work?",
-  "Which model stores prescription records?",
-  "What can an administrator configure?",
-  "How does BandaGo synchronize inventory?",
-  "What happens when stock is unavailable?",
+const STARTER_PROMPTS = [
+  "How does pharmacist prescription verification work end-to-end?",
+  "How does BandaGo POS outbound reconciliation and stagnant-POS protection work?",
+  "What happens when an M-Pesa STK Push times out or is uncertain?",
+  "Which authorization guards protect API routes and what roles exist?",
+  "How does guest order tracking and phone OTP order claiming work?",
+  "What environment variables are required for production deployment?",
 ]
 
 export function DocsAssistant({ pageContext }: { pageContext?: string }) {
-  const [messages, setMessages] = useState<AssistantMessage[]>([])
+  const [turns, setTurns] = useState<Turn[]>([])
   const [input, setInput] = useState("")
-  const [busy, setBusy] = useState(false)
-  const [provider, setProvider] = useState<string | null>(null)
-  const [copied, setCopied] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const endRef = useRef<HTMLDivElement>(null)
-  const startedRef = useRef(false)
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth", block: "end" })
-  }, [messages, busy])
+  }, [turns, loading])
 
   async function ask(question: string) {
     const trimmed = question.trim()
-    if (!trimmed || busy) return
+    if (!trimmed || loading) return
+    setError(null)
+    const nextTurns: Turn[] = [...turns, { role: "user", content: trimmed }]
+    setTurns(nextTurns)
     setInput("")
-    setMessages((prev) => [...prev, { role: "user", content: trimmed }])
-    setBusy(true)
+    setLoading(true)
+    const startedAt = performance.now()
     try {
-      const history = [...messages, { role: "user" as const, content: trimmed }].slice(-6).map((m) => ({ role: m.role, content: m.content }))
+      const history = nextTurns.map((t) => ({ role: t.role, content: t.content }))
       const response = await fetch("/api/docs-assistant", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          messages: pageContext && !startedRef.current
-            ? [{ role: "user", content: `About the page "${pageContext}": ${trimmed}` }, ...history].slice(-6)
-            : history,
+          messages: history,
+          ...(pageContext ? { pageContext } : {}),
         }),
       })
-      startedRef.current = true
-      const data = await response.json()
-      if (!response.ok) throw new Error(data?.error || "request failed")
-      setProvider(data.provider ?? null)
-      setMessages((prev) => [
-        ...prev,
-        { role: "assistant", content: data.reply, citations: data.citations ?? [], provider: data.provider },
-      ])
-    } catch {
-      setMessages((prev) => [
+      if (response.status === 401 || response.status === 403) {
+        throw new Error("Staff session required. Please sign in with your staff account to use Ask Sphere Docs.")
+      }
+      if (!response.ok) {
+        const payload = (await response.json().catch(() => ({}))) as { error?: string }
+        throw new Error(payload.error || `Request failed (${response.status})`)
+      }
+      const data = (await response.json()) as {
+        reply: string
+        citations: Citation[]
+        synthesized: boolean
+      }
+      const elapsedMs = Math.round(performance.now() - startedAt)
+      setTurns((prev) => [
         ...prev,
         {
           role: "assistant",
-          content: "Something went wrong reaching the assistant. Please try again in a moment — the search palette (⌘K) always works without AI.",
+          content: data.reply,
+          citations: data.citations,
+          synthesized: data.synthesized,
+          elapsedMs,
         },
       ])
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "The documentation assistant could not be reached.")
     } finally {
-      setBusy(false)
+      setLoading(false)
     }
   }
-
-  async function copyLast() {
-    const last = [...messages].reverse().find((m) => m.role === "assistant")
-    if (!last) return
-    try {
-      await navigator.clipboard.writeText(last.content)
-      setCopied(true)
-      setTimeout(() => setCopied(false), 1600)
-    } catch {
-      /* clipboard unavailable */
-    }
-  }
-
-  const lastAssistant = [...messages].reverse().find((m) => m.role === "assistant")
 
   return (
-    <div className="flex min-h-[28rem] flex-col overflow-hidden rounded-2xl border border-border bg-card">
-      {/* Status bar */}
-      <div className="flex items-center gap-2 border-b border-border bg-muted/40 px-4 py-2.5 text-xs text-muted-foreground">
-        <Sparkles className="h-3.5 w-3.5 text-primary" aria-hidden />
-        <span className="font-medium text-foreground">Ask Sphere Docs</span>
-        <span className="flex items-center gap-1 rounded-full border border-border bg-background px-2 py-0.5" title={provider === "groq" ? "Answers synthesized with Groq over retrieved docs" : provider === "lexical" ? "Answers from lexical retrieval over the docs corpus" : "Provider status appears after the first question"}>
-          <Zap className="h-3 w-3" aria-hidden />
-          {provider === "groq" ? "Groq + retrieval" : provider === "lexical" ? "Retrieval mode" : "Grounded in docs/"}
-        </span>
-        <span className="ml-auto flex items-center gap-2">
-          {lastAssistant ? (
-            <button type="button" onClick={copyLast} className="inline-flex items-center gap-1 rounded-md px-2 py-1 hover:bg-accent hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring">
-              {copied ? <Check className="h-3 w-3" aria-hidden /> : <Copy className="h-3 w-3" aria-hidden />}
-              {copied ? "Copied" : "Copy answer"}
-            </button>
-          ) : null}
-          {messages.length > 0 ? (
-            <button type="button" onClick={() => { setMessages([]); setProvider(null); startedRef.current = false }} className="inline-flex items-center gap-1 rounded-md px-2 py-1 hover:bg-accent hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring">
-              <Eraser className="h-3 w-3" aria-hidden />
-              Clear
-            </button>
-          ) : null}
-        </span>
+    <div className="flex flex-col rounded-xl border border-border bg-card shadow-xs">
+      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border px-4 py-3">
+        <div className="flex items-center gap-2.5">
+          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent text-primary" aria-hidden>
+            <Sparkles className="h-4 w-4" />
+          </span>
+          <div>
+            <p className="text-sm font-semibold text-foreground">Ask Sphere Docs</p>
+            <p className="text-xs text-muted-foreground">
+              Grounded in <span className="docs-repo-file">docs/</span>, <span className="docs-repo-file">openapi/</span> &amp;{" "}
+              <span className="docs-repo-file">prisma/</span> — answers cite exact sections
+            </p>
+          </div>
+        </div>
+        {turns.length > 0 ? (
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={() => {
+              setTurns([])
+              setError(null)
+            }}
+          >
+            <RotateCcw className="h-3.5 w-3.5" aria-hidden />
+            New conversation
+          </Button>
+        ) : null}
       </div>
 
-      {/* Messages */}
-      <div className="docs-scrollbar flex-1 space-y-4 overflow-y-auto p-4 sm:p-5" aria-live="polite">
-        {messages.length === 0 ? (
-          <div className="py-6 text-center">
-            <span className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-accent text-primary" aria-hidden>
-              <MessageCircleQuestion className="h-5 w-5" />
-            </span>
-            <p className="text-sm font-medium text-foreground">
-              {pageContext ? `Ask anything about “${pageContext}”` : "Ask anything about Sphere Pharmacy"}
+      <div className="docs-scrollbar min-h-96 max-h-[36rem] flex-1 space-y-4 overflow-y-auto p-4" aria-live="polite">
+        {turns.length === 0 ? (
+          <div className="py-4">
+            {pageContext ? (
+              <p className="mb-3 rounded-lg border border-border bg-muted/40 px-3 py-2 text-xs text-muted-foreground">
+                Focusing on <span className="font-semibold text-foreground">{pageContext}</span> (all documentation remains searchable).
+              </p>
+            ) : null}
+            <p className="text-sm font-medium text-foreground">Ask anything about Sphere Pharmacy operations or engineering</p>
+            <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+              The assistant searches across all 129 documentation pages, user journeys, OpenAPI endpoints, and Prisma models to synthesize a cited answer with direct links.
             </p>
-            <p className="mx-auto mt-1 max-w-md text-xs leading-relaxed text-muted-foreground">
-              Answers are generated strictly from the documentation corpus, with citations that open the exact
-              section. The assistant never reads account, customer or prescription data.
-            </p>
-            <div className="mx-auto mt-5 grid max-w-2xl gap-2 sm:grid-cols-2">
-              {SUGGESTED_QUESTIONS.map((question) => (
+            <div className="mt-4 grid gap-2 sm:grid-cols-2">
+              {STARTER_PROMPTS.map((prompt) => (
                 <button
-                  key={question}
+                  key={prompt}
                   type="button"
-                  onClick={() => ask(question)}
-                  className="rounded-lg border border-border bg-background px-3 py-2.5 text-left text-xs text-foreground transition-colors hover:border-ring hover:bg-accent/40 focus-visible:outline-2 focus-visible:outline-ring"
+                  onClick={() => ask(prompt)}
+                  className="flex items-start justify-between gap-2 rounded-lg border border-border bg-background p-3 text-left text-xs font-medium text-foreground transition-colors hover:border-ring hover:bg-accent/50"
                 >
-                  {question}
+                  <span>{prompt}</span>
+                  <ArrowUpRight className="mt-0.5 h-3.5 w-3.5 shrink-0 text-muted-foreground" aria-hidden />
                 </button>
               ))}
             </div>
           </div>
         ) : (
-          messages.map((message, index) => (
-            <div key={index} className={message.role === "user" ? "flex justify-end" : "flex justify-start"}>
-              <div
-                className={`max-w-[92%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
-                  message.role === "user"
-                    ? "bg-primary text-primary-foreground"
-                    : "border border-border bg-background text-foreground"
+          turns.map((turn, idx) => (
+            <div key={idx} className="flex items-start gap-3">
+              <span
+                className={`mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full ${
+                  turn.role === "user" ? "bg-primary text-primary-foreground" : "bg-accent text-primary"
                 }`}
+                aria-hidden
               >
-                {message.role === "assistant" ? (
-                  <div className="docs-prose docs-prose-compact">
-                    <ReactMarkdown
-                      components={{
-                        a: ({ children, href }) => (
-                          <a href={href} className="text-primary underline underline-offset-2">
-                            {children}
-                          </a>
-                        ),
-                      }}
-                    >
-                      {message.content}
-                    </ReactMarkdown>
-                    {message.citations && message.citations.length > 0 ? (
-                      <div className="mt-3 border-t border-border pt-3">
-                        <p className="mb-2 text-[0.6875rem] font-semibold uppercase tracking-wide text-muted-foreground">Sources</p>
-                        <ul className="space-y-1.5">
-                          {message.citations.map((citation) => (
-                            <li key={citation.n}>
-                              <Link
-                                href={citation.url}
-                                className="group flex items-start gap-2 rounded-lg border border-border/70 bg-card px-3 py-2 transition-colors hover:border-ring"
-                              >
-                                <span className="mt-0.5 flex h-4.5 w-4.5 shrink-0 items-center justify-center rounded-full bg-accent font-mono text-[0.625rem] font-bold text-primary">
-                                  {citation.n}
+                {turn.role === "user" ? <User className="h-3.5 w-3.5" /> : <Bot className="h-3.5 w-3.5" />}
+              </span>
+              <div className="min-w-0 flex-1">
+                <div className="flex flex-wrap items-center gap-2">
+                  <p className="text-xs font-semibold text-muted-foreground">
+                    {turn.role === "user" ? "You" : "Sphere Docs"}
+                  </p>
+                  {turn.role === "assistant" ? (
+                    <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-[0.65rem] font-medium text-muted-foreground">
+                      <Zap className="h-2.5 w-2.5 text-primary" aria-hidden />
+                      {turn.synthesized ? "AI synthesized" : "Instant corpus synthesis"}
+                      {typeof turn.elapsedMs === "number" ? ` · ${turn.elapsedMs}ms` : ""}
+                    </span>
+                  ) : null}
+                </div>
+                <div className="docs-prose docs-prose-compact mt-1">
+                  <ReactMarkdown
+                    remarkPlugins={[remarkGfm]}
+                    components={{
+                      a: ({ href, children }) => {
+                        if (href?.startsWith("/docs")) {
+                          return (
+                            <Link href={href} className="font-medium text-primary underline underline-offset-2">
+                              {children}
+                            </Link>
+                          )
+                        }
+                        return <span>{children}</span>
+                      },
+                    }}
+                  >
+                    {turn.content}
+                  </ReactMarkdown>
+                </div>
+
+                {turn.citations && turn.citations.length > 0 ? (
+                  <div className="mt-3 space-y-1.5" aria-label="Cited documentation sections">
+                    <p className="text-[0.6875rem] font-semibold uppercase tracking-wider text-muted-foreground">
+                      Top matched sources ({turn.citations.length})
+                    </p>
+                    <div className="grid gap-1.5 sm:grid-cols-2">
+                      {turn.citations.map((citation) => {
+                        const href = citation.anchor ? `${citation.url}#${citation.anchor}` : citation.url
+                        return (
+                          <Link
+                            key={`${citation.url}-${citation.anchor}-${citation.index}`}
+                            href={href}
+                            className="group flex items-start gap-2 rounded-lg border border-border bg-background p-2.5 text-xs transition-colors hover:border-ring"
+                          >
+                            <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded bg-accent font-mono text-[0.6875rem] font-bold text-primary">
+                              {citation.index}
+                            </span>
+                            <span className="min-w-0 flex-1">
+                              <span className="flex items-center gap-1 font-semibold text-foreground group-hover:text-primary">
+                                <FileText className="h-3 w-3 shrink-0" aria-hidden />
+                                <span className="truncate">{citation.title}</span>
+                              </span>
+                              {citation.heading && citation.heading !== citation.title ? (
+                                <span className="block truncate text-[0.6875rem] text-muted-foreground">
+                                  § {citation.heading}
                                 </span>
-                                <span className="min-w-0">
-                                  <span className="block truncate text-xs font-medium text-foreground group-hover:text-primary">
-                                    {citation.title}
-                                    {citation.heading && citation.heading !== citation.title ? ` — ${citation.heading}` : ""}
-                                  </span>
-                                  <span className="mt-0.5 block line-clamp-2 text-[0.6875rem] leading-relaxed text-muted-foreground">{citation.snippet}</span>
-                                </span>
-                                <ExternalLink className="mt-0.5 h-3 w-3 shrink-0 text-muted-foreground" aria-hidden />
-                              </Link>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    ) : null}
+                              ) : null}
+                              <span className="mt-0.5 line-clamp-2 block text-[0.6875rem] text-muted-foreground">
+                                {citation.snippet}
+                              </span>
+                            </span>
+                          </Link>
+                        )
+                      })}
+                    </div>
                   </div>
-                ) : (
-                  message.content
-                )}
+                ) : null}
               </div>
             </div>
           ))
         )}
-        {busy ? (
-          <div className="flex justify-start" aria-live="polite">
-            <div className="flex items-center gap-2 rounded-2xl border border-border bg-background px-4 py-3 text-sm text-muted-foreground">
-              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-primary" aria-hidden />
-              Retrieving documentation and composing an answer…
-            </div>
+
+        {loading ? (
+          <div className="flex items-center gap-2 text-xs text-muted-foreground" role="status">
+            <Loader2 className="h-4 w-4 animate-spin text-primary" aria-hidden />
+            Searching documentation corpus &amp; synthesizing answer…
           </div>
+        ) : null}
+
+        {error ? (
+          <p className="rounded-lg border border-destructive/40 bg-destructive/10 px-3 py-2 text-xs text-destructive" role="alert">
+            {error}
+          </p>
         ) : null}
         <div ref={endRef} />
       </div>
 
-      {/* Composer */}
       <form
-        className="border-t border-border p-3"
         onSubmit={(event) => {
           event.preventDefault()
           void ask(input)
         }}
+        className="flex items-center gap-2 border-t border-border p-3"
       >
-        <div className="flex items-end gap-2">
-          <label className="sr-only" htmlFor="docs-assistant-input">Question</label>
-          <textarea
-            id="docs-assistant-input"
-            value={input}
-            onChange={(event) => setInput(event.target.value)}
-            onKeyDown={(event) => {
-              if (event.key === "Enter" && !event.shiftKey) {
-                event.preventDefault()
-                void ask(input)
-              }
-            }}
-            rows={Math.min(4, Math.max(1, input.split("\n").length))}
-            placeholder="Ask about journeys, orders, prescriptions, payments, the API, the database…"
-            className="docs-scrollbar max-h-28 min-h-11 flex-1 resize-none rounded-xl border border-border bg-background px-3.5 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-2 focus-visible:outline-ring"
-            maxLength={1200}
-          />
-          <button
-            type="submit"
-            disabled={busy || !input.trim()}
-            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-ring disabled:opacity-40"
-            aria-label="Send question"
-          >
-            <ArrowUp className="h-4 w-4" aria-hidden />
-          </button>
-        </div>
-        <p className="mt-2 text-[0.6875rem] text-muted-foreground">
-          Grounded in the public docs corpus — no account, customer or prescription data. Rate-limited to 20 questions per hour.
-        </p>
+        <input
+          type="text"
+          value={input}
+          onChange={(event) => setInput(event.target.value)}
+          placeholder="Ask about a journey, feature, API route, database model or runbook…"
+          aria-label="Ask the documentation assistant"
+          maxLength={600}
+          className="h-10 flex-1 rounded-lg border border-border bg-background px-3 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-2 focus-visible:outline-ring"
+        />
+        <Button type="submit" size="sm" disabled={loading || !input.trim()} className="h-10 px-4">
+          <Send className="h-4 w-4" aria-hidden />
+          <span>Ask</span>
+        </Button>
       </form>
     </div>
   )

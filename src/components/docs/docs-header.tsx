@@ -3,17 +3,27 @@
 import Link from "next/link"
 import { useTheme } from "next-themes"
 import { useEffect, useState } from "react"
-import { Menu, MessageCircleQuestion, Moon, Search, Sun } from "lucide-react"
+import { LayoutDashboard, Menu, MessageCircleQuestion, Moon, PanelLeftClose, PanelLeftOpen, Search, Sun } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
-export function DocsHeader({ onOpenNav, onOpenSearch }: { onOpenNav: () => void; onOpenSearch: () => void }) {
+export function DocsHeader({
+  onOpenNav,
+  onOpenSearch,
+  sidebarCollapsed = false,
+  onToggleSidebar,
+}: {
+  onOpenNav: () => void
+  onOpenSearch: () => void
+  sidebarCollapsed?: boolean
+  onToggleSidebar?: () => void
+}) {
   const { resolvedTheme, setTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
   useEffect(() => setMounted(true), [])
 
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/75">
-      <div className="mx-auto flex h-14 max-w-90rem items-center gap-2 px-4 sm:px-6">
+      <div className="mx-auto flex h-14 max-w-[92rem] items-center gap-2 px-4 sm:px-6 lg:px-8">
         <Button
           variant="ghost"
           size="icon"
@@ -24,13 +34,29 @@ export function DocsHeader({ onOpenNav, onOpenSearch }: { onOpenNav: () => void;
           <Menu className="h-5 w-5" aria-hidden />
         </Button>
 
+        {onToggleSidebar ? (
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            className="hidden lg:inline-flex"
+            onClick={onToggleSidebar}
+            aria-label={sidebarCollapsed ? "Expand documentation sidebar" : "Collapse documentation sidebar"}
+            aria-expanded={!sidebarCollapsed}
+            aria-controls="docs-desktop-sidebar"
+            title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+          >
+            {sidebarCollapsed ? <PanelLeftOpen className="h-4 w-4" aria-hidden /> : <PanelLeftClose className="h-4 w-4" aria-hidden />}
+          </Button>
+        ) : null}
+
         <Link href="/docs" className="flex min-w-0 items-center gap-2.5 rounded-md focus-visible:outline-2 focus-visible:outline-ring">
           <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-primary font-bold text-primary-foreground" aria-hidden>
             S
           </span>
           <span className="min-w-0">
             <span className="block truncate text-sm font-semibold leading-tight text-foreground">Sphere Pharmacy</span>
-            <span className="block text-[0.6875rem] leading-tight text-muted-foreground">Documentation</span>
+            <span className="block text-[0.6875rem] leading-tight text-muted-foreground">Staff Documentation</span>
           </span>
         </Link>
 
@@ -67,8 +93,11 @@ export function DocsHeader({ onOpenNav, onOpenSearch }: { onOpenNav: () => void;
             </Link>
           </Button>
 
-          <Button asChild variant="ghost" size="sm" className="hidden text-muted-foreground hover:text-foreground lg:inline-flex">
-            <Link href="/">Open app</Link>
+          <Button asChild variant="ghost" size="sm" className="hidden gap-1.5 text-muted-foreground hover:text-foreground lg:inline-flex">
+            <Link href="/admin">
+              <LayoutDashboard className="h-4 w-4" aria-hidden />
+              Staff workspace
+            </Link>
           </Button>
         </div>
       </div>

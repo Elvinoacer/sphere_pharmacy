@@ -33,12 +33,6 @@ function docForSlug(slug: string[]): DocRecord | null {
   return null
 }
 
-export function generateStaticParams() {
-  return getCorpus()
-    .docs.filter((doc) => doc.isJourney)
-    .map((doc) => ({ slug: doc.url.replace("/docs/journeys/", "").split("/") }))
-}
-
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { slug } = await params
   const doc = docForSlug(slug)

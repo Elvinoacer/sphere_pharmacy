@@ -1,16 +1,19 @@
 import { NextResponse } from "next/server"
 import { getSearchIndex } from "@/lib/docs/search"
+import { requireStaff } from "@/lib/session"
 
 /**
- * Build-time search index for the documentation command palette.
- * The index is generated from the corpus; GET handlers like this one are
- * statically optimized by Next.js, so the payload is computed once at build.
+ * Staff-only search index for the documentation command palette.
+ * Restricted to authenticated pharmacy staff (ADMIN, PHARMACIST, STAFF, RIDER).
  */
 export async function GET() {
+  const { error } = await requireStaff()
+  if (error) return error
+
   const index = getSearchIndex()
   return NextResponse.json(index, {
     headers: {
-      "Cache-Control": "public, max-age=600, stale-while-revalidate=86400",
+      "Cache-Control": "private, no-store",
     },
   })
 }

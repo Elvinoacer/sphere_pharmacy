@@ -152,3 +152,27 @@ test("database client defers missing-URL throw to runtime property access and do
   assert.doesNotMatch(docsContent, /resolve\(ROOT,/)
   assert.match(docsContent, /join\(ROOT,\s*"docs",\s*rel\)/)
 })
+
+test("documentation portal and docs APIs require staff authentication and desktop sidebar is collapsible", () => {
+  const docsLayout = read("src/app/docs/layout.tsx")
+  assert.match(docsLayout, /getSession/)
+  assert.match(docsLayout, /!session\s*\|\|\s*!session\.staffId/)
+  assert.match(docsLayout, /Staff documentation access/)
+
+  const docsIndexRoute = read("src/app/api/docs-index/route.ts")
+  assert.match(docsIndexRoute, /requireStaff/)
+  assert.match(docsIndexRoute, /private, no-store/)
+
+  const docsAssistantRoute = read("src/app/api/docs-assistant/route.ts")
+  assert.match(docsAssistantRoute, /requireStaff/)
+  assert.match(docsAssistantRoute, /synthesizeDocsAnswer/)
+
+  const docsShell = read("src/components/docs/docs-shell.tsx")
+  assert.match(docsShell, /sphere-docs-sidebar-collapsed/)
+  assert.match(docsShell, /is-sidebar-collapsed/)
+  assert.match(docsShell, /docs-desktop-sidebar/)
+
+  const docsCss = read("src/components/docs/docs.css")
+  assert.match(docsCss, /column-gap:\s*2\.75rem/)
+  assert.match(docsCss, /\.docs-body\.is-sidebar-collapsed/)
+})

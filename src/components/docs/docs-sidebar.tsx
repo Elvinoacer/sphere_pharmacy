@@ -43,7 +43,7 @@ export function DocsSidebar({ groups, currentUrl }: { groups: NavGroup[]; curren
   }, [groups, pathname])
 
   return (
-    <nav aria-label="Documentation" className="docs-scrollbar h-full overflow-y-auto py-6 pr-3">
+    <nav aria-label="Documentation" className="docs-scrollbar min-h-0 flex-1 overflow-y-auto py-4 pr-2">
       <ul className="space-y-1">
         {groups.map((group) => {
           const Icon = ICONS[group.icon] ?? BookOpen

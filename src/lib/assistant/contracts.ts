@@ -82,7 +82,7 @@ export function fallbackIntent(text: string): AssistantIntent {
   const t = text.toLowerCase().trim();
   if (
     /\b(pay|payment|mpesa|m-pesa)\b/.test(t) &&
-    !/\b(methods|accept|how does|what is)\b/.test(t)
+    !/\b(methods?|accept|how (?:does|do|can)|what (?:is|are)|ways to|options?)\b/.test(t)
   )
     return { type: "pay" };
   if (/\b(check\s?out)\b/.test(t))
@@ -100,12 +100,21 @@ export function fallbackIntent(text: string): AssistantIntent {
         .replace(/\s+/g, " ")
         .trim(),
     };
+  if (
+    /\b(opening hours?|closing hours?|working hours?|operating hours?|what time do you (?:open|close)|when are you open|are you open(?: now| today)?|where are you|your location|your address|directions|contact (?:details|info|us)|phone number|whatsapp number|email address)\b/.test(
+      t,
+    )
+  )
+    return { type: "none" };
+  if (/\b(delivery|deliver|shipping|delivery zones?|free delivery)\b/.test(t))
+    return { type: "navigate", view: "checkout" };
   const views: [RegExp, (typeof assistantViews)[number]][] = [
     [/\b(cart|bag|basket)\b/, "cart"],
-    [/\b(orders?|track delivery)\b/, "orders"],
+    [/\b(orders?|track delivery|guest tracking)\b/, "orders"],
     [/\b(prescriptions?|refill|upload)\b/, "prescriptions"],
-    [/\b(account|profile|address|preferences|points)\b/, "account"],
+    [/\b(account|profile|address|preferences|points|loyalty)\b/, "account"],
     [/\b(services|clinic)\b/, "services"],
+    [/\b(catalogue|catalog|browse products|current offers|offers)\b/, "catalog"],
     [/\b(home|landing)\b/, "home"],
     [/\b(sign in|login)\b/, "auth"],
   ];

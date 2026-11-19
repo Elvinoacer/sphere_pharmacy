@@ -63,7 +63,7 @@ If your change falls into any of these categories, update the matching documenta
 | `src/lib/pos-reconciliation*.ts` + `src/lib/pdf/daily-sales-pdf.ts` | BandaGo stagnant-POS drift protection, outbound reconciliation ledger, Daily Sales PDF generator |
 | `src/lib/constants.ts` | Canonical status lists, roles, loyalty rules, delivery defaults |
 | `prisma/schema.prisma` | 41 models, 5 POS enums, 11 migrations; stock-field authority explained in [docs/database/schema-overview.md](docs/database/schema-overview.md) |
-| `src/lib/assistant/` + `src/app/api/assistant/route.ts` | The storefront AI assistant (Groq, deterministic-first, session-gated); companion `src/app/api/docs-assistant/route.ts` ("Ask Sphere Docs", public docs corpus only, session-free) |
+| `src/lib/assistant/` + `src/app/api/assistant/route.ts` | The storefront AI assistant (Groq, deterministic-first, session-gated, live public `pharmacy`/`delivery` settings + customer-safe navigation); companion `src/app/api/docs-assistant/route.ts` ("Ask Sphere Docs", staff-gated via `requireStaff`, docs/OpenAPI/Prisma corpus only) |
 | `.zscripts/` + `Caddyfile` | Standalone deployment pipeline (authoritative path) |
 
 Known traps: `SPHERE_PHARMACY_FULL_CODEBASE.md` is a generated snapshot (use `npm run update:codebase` to refresh — do not treat as source of truth over live code); `reference/archive/worklog.md` describes the historical SQLite/simulated-payment era; `reference/archive/PROJECT_README.md` predates BandaGo and the real payment providers; several dependencies (`z-ai-web-dev-sdk`, `next-auth`, `@tanstack/react-query`) are declared but never imported. When docs and code disagree, **the code wins** — then fix the doc.

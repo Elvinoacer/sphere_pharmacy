@@ -6,6 +6,8 @@
 // trigger refetches in others (e.g. prescription review → orders + overview).
 
 import { useEffect, useRef, useState } from "react"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { useTheme } from "next-themes"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -26,7 +28,7 @@ import {
   LayoutDashboard, Package, ClipboardList, Pill, Megaphone, Users, BarChart3,
   ShieldCheck, Settings, LogOut, Lock, Store, Menu, Loader2, RefreshCw, Bike, MessageSquareText,
   Bell, BellRing, BriefcaseMedical, CalendarDays, ArrowUpRight, ChevronRight, Search,
-  Plus, Moon, Sun, PanelLeftClose, PanelLeftOpen,
+  Plus, Moon, Sun, PanelLeftClose, PanelLeftOpen, BookOpen,
 } from "lucide-react"
 import { enablePushNotifications, getPushPermissionState } from "@/lib/firebase/client"
 import type { LucideIcon } from "lucide-react"
@@ -150,6 +152,7 @@ type AdminLiveSnapshot = { orders: AdminLiveCursor; bookings: AdminLiveCursor }
 const ADMIN_SYNC_INTERVAL_MS = 15_000
 
 export function AdminView() {
+  const router = useRouter()
   const session = useAuthStore((s) => s.session)
   const authLoading = useAuthStore((s) => s.loading)
   const refreshSession = useAuthStore((s) => s.refresh)
@@ -437,6 +440,9 @@ export function AdminView() {
             <Button variant="outline" className="admin-search-trigger" onClick={() => setSearchOpen(true)} aria-label="Search admin pages">
               <Search className="h-4 w-4" /><span>Jump to a page…</span><kbd>⌘ / Ctrl K</kbd>
             </Button>
+            <Button asChild variant="ghost" size="icon" aria-label="Open documentation portal" title="Documentation portal">
+              <Link href="/docs"><BookOpen className="h-4 w-4" /></Link>
+            </Button>
             <Button variant="ghost" size="icon" onClick={bumpRefresh} aria-label="Refresh section data" title="Refresh data"><RefreshCw className="h-4 w-4" /></Button>
             <Button variant="ghost" size="icon" onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")} aria-label="Toggle color theme" title="Toggle color theme"><Sun className="admin-sun h-4 w-4" /><Moon className="admin-moon h-4 w-4" /></Button>
             <Button variant="ghost" size="icon" onClick={handleTogglePush} disabled={pushLoading} aria-label={pushStatus === "granted" ? "Push alerts active" : "Enable push alerts"} title={pushStatus === "granted" ? "Push alerts active" : "Enable order and prescription alerts"} className={cn("admin-notification", pushStatus === "granted" && "is-enabled")}>
@@ -461,6 +467,14 @@ export function AdminView() {
             <CommandInput placeholder="Where would you like to go?" />
             <CommandList><CommandEmpty>No pages match your search.</CommandEmpty>
               {NAV_GROUPS.map((group) => <CommandGroup key={group.label} heading={group.label}>{visibleNav.filter((item) => group.keys.includes(item.key)).map((item) => <CommandItem key={item.key} value={`${item.label} ${item.subtitle}`} onSelect={() => goTo(item.key)}><item.icon className="h-4 w-4" /><span className="flex-1">{item.label}</span><ChevronRight className="h-3.5 w-3.5" /></CommandItem>)}</CommandGroup>)}
+              <CommandGroup heading="Documentation">
+                <CommandItem value="Documentation Portal Operational Guides Architecture API Database" onSelect={() => { setSearchOpen(false); router.push("/docs") }}>
+                  <BookOpen className="h-4 w-4" /><span className="flex-1">Documentation portal</span><ArrowUpRight className="h-3.5 w-3.5" />
+                </CommandItem>
+                <CommandItem value="Ask Sphere Docs AI Documentation Assistant" onSelect={() => { setSearchOpen(false); router.push("/docs/assistant") }}>
+                  <MessageSquareText className="h-4 w-4" /><span className="flex-1">Ask Sphere Docs (AI)</span><ArrowUpRight className="h-3.5 w-3.5" />
+                </CommandItem>
+              </CommandGroup>
             </CommandList>
             <div className="admin-command-hint"><span>↑ ↓ to browse</span><span>↵ to open</span><span>esc to close</span></div>
           </Command>
@@ -491,7 +505,7 @@ function SidebarNav({ items, section, onSelect, staffName, staffRole, onSignOut,
           return groupItems.length ? <div className="admin-nav-group" key={group.label}><p className="admin-nav-label">{group.label}</p>{groupItems.map((item) => <button key={item.key} onClick={() => onSelect(item.key)} aria-current={section === item.key ? "page" : undefined} aria-label={collapsed ? item.label : undefined} title={collapsed ? item.label : undefined} className={cn("admin-nav-item", section === item.key && "is-active")}><item.icon className="h-[18px] w-[18px] shrink-0" aria-hidden /><span>{item.label}</span>{section === item.key ? <span className="admin-nav-active-dot" aria-hidden /> : null}</button>)}</div> : null
         })}
       </nav>
-      <div className="admin-sidebar-bottom"><button className="admin-store-link" onClick={onStore} title="View storefront" aria-label={collapsed ? "View storefront" : undefined}><Store className="h-4 w-4" /><span>View storefront</span><ArrowUpRight className="h-3.5 w-3.5" /></button><div className="admin-sidebar-profile"><Avatar className="h-9 w-9"><AvatarFallback>{initials(staffName)}</AvatarFallback></Avatar><span className="min-w-0 flex-1"><strong>{staffName}</strong><span>{ROLE_LABELS[staffRole]}</span></span><button onClick={onSignOut} aria-label="Sign out of staff dashboard" title="Sign out"><LogOut className="h-4 w-4" /></button></div></div>
+      <div className="admin-sidebar-bottom"><Link href="/docs" className="admin-store-link" title="Documentation portal" aria-label={collapsed ? "Documentation portal" : undefined}><BookOpen className="h-4 w-4" /><span>Documentation</span><ArrowUpRight className="h-3.5 w-3.5" /></Link><button className="admin-store-link" onClick={onStore} title="View storefront" aria-label={collapsed ? "View storefront" : undefined}><Store className="h-4 w-4" /><span>View storefront</span><ArrowUpRight className="h-3.5 w-3.5" /></button><div className="admin-sidebar-profile"><Avatar className="h-9 w-9"><AvatarFallback>{initials(staffName)}</AvatarFallback></Avatar><span className="min-w-0 flex-1"><strong>{staffName}</strong><span>{ROLE_LABELS[staffRole]}</span></span><button onClick={onSignOut} aria-label="Sign out of staff dashboard" title="Sign out"><LogOut className="h-4 w-4" /></button></div></div>
     </div>
   )
 }

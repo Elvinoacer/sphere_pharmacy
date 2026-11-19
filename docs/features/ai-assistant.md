@@ -2,7 +2,7 @@
 
 The customer-facing AI companion ("Sphere"): a chat widget that answers shopping and navigation questions, prepares bookings and payments, and defers all medical judgment to pharmacists. It is **deterministic-first** — the LLM (Groq, OpenAI-compatible) enriches replies but provider outages never break it — and it is architected so **account data never transits the LLM**.
 
-> **Read first — the policy doc:** [../security/ai-access-and-authorized-sessions.md](../security/ai-access-and-authorized-sessions.md) defines the session-gating and authorized-session rules summarized in §8. Provider details: [../integrations/ai-provider.md](../integrations/ai-provider.md). A companion public documentation assistant (`POST /api/docs-assistant` at `/docs/assistant`) uses the same session-free, Groq-optional architecture over the repository Markdown corpus only.
+> **Read first — the policy doc:** [../security/ai-access-and-authorized-sessions.md](../security/ai-access-and-authorized-sessions.md) defines the session-gating and authorized-session rules summarized in §8. Provider details: [../integrations/ai-provider.md](../integrations/ai-provider.md). A companion **staff-only** documentation assistant (`POST /api/docs-assistant` at `/docs/assistant`, guarded by `requireStaff()`) uses structure-preserving retrieval and fast deterministic synthesis (`synthesizeDocsAnswer`) + optional Groq synthesis over the repository `docs/`, `openapi/`, and `prisma/` corpus.
 
 | Audience | Status | Verified |
 | --- | --- | --- |

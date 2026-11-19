@@ -2020,7 +2020,7 @@ paths:
   /api/assistant:
     post:
       tags: [Assistant]
-      summary: AI assistant chat (public data only; no session is read)
+      summary: Customer AI assistant chat (public catalogue, live public settings & customer-safe navigation only; no session is read)
       requestBody:
         required: true
         content:
@@ -2039,15 +2039,19 @@ paths:
   /api/docs-index:
     get:
       tags: [Assistant]
-      summary: Documentation portal lexical search index (public corpus only)
+      summary: Staff-only documentation portal lexical search index
+      security: [{ sessionCookie: [] }]
       responses:
         '200':
           description: '{ v, generatedAt, entries[] }'
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
 
   /api/docs-assistant:
     post:
       tags: [Assistant]
-      summary: Ask Sphere Docs AI assistant (public documentation corpus only; no session is read)
+      summary: Staff-only Ask Sphere Docs AI assistant (grounded in docs/, openapi/ and prisma/)
+      security: [{ sessionCookie: [] }]
       requestBody:
         required: true
         content:
@@ -2055,7 +2059,9 @@ paths:
             schema: { $ref: '#/components/schemas/AssistantChatRequest' }
       responses:
         '200':
-          description: '{ reply, citations[], provider }'
+          description: '{ reply, citations[], synthesized }'
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
         '413': { $ref: '#/components/responses/PayloadTooLarge' }
         '429': { $ref: '#/components/responses/RateLimited' }
 

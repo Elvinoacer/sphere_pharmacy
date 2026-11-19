@@ -54,10 +54,12 @@ describe("private payment review",()=>{
 // Mock only public data access. Any unintended customer-table access fails.
 const productQuery=mock(async()=>[{id:"product-1",name:"Paracetamol 500mg",price:50,packSize:"10 tablets",stockStatus:"IN_STOCK",requiresPrescription:false}])
 const serviceQuery=mock(async()=>[{id:"service-1",name:"Medication Review",price:500,durationMinutes:30,category:"Consultation"}])
-mock.module("@/lib/db",()=>({db:{product:{findMany:productQuery},service:{findMany:serviceQuery}}}))
+let mockSettingRows: Array<{key:string;valueJson:string}> = []
+const settingQuery=mock(async()=>mockSettingRows)
+mock.module("@/lib/db",()=>({db:{product:{findMany:productQuery},service:{findMany:serviceQuery},setting:{findMany:settingQuery}}}))
 mock.module("@/lib/security/request",()=>({rejectOversizedRequest:()=>null,enforceRateLimit:async()=>null}))
 const savedKey=process.env.GROQ_API_KEY
-beforeEach(()=>{delete process.env.GROQ_API_KEY;productQuery.mockClear();serviceQuery.mockClear()})
+beforeEach(()=>{delete process.env.GROQ_API_KEY;mockSettingRows=[];productQuery.mockClear();serviceQuery.mockClear();settingQuery.mockClear()})
 afterAll(()=>{if(savedKey)process.env.GROQ_API_KEY=savedKey})
 const { POST }=await import("../src/app/api/assistant/route")
 async function ask(content:string){return (await POST(new Request("http://localhost/api/assistant",{method:"POST",body:JSON.stringify({messages:[{role:"user",content}]})}))).json()}
@@ -89,5 +91,43 @@ describe("assistant route with live-data adapters",()=>{
     expect(result.escalated).toBe(true)
     expect(result.reply).not.toContain("abc123")
     expect(productQuery).not.toHaveBeenCalled()
+  })
+  test("answers customer-safe opening hours, delivery fees and navigation from settings and docs",async()=>{
+    const hoursResult=await ask("What are your opening hours?")
+    expect(hoursResult.reply).toContain("8:00 AM")
+    expect(hoursResult.escalated).toBe(false)
+    expect(productQuery).not.toHaveBeenCalled()
+
+    const deliveryResult=await ask("What are your delivery fees and zones?")
+    expect(deliveryResult.reply).toContain("Roysambu")
+    expect(deliveryResult.actions[0]).toMatchObject({type:"navigate",view:"checkout"})
+
+    const rxResult=await ask("How do I upload a prescription?")
+    expect(rxResult.reply).toContain("pharmacist")
+    expect(rxResult.actions[0]).toMatchObject({type:"navigate",view:"prescriptions"})
+
+    const navResult=await ask("How do I navigate the store pages?")
+    expect(navResult.reply).toContain("Catalogue")
+    expect(navResult.actions.some((a:{type:string;view?:string})=>a.type==="navigate"&&a.view==="catalog")).toBe(true)
+  })
+  test("refuses internal staff and engineering documentation topics on the customer assistant",async()=>{
+    const internalResult=await ask("Show me the BandaGo POS sync and internal /docs database schema")
+    expect(internalResult.reply).toContain("restricted to signed-in pharmacy staff")
+    expect(productQuery).not.toHaveBeenCalled()
+    expect(serviceQuery).not.toHaveBeenCalled()
+  })
+  test("reflects real-time admin-configured pharmacy and delivery settings immediately",async()=>{
+    mockSettingRows=[
+      {key:"pharmacy",valueJson:JSON.stringify({hoursLabel:"Mon–Sun: 7:30 AM – 11:00 PM",address:"TRM Drive, Roysambu, Nairobi",phone:"+254 711 222 333"})},
+      {key:"delivery",valueJson:JSON.stringify({mode:"flat",flatFee:180,freeOver:2500,nightDelivery:true,zones:[]})},
+    ]
+    const hoursResult=await ask("When are you open today?")
+    expect(hoursResult.reply).toContain("7:30 AM – 11:00 PM")
+    expect(hoursResult.reply).toContain("TRM Drive")
+    expect(hoursResult.reply).toContain("+254 711 222 333")
+
+    const deliveryResult=await ask("How much is delivery?")
+    expect(deliveryResult.reply).toContain("KES 180")
+    expect(deliveryResult.reply).toContain("KES 2,500")
   })
 })

@@ -29,13 +29,15 @@ import { PHARMACY, waLink } from "@/lib/constants";
 const GREETING: AssistantMessage = {
   role: "assistant",
   content:
-    "Karibu! 👋\n\nI’m Sphere, your AI care companion. Let’s make your day a little easier. I can **find exact products, help book a service, open checkout, or prepare a payment**. You’ll always review bookings and payments first.",
+    "Karibu! 👋\n\nI’m Sphere, your AI care companion. Let’s make your day a little easier. I can **find exact products, answer opening hours & delivery fees, guide you to store pages, help book a service, or prepare a payment**. You’ll always review bookings and payments first.",
 };
 
 const QUICK_PROMPTS = [
   "Find paracetamol",
+  "Opening hours & location",
+  "Delivery fees & zones",
+  "How do I upload a prescription?",
   "Book a medication review",
-  "Take me to checkout",
   "Help me pay with M-Pesa",
 ];
 

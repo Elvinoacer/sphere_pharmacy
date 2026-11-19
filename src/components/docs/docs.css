@@ -14,7 +14,7 @@
 .docs-body {
   flex: 1;
   width: 100%;
-  max-width: 90rem;
+  max-width: 92rem;
   margin-inline: auto;
   display: grid;
   grid-template-columns: 1fr;
@@ -23,7 +23,19 @@
 
 @media (min-width: 1024px) {
   .docs-body {
-    grid-template-columns: 17rem minmax(0, 1fr);
+    grid-template-columns: 17.5rem minmax(0, 1fr);
+    column-gap: 2.75rem;
+  }
+
+  .docs-body.is-sidebar-collapsed {
+    grid-template-columns: minmax(0, 1fr);
+    column-gap: 0;
+  }
+}
+
+@media (min-width: 1280px) {
+  .docs-body {
+    column-gap: 3.5rem;
   }
 }
 
@@ -36,8 +48,8 @@
 
 @media (min-width: 1280px) {
   .docs-with-toc {
-    grid-template-columns: minmax(0, 1fr) 15rem;
-    gap: 2.5rem;
+    grid-template-columns: minmax(0, 1fr) 15.5rem;
+    gap: 3rem;
   }
 }
 
@@ -46,6 +58,8 @@
   height: calc(100dvh - 3.5rem);
   position: sticky;
   top: 3.5rem;
+  display: flex;
+  flex-direction: column;
 }
 
 /* ---------- Prose ---------- */
