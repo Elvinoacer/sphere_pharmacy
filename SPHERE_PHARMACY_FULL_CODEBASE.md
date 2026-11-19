@@ -2,9 +2,9 @@
 
 > **Comprehensive Single-File Source Code Repository**  
 > **Platform:** Sphere Pharmacy (Lumumba Drive, Roysambu, Nairobi, Kenya)  
-> **Generated:** 2026-11-19 22:05:25  
+> **Generated:** 2026-11-19 22:16:22  
 > **Total Source Code Files:** 489 files  
-> **Total Lines of Source Code:** 95,428 lines  
+> **Total Lines of Source Code:** 95,425 lines  
 > **Total Uncompressed Size:** 5.29 MB  
 
 ---
@@ -827,7 +827,7 @@ This single file encapsulates the complete source code, architectural structure,
 | [eslint.config.mjs](#file-eslint-config-mjs) | JavaScript (ESM) | 51 | 1.6 KB |
 | [next-env.d.ts](#file-next-env-d-ts) | Next.js Type Declarations | 6 | 247 B |
 | [next.config.ts](#file-next-config-ts) | TypeScript | 46 | 1.9 KB |
-| [package.json](#file-package-json) | JSON | 119 | 4.1 KB |
+| [package.json](#file-package-json) | JSON | 116 | 3.9 KB |
 | [postcss.config.mjs](#file-postcss-config-mjs) | JavaScript (ESM) | 5 | 81 B |
 | [tailwind.config.ts](#file-tailwind-config-ts) | TypeScript | 64 | 1.7 KB |
 | [tsconfig.json](#file-tsconfig-json) | JSON | 42 | 730 B |
@@ -1567,7 +1567,7 @@ This single file encapsulates the complete source code, architectural structure,
 | 149 | [next-env.d.ts](#file-next-env-d-ts) | Project Configuration & Root Tooling | 6 | 247 B |
 | 150 | [next.config.ts](#file-next-config-ts) | Project Configuration & Root Tooling | 46 | 1.9 KB |
 | 151 | [openapi/sphere-api.yaml](#file-openapi-sphere-api-yaml) | Documentation & Blueprints | 2,925 | 119.8 KB |
-| 152 | [package.json](#file-package-json) | Project Configuration & Root Tooling | 119 | 4.1 KB |
+| 152 | [package.json](#file-package-json) | Project Configuration & Root Tooling | 116 | 3.9 KB |
 | 153 | [postcss.config.mjs](#file-postcss-config-mjs) | Project Configuration & Root Tooling | 5 | 81 B |
 | 154 | [prisma/migrations/20260902000000_initial/migration.sql](#file-prisma-migrations-20260902000000_initial-migration-sql) | Database Schema, Migrations & Seeds (Prisma ORM) | 838 | 27.1 KB |
 | 155 | [prisma/migrations/20260903000000_security_hardening/migration.sql](#file-prisma-migrations-20260903000000_security_hardening-migration-sql) | Database Schema, Migrations & Seeds (Prisma ORM) | 169 | 11.7 KB |
@@ -35123,8 +35123,8 @@ components:
 - **Relative Path:** `package.json`
 - **Category:** Project Configuration & Root Tooling
 - **Language:** JSON
-- **Lines:** 119
-- **Size:** 4.1 KB (4,215 bytes)
+- **Lines:** 116
+- **Size:** 3.9 KB (4,004 bytes)
 
 `````json
 {
@@ -35146,10 +35146,7 @@ components:
     "db:migrate": "prisma migrate dev",
     "db:reset": "prisma migrate reset",
     "test:assistant": "bun test tests/assistant.test.ts",
-    "export:codebase": "python3 scripts/generate_codebase_file.py",
-    "bundle:codebase": "python3 scripts/generate_codebase_file.py",
-    "update:codebase": "python3 scripts/generate_codebase_file.py",
-    "check:codebase": "python3 scripts/generate_codebase_file.py --check"
+    "update:codebase": "python3 scripts/generate_codebase_file.py"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1125.0",

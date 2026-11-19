@@ -17,10 +17,7 @@
     "db:migrate": "prisma migrate dev",
     "db:reset": "prisma migrate reset",
     "test:assistant": "bun test tests/assistant.test.ts",
-    "export:codebase": "python3 scripts/generate_codebase_file.py",
-    "bundle:codebase": "python3 scripts/generate_codebase_file.py",
-    "update:codebase": "python3 scripts/generate_codebase_file.py",
-    "check:codebase": "python3 scripts/generate_codebase_file.py --check"
+    "update:codebase": "python3 scripts/generate_codebase_file.py"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1125.0",
