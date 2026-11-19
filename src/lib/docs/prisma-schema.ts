@@ -68,6 +68,8 @@ const MODEL_DOMAINS: Record<string, string> = {
   ProductAlert: "Catalogue",
   ProductBatch: "Catalogue",
   PosSyncLog: "Catalogue",
+  PosOutboundJob: "Catalogue",
+  PosSyncIncident: "Catalogue",
   MedicineRequest: "Catalogue",
   Order: "Orders & fulfillment",
   OrderItem: "Orders & fulfillment",

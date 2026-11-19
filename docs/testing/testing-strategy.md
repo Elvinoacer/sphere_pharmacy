@@ -9,17 +9,18 @@ This document inventories what is actually tested in Sphere Pharmacy, how to run
 ## Two commands, two runners — the distinction matters
 
 ```bash
-npm test                 # node --test tests/*.test.mjs   — 12 suites, Node test runner
+npm test                 # node --test tests/*.test.mjs   — 13 suites, Node test runner
 npm run test:assistant   # bun test tests/assistant.test.ts — 1 TypeScript suite, Bun runner
 ```
 
 `npm test` globs only `tests/*.test.mjs`. `tests/assistant.test.ts` is **not** picked up by it (different extension, different runner) and is **not run in CI** — anyone touching the assistant must run `test:assistant` manually. CI only executes `npm test`. (The two shell scripts in `tests/` — `python-runtime-build.sh`, `python-runtime-container.sh` — are deployment-flow stubs, not tests.)
 
-## Inventory of the 12 `.mjs` suites
+## Inventory of the 13 `.mjs` suites
 
 | Suite (actual file) | Area | What it validates |
 | --- | --- | --- |
 | `admin-live-sync.test.mjs` | Admin live updates | Order/booking cursors and live-change behavior for the admin work queues. |
+| `bandago-bidirectional-sync.test.mjs` | BandaGo bi-directional sync & H1 security | Stagnant-POS drift protection (`computeReconciledStock`), policy normalization, deterministic UUIDv4 generation, multi-page A4 Daily Sales PDF generation (`buildDailySalesPdfBuffer`), timing-safe fail-closed Bearer auth (`verifyBandagoBearerHeader`) & legacy placeholder detection (`isUsingInsecureDefaultBandagoKey`), H1 secret elimination, auth guards, and no-`catch(...: any)` checks. |
 | `bandago-pos-crm-integration.test.mjs` | BandaGo POS/CRM | Slug generation, Kenya PPB prescription classification (word-boundary rules), FEFO expired-lot exclusion, available-stock formula, Kenya phone normalization, and **source-contract greps** that pin key implementation strings. |
 | `checkout-points-contrast.test.mjs` | Checkout + loyalty | Sphere Points redemption visibility/contrast in checkout (dark theme regression). |
 | `compliance-workspace.test.mjs` | Compliance | Admin compliance workspace behavior and redaction below ADMIN/PHARMACIST. |
@@ -30,7 +31,7 @@ npm run test:assistant   # bun test tests/assistant.test.ts — 1 TypeScript sui
 | `order-operations-ux.test.mjs` | Order operations UX | Work-queue labels/ages, batch-selection UX, responsive tables. |
 | `promotion-validation-resilience.test.mjs` | Promotions | Validation resilience: infrastructure failures fail closed (503 + errorId), limits enforced, cookies set. |
 | `reports-layout.test.mjs` | Reports | Admin reports layout/labels. |
-| `security-static.test.mjs` | Security (static) | Codifies: no build-error bypass; private prescription storage strings; no OTP demo code; `codeHash` column present; webhook auth functions present; security-hardening migration exists; staff-login legacy-hash upgrade; real FCM tokens (no placeholders); admin product view requires staff. |
+| `security-static.test.mjs` | Security (static) | Codifies: no build-error bypass; private prescription storage strings; no OTP demo code; `codeHash` column present; webhook auth functions present; security-hardening migration exists; staff-login legacy-hash upgrade; real FCM tokens (no placeholders); admin product view requires staff; lazy `db.ts` Proxy defers missing-URL throw to runtime property access; `/docs` loader avoids root-wide tracing. |
 
 Plus the Bun suite:
 
@@ -64,8 +65,8 @@ Locally, a throwaway database plus the same variables is enough — nothing in `
 | `npm ci` → `npx prisma generate` | Deterministic install; client generation for typecheck. |
 | `npm run typecheck` **before any migration step** | Comment in ci.yml: *"Static checks must run even when a database migration is broken."* Type errors should surface regardless of DB state. |
 | `npm run lint -- --max-warnings=0` | Zero-warning policy. |
-| `npx prisma migrate deploy` | Applies the 10 committed migrations to the service database — tests run against the real schema. |
-| `npm test` | The 12 `.mjs` suites (assistant suite excluded — run it manually). |
+| `npx prisma migrate deploy` | Applies the 11 committed migrations to the service database — tests run against the real schema. |
+| `npm test` | The 13 `.mjs` suites (assistant suite excluded — run it manually). |
 | `npm run build` | Production build must pass. |
 | `npm audit --omit=dev --audit-level=high` | Advisory only — comment: *"Build still runs even if the separate dependency audit reports a vulnerability."* The audit informs; it does not block. |
 
@@ -93,7 +94,7 @@ export CRON_SECRET="local-only-secret-that-is-at-least-32-characters"   # same f
 export PRESCRIPTION_RETENTION_DAYS=365 ORDER_RESERVATION_TTL_MINUTES=60
 
 npx prisma migrate deploy   # schema for the test database
-npm test                    # the 12 suites
+npm test                    # the 13 suites
 npm run test:assistant      # requires Bun; run before touching assistant code
 ```
 
@@ -104,7 +105,8 @@ npm run test:assistant      # requires Bun; run before touching assistant code
 | `prisma/schema.prisma` or migrations | typecheck, `npm test` (esp. `security-static`), `migrate deploy` on a scratch DB | Static greps pin migration names/columns; CI applies migrations before tests. |
 | Payment/webhook code | `npm test` + manual provider-sandbox check | No provider tests exist in CI — the audit's blockers live here. |
 | Notification enqueue/dispatch | `npm test`; watch `notification-health` on a dev environment | Queue semantics (leases, dedupe keys, backoff) are only partially covered statically. |
-| BandaGo normalizer/CRM | `bandago-pos-crm-integration.test.mjs` | Contract greps pin source behavior (slug/Rx/FEFO/stock/phone). |
+| BandaGo normalizer/CRM/reconciliation | `bandago-pos-crm-integration.test.mjs` + `bandago-bidirectional-sync.test.mjs` | Unit tests + contract greps pin FEFO, drift protection, PDF export, and fail-closed Bearer auth. |
+| `/docs` portal, Markdown corpus, `openapi/sphere-api.yaml` | `npm run typecheck && npm run build` + `security-static.test.mjs` | Verifies static corpus/OpenAPI/Prisma parsing and ensures `docs/content.ts` avoids root-wide tracing. |
 | Assistant code | `npm run test:assistant` (**CI will not**) | The only suite for intent schema and determinism. |
 | Admin UI strings/layout | the matching UX suite (`order-operations-ux`, `reports-layout`, `admin-live-sync`) | These suites assert on rendered labels and live-update behavior. |
 | Security-relevant auth/session code | `security-static.test.mjs` + manual sign-in matrix | Static invariants (hashing, no demo OTP, migration presence) are codified there. |
@@ -141,7 +143,7 @@ Follow the existing split: pure logic → unit tests in the matching `.mjs` suit
 | `admin-live-sync` | A01–A18 (admin console behaviors) |
 | `compliance-workspace` | S01–S03 / H01–H03 (compliance and settings) |
 | `medicine-requests` | C01–C09 (customer requests) |
-| `bandago-pos-crm-integration` | T01–T02 (POS/technical integration) |
+| `bandago-pos-crm-integration`, `bandago-bidirectional-sync` | T01–T02, SYS-08, SYS-11 (POS/technical integration & reconciliation) |
 | `reports-layout` | A-group reporting views |
 | `security-static`, `assistant.test.ts` | cross-cutting (no single journey) |
 

@@ -1,6 +1,6 @@
 # Database Data Dictionary
 
-This document enumerates every field of all 39 Prisma models, organized into the 9 domains used across the database documentation set. For each model it lists fields with type, constraints/defaults, and meaning, followed by relations and notable indexes/uniques. Status fields list their allowed values (canonical sets defined in `src/lib/constants.ts`, not in the schema). See [schema-overview.md](schema-overview.md) for connection handling and design rationale, and [entity-relationship-diagram.md](entity-relationship-diagram.md) for visual relationships.
+This document enumerates every field of all 41 Prisma models, organized into the 9 domains used across the database documentation set. For each model it lists fields with type, constraints/defaults, and meaning, followed by relations and notable indexes/uniques. Status fields list their allowed values (canonical sets defined in `src/lib/constants.ts`, not in the schema). See [schema-overview.md](schema-overview.md) for connection handling and design rationale, and [entity-relationship-diagram.md](entity-relationship-diagram.md) for visual relationships.
 
 | Audience | Status | Verified |
 | --- | --- | --- |
@@ -265,7 +265,7 @@ Order header. Money fields `Decimal(12,2)`. Statuses/groups per [schema-overview
 | `createdAt` | DateTime | `@default(now())` | Row creation. |
 | `updatedAt` | DateTime | `@updatedAt` | Auto-updated. |
 
-**Relations:** `user` (no cascade), `items` (1:N `OrderItem`, cascade), `statusHistory` (1:N `OrderStatusHistory`, cascade), `payments` (1:N `Payment`, cascade), `prescriptions` (1:N `Prescription`, no cascade), `loyaltyEntries` (1:N `LoyaltyLedger`, cascade).
+**Relations:** `user` (no cascade), `items` (1:N `OrderItem`, cascade), `statusHistory` (1:N `OrderStatusHistory`, cascade), `payments` (1:N `Payment`, cascade), `prescriptions` (1:N `Prescription`, no cascade), `loyaltyEntries` (1:N `LoyaltyLedger`, cascade), `posOutboundJobs` (1:N `PosOutboundJob`, SetNull).
 
 **Indexes:** `@@index([status, createdAt])`, `@@index([userId, createdAt])`, `@@index([riderId, status, createdAt])`, `@@index([guestPhone, createdAt])`, `@@index([updatedAt, id])` and `@@index([createdAt, id])` (live-monitor cursor pairs).
 
@@ -773,7 +773,7 @@ Staff/system action audit trail.
 
 ### `Setting`
 
-Key/value application settings. Values for `pharmacy`, `delivery`, `compliance` keys are JSON documents.
+Key/value application settings. Values for `pharmacy`, `delivery`, `compliance`, `posSync`, and `posBridgeHeartbeat` keys are JSON documents.
 
 | Field | Type | Constraints/Default | Description |
 | --- | --- | --- | --- |

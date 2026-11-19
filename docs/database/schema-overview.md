@@ -1,6 +1,6 @@
 # Database Schema Overview
 
-This document is the entry point to the Sphere Pharmacy PostgreSQL schema: how the application connects to the database, what the 39 Prisma models are and what each is for, and the design decisions an engineer or AI agent must know before touching `prisma/schema.prisma` or writing queries. Field-level detail lives in [data-dictionary.md](data-dictionary.md); relationships in [entity-relationship-diagram.md](entity-relationship-diagram.md); DDL history in [migrations.md](migrations.md); record lifetimes in [data-lifecycle.md](data-lifecycle.md).
+This document is the entry point to the Sphere Pharmacy PostgreSQL schema: how the application connects to the database, what the 41 Prisma models are and what each is for, and the design decisions an engineer or AI agent must know before touching `prisma/schema.prisma` or writing queries. Field-level detail lives in [data-dictionary.md](data-dictionary.md); relationships in [entity-relationship-diagram.md](entity-relationship-diagram.md); DDL history in [migrations.md](migrations.md); record lifetimes in [data-lifecycle.md](data-lifecycle.md).
 
 | Audience | Status | Verified |
 | --- | --- | --- |
@@ -9,7 +9,7 @@ This document is the entry point to the Sphere Pharmacy PostgreSQL schema: how t
 ## Provider and connection resolution
 
 - **Provider:** `postgresql` (declared in `prisma/schema.prisma` `datasource db`).
-- **Generator:** `prisma-client-js`. **Prisma version:** 6 (`prisma` / `@prisma/client` `^6.11.1`).
+- **Generator:** `prisma-client-js`. **Prisma version:** 6 (`prisma` / `@prisma/client` `^6.19.3`).
 - **Status:** **Implemented**.
 
 ### Environment variable resolution order
@@ -21,7 +21,7 @@ This document is the entry point to the Sphere Pharmacy PostgreSQL schema: how t
 3. `sphere_pharmacy_DATABASE_URL`
 4. `sphere_pharmacy_POSTGRES_URL`
 
-If none is set, module import throws: *"Database configuration missing. Set DATABASE_URL, sphere_pharmacy_PRISMA_DATABASE_URL, sphere_pharmacy_DATABASE_URL, or sphere_pharmacy_POSTGRES_URL."* The Prisma datasource block itself reads `env("DATABASE_URL")`; the runtime client overrides it via `datasourceUrl` with the resolved value.
+If none is set, `src/lib/db.ts` exports a lazy `Proxy` (`getClient()`) so build-time static evaluation (such as Next.js `/docs` generation) can import the module without throwing; the first runtime property access throws: *"Database configuration missing. Set DATABASE_URL, sphere_pharmacy_PRISMA_DATABASE_URL, sphere_pharmacy_DATABASE_URL, or sphere_pharmacy_POSTGRES_URL."* The Prisma datasource block itself reads `env("DATABASE_URL")`; the runtime client overrides it via `datasourceUrl` with the resolved value.
 
 ### Neon pooler handling (`statement_cache_size=0`)
 
@@ -29,11 +29,11 @@ Neon pooled endpoints (hostname containing `-pooler.`) sit behind PgBouncer. Pri
 
 ### Client singleton and the `productCategory` alias
 
-- The `PrismaClient` instance is cached on `globalThis` (survives Next.js hot reload in dev), constructed with `log: ["warn", "error"]`.
+- The `PrismaClient` instance is created lazily via `getClient()` and cached on `globalThis` (survives Next.js hot reload in dev), constructed with `log: ["warn", "error"]`.
 - The module exports `db` and `prisma` — **the same instance** under two names.
 - A `db.productCategory` getter aliases `db.category` "for blueprint compatibility" with the BandaGo/iDempiere integration blueprint's naming. Read it as `Category`; do not assume a second model exists.
 
-## Model inventory — 39 models in 9 domains
+## Model inventory — 41 models in 9 domains
 
 ### Identity / auth (5)
 
@@ -109,13 +109,13 @@ Neon pooled endpoints (hostname containing `-pooler.`) sit behind PgBouncer. Pri
 | `EmailSuppression` | Addresses that bounced or complained; email dispatch skips them. |
 | `EmailDeliveryEvent` | Resend/Svix delivery webhook events awaiting reconciliation. |
 
-### Operations (5)
+### Operations (7)
 
 | Model | Purpose |
 | --- | --- |
 | `MedicineRequest` | Guest "find this medicine" request with optional private R2 photo. |
 | `AuditLog` | Staff/system action audit (`actor`, `action`, `entity`, `entityId`, `details`). |
-| `Setting` | Key/value app settings (JSON values for `pharmacy`/`delivery`/`compliance` keys). |
+| `Setting` | Key/value app settings (JSON values for `pharmacy`/`delivery`/`compliance`/`posSync`/`posBridgeHeartbeat` keys). |
 | `RateLimitBucket` | Fixed-window rate-limit counters (natural key). |
 | `PosSyncLog` | BandaGo POS sync telemetry (table `pos_sync_logs`; uses Prisma enums for direction, trigger, and status). |
 | `PosOutboundJob` | Outbound Website → BandaGo deduction/restock/stock-edit ledger and daily export batching (`pos_outbound_jobs`). |
@@ -152,7 +152,7 @@ Loyalty rules (constants `LOYALTY` in `src/lib/constants.ts`): earn 1 pt per KSh
 
 ### 3. String statuses, canonical values in `src/lib/constants.ts`
 
-Domain statuses are plain `String` columns — the schema defines **no** enums for them (the only Prisma enums are `PosSyncTrigger` and `PosSyncStatus` for POS sync). The canonical value sets live in `src/lib/constants.ts`. Write these exact strings — never new spellings.
+Domain statuses are plain `String` columns — the schema defines **no** enums for them (the only Prisma enums are the five POS sync enums: `PosSyncStatus`, `PosSyncTrigger`, `PosSyncDirection`, `PosOutboundStatus`, and `PosOutboundEventType`). The canonical value sets live in `src/lib/constants.ts`. Write these exact strings — never new spellings.
 
 **`Order.status`** (`ORDER_STATUSES`, 14 values):
 
@@ -222,13 +222,13 @@ All models default to `cuid` ids except these five natural-key tables:
 
 ### 7. Column naming
 
-`@@map` snake_case mapping is used heavily in the BandaGo POS block (`User` POS fields, `Product` stock fields, `ProductBatch` → table `product_batches`, `PosSyncLog` → table `pos_sync_logs`), while `Order` and most core tables keep camelCase columns. Raw SQL must respect each table's actual column casing (see the quoting note in design decision 1).
+`@@map` snake_case mapping is used heavily in the BandaGo POS block (`User` POS fields, `Product` stock & POS baseline/warehouse fields, `ProductBatch` → table `product_batches`, `PosSyncLog` → table `pos_sync_logs`, `PosOutboundJob` → table `pos_outbound_jobs`, `PosSyncIncident` → table `pos_sync_incidents`), while `Order` and most core tables keep camelCase columns. Raw SQL must respect each table's actual column casing (see the quoting note in design decision 1).
 
 ## Related documents
 
-- [data-dictionary.md](data-dictionary.md) — every field of all 39 models.
+- [data-dictionary.md](data-dictionary.md) — every field of all 41 models.
 - [entity-relationship-diagram.md](entity-relationship-diagram.md) — per-domain ER diagrams.
-- [migrations.md](migrations.md) — the 10 migrations and how to apply them.
+- [migrations.md](migrations.md) — the 11 migrations and how to apply them.
 - [data-lifecycle.md](data-lifecycle.md) — creation → terminal state → retention per data class.
 - [../api/api-reference.md](../api/api-reference.md) — endpoints that read/write these tables.
 - [../operations/database-operations.md](../operations/database-operations.md) — operational runbooks.

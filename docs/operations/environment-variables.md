@@ -8,7 +8,7 @@ This is the complete matrix of environment variables consumed by Sphere Pharmacy
 
 ## Classification rules
 
-- **Public** — any `NEXT_PUBLIC_*` variable is compiled into the browser bundle. It is **not a secret** and must never hold a credential value. See the [security callout](#security-callout-next_public_pos_sync-secret) below.
+- **Public** — any `NEXT_PUBLIC_*` variable is compiled into the browser bundle. It is **not a secret** and must never hold a credential value. See the [retired browser-secret note](#security-note-retired-next_public_pos_sync_secret-remediated) below.
 - **Server-secret** — must only exist in server-side env / a secrets vault. Marked **Yes** in the Secret column.
 - **Required** — the feature or endpoint hard-fails (or refuses to run) without it. **Cron-only** means the variable is required by a cron endpoint but not by normal request paths. **Optional** — feature degrades gracefully (usually fail-closed or silently disabled).
 
@@ -25,7 +25,7 @@ This is the complete matrix of environment variables consumed by Sphere Pharmacy
 
 | Variable | Scope | Required | Secret | Notes |
 | --- | --- | --- | --- | --- |
-| `GROQ_API_KEY` | Server | Optional | Yes | Enables the LLM-backed assistant mode. **Without it the assistant runs in deterministic rule-based mode** — no error, no network calls. |
+| `GROQ_API_KEY` | Server | Optional | Yes | Enables LLM-backed replies in `/api/assistant` and `/api/docs-assistant` ("Ask Sphere Docs"). **Without it both fall back cleanly** — deterministic mode for storefront assistant, lexical citation retrieval for docs assistant. |
 | `GROQ_MODEL` | Server | Optional | No | Defaults to `openai/gpt-oss-20b` in `.env.example`. |
 
 ## Email (Resend)
@@ -113,8 +113,7 @@ All three must be ≥ 32 chars (the app throws otherwise). Do not derive one fro
 
 | Variable | Scope | Required | Secret | Notes |
 | --- | --- | --- | --- | --- |
-| `BANDAGO_SYNC_API_KEY` | Server | Optional (required for POS sync) | Yes | Bearer secret for `POST /api/integrations/bandago/sync`, `csv-import`, and `crm`. **The sync route never validates the bearer when the variable is unset** — set it in every environment. Also see the hard-coded fallback issue below. |
-| `NEXT_PUBLIC_POS_SYNC_SECRET` | Public | Optional | **No — browser-visible by definition** | Sent as a Bearer token from the admin CSV dropzone UI, so it is embedded in the client bundle. See the security callout. |
+| `BANDAGO_SYNC_API_KEY` | Server | Optional (required for machine-to-machine POS bridge) | Yes | Server-only fail-closed Bearer secret verified timing-safe across all six `/api/integrations/bandago/*` routes (`sync`, `csv-import`, `crm`, `outbound`, `outbound/ack`, `telemetry`). `.env.example` leaves it `""`; `isUsingInsecureDefaultBandagoKey()` warns admins in POS Sync if unset or equal to the retired placeholder. |
 
 ## Runtime-only variables (NOT in `.env.example`)
 
@@ -132,11 +131,10 @@ These exist only in code/CI. Missing ones are a common cause of confusing 503s a
 | `ALLOW_DESTRUCTIVE_SEED` | Server | Required to run seed at all | No | Must be `true`; seed also refuses when `NODE_ENV=production`. |
 | `SEED_DATABASE_ACK` | Server | Required for non-localhost seed | No | Must equal the database host being seeded (explicit remote acknowledgement). |
 | `STANDALONE` | Build-time | Optional | No | `true` makes `next.config.ts` emit `output: "standalone"` (used by `build:standalone` and `.zscripts/build.sh`). |
-| `NEXT_PUBLIC_POS_SYNC_SECRET` fallback value | — | — | — | Documented here only as the known-issue cross-reference in the callout below. |
 
-## Security callout: NEXT_PUBLIC_POS_SYNC_SECRET
+## Security note: retired NEXT_PUBLIC_POS_SYNC_SECRET (remediated)
 
-`NEXT_PUBLIC_POS_SYNC_SECRET` is **browser-visible by definition** (the `NEXT_PUBLIC_` prefix inlines it into the client bundle) yet is used as a Bearer credential for the BandaGo sync/CRM endpoints from the admin CSV upload UI. `.env.example` additionally ships the **same default value** for it and `BANDAGO_SYNC_API_KEY`, and `csv-import/route.ts` contains a hard-coded fallback secret (the literal is intentionally not reproduced here). Consequences and remediation are tracked as a HIGH item in [../governance/technical-debt.md](../governance/technical-debt.md): remove the browser-borne secret (use staff sessions instead), remove the fallback, and rotate any credential that ever equaled the shipped default.
+Historically (`H1` in [../governance/technical-debt.md](../governance/technical-debt.md)), `NEXT_PUBLIC_POS_SYNC_SECRET` was exposed via the admin CSV upload UI, `.env.example` shipped a shared placeholder for both BandaGo keys, and `csv-import/route.ts` carried a hardcoded fallback. **This was remediated in commit `061e923`**: `NEXT_PUBLIC_POS_SYNC_SECRET`, the hardcoded fallback, and the `.env.example` literal were all deleted; the admin UI authenticates strictly with the httpOnly `sphere_session` cookie; and machine Bearer auth (`verifyBandagoBearerHeader`) fails closed with constant-time comparison. Any previously deployed environment that ever used the retired placeholder must rotate `BANDAGO_SYNC_API_KEY` immediately (surfaced via `usingDefaultKeyWarning` in the POS Sync Hub).
 
 ## CI reference values (safe, non-secret)
 

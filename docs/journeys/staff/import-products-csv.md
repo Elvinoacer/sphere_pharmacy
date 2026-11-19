@@ -139,7 +139,7 @@ flowchart TD
 - **Row-level errors:** reported per row with the reason; the remaining rows still import. Correct the failed rows and re-run — SKU matching makes the retry idempotent for the rows that already landed.
 - **Unknown category:** the row still imports, uncategorised, with a note in the error list — create the category or fix the spelling and re-import.
 - **No undo:** the import is not transactional and there is no rollback; reversing a bad import means re-importing corrected rows (updates) or discontinuing unwanted products (journey A07). The audit row preserves what was done.
-- **BandaGo POS CSV dropzone (separate surface, honest caveat):** the POS Sync hub posts multipart CSVs to `POST /api/integrations/bandago/csv-import`, a different importer (flexible POS column aliases, `externalPosId`-keyed, delegating to the BandaGo sync). It authenticates with a Bearer key or a staff session, and it currently falls back to a hard-coded secret literal when `BANDAGO_SYNC_API_KEY` is unset while the admin page also ships a browser-borne `NEXT_PUBLIC_POS_SYNC_SECRET` — a registered HIGH technical-debt item (H1 in `docs/governance/technical-debt.md`). Until remediated, treat that surface as compromised-by-design and prefer the session-based catalogue importer documented above for staff-driven imports.
+- **BandaGo POS CSV dropzone (separate surface):** the POS Sync hub (`pos-sync-section.tsx`) posts multipart CSVs to `POST /api/integrations/bandago/csv-import`, a different importer (flexible POS column aliases, `externalPosId`-keyed, delegating to the BandaGo sync). The former H1 credential defect (`NEXT_PUBLIC_POS_SYNC_SECRET` and hardcoded fallback) was remediated in `061e923`: the admin dropzone authenticates via the signed-in staff session cookie (`sphere_session`), and Bearer auth fails closed using constant-time `verifyBandagoBearerHeader`.
 
 ## Traceability
 
@@ -153,7 +153,7 @@ flowchart TD
 | Image validation | `managedImage` in `src/lib/security/service.ts` |
 | Audit record | `audit(... "CSV_IMPORT" ...)` in the bulk route; `AuditLog` model |
 | BandaGo POS CSV importer | `src/app/api/integrations/bandago/csv-import/route.ts` |
-| Hard-coded fallback secret incident | H1 in `docs/governance/technical-debt.md` |
+| H1 credential exposure (remediated in `061e923`) | H1 in `docs/governance/technical-debt.md` |
 | Role matrix for products | `docs/security/access-control.md` |
 
 ## Related journeys and documents

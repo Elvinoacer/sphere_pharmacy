@@ -4,7 +4,7 @@
 | --- | --- | --- |
 | Engineers, AI coding agents | Implemented — verified against code | November 2026 |
 
-This reference covers **all 87 HTTP route handlers** under `src/app/api/` of the Sphere Pharmacy platform (Next.js 16 App Router + TypeScript + PostgreSQL/Prisma 6). Every statement here is grounded in the shipped route handlers and the security/commerce/clinical fact sheets. The machine-readable contract lives at [`../../openapi/sphere-api.yaml`](../../openapi/sphere-api.yaml); request/response DTOs are defined in `src/lib/types.ts` (the single frontend/backend contract consumed by `src/lib/api-client.ts`).
+This reference covers **all 95 HTTP route handlers** under `src/app/api/` of the Sphere Pharmacy platform (Next.js 16 App Router + TypeScript + PostgreSQL/Prisma 6). Every statement here is grounded in the shipped route handlers and the security/commerce/clinical fact sheets. The machine-readable contract lives at [`../../openapi/sphere-api.yaml`](../../openapi/sphere-api.yaml); request/response DTOs are defined in `src/lib/types.ts` (the single frontend/backend contract consumed by `src/lib/api-client.ts`).
 
 Related reading: [../architecture/api-architecture.md](../architecture/api-architecture.md) (layering, session model), [../security/access-control.md](../security/access-control.md) (route→role matrix, rate limits, webhook auth), [../workflows/](../workflows/) (order, payment, prescription, booking deep dives), [../integrations/](../integrations/) (BandaGo POS/CRM, M-Pesa, IntaSend, Resend, FCM).
 
@@ -14,7 +14,7 @@ Related reading: [../architecture/api-architecture.md](../architecture/api-archi
 
 ### 1.1 Base URL, content type, currency
 
-- All endpoints are same-origin relative paths under `/api` (e.g. `POST /api/orders`). Requests and responses are JSON (`Content-Type: application/json`) except `POST /api/upload` and `POST /api/integrations/bandago/csv-import` (`multipart/form-data`) and `GET /api/admin/medicine-requests/[id]/photo` (binary stream).
+- All endpoints are same-origin relative paths under `/api` (e.g. `POST /api/orders`). Requests and responses are JSON (`Content-Type: application/json`) except `POST /api/upload` and `POST /api/integrations/bandago/csv-import` (`multipart/form-data`), `GET /api/admin/medicine-requests/[id]/photo` (binary stream), and `GET /api/admin/pos-sync/sales-export` (`application/pdf`, `text/csv`, or `application/json` with `X-Export-Batch-Id`).
 - All money is Kenyan Shillings (KES), serialized as JSON numbers (2-dp `Decimal` columns behind the scenes). M-Pesa amounts must be whole KES; IntaSend uses `amount.toFixed(2)`.
 - `GET /api` is an unused scaffold stub returning `{ "message": "Hello, world!" }`.
 
@@ -42,7 +42,7 @@ Every error response is a single JSON object: `{ "error": "<human-readable messa
 - **Guest order access token** — guests who place orders receive a one-time opaque token (32-byte base64url) in the `POST /api/orders` response (also embedded as `#access=` URL fragment). Only its HMAC hash is stored; expiry is 7 days. Present it via the `x-order-access-token` header (≤256 chars; the M-Pesa initiators also accept `accessToken` in the body). Honored by: order GET, order cancel, M-Pesa initiate, IntaSend initiate, M-Pesa query. Cleared when the guest claims the order via OTP sign-in.
 - **Webhooks** — IntaSend: HMAC-SHA256 signature headers (or body challenge / shared-secret header) **plus** mandatory server-side invoice re-fetch. M-Pesa callbacks: `?token=` query vs `MPESA_CALLBACK_TOKEN` (timing-safe). Resend: Svix `svix-id`/`svix-timestamp`/HMAC verification. See [../security/access-control.md](../security/access-control.md).
 - **Cron** — `Authorization: Bearer <CRON_SECRET>` (≥32 chars). `/api/cron/notifications` uses a constant-time compare; the other four use plain comparison (documented concern).
-- **BandaGo sync** — `Authorization: Bearer <BANDAGO_SYNC_API_KEY>` **or** an active ADMIN/PHARMACIST staff session (dual-mode).
+- **BandaGo sync** — timing-safe, fail-closed `Authorization: Bearer <BANDAGO_SYNC_API_KEY>` (`verifyBandagoBearerHeader` / `authorizeBandagoRequest`) **or** an active ADMIN/PHARMACIST staff session (dual-mode; CRM GET adds STAFF).
 
 ### 1.4 Idempotency
 
@@ -55,21 +55,22 @@ Fixed-window buckets keyed `scope:sha256(clientIp + identity)`. On breach: 429 +
 
 ### 1.6 Caching
 
-Sensitive endpoints send `Cache-Control: no-store` (or `private, no-store`); admin live-changes additionally sends `Vary: Cookie`. The only shared-cache response is the popular-sorted product list (`public, s-maxage=60, stale-while-revalidate=300`); the frontend client defaults to `no-store` except catalog reads.
+Sensitive endpoints send `Cache-Control: no-store` (or `private, no-store`); admin live-changes additionally sends `Vary: Cookie`. The shared-cache responses are the popular-sorted product list (`public, s-maxage=60, stale-while-revalidate=300`) and `GET /api/docs-index` (`public, max-age=600, stale-while-revalidate=86400`); the frontend client defaults to `no-store` except catalog reads.
 
 ### 1.7 Roles and access model (quick matrix)
 
 | Capability | ADMIN | PHARMACIST | STAFF | RIDER | Customer | Guest |
 | --- | --- | --- | --- | --- | --- | --- |
-| Catalog / categories / services / promotions read | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| Catalog / categories / services / promotions read / docs-index / docs-assistant | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | Place orders, medicine requests, promo validate, location, assistant | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ (OTC orders only) |
 | Own orders / prescriptions / addresses / bookings / notifications | — | — | — | — | ✓ (own only) | order tracking via guest token |
 | Product create/update/bulk, prescriptions review, reviews moderation | ✓ | ✓ | — | — | — | — |
-| Orders scope=all/dispatch/dispatch-history, orders/riders, prepare, assign, medicine-requests admin, pos-status, live-changes | ✓ | ✓ | ✓ | — | — | — |
+| Orders scope=all/dispatch/dispatch-history, orders/riders, prepare, assign, medicine-requests admin, pos-status, pos-sync/policy GET, pos-sync/reconcile GET, live-changes | ✓ | ✓ | ✓ | — | — | — |
 | Order PATCH, cash-confirm, request-payment | ✓ | ✓ | ✓ | ✓ (assigned orders, restricted) | — | — |
 | GET /api/orders?scope=rider | — | — | — | ✓ only | — | — |
-| Product DELETE, order → REFUNDED, payments/refund, settings PUT, staff CRUD, audit, stats, service-analytics, notification-health, dispatch-test | ✓ only | — | — | — | — | — |
-| BandaGo sync / csv-import / CRM POST | ✓ | ✓ | — | — | — | — (or Bearer key) |
+| Product DELETE, order → REFUNDED, payments/refund, settings PUT, pos-sync/policy PUT, pos-sync/reconcile SET_BASELINE_NOW, staff CRUD, audit, stats, service-analytics, notification-health, dispatch-test | ✓ only | — | — | — | — | — |
+| POS Sync reconcile actions (except baseline) & sales-export | ✓ | ✓ | — | — | — | — |
+| BandaGo sync / csv-import / CRM POST / outbound / outbound/ack / telemetry | ✓ | ✓ | — | — | — | — (or Bearer key) |
 | BandaGo CRM GET | ✓ | ✓ | ✓ | — | — | — (or Bearer key) |
 
 Full reasoning, ownership rules, and the rider transition subset: [../security/access-control.md](../security/access-control.md).
@@ -78,7 +79,7 @@ Full reasoning, ownership rules, and the rider transition subset: [../security/a
 
 ## 2. Endpoint summary
 
-**Inventory**: 87 route files under `src/app/api/` (86 functional path items + the unused `/api` stub) exposing 115 operations across the 19 groups below — all covered in this reference and in [`../../openapi/sphere-api.yaml`](../../openapi/sphere-api.yaml).
+**Inventory**: 95 route files under `src/app/api/` (94 functional path items + the unused `/api` stub) exposing 125 documented operations (126 total HTTP method handlers) across the 19 groups below — all covered in this reference and in [`../../openapi/sphere-api.yaml`](../../openapi/sphere-api.yaml).
 
 `Auth` column: **Public** (no auth), **Customer** (own data), **Staff(roles)** (staff session, minimum roles listed), **Rider**, **Webhook/Cron/Bearer** (own scheme). Rate limits shown where a dedicated bucket exists.
 
@@ -206,6 +207,8 @@ Full reasoning, ownership rules, and the rider transition subset: [../security/a
 | GET | /api/settings/delivery-fee | Delivery fee quote | Public | — |
 | POST | /api/upload | Upload to R2 (direct or presign) | Any session (folder rules) | 20/15 min/principal |
 | POST | /api/assistant | AI assistant chat | Public | 40/h/IP |
+| GET | /api/docs-index | Documentation portal search index | Public | — |
+| POST | /api/docs-assistant | Ask Sphere Docs AI assistant | Public | 20/h/IP |
 | GET | /api/cron/notifications | Dispatch notification jobs | Bearer CRON_SECRET | — |
 | GET | /api/cron/order-reservations | Expire stale reservations | Bearer CRON_SECRET | — |
 | GET | /api/cron/chronic-refills | Chronic refill reminders | Bearer CRON_SECRET | — |
@@ -520,4 +523,8 @@ All buckets are fixed-window, keyed `scope:sha256(clientIp + ":" + identity)`; b
 | `mpesa-service:{...}` | M-Pesa service callback | Webhook event ledger (bookings) |
 | `intasend:{event_id\|invoice:state:tracking}` | IntaSend webhook | Webhook event ledger |
 | `earn:\|redeem:\|expire:\|cancel:\|refund-earn:\|refund-redeem:{orderId}` | callbacks, cancel, cron, refund | Loyalty ledger idempotency |
+| `sale:{orderId}:{productId}` | `enqueueOrderPosDeduction` | One outbound POS sale deduction job per order product |
+| `restock:{orderId}:{productId}` | `cancelOrderPosDeduction` | One compensating POS restock job when a synced sale is cancelled/refunded |
+| `admin_adj:{productId}:{timestamp}:{newQty}` | `enqueueAdminStockEdit` (`PATCH /api/products/[id]`) | Outbound POS stock adjustment job for staff edits |
+| `deterministicUuidFromKey(idempotencyKey)` | `pos-reconciliation-core.ts` | Stable UUIDv4 `externalInventoryUU` for BandaGo `M_Inventory.UU` idempotency |
 | `Order.version` optimistic guard | all order mutations | 409 "order changed" on concurrent writes |

@@ -7,8 +7,9 @@ info:
     serving a community pharmacy in Roysambu, Nairobi, Kenya. Covers catalog and
     products, checkout and orders, M-Pesa Daraja and IntaSend card payments,
     prescription review and refills, clinical service bookings, promotions and
-    Sphere Points loyalty, notifications, staff/admin operations, BandaGo POS/CRM
-    integration, and cron jobs.
+    Sphere Points loyalty, notifications, staff/admin operations, bi-directional
+    BandaGo POS/CRM reconciliation & Daily Sales Export, documentation portal
+    search/assistant APIs, and cron jobs.
 
     Authentication model:
     - Customer and staff sessions use the opaque sphere_session cookie
@@ -17,8 +18,8 @@ info:
     - Guests who place orders receive a one-time x-order-access-token header
       token (valid 7 days) for order tracking and payment initiation.
     - Cron endpoints require Authorization Bearer CRON_SECRET.
-    - BandaGo integration accepts Authorization Bearer BANDAGO_SYNC_API_KEY or
-      an ADMIN/PHARMACIST staff session.
+    - BandaGo integration accepts timing-safe fail-closed Authorization Bearer
+      BANDAGO_SYNC_API_KEY or an ADMIN/PHARMACIST staff session (CRM GET adds STAFF).
     - Provider webhooks (M-Pesa, IntaSend, Resend) use their own signature or
       token verification and always re-verify state server-side.
 
@@ -1735,7 +1736,7 @@ paths:
         '403': { $ref: '#/components/responses/Forbidden' }
     post:
       tags: [Admin]
-      summary: Execute reconciliation command (MARK_RECONCILED, RETRY_JOBS, CANCEL_JOBS, RESOLVE_INCIDENT, QUEUE_STOCK_PUSH, SET_BASELINE_NOW)
+      summary: Execute reconciliation command (MARK_RECONCILED, RETRY_JOBS, CANCEL_JOBS, RESOLVE_INCIDENT, RESOLVE_ALL_INCIDENTS, QUEUE_STOCK_PUSH, SET_BASELINE_NOW)
       security: [{ sessionCookie: [] }]
       responses:
         '200': { description: '{ ok, affectedCount? }' }
@@ -1750,6 +1751,8 @@ paths:
       parameters:
         - { name: format, in: query, schema: { type: string, enum: [pdf, csv, json] } }
         - { name: scope, in: query, schema: { type: string, enum: [unreconciled, today, range] } }
+        - { name: from, in: query, schema: { type: string }, description: Start date/ISO timestamp when scope=range }
+        - { name: to, in: query, schema: { type: string }, description: End date/ISO timestamp when scope=range }
         - { name: groupBy, in: query, schema: { type: string, enum: [PRODUCT_SUMMARY, ITEMIZED_ORDERS] } }
         - { name: markExported, in: query, schema: { type: string, enum: ['0', '1'] } }
       responses:
@@ -1801,6 +1804,7 @@ paths:
                   timestamp: { type: string }
                   errors: { type: array, items: { type: string }, maxItems: 20 }
         '401': { description: Invalid POS sync credentials }
+        '403': { description: Tenant mismatch (TENANT_MISMATCH) when payload.tenantUU disagrees with policy.expectedTenantUU }
         '500': { description: Unrecoverable pipeline failure }
   /api/integrations/bandago/csv-import:
     post:
@@ -1879,7 +1883,6 @@ paths:
       security: [{ bandagoBearer: [] }, { sessionCookie: [] }]
       responses:
         '200': { description: '{ ok, policy, pendingOutboundCount }' }
-        '401': { $ref: '#/components/responses/Unauthorized' }
         '401': { $ref: '#/components/responses/Unauthorized' }
         '403': { $ref: '#/components/responses/Forbidden' }
 
@@ -2119,7 +2122,7 @@ components:
     bandagoBearer:
       type: http
       scheme: bearer
-      description: Bearer BANDAGO_SYNC_API_KEY for BandaGo POS sync endpoints (staff session also accepted).
+      description: Timing-safe, fail-closed Bearer BANDAGO_SYNC_API_KEY for BandaGo POS sync endpoints (ADMIN/PHARMACIST staff session also accepted; CRM GET adds STAFF).
   responses:
     BadRequest:
       description: Validation failure

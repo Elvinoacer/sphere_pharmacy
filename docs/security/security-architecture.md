@@ -6,7 +6,7 @@ Sphere Pharmacy processes prescriptions, customer identities, phone numbers, del
 | --- | --- | --- |
 | Engineers, security reviewers, AI coding agents | **Implemented** — exceptions tracked in the concerns register | November 2026 |
 
-> This repository is public. No real credential value may ever appear in documentation, code or examples. Where a concern involves a literal secret, this document refers to it by location (for example, "the hard-coded fallback in `csv-import/route.ts`") rather than repeating the value.
+> This repository is public. No real credential value may ever appear in documentation, code or examples. Where a concern involves a literal secret, this document refers to it by location (for example, "the remediated hard-coded fallback formerly in `csv-import/route.ts`") rather than repeating the value.
 
 ## In this section
 
@@ -123,6 +123,7 @@ Implemented in `src/lib/security/request.ts` on the `RateLimitBucket` table (fix
 | `refund` | 10 | 60 min | staff id |
 | `notification-test` | 10 | 60 min | admin |
 | `assistant` | 40 | 60 min | IP |
+| `docs-assistant` | 20 | 60 min | IP |
 | `location-search` | 30 | 10 min | IP |
 | `reverse-geocode` | 30 | 10 min | IP |
 
@@ -135,6 +136,7 @@ Every machine-to-machine entry point requires its own secret; no endpoint trusts
 | IntaSend | `POST /api/payments/intasend/webhook` | `INTASEND_WEBHOOK_SECRET` (≥24 chars). Accepts an HMAC-SHA256 signature over the raw body (`x-intasend-signature` / `x-webhook-signature`, `sha256=` prefix stripped, timing-safe), a shared-secret header, or a body challenge | Always re-fetches the invoice server-side (`getIntaSendInvoice`) before trusting state; `PaymentWebhookEvent.eventId` unique (replay → ok, conflict → 409); amount/currency/phone/receipt/apiRef re-checked; serializable transactions |
 | M-Pesa Daraja | `POST /api/payments/mpesa/callback`, `/service-callback` | `?token=` query compared `timingSafeEqual` against `MPESA_CALLBACK_TOKEN` (≥24 chars) | `ResultCode 0` still requires a re-query (`queryStkPush` = SUCCESS) plus `paymentMatchesExpected`; event id dedupe on `(provider, checkoutRequestId)`; unknown → 404 |
 | Resend | `POST /api/notifications/email-webhook` | Svix verification with `RESEND_WEBHOOK_SECRET`: `svix-id` + `svix-timestamp` (±300 s) + HMAC-SHA256 over `id.timestamp.raw`; `v1,` signatures compared timing-safe | Persists an `EmailDeliveryEvent` row **before** acknowledging (events can precede the send response); maps delivered/bounced/complained/failed |
+| BandaGo POS bridge | `POST/GET /api/integrations/bandago/*` | Timing-safe, fail-closed `Authorization: Bearer <BANDAGO_SYNC_API_KEY>` (`verifyBandagoBearerHeader`) **or** an active `ADMIN`/`PHARMACIST` staff session (CRM GET adds `STAFF`) | Optional `expectedTenantUU` pins the clinic (`403 TENANT_MISMATCH`); `isUsingInsecureDefaultBandagoKey()` warns admins if the key matches the retired `.env.example` placeholder |
 | Cron jobs | `GET /api/cron/*` | `Authorization: Bearer CRON_SECRET` (≥32 chars) | The notifications route uses `authorizedJob()` (timing-safe); the other four use a plain `===` comparison — see concern S-3 |
 
 Two invariants hold across all payment webhooks: **state is never trusted from the webhook body alone** (the server re-fetches or re-queries the provider), and **every accepted event is recorded exactly once** (`PaymentWebhookEvent` unique `eventId`).
@@ -159,9 +161,9 @@ The `unsafe-inline` entries for scripts and styles are a known gap (concern S-8)
 
 Three write-mostly logs record security-relevant activity:
 
-- **`AuditLog`** (`src/lib/notify.ts audit()`): actor, actorRole, action, entity, entityId, details. Events include settings/compliance updates, staff lifecycle, promotions, product changes (entityId = SKU), CSV import, order cancellations and status transitions, rider assignment, cash confirmation, payment requests and refunds, all prescription review outcomes (`RX_APPROVED`, `RX_REJECTED`, `RX_CLARIFICATION_REQUESTED`, `RX_PARTIALLY_APPROVED`, `RX_REFILL_REQUESTED`), notification tests and medicine-request updates. Readable only by ADMIN via `GET /api/admin/audit` (latest 200, newest first).
+- **`AuditLog`** (`src/lib/notify.ts audit()`): actor, actorRole, action, entity, entityId, details. Events include settings/compliance updates, staff lifecycle, promotions, product changes (entityId = SKU), CSV import, POS sync policy/export/reconcile/baseline actions (`POS_SYNC_POLICY_UPDATED`, `POS_DAILY_SALES_EXPORTED`, `POS_JOBS_*`, `POS_INCIDENT*`, `POS_RECONCILIATION_BASELINE_SET`), order cancellations and status transitions, rider assignment, cash confirmation, payment requests and refunds, all prescription review outcomes (`RX_APPROVED`, `RX_REJECTED`, `RX_CLARIFICATION_REQUESTED`, `RX_PARTIALLY_APPROVED`, `RX_REFILL_REQUESTED`), notification tests and medicine-request updates. Readable only by ADMIN via `GET /api/admin/audit` (latest 200, newest first).
 - **`PrescriptionAccessLog`**: one row per `GET /api/prescriptions/[id]` (action VIEW or DOWNLOAD), regardless of who accessed it — a compliance record for health-data access. Write-only; no API reads it back.
-- **`PosSyncLog`**: BandaGo POS synchronization telemetry (trigger, status, counts, capped error details), readable by ADMIN/PHARMACIST/STAFF via `/api/admin/pos-status`.
+- **`PosSyncLog`, `PosOutboundJob`, `PosSyncIncident`**: BandaGo bi-directional POS synchronization telemetry (`direction`, trigger, status, counts, capped error details), outbound deduction/adjustment ledger, and deduplicated Zero-PHI error incidents, readable by ADMIN/PHARMACIST/STAFF via `/api/admin/pos-status` and `/api/admin/pos-sync/reconcile`.
 
 Retention of these logs is a governance decision — see [retention-and-deletion.md](retention-and-deletion.md).
 
@@ -179,7 +181,7 @@ All secrets arrive via environment variables; none are committed (the repository
 | `MPESA_CALLBACK_TOKEN` | ≥24 chars | M-Pesa callback query token |
 | `RESEND_WEBHOOK_SECRET` | Svix format | Resend email webhook verification |
 
-If `OTP_HASH_SECRET` or `TOKEN_HASH_SECRET` is unset they fall back to `SESSION_SECRET` — the effective value must still meet the length floor. Provider credentials (`GROQ_API_KEY`, `RESEND_API_KEY`/`RESEND_FROM_EMAIL`, Africa's Talking trio, Daraja credentials, IntaSend keys, the six `R2_*` variables, Firebase service account / web config plus `VAPID_KEY`) are documented with their constraints in [../operations/environment-variables.md](../operations/environment-variables.md). `SEED_ADMIN_EMAIL` plus a ≥14-character `SEED_ADMIN_PASSWORD` are required before the seed will create an administrator. The BandaGo pair (`BANDAGO_SYNC_API_KEY`, `NEXT_PUBLIC_POS_SYNC_SECRET`) is a live concern — see S-1/S-2 below and [../governance/technical-debt.md](../governance/technical-debt.md).
+If `OTP_HASH_SECRET` or `TOKEN_HASH_SECRET` is unset they fall back to `SESSION_SECRET` — the effective value must still meet the length floor. Provider credentials (`GROQ_API_KEY`, `RESEND_API_KEY`/`RESEND_FROM_EMAIL`, Africa's Talking trio, Daraja credentials, IntaSend keys, the six `R2_*` variables, Firebase service account / web config plus `VAPID_KEY`) are documented with their constraints in [../operations/environment-variables.md](../operations/environment-variables.md). `SEED_ADMIN_EMAIL` plus a ≥14-character `SEED_ADMIN_PASSWORD` are required before the seed will create an administrator. `BANDAGO_SYNC_API_KEY` is a server-only fail-closed Bearer credential verified in constant time (`src/lib/security/bandago-bearer.ts`), with SHA-256 detection (`isUsingInsecureDefaultBandagoKey()`) flagging any environment still carrying the retired placeholder; the historical browser/fallback exposure (S-1/S-2) was remediated in `061e923`.
 
 ## 9 · Error handling and fail-safe behaviour
 
@@ -197,9 +199,9 @@ These are verified, documented, and deliberately not fixed in the current tree. 
 
 | # | Concern | Impact | Recommended remediation |
 | --- | --- | --- | --- |
-| S-1 | `NEXT_PUBLIC_POS_SYNC_SECRET` is sent as a Bearer token from the browser (`pos-sync-section.tsx`) to `/api/integrations/bandago/*` | The credential ships in the client bundle and is readable by anyone; possession authorizes POS sync calls | Route manual CSV import through a staff-session endpoint; remove the `NEXT_PUBLIC_` variant; rotate the secret |
-| S-2 | Hard-coded fallback secret in `csv-import/route.ts` (line 122) when the env var is unset; `.env.example` ships the same literal as the default for both BandaGo keys | An unset environment still accepts the publicly known fallback, defeating the bearer check | Delete the fallback, require the env var at boot, rotate the value out of example files |
-| S-3 | Non-constant-time Bearer comparisons in the BandaGo routes and 4 of 5 cron routes | Theoretical timing side channel on secret comparison | Use `timingSafeEqual` everywhere (the `authorizedJob()` helper already does) |
+| S-1 | **(Remediated in `061e923`)** Formerly, `NEXT_PUBLIC_POS_SYNC_SECRET` was sent as a Bearer token from the browser (`pos-sync-section.tsx`) | Previously exposed the credential in the client bundle | **Fixed:** `NEXT_PUBLIC_POS_SYNC_SECRET` removed; admin hub uses `sphere_session` cookie exclusively; rotate any secret that ever matched the retired default |
+| S-2 | **(Remediated in `061e923`)** Formerly, `csv-import/route.ts` fell back to a hard-coded secret and `.env.example` shipped a default placeholder | Previously bypassed unset-secret protection | **Fixed:** fallback and `.env.example` literal removed; `verifyBandagoBearerHeader` fails closed (`isUsingInsecureDefaultBandagoKey` alerts if retired value reused) |
+| S-3 | Non-constant-time Bearer comparisons in 4 of 5 cron routes (BandaGo routes remediated via `verifyBandagoBearerHeader` / `timingSafeEqualStrings` in `061e923`) | Theoretical timing side channel on the 4 remaining cron routes | Route those 4 cron routes through `authorizedJob()` / `timingSafeEqual` (as `/api/cron/notifications` and BandaGo routes already do) |
 | S-4 | `clientIp()` trusts the first `x-forwarded-for` entry, then `cf-connecting-ip`/`x-real-ip` | Callers can spoof their IP and fan out across rate-limit buckets | Trust only the edge proxy hop (Caddy) and strip inbound forwarding headers |
 | S-5 | `rejectOversizedRequest()` relies on `Content-Length` (medicine-requests is the one route that also bounds the stream) | A lying header can push oversized bodies at routes that parse them | Bound the actual stream on every body-accepting route |
 | S-6 | Session tokens are stored plaintext in the `Session` table (guest tokens are stored as HMAC hashes) | A database read compromises live sessions | Store an HMAC of the session token, as guest tokens already do |

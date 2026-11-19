@@ -2,10 +2,10 @@
 
 > **Comprehensive Single-File Source Code Repository**  
 > **Platform:** Sphere Pharmacy (Lumumba Drive, Roysambu, Nairobi, Kenya)  
-> **Generated:** 2026-11-19 22:16:22  
-> **Total Source Code Files:** 489 files  
-> **Total Lines of Source Code:** 95,425 lines  
-> **Total Uncompressed Size:** 5.29 MB  
+> **Generated:** 2026-11-19 23:12:00  
+> **Total Source Code Files:** 491 files  
+> **Total Lines of Source Code:** 95,906 lines  
+> **Total Uncompressed Size:** 5.35 MB  
 
 ---
 
@@ -159,6 +159,7 @@ This single file encapsulates the complete source code, architectural structure,
 │   │   └── system
 │   │       ├── assistant-pipeline.md
 │   │       ├── bandago-inventory-sync.md
+│   │       ├── bandago-outbound-reconciliation.md
 │   │       ├── cron-chronic-refills.md
 │   │       ├── cron-notifications.md
 │   │       ├── cron-order-reservations.md
@@ -172,6 +173,7 @@ This single file encapsulates the complete source code, architectural structure,
 │   │   ├── database-operations.md
 │   │   ├── deployment.md
 │   │   ├── environment-variables.md
+│   │   ├── local-development.md
 │   │   ├── scheduled-jobs.md
 │   │   └── troubleshooting.md
 │   ├── payment-notification-audit.md
@@ -821,11 +823,11 @@ This single file encapsulates the complete source code, architectural structure,
 | Relative Path | Language | Lines | Size |
 | :--- | :--- | :---: | :---: |
 | [.env.example](#file--env-example) | Environment Config Template | 73 | 3.3 KB |
-| [.gitignore](#file--gitignore) | Git Ignore Rules | 55 | 602 B |
+| [.gitignore](#file--gitignore) | Git Ignore Rules | 56 | 640 B |
 | [Caddyfile](#file-caddyfile) | Caddy Web Server Config | 23 | 493 B |
 | [components.json](#file-components-json) | JSON | 21 | 430 B |
 | [eslint.config.mjs](#file-eslint-config-mjs) | JavaScript (ESM) | 51 | 1.6 KB |
-| [next-env.d.ts](#file-next-env-d-ts) | Next.js Type Declarations | 6 | 247 B |
+| [next-env.d.ts](#file-next-env-d-ts) | Next.js Type Declarations | 7 | 288 B |
 | [next.config.ts](#file-next-config-ts) | TypeScript | 46 | 1.9 KB |
 | [package.json](#file-package-json) | JSON | 116 | 3.9 KB |
 | [postcss.config.mjs](#file-postcss-config-mjs) | JavaScript (ESM) | 5 | 81 B |
@@ -1136,7 +1138,7 @@ This single file encapsulates the complete source code, architectural structure,
 | [src/lib/docs/frontmatter.ts](#file-src-lib-docs-frontmatter-ts) | TypeScript | 146 | 4.7 KB |
 | [src/lib/docs/navigation.ts](#file-src-lib-docs-navigation-ts) | TypeScript | 286 | 8.4 KB |
 | [src/lib/docs/openapi.ts](#file-src-lib-docs-openapi-ts) | TypeScript | 186 | 6.6 KB |
-| [src/lib/docs/prisma-schema.ts](#file-src-lib-docs-prisma-schema-ts) | TypeScript | 271 | 8.5 KB |
+| [src/lib/docs/prisma-schema.ts](#file-src-lib-docs-prisma-schema-ts) | TypeScript | 273 | 8.5 KB |
 | [src/lib/docs/search.ts](#file-src-lib-docs-search-ts) | TypeScript | 208 | 6.7 KB |
 | [src/lib/docs/utils.ts](#file-src-lib-docs-utils-ts) | TypeScript | 71 | 2.0 KB |
 | [src/lib/dto.ts](#file-src-lib-dto-ts) | TypeScript | 277 | 11.2 KB |
@@ -1265,49 +1267,49 @@ This single file encapsulates the complete source code, architectural structure,
 | [public/logo.svg](#file-public-logo-svg) | SVG XML | 29 | 1.0 KB |
 | [public/robots.txt](#file-public-robots-txt) | Plain Text | 14 | 160 B |
 
-### Documentation & Blueprints (140 files)
+### Documentation & Blueprints (142 files)
 
 | Relative Path | Language | Lines | Size |
 | :--- | :--- | :---: | :---: |
-| [AGENTS.md](#file-agents-md) | Markdown Documentation | 68 | 7.5 KB |
+| [AGENTS.md](#file-agents-md) | Markdown Documentation | 69 | 8.1 KB |
 | [CLAUDE.md](#file-claude-md) | Markdown Documentation | 1 | 11 B |
-| [README.md](#file-readme-md) | Markdown Documentation | 85 | 7.3 KB |
-| [docs/README.md](#file-docs-readme-md) | Markdown Documentation | 123 | 11.7 KB |
-| [docs/api/api-reference.md](#file-docs-api-api-reference-md) | Markdown Documentation | 523 | 60.5 KB |
-| [docs/architecture/api-architecture.md](#file-docs-architecture-api-architecture-md) | Markdown Documentation | 168 | 13.9 KB |
+| [README.md](#file-readme-md) | Markdown Documentation | 88 | 7.9 KB |
+| [docs/README.md](#file-docs-readme-md) | Markdown Documentation | 128 | 12.0 KB |
+| [docs/api/api-reference.md](#file-docs-api-api-reference-md) | Markdown Documentation | 530 | 61.8 KB |
+| [docs/architecture/api-architecture.md](#file-docs-architecture-api-architecture-md) | Markdown Documentation | 171 | 14.3 KB |
 | [docs/architecture/authentication.md](#file-docs-architecture-authentication-md) | Markdown Documentation | 167 | 11.8 KB |
-| [docs/architecture/backend-architecture.md](#file-docs-architecture-backend-architecture-md) | Markdown Documentation | 156 | 16.7 KB |
-| [docs/architecture/frontend-architecture.md](#file-docs-architecture-frontend-architecture-md) | Markdown Documentation | 182 | 18.2 KB |
+| [docs/architecture/backend-architecture.md](#file-docs-architecture-backend-architecture-md) | Markdown Documentation | 162 | 18.7 KB |
+| [docs/architecture/frontend-architecture.md](#file-docs-architecture-frontend-architecture-md) | Markdown Documentation | 182 | 18.6 KB |
 | [docs/architecture/state-management.md](#file-docs-architecture-state-management-md) | Markdown Documentation | 151 | 14.6 KB |
-| [docs/architecture/system-architecture.md](#file-docs-architecture-system-architecture-md) | Markdown Documentation | 164 | 16.7 KB |
-| [docs/database/data-dictionary.md](#file-docs-database-data-dictionary-md) | Markdown Documentation | 889 | 48.6 KB |
-| [docs/database/data-lifecycle.md](#file-docs-database-data-lifecycle-md) | Markdown Documentation | 229 | 23.2 KB |
-| [docs/database/entity-relationship-diagram.md](#file-docs-database-entity-relationship-diagram-md) | Markdown Documentation | 489 | 18.2 KB |
+| [docs/architecture/system-architecture.md](#file-docs-architecture-system-architecture-md) | Markdown Documentation | 166 | 18.3 KB |
+| [docs/database/data-dictionary.md](#file-docs-database-data-dictionary-md) | Markdown Documentation | 889 | 48.7 KB |
+| [docs/database/data-lifecycle.md](#file-docs-database-data-lifecycle-md) | Markdown Documentation | 232 | 25.2 KB |
+| [docs/database/entity-relationship-diagram.md](#file-docs-database-entity-relationship-diagram-md) | Markdown Documentation | 521 | 19.9 KB |
 | [docs/database/migrations.md](#file-docs-database-migrations-md) | Markdown Documentation | 139 | 14.4 KB |
-| [docs/database/schema-overview.md](#file-docs-database-schema-overview-md) | Markdown Documentation | 235 | 16.0 KB |
-| [docs/features/ai-assistant.md](#file-docs-features-ai-assistant-md) | Markdown Documentation | 118 | 13.0 KB |
+| [docs/database/schema-overview.md](#file-docs-database-schema-overview-md) | Markdown Documentation | 235 | 16.4 KB |
+| [docs/features/ai-assistant.md](#file-docs-features-ai-assistant-md) | Markdown Documentation | 118 | 13.2 KB |
 | [docs/features/customer-crm.md](#file-docs-features-customer-crm-md) | Markdown Documentation | 103 | 9.8 KB |
-| [docs/features/inventory-and-stock.md](#file-docs-features-inventory-and-stock-md) | Markdown Documentation | 150 | 14.6 KB |
+| [docs/features/inventory-and-stock.md](#file-docs-features-inventory-and-stock-md) | Markdown Documentation | 157 | 18.3 KB |
 | [docs/features/loyalty-and-promotions.md](#file-docs-features-loyalty-and-promotions-md) | Markdown Documentation | 112 | 10.2 KB |
 | [docs/features/medicine-requests.md](#file-docs-features-medicine-requests-md) | Markdown Documentation | 86 | 6.0 KB |
 | [docs/features/notifications.md](#file-docs-features-notifications-md) | Markdown Documentation | 106 | 10.5 KB |
-| [docs/features/orders-and-fulfillment.md](#file-docs-features-orders-and-fulfillment-md) | Markdown Documentation | 155 | 15.7 KB |
+| [docs/features/orders-and-fulfillment.md](#file-docs-features-orders-and-fulfillment-md) | Markdown Documentation | 155 | 16.2 KB |
 | [docs/features/payments-and-refunds.md](#file-docs-features-payments-and-refunds-md) | Markdown Documentation | 146 | 14.1 KB |
 | [docs/features/prescriptions.md](#file-docs-features-prescriptions-md) | Markdown Documentation | 149 | 15.5 KB |
 | [docs/features/services-and-bookings.md](#file-docs-features-services-and-bookings-md) | Markdown Documentation | 110 | 9.6 KB |
 | [docs/features/storefront-and-catalogue.md](#file-docs-features-storefront-and-catalogue-md) | Markdown Documentation | 150 | 15.6 KB |
-| [docs/governance/architecture-decisions.md](#file-docs-governance-architecture-decisions-md) | Markdown Documentation | 159 | 13.3 KB |
-| [docs/governance/documentation-policy.md](#file-docs-governance-documentation-policy-md) | Markdown Documentation | 81 | 5.8 KB |
-| [docs/governance/release-history.md](#file-docs-governance-release-history-md) | Markdown Documentation | 150 | 14.8 KB |
-| [docs/governance/technical-debt.md](#file-docs-governance-technical-debt-md) | Markdown Documentation | 151 | 16.4 KB |
-| [docs/integrations/ai-provider.md](#file-docs-integrations-ai-provider-md) | Markdown Documentation | 157 | 10.1 KB |
-| [docs/integrations/bandago-pos-crm.md](#file-docs-integrations-bandago-pos-crm-md) | Markdown Documentation | 363 | 28.9 KB |
+| [docs/governance/architecture-decisions.md](#file-docs-governance-architecture-decisions-md) | Markdown Documentation | 179 | 17.2 KB |
+| [docs/governance/documentation-policy.md](#file-docs-governance-documentation-policy-md) | Markdown Documentation | 81 | 6.2 KB |
+| [docs/governance/release-history.md](#file-docs-governance-release-history-md) | Markdown Documentation | 170 | 18.1 KB |
+| [docs/governance/technical-debt.md](#file-docs-governance-technical-debt-md) | Markdown Documentation | 152 | 17.2 KB |
+| [docs/integrations/ai-provider.md](#file-docs-integrations-ai-provider-md) | Markdown Documentation | 164 | 11.0 KB |
+| [docs/integrations/bandago-pos-crm.md](#file-docs-integrations-bandago-pos-crm-md) | Markdown Documentation | 390 | 33.7 KB |
 | [docs/integrations/cloudflare-r2.md](#file-docs-integrations-cloudflare-r2-md) | Markdown Documentation | 151 | 12.2 KB |
 | [docs/integrations/firebase.md](#file-docs-integrations-firebase-md) | Markdown Documentation | 150 | 12.9 KB |
 | [docs/integrations/intasend.md](#file-docs-integrations-intasend-md) | Markdown Documentation | 151 | 12.2 KB |
 | [docs/integrations/mpesa-daraja.md](#file-docs-integrations-mpesa-daraja-md) | Markdown Documentation | 180 | 13.8 KB |
 | [docs/integrations/resend.md](#file-docs-integrations-resend-md) | Markdown Documentation | 150 | 11.1 KB |
-| [docs/journeys/README.md](#file-docs-journeys-readme-md) | Markdown Documentation | 143 | 10.0 KB |
+| [docs/journeys/README.md](#file-docs-journeys-readme-md) | Markdown Documentation | 144 | 10.2 KB |
 | [docs/journeys/admin/assign-dispatch-delivery.md](#file-docs-journeys-admin-assign-dispatch-delivery-md) | Markdown Documentation | 170 | 15.2 KB |
 | [docs/journeys/admin/compliance-information.md](#file-docs-journeys-admin-compliance-information-md) | Markdown Documentation | 169 | 13.5 KB |
 | [docs/journeys/admin/create-product-images.md](#file-docs-journeys-admin-create-product-images-md) | Markdown Documentation | 175 | 14.7 KB |
@@ -1351,13 +1353,13 @@ This single file encapsulates the complete source code, architectural structure,
 | [docs/journeys/pharmacist/pharmacist-workspace-boundaries.md](#file-docs-journeys-pharmacist-pharmacist-workspace-boundaries-md) | Markdown Documentation | 173 | 15.5 KB |
 | [docs/journeys/pharmacist/review-approve-prescription.md](#file-docs-journeys-pharmacist-review-approve-prescription-md) | Markdown Documentation | 150 | 12.5 KB |
 | [docs/journeys/rider/complete-assigned-delivery.md](#file-docs-journeys-rider-complete-assigned-delivery-md) | Markdown Documentation | 189 | 16.6 KB |
-| [docs/journeys/roles/admin.md](#file-docs-journeys-roles-admin-md) | Markdown Documentation | 93 | 6.6 KB |
+| [docs/journeys/roles/admin.md](#file-docs-journeys-roles-admin-md) | Markdown Documentation | 94 | 6.9 KB |
 | [docs/journeys/roles/customer.md](#file-docs-journeys-roles-customer-md) | Markdown Documentation | 124 | 8.1 KB |
 | [docs/journeys/roles/pharmacist.md](#file-docs-journeys-roles-pharmacist-md) | Markdown Documentation | 90 | 7.3 KB |
 | [docs/journeys/roles/rider.md](#file-docs-journeys-roles-rider-md) | Markdown Documentation | 89 | 7.6 KB |
 | [docs/journeys/roles/staff.md](#file-docs-journeys-roles-staff-md) | Markdown Documentation | 95 | 7.8 KB |
-| [docs/journeys/roles/system.md](#file-docs-journeys-roles-system-md) | Markdown Documentation | 91 | 7.1 KB |
-| [docs/journeys/staff/import-products-csv.md](#file-docs-journeys-staff-import-products-csv-md) | Markdown Documentation | 165 | 14.1 KB |
+| [docs/journeys/roles/system.md](#file-docs-journeys-roles-system-md) | Markdown Documentation | 95 | 7.7 KB |
+| [docs/journeys/staff/import-products-csv.md](#file-docs-journeys-staff-import-products-csv-md) | Markdown Documentation | 165 | 13.9 KB |
 | [docs/journeys/staff/manage-medicine-requests.md](#file-docs-journeys-staff-manage-medicine-requests-md) | Markdown Documentation | 159 | 12.9 KB |
 | [docs/journeys/staff/process-order-to-pickup.md](#file-docs-journeys-staff-process-order-to-pickup-md) | Markdown Documentation | 179 | 17.3 KB |
 | [docs/journeys/staff/publish-service-booking-hours.md](#file-docs-journeys-staff-publish-service-booking-hours-md) | Markdown Documentation | 153 | 13.3 KB |
@@ -1366,7 +1368,8 @@ This single file encapsulates the complete source code, architectural structure,
 | [docs/journeys/staff/staff-workspace-boundaries.md](#file-docs-journeys-staff-staff-workspace-boundaries-md) | Markdown Documentation | 175 | 15.5 KB |
 | [docs/journeys/staff/update-products-stock.md](#file-docs-journeys-staff-update-products-stock-md) | Markdown Documentation | 164 | 14.7 KB |
 | [docs/journeys/system/assistant-pipeline.md](#file-docs-journeys-system-assistant-pipeline-md) | Markdown Documentation | 195 | 15.8 KB |
-| [docs/journeys/system/bandago-inventory-sync.md](#file-docs-journeys-system-bandago-inventory-sync-md) | Markdown Documentation | 195 | 17.4 KB |
+| [docs/journeys/system/bandago-inventory-sync.md](#file-docs-journeys-system-bandago-inventory-sync-md) | Markdown Documentation | 209 | 20.0 KB |
+| [docs/journeys/system/bandago-outbound-reconciliation.md](#file-docs-journeys-system-bandago-outbound-reconciliation-md) | Markdown Documentation | 147 | 14.4 KB |
 | [docs/journeys/system/cron-chronic-refills.md](#file-docs-journeys-system-cron-chronic-refills-md) | Markdown Documentation | 156 | 12.4 KB |
 | [docs/journeys/system/cron-notifications.md](#file-docs-journeys-system-cron-notifications-md) | Markdown Documentation | 183 | 15.1 KB |
 | [docs/journeys/system/cron-order-reservations.md](#file-docs-journeys-system-cron-order-reservations-md) | Markdown Documentation | 174 | 14.4 KB |
@@ -1375,36 +1378,37 @@ This single file encapsulates the complete source code, architectural structure,
 | [docs/journeys/system/intasend-webhook.md](#file-docs-journeys-system-intasend-webhook-md) | Markdown Documentation | 197 | 16.6 KB |
 | [docs/journeys/system/mpesa-callback.md](#file-docs-journeys-system-mpesa-callback-md) | Markdown Documentation | 159 | 12.0 KB |
 | [docs/journeys/system/notification-dispatch.md](#file-docs-journeys-system-notification-dispatch-md) | Markdown Documentation | 177 | 15.3 KB |
-| [docs/operations/backup-and-restore.md](#file-docs-operations-backup-and-restore-md) | Markdown Documentation | 150 | 12.3 KB |
-| [docs/operations/database-operations.md](#file-docs-operations-database-operations-md) | Markdown Documentation | 159 | 12.3 KB |
-| [docs/operations/deployment.md](#file-docs-operations-deployment-md) | Markdown Documentation | 151 | 12.6 KB |
-| [docs/operations/environment-variables.md](#file-docs-operations-environment-variables-md) | Markdown Documentation | 170 | 15.4 KB |
+| [docs/operations/backup-and-restore.md](#file-docs-operations-backup-and-restore-md) | Markdown Documentation | 150 | 12.4 KB |
+| [docs/operations/database-operations.md](#file-docs-operations-database-operations-md) | Markdown Documentation | 164 | 13.1 KB |
+| [docs/operations/deployment.md](#file-docs-operations-deployment-md) | Markdown Documentation | 151 | 12.7 KB |
+| [docs/operations/environment-variables.md](#file-docs-operations-environment-variables-md) | Markdown Documentation | 168 | 15.3 KB |
+| [docs/operations/local-development.md](#file-docs-operations-local-development-md) | Markdown Documentation | 108 | 6.2 KB |
 | [docs/operations/scheduled-jobs.md](#file-docs-operations-scheduled-jobs-md) | Markdown Documentation | 150 | 13.9 KB |
-| [docs/operations/troubleshooting.md](#file-docs-operations-troubleshooting-md) | Markdown Documentation | 153 | 14.4 KB |
+| [docs/operations/troubleshooting.md](#file-docs-operations-troubleshooting-md) | Markdown Documentation | 157 | 15.7 KB |
 | [docs/payment-notification-audit.md](#file-docs-payment-notification-audit-md) | Markdown Documentation | 72 | 11.5 KB |
 | [docs/product/customer-journeys.md](#file-docs-product-customer-journeys-md) | Markdown Documentation | 204 | 12.3 KB |
-| [docs/product/feature-catalogue.md](#file-docs-product-feature-catalogue-md) | Markdown Documentation | 209 | 22.4 KB |
-| [docs/product/pharmacy-operations.md](#file-docs-product-pharmacy-operations-md) | Markdown Documentation | 165 | 15.1 KB |
-| [docs/product/product-overview.md](#file-docs-product-product-overview-md) | Markdown Documentation | 150 | 15.1 KB |
-| [docs/product/user-roles-and-permissions.md](#file-docs-product-user-roles-and-permissions-md) | Markdown Documentation | 155 | 12.3 KB |
+| [docs/product/feature-catalogue.md](#file-docs-product-feature-catalogue-md) | Markdown Documentation | 223 | 24.9 KB |
+| [docs/product/pharmacy-operations.md](#file-docs-product-pharmacy-operations-md) | Markdown Documentation | 170 | 15.6 KB |
+| [docs/product/product-overview.md](#file-docs-product-product-overview-md) | Markdown Documentation | 151 | 15.5 KB |
+| [docs/product/user-roles-and-permissions.md](#file-docs-product-user-roles-and-permissions-md) | Markdown Documentation | 156 | 12.7 KB |
 | [docs/recording/platform-recording-script.md](#file-docs-recording-platform-recording-script-md) | Markdown Documentation | 1,092 | 93.0 KB |
 | [docs/recording/recording-captions.txt](#file-docs-recording-recording-captions-txt) | Plain Text | 362 | 15.0 KB |
 | [docs/recording/recording-checklist.md](#file-docs-recording-recording-checklist-md) | Markdown Documentation | 88 | 4.9 KB |
 | [docs/recording/recording-journeys.json](#file-docs-recording-recording-journeys-json) | JSON | 1,848 | 78.5 KB |
-| [docs/security/access-control.md](#file-docs-security-access-control-md) | Markdown Documentation | 182 | 12.9 KB |
-| [docs/security/ai-access-and-authorized-sessions.md](#file-docs-security-ai-access-and-authorized-sessions-md) | Markdown Documentation | 300 | 24.9 KB |
+| [docs/security/access-control.md](#file-docs-security-access-control-md) | Markdown Documentation | 187 | 13.6 KB |
+| [docs/security/ai-access-and-authorized-sessions.md](#file-docs-security-ai-access-and-authorized-sessions-md) | Markdown Documentation | 308 | 25.8 KB |
 | [docs/security/file-storage-security.md](#file-docs-security-file-storage-security-md) | Markdown Documentation | 182 | 11.3 KB |
 | [docs/security/privacy-and-health-data.md](#file-docs-security-privacy-and-health-data-md) | Markdown Documentation | 182 | 19.5 KB |
 | [docs/security/retention-and-deletion.md](#file-docs-security-retention-and-deletion-md) | Markdown Documentation | 182 | 16.4 KB |
-| [docs/security/security-architecture.md](#file-docs-security-security-architecture-md) | Markdown Documentation | 221 | 20.0 KB |
-| [docs/testing/testing-strategy.md](#file-docs-testing-testing-strategy-md) | Markdown Documentation | 152 | 12.6 KB |
-| [docs/workflows/inventory-lifecycle.md](#file-docs-workflows-inventory-lifecycle-md) | Markdown Documentation | 210 | 15.6 KB |
+| [docs/security/security-architecture.md](#file-docs-security-security-architecture-md) | Markdown Documentation | 223 | 21.1 KB |
+| [docs/testing/testing-strategy.md](#file-docs-testing-testing-strategy-md) | Markdown Documentation | 154 | 13.6 KB |
+| [docs/workflows/inventory-lifecycle.md](#file-docs-workflows-inventory-lifecycle-md) | Markdown Documentation | 220 | 18.7 KB |
 | [docs/workflows/order-lifecycle.md](#file-docs-workflows-order-lifecycle-md) | Markdown Documentation | 252 | 18.4 KB |
 | [docs/workflows/payment-lifecycle.md](#file-docs-workflows-payment-lifecycle-md) | Markdown Documentation | 217 | 17.7 KB |
 | [docs/workflows/prescription-lifecycle.md](#file-docs-workflows-prescription-lifecycle-md) | Markdown Documentation | 229 | 15.3 KB |
 | [docs/workflows/service-bookings.md](#file-docs-workflows-service-bookings-md) | Markdown Documentation | 209 | 15.9 KB |
 | [gitignoresfiles/SPHERE_PHARMACY_OWNER_OPERATIONS_MANUAL.md](#file-gitignoresfiles-sphere_pharmacy_owner_operations_manual-md) | Markdown Documentation | 461 | 15.9 KB |
-| [openapi/sphere-api.yaml](#file-openapi-sphere-api-yaml) | YAML | 2,925 | 119.8 KB |
+| [openapi/sphere-api.yaml](#file-openapi-sphere-api-yaml) | YAML | 2,928 | 120.3 KB |
 | [reference/archive/PROJECT_README.md](#file-reference-archive-project_readme-md) | Markdown Documentation | 83 | 8.3 KB |
 | [reference/archive/worklog.md](#file-reference-archive-worklog-md) | Markdown Documentation | 261 | 47.8 KB |
 | [reference/bandago-api-and-integration-architecture.md](#file-reference-bandago-api-and-integration-architecture-md) | Markdown Documentation | 720 | 431.5 KB |
@@ -1418,7 +1422,7 @@ This single file encapsulates the complete source code, architectural structure,
 | :---: | :--- | :--- | :---: | :---: |
 | 1 | [.env.example](#file--env-example) | Project Configuration & Root Tooling | 73 | 3.3 KB |
 | 2 | [.github/workflows/ci.yml](#file--github-workflows-ci-yml) | CI/CD Workflows | 52 | 1.6 KB |
-| 3 | [.gitignore](#file--gitignore) | Project Configuration & Root Tooling | 55 | 602 B |
+| 3 | [.gitignore](#file--gitignore) | Project Configuration & Root Tooling | 56 | 640 B |
 | 4 | [.zscripts/build.sh](#file--zscripts-build-sh) | Dev, Build & Service Scripts | 174 | 7.0 KB |
 | 5 | [.zscripts/dev.sh](#file--zscripts-dev-sh) | Dev, Build & Service Scripts | 154 | 4.1 KB |
 | 6 | [.zscripts/mini-services-build.sh](#file--zscripts-mini-services-build-sh) | Dev, Build & Service Scripts | 78 | 2.3 KB |
@@ -1426,47 +1430,47 @@ This single file encapsulates the complete source code, architectural structure,
 | 8 | [.zscripts/mini-services-start.sh](#file--zscripts-mini-services-start-sh) | Dev, Build & Service Scripts | 123 | 3.2 KB |
 | 9 | [.zscripts/python-runtime-build.sh](#file--zscripts-python-runtime-build-sh) | Dev, Build & Service Scripts | 120 | 4.1 KB |
 | 10 | [.zscripts/start.sh](#file--zscripts-start-sh) | Dev, Build & Service Scripts | 137 | 4.1 KB |
-| 11 | [AGENTS.md](#file-agents-md) | Documentation & Blueprints | 68 | 7.5 KB |
+| 11 | [AGENTS.md](#file-agents-md) | Documentation & Blueprints | 69 | 8.1 KB |
 | 12 | [CLAUDE.md](#file-claude-md) | Documentation & Blueprints | 1 | 11 B |
 | 13 | [Caddyfile](#file-caddyfile) | Project Configuration & Root Tooling | 23 | 493 B |
-| 14 | [README.md](#file-readme-md) | Documentation & Blueprints | 85 | 7.3 KB |
+| 14 | [README.md](#file-readme-md) | Documentation & Blueprints | 88 | 7.9 KB |
 | 15 | [components.json](#file-components-json) | Project Configuration & Root Tooling | 21 | 430 B |
-| 16 | [docs/README.md](#file-docs-readme-md) | Documentation & Blueprints | 123 | 11.7 KB |
-| 17 | [docs/api/api-reference.md](#file-docs-api-api-reference-md) | Documentation & Blueprints | 523 | 60.5 KB |
-| 18 | [docs/architecture/api-architecture.md](#file-docs-architecture-api-architecture-md) | Documentation & Blueprints | 168 | 13.9 KB |
+| 16 | [docs/README.md](#file-docs-readme-md) | Documentation & Blueprints | 128 | 12.0 KB |
+| 17 | [docs/api/api-reference.md](#file-docs-api-api-reference-md) | Documentation & Blueprints | 530 | 61.8 KB |
+| 18 | [docs/architecture/api-architecture.md](#file-docs-architecture-api-architecture-md) | Documentation & Blueprints | 171 | 14.3 KB |
 | 19 | [docs/architecture/authentication.md](#file-docs-architecture-authentication-md) | Documentation & Blueprints | 167 | 11.8 KB |
-| 20 | [docs/architecture/backend-architecture.md](#file-docs-architecture-backend-architecture-md) | Documentation & Blueprints | 156 | 16.7 KB |
-| 21 | [docs/architecture/frontend-architecture.md](#file-docs-architecture-frontend-architecture-md) | Documentation & Blueprints | 182 | 18.2 KB |
+| 20 | [docs/architecture/backend-architecture.md](#file-docs-architecture-backend-architecture-md) | Documentation & Blueprints | 162 | 18.7 KB |
+| 21 | [docs/architecture/frontend-architecture.md](#file-docs-architecture-frontend-architecture-md) | Documentation & Blueprints | 182 | 18.6 KB |
 | 22 | [docs/architecture/state-management.md](#file-docs-architecture-state-management-md) | Documentation & Blueprints | 151 | 14.6 KB |
-| 23 | [docs/architecture/system-architecture.md](#file-docs-architecture-system-architecture-md) | Documentation & Blueprints | 164 | 16.7 KB |
-| 24 | [docs/database/data-dictionary.md](#file-docs-database-data-dictionary-md) | Documentation & Blueprints | 889 | 48.6 KB |
-| 25 | [docs/database/data-lifecycle.md](#file-docs-database-data-lifecycle-md) | Documentation & Blueprints | 229 | 23.2 KB |
-| 26 | [docs/database/entity-relationship-diagram.md](#file-docs-database-entity-relationship-diagram-md) | Documentation & Blueprints | 489 | 18.2 KB |
+| 23 | [docs/architecture/system-architecture.md](#file-docs-architecture-system-architecture-md) | Documentation & Blueprints | 166 | 18.3 KB |
+| 24 | [docs/database/data-dictionary.md](#file-docs-database-data-dictionary-md) | Documentation & Blueprints | 889 | 48.7 KB |
+| 25 | [docs/database/data-lifecycle.md](#file-docs-database-data-lifecycle-md) | Documentation & Blueprints | 232 | 25.2 KB |
+| 26 | [docs/database/entity-relationship-diagram.md](#file-docs-database-entity-relationship-diagram-md) | Documentation & Blueprints | 521 | 19.9 KB |
 | 27 | [docs/database/migrations.md](#file-docs-database-migrations-md) | Documentation & Blueprints | 139 | 14.4 KB |
-| 28 | [docs/database/schema-overview.md](#file-docs-database-schema-overview-md) | Documentation & Blueprints | 235 | 16.0 KB |
-| 29 | [docs/features/ai-assistant.md](#file-docs-features-ai-assistant-md) | Documentation & Blueprints | 118 | 13.0 KB |
+| 28 | [docs/database/schema-overview.md](#file-docs-database-schema-overview-md) | Documentation & Blueprints | 235 | 16.4 KB |
+| 29 | [docs/features/ai-assistant.md](#file-docs-features-ai-assistant-md) | Documentation & Blueprints | 118 | 13.2 KB |
 | 30 | [docs/features/customer-crm.md](#file-docs-features-customer-crm-md) | Documentation & Blueprints | 103 | 9.8 KB |
-| 31 | [docs/features/inventory-and-stock.md](#file-docs-features-inventory-and-stock-md) | Documentation & Blueprints | 150 | 14.6 KB |
+| 31 | [docs/features/inventory-and-stock.md](#file-docs-features-inventory-and-stock-md) | Documentation & Blueprints | 157 | 18.3 KB |
 | 32 | [docs/features/loyalty-and-promotions.md](#file-docs-features-loyalty-and-promotions-md) | Documentation & Blueprints | 112 | 10.2 KB |
 | 33 | [docs/features/medicine-requests.md](#file-docs-features-medicine-requests-md) | Documentation & Blueprints | 86 | 6.0 KB |
 | 34 | [docs/features/notifications.md](#file-docs-features-notifications-md) | Documentation & Blueprints | 106 | 10.5 KB |
-| 35 | [docs/features/orders-and-fulfillment.md](#file-docs-features-orders-and-fulfillment-md) | Documentation & Blueprints | 155 | 15.7 KB |
+| 35 | [docs/features/orders-and-fulfillment.md](#file-docs-features-orders-and-fulfillment-md) | Documentation & Blueprints | 155 | 16.2 KB |
 | 36 | [docs/features/payments-and-refunds.md](#file-docs-features-payments-and-refunds-md) | Documentation & Blueprints | 146 | 14.1 KB |
 | 37 | [docs/features/prescriptions.md](#file-docs-features-prescriptions-md) | Documentation & Blueprints | 149 | 15.5 KB |
 | 38 | [docs/features/services-and-bookings.md](#file-docs-features-services-and-bookings-md) | Documentation & Blueprints | 110 | 9.6 KB |
 | 39 | [docs/features/storefront-and-catalogue.md](#file-docs-features-storefront-and-catalogue-md) | Documentation & Blueprints | 150 | 15.6 KB |
-| 40 | [docs/governance/architecture-decisions.md](#file-docs-governance-architecture-decisions-md) | Documentation & Blueprints | 159 | 13.3 KB |
-| 41 | [docs/governance/documentation-policy.md](#file-docs-governance-documentation-policy-md) | Documentation & Blueprints | 81 | 5.8 KB |
-| 42 | [docs/governance/release-history.md](#file-docs-governance-release-history-md) | Documentation & Blueprints | 150 | 14.8 KB |
-| 43 | [docs/governance/technical-debt.md](#file-docs-governance-technical-debt-md) | Documentation & Blueprints | 151 | 16.4 KB |
-| 44 | [docs/integrations/ai-provider.md](#file-docs-integrations-ai-provider-md) | Documentation & Blueprints | 157 | 10.1 KB |
-| 45 | [docs/integrations/bandago-pos-crm.md](#file-docs-integrations-bandago-pos-crm-md) | Documentation & Blueprints | 363 | 28.9 KB |
+| 40 | [docs/governance/architecture-decisions.md](#file-docs-governance-architecture-decisions-md) | Documentation & Blueprints | 179 | 17.2 KB |
+| 41 | [docs/governance/documentation-policy.md](#file-docs-governance-documentation-policy-md) | Documentation & Blueprints | 81 | 6.2 KB |
+| 42 | [docs/governance/release-history.md](#file-docs-governance-release-history-md) | Documentation & Blueprints | 170 | 18.1 KB |
+| 43 | [docs/governance/technical-debt.md](#file-docs-governance-technical-debt-md) | Documentation & Blueprints | 152 | 17.2 KB |
+| 44 | [docs/integrations/ai-provider.md](#file-docs-integrations-ai-provider-md) | Documentation & Blueprints | 164 | 11.0 KB |
+| 45 | [docs/integrations/bandago-pos-crm.md](#file-docs-integrations-bandago-pos-crm-md) | Documentation & Blueprints | 390 | 33.7 KB |
 | 46 | [docs/integrations/cloudflare-r2.md](#file-docs-integrations-cloudflare-r2-md) | Documentation & Blueprints | 151 | 12.2 KB |
 | 47 | [docs/integrations/firebase.md](#file-docs-integrations-firebase-md) | Documentation & Blueprints | 150 | 12.9 KB |
 | 48 | [docs/integrations/intasend.md](#file-docs-integrations-intasend-md) | Documentation & Blueprints | 151 | 12.2 KB |
 | 49 | [docs/integrations/mpesa-daraja.md](#file-docs-integrations-mpesa-daraja-md) | Documentation & Blueprints | 180 | 13.8 KB |
 | 50 | [docs/integrations/resend.md](#file-docs-integrations-resend-md) | Documentation & Blueprints | 150 | 11.1 KB |
-| 51 | [docs/journeys/README.md](#file-docs-journeys-readme-md) | Documentation & Blueprints | 143 | 10.0 KB |
+| 51 | [docs/journeys/README.md](#file-docs-journeys-readme-md) | Documentation & Blueprints | 144 | 10.2 KB |
 | 52 | [docs/journeys/admin/assign-dispatch-delivery.md](#file-docs-journeys-admin-assign-dispatch-delivery-md) | Documentation & Blueprints | 170 | 15.2 KB |
 | 53 | [docs/journeys/admin/compliance-information.md](#file-docs-journeys-admin-compliance-information-md) | Documentation & Blueprints | 169 | 13.5 KB |
 | 54 | [docs/journeys/admin/create-product-images.md](#file-docs-journeys-admin-create-product-images-md) | Documentation & Blueprints | 175 | 14.7 KB |
@@ -1510,13 +1514,13 @@ This single file encapsulates the complete source code, architectural structure,
 | 92 | [docs/journeys/pharmacist/pharmacist-workspace-boundaries.md](#file-docs-journeys-pharmacist-pharmacist-workspace-boundaries-md) | Documentation & Blueprints | 173 | 15.5 KB |
 | 93 | [docs/journeys/pharmacist/review-approve-prescription.md](#file-docs-journeys-pharmacist-review-approve-prescription-md) | Documentation & Blueprints | 150 | 12.5 KB |
 | 94 | [docs/journeys/rider/complete-assigned-delivery.md](#file-docs-journeys-rider-complete-assigned-delivery-md) | Documentation & Blueprints | 189 | 16.6 KB |
-| 95 | [docs/journeys/roles/admin.md](#file-docs-journeys-roles-admin-md) | Documentation & Blueprints | 93 | 6.6 KB |
+| 95 | [docs/journeys/roles/admin.md](#file-docs-journeys-roles-admin-md) | Documentation & Blueprints | 94 | 6.9 KB |
 | 96 | [docs/journeys/roles/customer.md](#file-docs-journeys-roles-customer-md) | Documentation & Blueprints | 124 | 8.1 KB |
 | 97 | [docs/journeys/roles/pharmacist.md](#file-docs-journeys-roles-pharmacist-md) | Documentation & Blueprints | 90 | 7.3 KB |
 | 98 | [docs/journeys/roles/rider.md](#file-docs-journeys-roles-rider-md) | Documentation & Blueprints | 89 | 7.6 KB |
 | 99 | [docs/journeys/roles/staff.md](#file-docs-journeys-roles-staff-md) | Documentation & Blueprints | 95 | 7.8 KB |
-| 100 | [docs/journeys/roles/system.md](#file-docs-journeys-roles-system-md) | Documentation & Blueprints | 91 | 7.1 KB |
-| 101 | [docs/journeys/staff/import-products-csv.md](#file-docs-journeys-staff-import-products-csv-md) | Documentation & Blueprints | 165 | 14.1 KB |
+| 100 | [docs/journeys/roles/system.md](#file-docs-journeys-roles-system-md) | Documentation & Blueprints | 95 | 7.7 KB |
+| 101 | [docs/journeys/staff/import-products-csv.md](#file-docs-journeys-staff-import-products-csv-md) | Documentation & Blueprints | 165 | 13.9 KB |
 | 102 | [docs/journeys/staff/manage-medicine-requests.md](#file-docs-journeys-staff-manage-medicine-requests-md) | Documentation & Blueprints | 159 | 12.9 KB |
 | 103 | [docs/journeys/staff/process-order-to-pickup.md](#file-docs-journeys-staff-process-order-to-pickup-md) | Documentation & Blueprints | 179 | 17.3 KB |
 | 104 | [docs/journeys/staff/publish-service-booking-hours.md](#file-docs-journeys-staff-publish-service-booking-hours-md) | Documentation & Blueprints | 153 | 13.3 KB |
@@ -1525,386 +1529,388 @@ This single file encapsulates the complete source code, architectural structure,
 | 107 | [docs/journeys/staff/staff-workspace-boundaries.md](#file-docs-journeys-staff-staff-workspace-boundaries-md) | Documentation & Blueprints | 175 | 15.5 KB |
 | 108 | [docs/journeys/staff/update-products-stock.md](#file-docs-journeys-staff-update-products-stock-md) | Documentation & Blueprints | 164 | 14.7 KB |
 | 109 | [docs/journeys/system/assistant-pipeline.md](#file-docs-journeys-system-assistant-pipeline-md) | Documentation & Blueprints | 195 | 15.8 KB |
-| 110 | [docs/journeys/system/bandago-inventory-sync.md](#file-docs-journeys-system-bandago-inventory-sync-md) | Documentation & Blueprints | 195 | 17.4 KB |
-| 111 | [docs/journeys/system/cron-chronic-refills.md](#file-docs-journeys-system-cron-chronic-refills-md) | Documentation & Blueprints | 156 | 12.4 KB |
-| 112 | [docs/journeys/system/cron-notifications.md](#file-docs-journeys-system-cron-notifications-md) | Documentation & Blueprints | 183 | 15.1 KB |
-| 113 | [docs/journeys/system/cron-order-reservations.md](#file-docs-journeys-system-cron-order-reservations-md) | Documentation & Blueprints | 174 | 14.4 KB |
-| 114 | [docs/journeys/system/cron-prescription-retention.md](#file-docs-journeys-system-cron-prescription-retention-md) | Documentation & Blueprints | 159 | 12.5 KB |
-| 115 | [docs/journeys/system/cron-service-booking-reminders.md](#file-docs-journeys-system-cron-service-booking-reminders-md) | Documentation & Blueprints | 154 | 12.0 KB |
-| 116 | [docs/journeys/system/intasend-webhook.md](#file-docs-journeys-system-intasend-webhook-md) | Documentation & Blueprints | 197 | 16.6 KB |
-| 117 | [docs/journeys/system/mpesa-callback.md](#file-docs-journeys-system-mpesa-callback-md) | Documentation & Blueprints | 159 | 12.0 KB |
-| 118 | [docs/journeys/system/notification-dispatch.md](#file-docs-journeys-system-notification-dispatch-md) | Documentation & Blueprints | 177 | 15.3 KB |
-| 119 | [docs/operations/backup-and-restore.md](#file-docs-operations-backup-and-restore-md) | Documentation & Blueprints | 150 | 12.3 KB |
-| 120 | [docs/operations/database-operations.md](#file-docs-operations-database-operations-md) | Documentation & Blueprints | 159 | 12.3 KB |
-| 121 | [docs/operations/deployment.md](#file-docs-operations-deployment-md) | Documentation & Blueprints | 151 | 12.6 KB |
-| 122 | [docs/operations/environment-variables.md](#file-docs-operations-environment-variables-md) | Documentation & Blueprints | 170 | 15.4 KB |
-| 123 | [docs/operations/scheduled-jobs.md](#file-docs-operations-scheduled-jobs-md) | Documentation & Blueprints | 150 | 13.9 KB |
-| 124 | [docs/operations/troubleshooting.md](#file-docs-operations-troubleshooting-md) | Documentation & Blueprints | 153 | 14.4 KB |
-| 125 | [docs/payment-notification-audit.md](#file-docs-payment-notification-audit-md) | Documentation & Blueprints | 72 | 11.5 KB |
-| 126 | [docs/product/customer-journeys.md](#file-docs-product-customer-journeys-md) | Documentation & Blueprints | 204 | 12.3 KB |
-| 127 | [docs/product/feature-catalogue.md](#file-docs-product-feature-catalogue-md) | Documentation & Blueprints | 209 | 22.4 KB |
-| 128 | [docs/product/pharmacy-operations.md](#file-docs-product-pharmacy-operations-md) | Documentation & Blueprints | 165 | 15.1 KB |
-| 129 | [docs/product/product-overview.md](#file-docs-product-product-overview-md) | Documentation & Blueprints | 150 | 15.1 KB |
-| 130 | [docs/product/user-roles-and-permissions.md](#file-docs-product-user-roles-and-permissions-md) | Documentation & Blueprints | 155 | 12.3 KB |
-| 131 | [docs/recording/platform-recording-script.md](#file-docs-recording-platform-recording-script-md) | Documentation & Blueprints | 1,092 | 93.0 KB |
-| 132 | [docs/recording/recording-captions.txt](#file-docs-recording-recording-captions-txt) | Documentation & Blueprints | 362 | 15.0 KB |
-| 133 | [docs/recording/recording-checklist.md](#file-docs-recording-recording-checklist-md) | Documentation & Blueprints | 88 | 4.9 KB |
-| 134 | [docs/recording/recording-journeys.json](#file-docs-recording-recording-journeys-json) | Documentation & Blueprints | 1,848 | 78.5 KB |
-| 135 | [docs/security/access-control.md](#file-docs-security-access-control-md) | Documentation & Blueprints | 182 | 12.9 KB |
-| 136 | [docs/security/ai-access-and-authorized-sessions.md](#file-docs-security-ai-access-and-authorized-sessions-md) | Documentation & Blueprints | 300 | 24.9 KB |
-| 137 | [docs/security/file-storage-security.md](#file-docs-security-file-storage-security-md) | Documentation & Blueprints | 182 | 11.3 KB |
-| 138 | [docs/security/privacy-and-health-data.md](#file-docs-security-privacy-and-health-data-md) | Documentation & Blueprints | 182 | 19.5 KB |
-| 139 | [docs/security/retention-and-deletion.md](#file-docs-security-retention-and-deletion-md) | Documentation & Blueprints | 182 | 16.4 KB |
-| 140 | [docs/security/security-architecture.md](#file-docs-security-security-architecture-md) | Documentation & Blueprints | 221 | 20.0 KB |
-| 141 | [docs/testing/testing-strategy.md](#file-docs-testing-testing-strategy-md) | Documentation & Blueprints | 152 | 12.6 KB |
-| 142 | [docs/workflows/inventory-lifecycle.md](#file-docs-workflows-inventory-lifecycle-md) | Documentation & Blueprints | 210 | 15.6 KB |
-| 143 | [docs/workflows/order-lifecycle.md](#file-docs-workflows-order-lifecycle-md) | Documentation & Blueprints | 252 | 18.4 KB |
-| 144 | [docs/workflows/payment-lifecycle.md](#file-docs-workflows-payment-lifecycle-md) | Documentation & Blueprints | 217 | 17.7 KB |
-| 145 | [docs/workflows/prescription-lifecycle.md](#file-docs-workflows-prescription-lifecycle-md) | Documentation & Blueprints | 229 | 15.3 KB |
-| 146 | [docs/workflows/service-bookings.md](#file-docs-workflows-service-bookings-md) | Documentation & Blueprints | 209 | 15.9 KB |
-| 147 | [eslint.config.mjs](#file-eslint-config-mjs) | Project Configuration & Root Tooling | 51 | 1.6 KB |
-| 148 | [gitignoresfiles/SPHERE_PHARMACY_OWNER_OPERATIONS_MANUAL.md](#file-gitignoresfiles-sphere_pharmacy_owner_operations_manual-md) | Documentation & Blueprints | 461 | 15.9 KB |
-| 149 | [next-env.d.ts](#file-next-env-d-ts) | Project Configuration & Root Tooling | 6 | 247 B |
-| 150 | [next.config.ts](#file-next-config-ts) | Project Configuration & Root Tooling | 46 | 1.9 KB |
-| 151 | [openapi/sphere-api.yaml](#file-openapi-sphere-api-yaml) | Documentation & Blueprints | 2,925 | 119.8 KB |
-| 152 | [package.json](#file-package-json) | Project Configuration & Root Tooling | 116 | 3.9 KB |
-| 153 | [postcss.config.mjs](#file-postcss-config-mjs) | Project Configuration & Root Tooling | 5 | 81 B |
-| 154 | [prisma/migrations/20260902000000_initial/migration.sql](#file-prisma-migrations-20260902000000_initial-migration-sql) | Database Schema, Migrations & Seeds (Prisma ORM) | 838 | 27.1 KB |
-| 155 | [prisma/migrations/20260903000000_security_hardening/migration.sql](#file-prisma-migrations-20260903000000_security_hardening-migration-sql) | Database Schema, Migrations & Seeds (Prisma ORM) | 169 | 11.7 KB |
-| 156 | [prisma/migrations/20260905100000_notification_delivery/migration.sql](#file-prisma-migrations-20260905100000_notification_delivery-migration-sql) | Database Schema, Migrations & Seeds (Prisma ORM) | 20 | 1.2 KB |
-| 157 | [prisma/migrations/20261022000000_medicine_requests/migration.sql](#file-prisma-migrations-20261022000000_medicine_requests-migration-sql) | Database Schema, Migrations & Seeds (Prisma ORM) | 16 | 628 B |
-| 158 | [prisma/migrations/20261027170000_booking_management_lookup_indexes/migration.sql](#file-prisma-migrations-20261027170000_booking_management_lookup_indexes-migration-sql) | Database Schema, Migrations & Seeds (Prisma ORM) | 8 | 549 B |
-| 159 | [prisma/migrations/20261027183500_promotion_redemption_limits/migration.sql](#file-prisma-migrations-20261027183500_promotion_redemption_limits-migration-sql) | Database Schema, Migrations & Seeds (Prisma ORM) | 7 | 634 B |
-| 160 | [prisma/migrations/20261028000000_order_payment_intent/migration.sql](#file-prisma-migrations-20261028000000_order_payment_intent-migration-sql) | Database Schema, Migrations & Seeds (Prisma ORM) | 4 | 286 B |
-| 161 | [prisma/migrations/20261028190000_private_promotion_visibility/migration.sql](#file-prisma-migrations-20261028190000_private_promotion_visibility-migration-sql) | Database Schema, Migrations & Seeds (Prisma ORM) | 2 | 157 B |
-| 162 | [prisma/migrations/20261028194500_admin_live_cursor_indexes/migration.sql](#file-prisma-migrations-20261028194500_admin_live_cursor_indexes-migration-sql) | Database Schema, Migrations & Seeds (Prisma ORM) | 6 | 510 B |
-| 163 | [prisma/migrations/20261104200000_add_bandago_pos_support/migration.sql](#file-prisma-migrations-20261104200000_add_bandago_pos_support-migration-sql) | Database Schema, Migrations & Seeds (Prisma ORM) | 79 | 3.2 KB |
-| 164 | [prisma/migrations/20261119120000_add_bandago_bidirectional_sync/migration.sql](#file-prisma-migrations-20261119120000_add_bandago_bidirectional_sync-migration-sql) | Database Schema, Migrations & Seeds (Prisma ORM) | 113 | 4.1 KB |
-| 165 | [prisma/migrations/migration_lock.toml](#file-prisma-migrations-migration_lock-toml) | Database Schema, Migrations & Seeds (Prisma ORM) | 1 | 24 B |
-| 166 | [prisma/schema.prisma](#file-prisma-schema-prisma) | Database Schema, Migrations & Seeds (Prisma ORM) | 833 | 27.5 KB |
-| 167 | [prisma/seed.ts](#file-prisma-seed-ts) | Database Schema, Migrations & Seeds (Prisma ORM) | 51 | 2.2 KB |
-| 168 | [public/firebase-messaging-sw.js](#file-public-firebase-messaging-sw-js) | Public Web Assets & Service Workers | 96 | 3.0 KB |
-| 169 | [public/logo.svg](#file-public-logo-svg) | Public Web Assets & Service Workers | 29 | 1.0 KB |
-| 170 | [public/robots.txt](#file-public-robots-txt) | Public Web Assets & Service Workers | 14 | 160 B |
-| 171 | [reference/archive/PROJECT_README.md](#file-reference-archive-project_readme-md) | Documentation & Blueprints | 83 | 8.3 KB |
-| 172 | [reference/archive/worklog.md](#file-reference-archive-worklog-md) | Documentation & Blueprints | 261 | 47.8 KB |
-| 173 | [reference/bandago-api-and-integration-architecture.md](#file-reference-bandago-api-and-integration-architecture-md) | Documentation & Blueprints | 720 | 431.5 KB |
-| 174 | [reference/bandago-pos-crm-blueprint.md](#file-reference-bandago-pos-crm-blueprint-md) | Documentation & Blueprints | 1,072 | 41.5 KB |
-| 175 | [scripts/dev-daemon.sh](#file-scripts-dev-daemon-sh) | Dev, Build & Service Scripts | 12 | 304 B |
-| 176 | [scripts/generate_codebase_file.py](#file-scripts-generate_codebase_file-py) | Dev, Build & Service Scripts | 526 | 19.1 KB |
-| 177 | [src/app/[...route]/page.tsx](#file-src-app-----route--page-tsx) | Frontend Pages & Global Styles (Next.js App Router) | 1 | 34 B |
-| 178 | [src/app/admin-workspace.css](#file-src-app-admin-workspace-css) | Frontend Pages & Global Styles (Next.js App Router) | 423 | 30.0 KB |
-| 179 | [src/app/ambient-background.css](#file-src-app-ambient-background-css) | Frontend Pages & Global Styles (Next.js App Router) | 84 | 2.6 KB |
-| 180 | [src/app/api/addresses/[id]/route.ts](#file-src-app-api-addresses--id--route-ts) | Backend API Routes (Next.js App Router) | 54 | 3.2 KB |
-| 181 | [src/app/api/addresses/route.ts](#file-src-app-api-addresses-route-ts) | Backend API Routes (Next.js App Router) | 48 | 2.4 KB |
-| 182 | [src/app/api/admin/audit/route.ts](#file-src-app-api-admin-audit-route-ts) | Backend API Routes (Next.js App Router) | 11 | 410 B |
-| 183 | [src/app/api/admin/live-changes/route.ts](#file-src-app-api-admin-live-changes-route-ts) | Backend API Routes (Next.js App Router) | 34 | 1.8 KB |
-| 184 | [src/app/api/admin/medicine-requests/[id]/photo/route.ts](#file-src-app-api-admin-medicine-requests--id--photo-route-ts) | Backend API Routes (Next.js App Router) | 22 | 1004 B |
-| 185 | [src/app/api/admin/medicine-requests/route.ts](#file-src-app-api-admin-medicine-requests-route-ts) | Backend API Routes (Next.js App Router) | 64 | 3.2 KB |
-| 186 | [src/app/api/admin/notification-health/route.ts](#file-src-app-api-admin-notification-health-route-ts) | Backend API Routes (Next.js App Router) | 15 | 1.2 KB |
-| 187 | [src/app/api/admin/pos-status/route.ts](#file-src-app-api-admin-pos-status-route-ts) | Backend API Routes (Next.js App Router) | 160 | 4.6 KB |
-| 188 | [src/app/api/admin/pos-sync/policy/route.ts](#file-src-app-api-admin-pos-sync-policy-route-ts) | Backend API Routes (Next.js App Router) | 80 | 2.6 KB |
-| 189 | [src/app/api/admin/pos-sync/reconcile/route.ts](#file-src-app-api-admin-pos-sync-reconcile-route-ts) | Backend API Routes (Next.js App Router) | 497 | 14.6 KB |
-| 190 | [src/app/api/admin/pos-sync/sales-export/route.ts](#file-src-app-api-admin-pos-sync-sales-export-route-ts) | Backend API Routes (Next.js App Router) | 417 | 13.6 KB |
-| 191 | [src/app/api/admin/reviews/[id]/route.ts](#file-src-app-api-admin-reviews--id--route-ts) | Backend API Routes (Next.js App Router) | 52 | 2.0 KB |
-| 192 | [src/app/api/admin/reviews/route.ts](#file-src-app-api-admin-reviews-route-ts) | Backend API Routes (Next.js App Router) | 42 | 1.5 KB |
-| 193 | [src/app/api/admin/service-analytics/route.ts](#file-src-app-api-admin-service-analytics-route-ts) | Backend API Routes (Next.js App Router) | 17 | 1.4 KB |
-| 194 | [src/app/api/admin/service-bookings/[id]/assign/route.ts](#file-src-app-api-admin-service-bookings--id--assign-route-ts) | Backend API Routes (Next.js App Router) | 15 | 1.4 KB |
-| 195 | [src/app/api/admin/service-bookings/route.ts](#file-src-app-api-admin-service-bookings-route-ts) | Backend API Routes (Next.js App Router) | 488 | 18.6 KB |
-| 196 | [src/app/api/admin/service-staff/route.ts](#file-src-app-api-admin-service-staff-route-ts) | Backend API Routes (Next.js App Router) | 10 | 582 B |
-| 197 | [src/app/api/admin/staff/[id]/route.ts](#file-src-app-api-admin-staff--id--route-ts) | Backend API Routes (Next.js App Router) | 89 | 4.3 KB |
-| 198 | [src/app/api/admin/staff/route.ts](#file-src-app-api-admin-staff-route-ts) | Backend API Routes (Next.js App Router) | 47 | 2.1 KB |
-| 199 | [src/app/api/admin/stats/route.ts](#file-src-app-api-admin-stats-route-ts) | Backend API Routes (Next.js App Router) | 52 | 3.9 KB |
-| 200 | [src/app/api/assistant/route.ts](#file-src-app-api-assistant-route-ts) | Backend API Routes (Next.js App Router) | 271 | 11.3 KB |
-| 201 | [src/app/api/auth/login/route.ts](#file-src-app-api-auth-login-route-ts) | Backend API Routes (Next.js App Router) | 34 | 1.7 KB |
-| 202 | [src/app/api/auth/logout/route.ts](#file-src-app-api-auth-logout-route-ts) | Backend API Routes (Next.js App Router) | 12 | 572 B |
-| 203 | [src/app/api/auth/me/route.ts](#file-src-app-api-auth-me-route-ts) | Backend API Routes (Next.js App Router) | 9 | 350 B |
-| 204 | [src/app/api/auth/otp/request/route.ts](#file-src-app-api-auth-otp-request-route-ts) | Backend API Routes (Next.js App Router) | 31 | 1.4 KB |
-| 205 | [src/app/api/auth/otp/verify/route.ts](#file-src-app-api-auth-otp-verify-route-ts) | Backend API Routes (Next.js App Router) | 50 | 2.8 KB |
-| 206 | [src/app/api/auth/profile/route.ts](#file-src-app-api-auth-profile-route-ts) | Backend API Routes (Next.js App Router) | 62 | 2.8 KB |
-| 207 | [src/app/api/auth/register/route.ts](#file-src-app-api-auth-register-route-ts) | Backend API Routes (Next.js App Router) | 53 | 2.6 KB |
-| 208 | [src/app/api/auth/staff-login/route.ts](#file-src-app-api-auth-staff-login-route-ts) | Backend API Routes (Next.js App Router) | 38 | 2.0 KB |
-| 209 | [src/app/api/categories/route.ts](#file-src-app-api-categories-route-ts) | Backend API Routes (Next.js App Router) | 12 | 434 B |
-| 210 | [src/app/api/cron/chronic-refills/route.ts](#file-src-app-api-cron-chronic-refills-route-ts) | Backend API Routes (Next.js App Router) | 70 | 2.4 KB |
-| 211 | [src/app/api/cron/notifications/route.ts](#file-src-app-api-cron-notifications-route-ts) | Backend API Routes (Next.js App Router) | 8 | 444 B |
-| 212 | [src/app/api/cron/order-reservations/route.ts](#file-src-app-api-cron-order-reservations-route-ts) | Backend API Routes (Next.js App Router) | 59 | 3.3 KB |
-| 213 | [src/app/api/cron/prescription-retention/route.ts](#file-src-app-api-cron-prescription-retention-route-ts) | Backend API Routes (Next.js App Router) | 23 | 1.3 KB |
-| 214 | [src/app/api/cron/service-booking-reminders/route.ts](#file-src-app-api-cron-service-booking-reminders-route-ts) | Backend API Routes (Next.js App Router) | 50 | 2.2 KB |
-| 215 | [src/app/api/docs-assistant/route.ts](#file-src-app-api-docs-assistant-route-ts) | Backend API Routes (Next.js App Router) | 142 | 5.9 KB |
-| 216 | [src/app/api/docs-index/route.ts](#file-src-app-api-docs-index-route-ts) | Backend API Routes (Next.js App Router) | 16 | 525 B |
-| 217 | [src/app/api/integrations/bandago/crm/route.ts](#file-src-app-api-integrations-bandago-crm-route-ts) | Backend API Routes (Next.js App Router) | 200 | 6.6 KB |
-| 218 | [src/app/api/integrations/bandago/csv-import/route.ts](#file-src-app-api-integrations-bandago-csv-import-route-ts) | Backend API Routes (Next.js App Router) | 149 | 5.6 KB |
-| 219 | [src/app/api/integrations/bandago/outbound/ack/route.ts](#file-src-app-api-integrations-bandago-outbound-ack-route-ts) | Backend API Routes (Next.js App Router) | 227 | 7.6 KB |
-| 220 | [src/app/api/integrations/bandago/outbound/route.ts](#file-src-app-api-integrations-bandago-outbound-route-ts) | Backend API Routes (Next.js App Router) | 249 | 7.2 KB |
-| 221 | [src/app/api/integrations/bandago/sync/route.ts](#file-src-app-api-integrations-bandago-sync-route-ts) | Backend API Routes (Next.js App Router) | 734 | 26.2 KB |
-| 222 | [src/app/api/integrations/bandago/telemetry/route.ts](#file-src-app-api-integrations-bandago-telemetry-route-ts) | Backend API Routes (Next.js App Router) | 88 | 4.0 KB |
-| 223 | [src/app/api/location/reverse-geocode/route.ts](#file-src-app-api-location-reverse-geocode-route-ts) | Backend API Routes (Next.js App Router) | 58 | 2.2 KB |
-| 224 | [src/app/api/location/search/route.ts](#file-src-app-api-location-search-route-ts) | Backend API Routes (Next.js App Router) | 21 | 1.2 KB |
-| 225 | [src/app/api/medicine-requests/route.ts](#file-src-app-api-medicine-requests-route-ts) | Backend API Routes (Next.js App Router) | 69 | 3.0 KB |
-| 226 | [src/app/api/notifications/dispatch-test/route.ts](#file-src-app-api-notifications-dispatch-test-route-ts) | Backend API Routes (Next.js App Router) | 109 | 5.2 KB |
-| 227 | [src/app/api/notifications/email-webhook/route.ts](#file-src-app-api-notifications-email-webhook-route-ts) | Backend API Routes (Next.js App Router) | 29 | 2.0 KB |
-| 228 | [src/app/api/notifications/prefs/route.ts](#file-src-app-api-notifications-prefs-route-ts) | Backend API Routes (Next.js App Router) | 42 | 1.9 KB |
-| 229 | [src/app/api/notifications/push-token/route.ts](#file-src-app-api-notifications-push-token-route-ts) | Backend API Routes (Next.js App Router) | 64 | 2.2 KB |
-| 230 | [src/app/api/notifications/route.ts](#file-src-app-api-notifications-route-ts) | Backend API Routes (Next.js App Router) | 59 | 1.6 KB |
-| 231 | [src/app/api/orders/[id]/assign/route.ts](#file-src-app-api-orders--id--assign-route-ts) | Backend API Routes (Next.js App Router) | 87 | 4.3 KB |
-| 232 | [src/app/api/orders/[id]/cancel/route.ts](#file-src-app-api-orders--id--cancel-route-ts) | Backend API Routes (Next.js App Router) | 162 | 8.6 KB |
-| 233 | [src/app/api/orders/[id]/cash-confirm/route.ts](#file-src-app-api-orders--id--cash-confirm-route-ts) | Backend API Routes (Next.js App Router) | 71 | 4.6 KB |
-| 234 | [src/app/api/orders/[id]/prepare/route.ts](#file-src-app-api-orders--id--prepare-route-ts) | Backend API Routes (Next.js App Router) | 72 | 4.3 KB |
-| 235 | [src/app/api/orders/[id]/request-payment/route.ts](#file-src-app-api-orders--id--request-payment-route-ts) | Backend API Routes (Next.js App Router) | 55 | 5.1 KB |
-| 236 | [src/app/api/orders/[id]/route.ts](#file-src-app-api-orders--id--route-ts) | Backend API Routes (Next.js App Router) | 142 | 8.1 KB |
-| 237 | [src/app/api/orders/loyalty/route.ts](#file-src-app-api-orders-loyalty-route-ts) | Backend API Routes (Next.js App Router) | 12 | 488 B |
-| 238 | [src/app/api/orders/riders/route.ts](#file-src-app-api-orders-riders-route-ts) | Backend API Routes (Next.js App Router) | 17 | 661 B |
-| 239 | [src/app/api/orders/route.ts](#file-src-app-api-orders-route-ts) | Backend API Routes (Next.js App Router) | 250 | 20.4 KB |
-| 240 | [src/app/api/payments/intasend/initiate/route.ts](#file-src-app-api-payments-intasend-initiate-route-ts) | Backend API Routes (Next.js App Router) | 50 | 4.3 KB |
-| 241 | [src/app/api/payments/intasend/webhook/route.ts](#file-src-app-api-payments-intasend-webhook-route-ts) | Backend API Routes (Next.js App Router) | 83 | 7.1 KB |
-| 242 | [src/app/api/payments/mpesa/callback/route.ts](#file-src-app-api-payments-mpesa-callback-route-ts) | Backend API Routes (Next.js App Router) | 80 | 5.7 KB |
-| 243 | [src/app/api/payments/mpesa/initiate/route.ts](#file-src-app-api-payments-mpesa-initiate-route-ts) | Backend API Routes (Next.js App Router) | 60 | 4.7 KB |
-| 244 | [src/app/api/payments/mpesa/query/route.ts](#file-src-app-api-payments-mpesa-query-route-ts) | Backend API Routes (Next.js App Router) | 22 | 1.9 KB |
-| 245 | [src/app/api/payments/mpesa/service-callback/route.ts](#file-src-app-api-payments-mpesa-service-callback-route-ts) | Backend API Routes (Next.js App Router) | 65 | 4.5 KB |
-| 246 | [src/app/api/payments/refund/route.ts](#file-src-app-api-payments-refund-route-ts) | Backend API Routes (Next.js App Router) | 98 | 7.7 KB |
-| 247 | [src/app/api/prescriptions/[id]/refill/route.ts](#file-src-app-api-prescriptions--id--refill-route-ts) | Backend API Routes (Next.js App Router) | 103 | 6.6 KB |
-| 248 | [src/app/api/prescriptions/[id]/route.ts](#file-src-app-api-prescriptions--id--route-ts) | Backend API Routes (Next.js App Router) | 169 | 8.5 KB |
-| 249 | [src/app/api/prescriptions/route.ts](#file-src-app-api-prescriptions-route-ts) | Backend API Routes (Next.js App Router) | 183 | 8.8 KB |
-| 250 | [src/app/api/products/[id]/reviews/route.ts](#file-src-app-api-products--id--reviews-route-ts) | Backend API Routes (Next.js App Router) | 89 | 3.8 KB |
-| 251 | [src/app/api/products/[id]/route.ts](#file-src-app-api-products--id--route-ts) | Backend API Routes (Next.js App Router) | 188 | 9.8 KB |
-| 252 | [src/app/api/products/[id]/stock-alert/route.ts](#file-src-app-api-products--id--stock-alert-route-ts) | Backend API Routes (Next.js App Router) | 39 | 1.5 KB |
-| 253 | [src/app/api/products/bulk/route.ts](#file-src-app-api-products-bulk-route-ts) | Backend API Routes (Next.js App Router) | 118 | 5.6 KB |
-| 254 | [src/app/api/products/route.ts](#file-src-app-api-products-route-ts) | Backend API Routes (Next.js App Router) | 175 | 9.2 KB |
-| 255 | [src/app/api/products/stock-alerts/route.ts](#file-src-app-api-products-stock-alerts-route-ts) | Backend API Routes (Next.js App Router) | 37 | 1.4 KB |
-| 256 | [src/app/api/promotions/[id]/route.ts](#file-src-app-api-promotions--id--route-ts) | Backend API Routes (Next.js App Router) | 79 | 5.5 KB |
-| 257 | [src/app/api/promotions/route.ts](#file-src-app-api-promotions-route-ts) | Backend API Routes (Next.js App Router) | 84 | 4.5 KB |
-| 258 | [src/app/api/promotions/validate/route.ts](#file-src-app-api-promotions-validate-route-ts) | Backend API Routes (Next.js App Router) | 97 | 6.3 KB |
-| 259 | [src/app/api/route.ts](#file-src-app-api-route-ts) | Backend API Routes (Next.js App Router) | 5 | 134 B |
-| 260 | [src/app/api/service-bookings/[id]/pay-at-pharmacy/route.ts](#file-src-app-api-service-bookings--id--pay-at-pharmacy-route-ts) | Backend API Routes (Next.js App Router) | 27 | 2.5 KB |
-| 261 | [src/app/api/service-bookings/[id]/pay/card/route.ts](#file-src-app-api-service-bookings--id--pay-card-route-ts) | Backend API Routes (Next.js App Router) | 40 | 3.7 KB |
-| 262 | [src/app/api/service-bookings/[id]/pay/mpesa/route.ts](#file-src-app-api-service-bookings--id--pay-mpesa-route-ts) | Backend API Routes (Next.js App Router) | 49 | 4.3 KB |
-| 263 | [src/app/api/service-bookings/[id]/payment-status/route.ts](#file-src-app-api-service-bookings--id--payment-status-route-ts) | Backend API Routes (Next.js App Router) | 17 | 1.2 KB |
-| 264 | [src/app/api/service-bookings/[id]/review/route.ts](#file-src-app-api-service-bookings--id--review-route-ts) | Backend API Routes (Next.js App Router) | 16 | 1.3 KB |
-| 265 | [src/app/api/service-bookings/mine/route.ts](#file-src-app-api-service-bookings-mine-route-ts) | Backend API Routes (Next.js App Router) | 10 | 1.0 KB |
-| 266 | [src/app/api/service-bookings/route.ts](#file-src-app-api-service-bookings-route-ts) | Backend API Routes (Next.js App Router) | 77 | 6.0 KB |
-| 267 | [src/app/api/services/[id]/availability/route.ts](#file-src-app-api-services--id--availability-route-ts) | Backend API Routes (Next.js App Router) | 34 | 2.5 KB |
-| 268 | [src/app/api/services/[id]/reviews/route.ts](#file-src-app-api-services--id--reviews-route-ts) | Backend API Routes (Next.js App Router) | 9 | 691 B |
-| 269 | [src/app/api/services/[id]/route.ts](#file-src-app-api-services--id--route-ts) | Backend API Routes (Next.js App Router) | 120 | 3.3 KB |
-| 270 | [src/app/api/services/[id]/slots/route.ts](#file-src-app-api-services--id--slots-route-ts) | Backend API Routes (Next.js App Router) | 43 | 2.4 KB |
-| 271 | [src/app/api/services/route.ts](#file-src-app-api-services-route-ts) | Backend API Routes (Next.js App Router) | 44 | 2.3 KB |
-| 272 | [src/app/api/settings/delivery-fee/route.ts](#file-src-app-api-settings-delivery-fee-route-ts) | Backend API Routes (Next.js App Router) | 17 | 1.0 KB |
-| 273 | [src/app/api/settings/route.ts](#file-src-app-api-settings-route-ts) | Backend API Routes (Next.js App Router) | 103 | 7.9 KB |
-| 274 | [src/app/api/upload/route.ts](#file-src-app-api-upload-route-ts) | Backend API Routes (Next.js App Router) | 92 | 5.6 KB |
-| 275 | [src/app/app-experience.css](#file-src-app-app-experience-css) | Frontend Pages & Global Styles (Next.js App Router) | 968 | 24.3 KB |
-| 276 | [src/app/docs/[...slug]/page.tsx](#file-src-app-docs-----slug--page-tsx) | Frontend Pages & Global Styles (Next.js App Router) | 105 | 3.6 KB |
-| 277 | [src/app/docs/api-reference/page.tsx](#file-src-app-docs-api-reference-page-tsx) | Frontend Pages & Global Styles (Next.js App Router) | 47 | 2.5 KB |
-| 278 | [src/app/docs/assistant/page.tsx](#file-src-app-docs-assistant-page-tsx) | Frontend Pages & Global Styles (Next.js App Router) | 49 | 2.4 KB |
-| 279 | [src/app/docs/database/page.tsx](#file-src-app-docs-database-page-tsx) | Frontend Pages & Global Styles (Next.js App Router) | 54 | 2.9 KB |
-| 280 | [src/app/docs/journeys/[...slug]/page.tsx](#file-src-app-docs-journeys-----slug--page-tsx) | Frontend Pages & Global Styles (Next.js App Router) | 176 | 7.1 KB |
-| 281 | [src/app/docs/journeys/page.tsx](#file-src-app-docs-journeys-page-tsx) | Frontend Pages & Global Styles (Next.js App Router) | 54 | 2.2 KB |
-| 282 | [src/app/docs/layout.tsx](#file-src-app-docs-layout-tsx) | Frontend Pages & Global Styles (Next.js App Router) | 18 | 726 B |
-| 283 | [src/app/docs/not-found.tsx](#file-src-app-docs-not-found-tsx) | Frontend Pages & Global Styles (Next.js App Router) | 35 | 1.8 KB |
-| 284 | [src/app/docs/page.tsx](#file-src-app-docs-page-tsx) | Frontend Pages & Global Styles (Next.js App Router) | 265 | 15.3 KB |
-| 285 | [src/app/globals.css](#file-src-app-globals-css) | Frontend Pages & Global Styles (Next.js App Router) | 498 | 15.6 KB |
-| 286 | [src/app/layout.tsx](#file-src-app-layout-tsx) | Frontend Pages & Global Styles (Next.js App Router) | 48 | 1.8 KB |
-| 287 | [src/app/page.tsx](#file-src-app-page-tsx) | Frontend Pages & Global Styles (Next.js App Router) | 91 | 5.3 KB |
-| 288 | [src/app/premium-landing.css](#file-src-app-premium-landing-css) | Frontend Pages & Global Styles (Next.js App Router) | 127 | 9.0 KB |
-| 289 | [src/app/reference-home-dark.css](#file-src-app-reference-home-dark-css) | Frontend Pages & Global Styles (Next.js App Router) | 13 | 875 B |
-| 290 | [src/app/reference-home.css](#file-src-app-reference-home-css) | Frontend Pages & Global Styles (Next.js App Router) | 248 | 16.3 KB |
-| 291 | [src/app/robots.ts](#file-src-app-robots-ts) | Frontend Pages & Global Styles (Next.js App Router) | 6 | 296 B |
-| 292 | [src/app/services-showcase.css](#file-src-app-services-showcase-css) | Frontend Pages & Global Styles (Next.js App Router) | 105 | 7.7 KB |
-| 293 | [src/app/sitemap.ts](#file-src-app-sitemap-ts) | Frontend Pages & Global Styles (Next.js App Router) | 19 | 777 B |
-| 294 | [src/app/sphere-public.css](#file-src-app-sphere-public-css) | Frontend Pages & Global Styles (Next.js App Router) | 752 | 27.2 KB |
-| 295 | [src/components/assistant/assistant-actions.tsx](#file-src-components-assistant-assistant-actions-tsx) | Shared Layout & Domain Components | 695 | 20.1 KB |
-| 296 | [src/components/assistant/assistant-widget.tsx](#file-src-components-assistant-assistant-widget-tsx) | Shared Layout & Domain Components | 376 | 14.6 KB |
-| 297 | [src/components/catalog/high-performance-pagination.tsx](#file-src-components-catalog-high-performance-pagination-tsx) | Shared Layout & Domain Components | 299 | 10.1 KB |
-| 298 | [src/components/catalog/luxury-category-ribbon.tsx](#file-src-components-catalog-luxury-category-ribbon-tsx) | Shared Layout & Domain Components | 85 | 2.9 KB |
-| 299 | [src/components/catalog/medicine-request.tsx](#file-src-components-catalog-medicine-request-tsx) | Shared Layout & Domain Components | 126 | 6.5 KB |
-| 300 | [src/components/docs/api-explorer.tsx](#file-src-components-docs-api-explorer-tsx) | Shared Layout & Domain Components | 266 | 13.5 KB |
-| 301 | [src/components/docs/code-block.tsx](#file-src-components-docs-code-block-tsx) | Shared Layout & Domain Components | 83 | 3.5 KB |
-| 302 | [src/components/docs/db-explorer.tsx](#file-src-components-docs-db-explorer-tsx) | Shared Layout & Domain Components | 203 | 9.8 KB |
-| 303 | [src/components/docs/doc-furniture.tsx](#file-src-components-docs-doc-furniture-tsx) | Shared Layout & Domain Components | 113 | 4.1 KB |
-| 304 | [src/components/docs/docs-assistant.tsx](#file-src-components-docs-docs-assistant-tsx) | Shared Layout & Domain Components | 261 | 11.8 KB |
-| 305 | [src/components/docs/docs-header.tsx](#file-src-components-docs-docs-header-tsx) | Shared Layout & Domain Components | 77 | 3.5 KB |
-| 306 | [src/components/docs/docs-shell.tsx](#file-src-components-docs-docs-shell-tsx) | Shared Layout & Domain Components | 110 | 4.4 KB |
-| 307 | [src/components/docs/docs-sidebar.tsx](#file-src-components-docs-docs-sidebar-tsx) | Shared Layout & Domain Components | 91 | 3.4 KB |
-| 308 | [src/components/docs/docs-toc.tsx](#file-src-components-docs-docs-toc-tsx) | Shared Layout & Domain Components | 84 | 3.2 KB |
-| 309 | [src/components/docs/docs.css](#file-src-components-docs-docs-css) | Shared Layout & Domain Components | 547 | 11.9 KB |
-| 310 | [src/components/docs/journey-directory.tsx](#file-src-components-docs-journey-directory-tsx) | Shared Layout & Domain Components | 211 | 9.4 KB |
-| 311 | [src/components/docs/markdown.tsx](#file-src-components-docs-markdown-tsx) | Shared Layout & Domain Components | 149 | 5.7 KB |
-| 312 | [src/components/docs/mermaid-diagram.tsx](#file-src-components-docs-mermaid-diagram-tsx) | Shared Layout & Domain Components | 220 | 8.9 KB |
-| 313 | [src/components/docs/search-palette.tsx](#file-src-components-docs-search-palette-tsx) | Shared Layout & Domain Components | 352 | 14.1 KB |
-| 314 | [src/components/home/luxury-categories-showcase.tsx](#file-src-components-home-luxury-categories-showcase-tsx) | Shared Layout & Domain Components | 329 | 12.7 KB |
-| 315 | [src/components/home/priority-products-section.tsx](#file-src-components-home-priority-products-section-tsx) | Shared Layout & Domain Components | 237 | 8.7 KB |
-| 316 | [src/components/home/reference-home-hero.tsx](#file-src-components-home-reference-home-hero-tsx) | Shared Layout & Domain Components | 221 | 10.3 KB |
-| 317 | [src/components/home/services-showcase.tsx](#file-src-components-home-services-showcase-tsx) | Shared Layout & Domain Components | 82 | 4.8 KB |
-| 318 | [src/components/home/sphere-landing.module.css](#file-src-components-home-sphere-landing-module-css) | Shared Layout & Domain Components | 1,513 | 27.9 KB |
-| 319 | [src/components/home/sphere-landing.tsx](#file-src-components-home-sphere-landing-tsx) | Shared Layout & Domain Components | 540 | 18.3 KB |
-| 320 | [src/components/layout/customer-hub-nav.tsx](#file-src-components-layout-customer-hub-nav-tsx) | Shared Layout & Domain Components | 50 | 2.4 KB |
-| 321 | [src/components/layout/footer.tsx](#file-src-components-layout-footer-tsx) | Shared Layout & Domain Components | 101 | 5.5 KB |
-| 322 | [src/components/layout/header.tsx](#file-src-components-layout-header-tsx) | Shared Layout & Domain Components | 452 | 19.8 KB |
-| 323 | [src/components/layout/mobile-nav.tsx](#file-src-components-layout-mobile-nav-tsx) | Shared Layout & Domain Components | 66 | 2.9 KB |
-| 324 | [src/components/layout/notification-center.tsx](#file-src-components-layout-notification-center-tsx) | Shared Layout & Domain Components | 58 | 3.7 KB |
-| 325 | [src/components/layout/sphere-header.tsx](#file-src-components-layout-sphere-header-tsx) | Shared Layout & Domain Components | 111 | 3.5 KB |
-| 326 | [src/components/member/member-intro.tsx](#file-src-components-member-member-intro-tsx) | Shared Layout & Domain Components | 126 | 3.8 KB |
-| 327 | [src/components/shared/empty-state.tsx](#file-src-components-shared-empty-state-tsx) | Shared Layout & Domain Components | 72 | 2.3 KB |
-| 328 | [src/components/shared/logo.tsx](#file-src-components-shared-logo-tsx) | Shared Layout & Domain Components | 29 | 1.3 KB |
-| 329 | [src/components/shared/premium-popular-card.tsx](#file-src-components-shared-premium-popular-card-tsx) | Shared Layout & Domain Components | 172 | 8.9 KB |
-| 330 | [src/components/shared/product-card.tsx](#file-src-components-shared-product-card-tsx) | Shared Layout & Domain Components | 596 | 25.3 KB |
-| 331 | [src/components/shared/product-image.tsx](#file-src-components-shared-product-image-tsx) | Shared Layout & Domain Components | 38 | 1.2 KB |
-| 332 | [src/components/shared/status-badges.tsx](#file-src-components-shared-status-badges-tsx) | Shared Layout & Domain Components | 107 | 6.1 KB |
-| 333 | [src/components/shared/use-current-location-button.tsx](#file-src-components-shared-use-current-location-button-tsx) | Shared Layout & Domain Components | 105 | 3.6 KB |
-| 334 | [src/components/ui/accordion.tsx](#file-src-components-ui-accordion-tsx) | UI Primitives (shadcn/ui & Radix UI) | 66 | 2.0 KB |
-| 335 | [src/components/ui/alert-dialog.tsx](#file-src-components-ui-alert-dialog-tsx) | UI Primitives (shadcn/ui & Radix UI) | 157 | 3.8 KB |
-| 336 | [src/components/ui/alert.tsx](#file-src-components-ui-alert-tsx) | UI Primitives (shadcn/ui & Radix UI) | 66 | 1.6 KB |
-| 337 | [src/components/ui/aspect-ratio.tsx](#file-src-components-ui-aspect-ratio-tsx) | UI Primitives (shadcn/ui & Radix UI) | 11 | 280 B |
-| 338 | [src/components/ui/avatar.tsx](#file-src-components-ui-avatar-tsx) | UI Primitives (shadcn/ui & Radix UI) | 53 | 1.1 KB |
-| 339 | [src/components/ui/badge.tsx](#file-src-components-ui-badge-tsx) | UI Primitives (shadcn/ui & Radix UI) | 46 | 1.6 KB |
-| 340 | [src/components/ui/breadcrumb.tsx](#file-src-components-ui-breadcrumb-tsx) | UI Primitives (shadcn/ui & Radix UI) | 109 | 2.3 KB |
-| 341 | [src/components/ui/button.tsx](#file-src-components-ui-button-tsx) | UI Primitives (shadcn/ui & Radix UI) | 59 | 2.1 KB |
-| 342 | [src/components/ui/calendar.tsx](#file-src-components-ui-calendar-tsx) | UI Primitives (shadcn/ui & Radix UI) | 213 | 7.5 KB |
-| 343 | [src/components/ui/card.tsx](#file-src-components-ui-card-tsx) | UI Primitives (shadcn/ui & Radix UI) | 92 | 1.9 KB |
-| 344 | [src/components/ui/carousel.tsx](#file-src-components-ui-carousel-tsx) | UI Primitives (shadcn/ui & Radix UI) | 241 | 5.4 KB |
-| 345 | [src/components/ui/chart.tsx](#file-src-components-ui-chart-tsx) | UI Primitives (shadcn/ui & Radix UI) | 353 | 9.6 KB |
-| 346 | [src/components/ui/checkbox.tsx](#file-src-components-ui-checkbox-tsx) | UI Primitives (shadcn/ui & Radix UI) | 32 | 1.2 KB |
-| 347 | [src/components/ui/collapsible.tsx](#file-src-components-ui-collapsible-tsx) | UI Primitives (shadcn/ui & Radix UI) | 33 | 800 B |
-| 348 | [src/components/ui/command.tsx](#file-src-components-ui-command-tsx) | UI Primitives (shadcn/ui & Radix UI) | 184 | 4.7 KB |
-| 349 | [src/components/ui/context-menu.tsx](#file-src-components-ui-context-menu-tsx) | UI Primitives (shadcn/ui & Radix UI) | 252 | 8.0 KB |
-| 350 | [src/components/ui/dialog.tsx](#file-src-components-ui-dialog-tsx) | UI Primitives (shadcn/ui & Radix UI) | 143 | 3.9 KB |
-| 351 | [src/components/ui/drawer.tsx](#file-src-components-ui-drawer-tsx) | UI Primitives (shadcn/ui & Radix UI) | 135 | 4.2 KB |
-| 352 | [src/components/ui/dropdown-menu.tsx](#file-src-components-ui-dropdown-menu-tsx) | UI Primitives (shadcn/ui & Radix UI) | 257 | 8.1 KB |
-| 353 | [src/components/ui/form.tsx](#file-src-components-ui-form-tsx) | UI Primitives (shadcn/ui & Radix UI) | 167 | 3.7 KB |
-| 354 | [src/components/ui/hover-card.tsx](#file-src-components-ui-hover-card-tsx) | UI Primitives (shadcn/ui & Radix UI) | 44 | 1.5 KB |
-| 355 | [src/components/ui/input-otp.tsx](#file-src-components-ui-input-otp-tsx) | UI Primitives (shadcn/ui & Radix UI) | 77 | 2.2 KB |
-| 356 | [src/components/ui/input.tsx](#file-src-components-ui-input-tsx) | UI Primitives (shadcn/ui & Radix UI) | 21 | 967 B |
-| 357 | [src/components/ui/label.tsx](#file-src-components-ui-label-tsx) | UI Primitives (shadcn/ui & Radix UI) | 24 | 611 B |
-| 358 | [src/components/ui/menubar.tsx](#file-src-components-ui-menubar-tsx) | UI Primitives (shadcn/ui & Radix UI) | 276 | 8.2 KB |
-| 359 | [src/components/ui/navigation-menu.tsx](#file-src-components-ui-navigation-menu-tsx) | UI Primitives (shadcn/ui & Radix UI) | 168 | 6.5 KB |
-| 360 | [src/components/ui/pagination.tsx](#file-src-components-ui-pagination-tsx) | UI Primitives (shadcn/ui & Radix UI) | 127 | 2.6 KB |
-| 361 | [src/components/ui/popover.tsx](#file-src-components-ui-popover-tsx) | UI Primitives (shadcn/ui & Radix UI) | 48 | 1.6 KB |
-| 362 | [src/components/ui/progress.tsx](#file-src-components-ui-progress-tsx) | UI Primitives (shadcn/ui & Radix UI) | 31 | 740 B |
-| 363 | [src/components/ui/radio-group.tsx](#file-src-components-ui-radio-group-tsx) | UI Primitives (shadcn/ui & Radix UI) | 45 | 1.4 KB |
-| 364 | [src/components/ui/resizable.tsx](#file-src-components-ui-resizable-tsx) | UI Primitives (shadcn/ui & Radix UI) | 56 | 2.0 KB |
-| 365 | [src/components/ui/scroll-area.tsx](#file-src-components-ui-scroll-area-tsx) | UI Primitives (shadcn/ui & Radix UI) | 58 | 1.6 KB |
-| 366 | [src/components/ui/select.tsx](#file-src-components-ui-select-tsx) | UI Primitives (shadcn/ui & Radix UI) | 185 | 6.1 KB |
-| 367 | [src/components/ui/separator.tsx](#file-src-components-ui-separator-tsx) | UI Primitives (shadcn/ui & Radix UI) | 28 | 699 B |
-| 368 | [src/components/ui/sheet.tsx](#file-src-components-ui-sheet-tsx) | UI Primitives (shadcn/ui & Radix UI) | 139 | 4.0 KB |
-| 369 | [src/components/ui/sidebar.tsx](#file-src-components-ui-sidebar-tsx) | UI Primitives (shadcn/ui & Radix UI) | 726 | 21.1 KB |
-| 370 | [src/components/ui/skeleton.tsx](#file-src-components-ui-skeleton-tsx) | UI Primitives (shadcn/ui & Radix UI) | 13 | 276 B |
-| 371 | [src/components/ui/slider.tsx](#file-src-components-ui-slider-tsx) | UI Primitives (shadcn/ui & Radix UI) | 63 | 2.0 KB |
-| 372 | [src/components/ui/sonner.tsx](#file-src-components-ui-sonner-tsx) | UI Primitives (shadcn/ui & Radix UI) | 25 | 564 B |
-| 373 | [src/components/ui/switch.tsx](#file-src-components-ui-switch-tsx) | UI Primitives (shadcn/ui & Radix UI) | 31 | 1.1 KB |
-| 374 | [src/components/ui/table.tsx](#file-src-components-ui-table-tsx) | UI Primitives (shadcn/ui & Radix UI) | 116 | 2.4 KB |
-| 375 | [src/components/ui/tabs.tsx](#file-src-components-ui-tabs-tsx) | UI Primitives (shadcn/ui & Radix UI) | 66 | 1.9 KB |
-| 376 | [src/components/ui/textarea.tsx](#file-src-components-ui-textarea-tsx) | UI Primitives (shadcn/ui & Radix UI) | 18 | 759 B |
-| 377 | [src/components/ui/toast.tsx](#file-src-components-ui-toast-tsx) | UI Primitives (shadcn/ui & Radix UI) | 129 | 4.7 KB |
-| 378 | [src/components/ui/toaster.tsx](#file-src-components-ui-toaster-tsx) | UI Primitives (shadcn/ui & Radix UI) | 35 | 785 B |
-| 379 | [src/components/ui/toggle-group.tsx](#file-src-components-ui-toggle-group-tsx) | UI Primitives (shadcn/ui & Radix UI) | 73 | 1.9 KB |
-| 380 | [src/components/ui/toggle.tsx](#file-src-components-ui-toggle-tsx) | UI Primitives (shadcn/ui & Radix UI) | 47 | 1.5 KB |
-| 381 | [src/components/ui/tooltip.tsx](#file-src-components-ui-tooltip-tsx) | UI Primitives (shadcn/ui & Radix UI) | 61 | 1.8 KB |
-| 382 | [src/components/views/account-view.tsx](#file-src-components-views-account-view-tsx) | Storefront Views & Customer Flows | 1,516 | 61.3 KB |
-| 383 | [src/components/views/admin/admin-access.tsx](#file-src-components-views-admin-admin-access-tsx) | Admin Workspace & Staff Control Room | 19 | 785 B |
-| 384 | [src/components/views/admin/admin-shared.tsx](#file-src-components-views-admin-admin-shared-tsx) | Admin Workspace & Staff Control Room | 263 | 8.6 KB |
-| 385 | [src/components/views/admin/admin-view.tsx](#file-src-components-views-admin-admin-view-tsx) | Admin Workspace & Staff Control Room | 549 | 26.7 KB |
-| 386 | [src/components/views/admin/sections/catalogue-section.tsx](#file-src-components-views-admin-sections-catalogue-section-tsx) | Admin Workspace & Staff Control Room | 1,109 | 49.7 KB |
-| 387 | [src/components/views/admin/sections/compliance-section.tsx](#file-src-components-views-admin-sections-compliance-section-tsx) | Admin Workspace & Staff Control Room | 363 | 23.2 KB |
-| 388 | [src/components/views/admin/sections/dispatch-control-room.tsx](#file-src-components-views-admin-sections-dispatch-control-room-tsx) | Admin Workspace & Staff Control Room | 600 | 38.1 KB |
-| 389 | [src/components/views/admin/sections/dispatch-section.tsx](#file-src-components-views-admin-sections-dispatch-section-tsx) | Admin Workspace & Staff Control Room | 725 | 29.7 KB |
-| 390 | [src/components/views/admin/sections/medicine-requests-section.tsx](#file-src-components-views-admin-sections-medicine-requests-section-tsx) | Admin Workspace & Staff Control Room | 124 | 7.4 KB |
-| 391 | [src/components/views/admin/sections/orders-section.tsx](#file-src-components-views-admin-sections-orders-section-tsx) | Admin Workspace & Staff Control Room | 1,509 | 80.1 KB |
-| 392 | [src/components/views/admin/sections/overview-section.tsx](#file-src-components-views-admin-sections-overview-section-tsx) | Admin Workspace & Staff Control Room | 288 | 17.4 KB |
-| 393 | [src/components/views/admin/sections/pos-sync-section.tsx](#file-src-components-views-admin-sections-pos-sync-section-tsx) | Admin Workspace & Staff Control Room | 1,630 | 67.0 KB |
-| 394 | [src/components/views/admin/sections/prescriptions-section.tsx](#file-src-components-views-admin-sections-prescriptions-section-tsx) | Admin Workspace & Staff Control Room | 983 | 45.5 KB |
-| 395 | [src/components/views/admin/sections/promotions-section.tsx](#file-src-components-views-admin-sections-promotions-section-tsx) | Admin Workspace & Staff Control Room | 373 | 27.1 KB |
-| 396 | [src/components/views/admin/sections/reports-section.tsx](#file-src-components-views-admin-sections-reports-section-tsx) | Admin Workspace & Staff Control Room | 319 | 14.6 KB |
-| 397 | [src/components/views/admin/sections/reviews-section.tsx](#file-src-components-views-admin-sections-reviews-section-tsx) | Admin Workspace & Staff Control Room | 285 | 9.9 KB |
-| 398 | [src/components/views/admin/sections/service-analytics-section.tsx](#file-src-components-views-admin-sections-service-analytics-section-tsx) | Admin Workspace & Staff Control Room | 43 | 3.9 KB |
-| 399 | [src/components/views/admin/sections/service-bookings-section.tsx](#file-src-components-views-admin-sections-service-bookings-section-tsx) | Admin Workspace & Staff Control Room | 452 | 34.4 KB |
-| 400 | [src/components/views/admin/sections/services-section.tsx](#file-src-components-views-admin-sections-services-section-tsx) | Admin Workspace & Staff Control Room | 279 | 33.9 KB |
-| 401 | [src/components/views/admin/sections/settings-section.tsx](#file-src-components-views-admin-sections-settings-section-tsx) | Admin Workspace & Staff Control Room | 836 | 38.2 KB |
-| 402 | [src/components/views/admin/sections/staff-section.tsx](#file-src-components-views-admin-sections-staff-section-tsx) | Admin Workspace & Staff Control Room | 465 | 19.5 KB |
-| 403 | [src/components/views/auth-view.tsx](#file-src-components-views-auth-view-tsx) | Storefront Views & Customer Flows | 479 | 22.2 KB |
-| 404 | [src/components/views/cart-view.tsx](#file-src-components-views-cart-view-tsx) | Storefront Views & Customer Flows | 296 | 15.8 KB |
-| 405 | [src/components/views/catalog-view.tsx](#file-src-components-views-catalog-view-tsx) | Storefront Views & Customer Flows | 703 | 28.9 KB |
-| 406 | [src/components/views/checkout-view.tsx](#file-src-components-views-checkout-view-tsx) | Storefront Views & Customer Flows | 1,852 | 93.6 KB |
-| 407 | [src/components/views/home-view.tsx](#file-src-components-views-home-view-tsx) | Storefront Views & Customer Flows | 458 | 22.2 KB |
-| 408 | [src/components/views/offers-view.tsx](#file-src-components-views-offers-view-tsx) | Storefront Views & Customer Flows | 167 | 9.0 KB |
-| 409 | [src/components/views/order-detail-view.tsx](#file-src-components-views-order-detail-view-tsx) | Storefront Views & Customer Flows | 1,104 | 42.1 KB |
-| 410 | [src/components/views/orders-view.tsx](#file-src-components-views-orders-view-tsx) | Storefront Views & Customer Flows | 396 | 13.7 KB |
-| 411 | [src/components/views/prescriptions-view.tsx](#file-src-components-views-prescriptions-view-tsx) | Storefront Views & Customer Flows | 754 | 27.3 KB |
-| 412 | [src/components/views/product-view.tsx](#file-src-components-views-product-view-tsx) | Storefront Views & Customer Flows | 750 | 30.8 KB |
-| 413 | [src/components/views/services-view.tsx](#file-src-components-views-services-view-tsx) | Storefront Views & Customer Flows | 1,841 | 75.4 KB |
-| 414 | [src/hooks/use-mobile.ts](#file-src-hooks-use-mobile-ts) | Custom React Hooks | 19 | 565 B |
-| 415 | [src/hooks/use-toast.ts](#file-src-hooks-use-toast-ts) | Custom React Hooks | 194 | 3.8 KB |
-| 416 | [src/lib/api-client.ts](#file-src-lib-api-client-ts) | Core Business Logic & Database Clients | 500 | 23.6 KB |
-| 417 | [src/lib/assistant/contracts.ts](#file-src-lib-assistant-contracts-ts) | AI Medication Assistant | 152 | 6.1 KB |
-| 418 | [src/lib/assistant/payment-review.ts](#file-src-lib-assistant-payment-review-ts) | AI Medication Assistant | 34 | 991 B |
-| 419 | [src/lib/bandago-normalizer.ts](#file-src-lib-bandago-normalizer-ts) | Bandago POS & CRM Integration | 359 | 10.4 KB |
-| 420 | [src/lib/constants.ts](#file-src-lib-constants-ts) | Core Business Logic & Database Clients | 199 | 7.6 KB |
-| 421 | [src/lib/crm/bandago-crm.ts](#file-src-lib-crm-bandago-crm-ts) | Bandago POS & CRM Integration | 163 | 5.2 KB |
-| 422 | [src/lib/db.ts](#file-src-lib-db-ts) | Core Business Logic & Database Clients | 83 | 2.4 KB |
-| 423 | [src/lib/docs/assistant.ts](#file-src-lib-docs-assistant-ts) | Core Business Logic & Database Clients | 143 | 6.0 KB |
-| 424 | [src/lib/docs/content.ts](#file-src-lib-docs-content-ts) | Core Business Logic & Database Clients | 350 | 11.1 KB |
-| 425 | [src/lib/docs/frontmatter.ts](#file-src-lib-docs-frontmatter-ts) | Core Business Logic & Database Clients | 146 | 4.7 KB |
-| 426 | [src/lib/docs/navigation.ts](#file-src-lib-docs-navigation-ts) | Core Business Logic & Database Clients | 286 | 8.4 KB |
-| 427 | [src/lib/docs/openapi.ts](#file-src-lib-docs-openapi-ts) | Core Business Logic & Database Clients | 186 | 6.6 KB |
-| 428 | [src/lib/docs/prisma-schema.ts](#file-src-lib-docs-prisma-schema-ts) | Core Business Logic & Database Clients | 271 | 8.5 KB |
-| 429 | [src/lib/docs/search.ts](#file-src-lib-docs-search-ts) | Core Business Logic & Database Clients | 208 | 6.7 KB |
-| 430 | [src/lib/docs/utils.ts](#file-src-lib-docs-utils-ts) | Core Business Logic & Database Clients | 71 | 2.0 KB |
-| 431 | [src/lib/dto.ts](#file-src-lib-dto-ts) | Core Business Logic & Database Clients | 277 | 11.2 KB |
-| 432 | [src/lib/email/resend.ts](#file-src-lib-email-resend-ts) | Notifications, Push Messaging & Communications | 81 | 2.6 KB |
-| 433 | [src/lib/email/templates.ts](#file-src-lib-email-templates-ts) | Notifications, Push Messaging & Communications | 463 | 20.6 KB |
-| 434 | [src/lib/firebase/admin.ts](#file-src-lib-firebase-admin-ts) | Notifications, Push Messaging & Communications | 261 | 7.4 KB |
-| 435 | [src/lib/firebase/client.ts](#file-src-lib-firebase-client-ts) | Notifications, Push Messaging & Communications | 192 | 6.4 KB |
-| 436 | [src/lib/format.ts](#file-src-lib-format-ts) | Core Business Logic & Database Clients | 64 | 1.9 KB |
-| 437 | [src/lib/hash.ts](#file-src-lib-hash-ts) | Core Business Logic & Database Clients | 88 | 3.3 KB |
-| 438 | [src/lib/image-library.ts](#file-src-lib-image-library-ts) | Core Business Logic & Database Clients | 80 | 3.4 KB |
-| 439 | [src/lib/image.ts](#file-src-lib-image-ts) | Core Business Logic & Database Clients | 24 | 1.0 KB |
-| 440 | [src/lib/intasend/client.ts](#file-src-lib-intasend-client-ts) | Payment Gateways (M-Pesa Daraja & IntaSend) | 141 | 7.3 KB |
-| 441 | [src/lib/inventory-guard.ts](#file-src-lib-inventory-guard-ts) | Core Business Logic & Database Clients | 318 | 10.4 KB |
-| 442 | [src/lib/loyalty.ts](#file-src-lib-loyalty-ts) | Core Business Logic & Database Clients | 85 | 4.5 KB |
-| 443 | [src/lib/medicine-request-dto.ts](#file-src-lib-medicine-request-dto-ts) | Core Business Logic & Database Clients | 15 | 571 B |
-| 444 | [src/lib/medicine-requests.ts](#file-src-lib-medicine-requests-ts) | Core Business Logic & Database Clients | 60 | 2.1 KB |
-| 445 | [src/lib/mpesa/daraja.ts](#file-src-lib-mpesa-daraja-ts) | Payment Gateways (M-Pesa Daraja & IntaSend) | 228 | 7.4 KB |
-| 446 | [src/lib/notifications/delivery.ts](#file-src-lib-notifications-delivery-ts) | Notifications, Push Messaging & Communications | 90 | 5.7 KB |
-| 447 | [src/lib/notifications/payment.ts](#file-src-lib-notifications-payment-ts) | Notifications, Push Messaging & Communications | 24 | 1.6 KB |
-| 448 | [src/lib/notify.ts](#file-src-lib-notify-ts) | Core Business Logic & Database Clients | 284 | 10.2 KB |
-| 449 | [src/lib/offer-intent.ts](#file-src-lib-offer-intent-ts) | Core Business Logic & Database Clients | 23 | 839 B |
-| 450 | [src/lib/pdf/daily-sales-pdf.ts](#file-src-lib-pdf-daily-sales-pdf-ts) | Core Business Logic & Database Clients | 272 | 9.8 KB |
-| 451 | [src/lib/pos-reconciliation-core.ts](#file-src-lib-pos-reconciliation-core-ts) | Bandago POS & CRM Integration | 265 | 10.3 KB |
-| 452 | [src/lib/pos-reconciliation.ts](#file-src-lib-pos-reconciliation-ts) | Bandago POS & CRM Integration | 444 | 13.4 KB |
-| 453 | [src/lib/promotions.ts](#file-src-lib-promotions-ts) | Core Business Logic & Database Clients | 98 | 4.5 KB |
-| 454 | [src/lib/r2.ts](#file-src-lib-r2-ts) | Core Business Logic & Database Clients | 100 | 5.1 KB |
-| 455 | [src/lib/security/bandago-auth.ts](#file-src-lib-security-bandago-auth-ts) | Security, Rate Limiting & Validation Guards | 45 | 1.3 KB |
-| 456 | [src/lib/security/bandago-bearer.ts](#file-src-lib-security-bandago-bearer-ts) | Security, Rate Limiting & Validation Guards | 50 | 1.8 KB |
-| 457 | [src/lib/security/file.ts](#file-src-lib-security-file-ts) | Security, Rate Limiting & Validation Guards | 28 | 1.8 KB |
-| 458 | [src/lib/security/order-workflow.ts](#file-src-lib-security-order-workflow-ts) | Security, Rate Limiting & Validation Guards | 20 | 1.2 KB |
-| 459 | [src/lib/security/payment-attempt.ts](#file-src-lib-security-payment-attempt-ts) | Security, Rate Limiting & Validation Guards | 32 | 2.6 KB |
-| 460 | [src/lib/security/payment.ts](#file-src-lib-security-payment-ts) | Security, Rate Limiting & Validation Guards | 24 | 1.3 KB |
-| 461 | [src/lib/security/request.ts](#file-src-lib-security-request-ts) | Security, Rate Limiting & Validation Guards | 54 | 2.6 KB |
-| 462 | [src/lib/security/service.ts](#file-src-lib-security-service-ts) | Security, Rate Limiting & Validation Guards | 53 | 2.7 KB |
-| 463 | [src/lib/session.ts](#file-src-lib-session-ts) | Core Business Logic & Database Clients | 159 | 5.9 KB |
-| 464 | [src/lib/settings.ts](#file-src-lib-settings-ts) | Core Business Logic & Database Clients | 48 | 2.5 KB |
-| 465 | [src/lib/sms.ts](#file-src-lib-sms-ts) | Notifications, Push Messaging & Communications | 21 | 1.5 KB |
-| 466 | [src/lib/types.ts](#file-src-lib-types-ts) | Core Business Logic & Database Clients | 456 | 9.6 KB |
-| 467 | [src/lib/utils.ts](#file-src-lib-utils-ts) | Core Business Logic & Database Clients | 6 | 166 B |
-| 468 | [src/store/use-app-store.ts](#file-src-store-use-app-store-ts) | Client State Stores (Zustand) | 222 | 7.9 KB |
-| 469 | [src/store/use-auth-store.ts](#file-src-store-use-auth-store-ts) | Client State Stores (Zustand) | 40 | 1.3 KB |
-| 470 | [src/store/use-cart-store.ts](#file-src-store-use-cart-store-ts) | Client State Stores (Zustand) | 93 | 3.4 KB |
-| 471 | [src/store/use-wish-store.ts](#file-src-store-use-wish-store-ts) | Client State Stores (Zustand) | 71 | 2.0 KB |
-| 472 | [tailwind.config.ts](#file-tailwind-config-ts) | Project Configuration & Root Tooling | 64 | 1.7 KB |
-| 473 | [tests/admin-live-sync.test.mjs](#file-tests-admin-live-sync-test-mjs) | Automated Test Suites & Verification | 74 | 4.1 KB |
-| 474 | [tests/assistant.test.ts](#file-tests-assistant-test-ts) | Automated Test Suites & Verification | 93 | 5.7 KB |
-| 475 | [tests/bandago-bidirectional-sync.test.mjs](#file-tests-bandago-bidirectional-sync-test-mjs) | Automated Test Suites & Verification | 237 | 9.4 KB |
-| 476 | [tests/bandago-pos-crm-integration.test.mjs](#file-tests-bandago-pos-crm-integration-test-mjs) | Automated Test Suites & Verification | 534 | 27.7 KB |
-| 477 | [tests/checkout-points-contrast.test.mjs](#file-tests-checkout-points-contrast-test-mjs) | Automated Test Suites & Verification | 19 | 1018 B |
-| 478 | [tests/compliance-workspace.test.mjs](#file-tests-compliance-workspace-test-mjs) | Automated Test Suites & Verification | 32 | 1.4 KB |
-| 479 | [tests/dispatch-readiness.test.mjs](#file-tests-dispatch-readiness-test-mjs) | Automated Test Suites & Verification | 37 | 2.0 KB |
-| 480 | [tests/medicine-requests.test.mjs](#file-tests-medicine-requests-test-mjs) | Automated Test Suites & Verification | 126 | 7.9 KB |
-| 481 | [tests/offer-workflow.test.mjs](#file-tests-offer-workflow-test-mjs) | Automated Test Suites & Verification | 77 | 4.4 KB |
-| 482 | [tests/order-dispatch-promotion-workflow.test.mjs](#file-tests-order-dispatch-promotion-workflow-test-mjs) | Automated Test Suites & Verification | 57 | 3.0 KB |
-| 483 | [tests/order-operations-ux.test.mjs](#file-tests-order-operations-ux-test-mjs) | Automated Test Suites & Verification | 112 | 6.3 KB |
-| 484 | [tests/promotion-validation-resilience.test.mjs](#file-tests-promotion-validation-resilience-test-mjs) | Automated Test Suites & Verification | 64 | 3.1 KB |
-| 485 | [tests/python-runtime-build.sh](#file-tests-python-runtime-build-sh) | Automated Test Suites & Verification | 64 | 1.8 KB |
-| 486 | [tests/python-runtime-container.sh](#file-tests-python-runtime-container-sh) | Automated Test Suites & Verification | 31 | 837 B |
-| 487 | [tests/reports-layout.test.mjs](#file-tests-reports-layout-test-mjs) | Automated Test Suites & Verification | 19 | 976 B |
-| 488 | [tests/security-static.test.mjs](#file-tests-security-static-test-mjs) | Automated Test Suites & Verification | 154 | 7.0 KB |
-| 489 | [tsconfig.json](#file-tsconfig-json) | Project Configuration & Root Tooling | 42 | 730 B |
+| 110 | [docs/journeys/system/bandago-inventory-sync.md](#file-docs-journeys-system-bandago-inventory-sync-md) | Documentation & Blueprints | 209 | 20.0 KB |
+| 111 | [docs/journeys/system/bandago-outbound-reconciliation.md](#file-docs-journeys-system-bandago-outbound-reconciliation-md) | Documentation & Blueprints | 147 | 14.4 KB |
+| 112 | [docs/journeys/system/cron-chronic-refills.md](#file-docs-journeys-system-cron-chronic-refills-md) | Documentation & Blueprints | 156 | 12.4 KB |
+| 113 | [docs/journeys/system/cron-notifications.md](#file-docs-journeys-system-cron-notifications-md) | Documentation & Blueprints | 183 | 15.1 KB |
+| 114 | [docs/journeys/system/cron-order-reservations.md](#file-docs-journeys-system-cron-order-reservations-md) | Documentation & Blueprints | 174 | 14.4 KB |
+| 115 | [docs/journeys/system/cron-prescription-retention.md](#file-docs-journeys-system-cron-prescription-retention-md) | Documentation & Blueprints | 159 | 12.5 KB |
+| 116 | [docs/journeys/system/cron-service-booking-reminders.md](#file-docs-journeys-system-cron-service-booking-reminders-md) | Documentation & Blueprints | 154 | 12.0 KB |
+| 117 | [docs/journeys/system/intasend-webhook.md](#file-docs-journeys-system-intasend-webhook-md) | Documentation & Blueprints | 197 | 16.6 KB |
+| 118 | [docs/journeys/system/mpesa-callback.md](#file-docs-journeys-system-mpesa-callback-md) | Documentation & Blueprints | 159 | 12.0 KB |
+| 119 | [docs/journeys/system/notification-dispatch.md](#file-docs-journeys-system-notification-dispatch-md) | Documentation & Blueprints | 177 | 15.3 KB |
+| 120 | [docs/operations/backup-and-restore.md](#file-docs-operations-backup-and-restore-md) | Documentation & Blueprints | 150 | 12.4 KB |
+| 121 | [docs/operations/database-operations.md](#file-docs-operations-database-operations-md) | Documentation & Blueprints | 164 | 13.1 KB |
+| 122 | [docs/operations/deployment.md](#file-docs-operations-deployment-md) | Documentation & Blueprints | 151 | 12.7 KB |
+| 123 | [docs/operations/environment-variables.md](#file-docs-operations-environment-variables-md) | Documentation & Blueprints | 168 | 15.3 KB |
+| 124 | [docs/operations/local-development.md](#file-docs-operations-local-development-md) | Documentation & Blueprints | 108 | 6.2 KB |
+| 125 | [docs/operations/scheduled-jobs.md](#file-docs-operations-scheduled-jobs-md) | Documentation & Blueprints | 150 | 13.9 KB |
+| 126 | [docs/operations/troubleshooting.md](#file-docs-operations-troubleshooting-md) | Documentation & Blueprints | 157 | 15.7 KB |
+| 127 | [docs/payment-notification-audit.md](#file-docs-payment-notification-audit-md) | Documentation & Blueprints | 72 | 11.5 KB |
+| 128 | [docs/product/customer-journeys.md](#file-docs-product-customer-journeys-md) | Documentation & Blueprints | 204 | 12.3 KB |
+| 129 | [docs/product/feature-catalogue.md](#file-docs-product-feature-catalogue-md) | Documentation & Blueprints | 223 | 24.9 KB |
+| 130 | [docs/product/pharmacy-operations.md](#file-docs-product-pharmacy-operations-md) | Documentation & Blueprints | 170 | 15.6 KB |
+| 131 | [docs/product/product-overview.md](#file-docs-product-product-overview-md) | Documentation & Blueprints | 151 | 15.5 KB |
+| 132 | [docs/product/user-roles-and-permissions.md](#file-docs-product-user-roles-and-permissions-md) | Documentation & Blueprints | 156 | 12.7 KB |
+| 133 | [docs/recording/platform-recording-script.md](#file-docs-recording-platform-recording-script-md) | Documentation & Blueprints | 1,092 | 93.0 KB |
+| 134 | [docs/recording/recording-captions.txt](#file-docs-recording-recording-captions-txt) | Documentation & Blueprints | 362 | 15.0 KB |
+| 135 | [docs/recording/recording-checklist.md](#file-docs-recording-recording-checklist-md) | Documentation & Blueprints | 88 | 4.9 KB |
+| 136 | [docs/recording/recording-journeys.json](#file-docs-recording-recording-journeys-json) | Documentation & Blueprints | 1,848 | 78.5 KB |
+| 137 | [docs/security/access-control.md](#file-docs-security-access-control-md) | Documentation & Blueprints | 187 | 13.6 KB |
+| 138 | [docs/security/ai-access-and-authorized-sessions.md](#file-docs-security-ai-access-and-authorized-sessions-md) | Documentation & Blueprints | 308 | 25.8 KB |
+| 139 | [docs/security/file-storage-security.md](#file-docs-security-file-storage-security-md) | Documentation & Blueprints | 182 | 11.3 KB |
+| 140 | [docs/security/privacy-and-health-data.md](#file-docs-security-privacy-and-health-data-md) | Documentation & Blueprints | 182 | 19.5 KB |
+| 141 | [docs/security/retention-and-deletion.md](#file-docs-security-retention-and-deletion-md) | Documentation & Blueprints | 182 | 16.4 KB |
+| 142 | [docs/security/security-architecture.md](#file-docs-security-security-architecture-md) | Documentation & Blueprints | 223 | 21.1 KB |
+| 143 | [docs/testing/testing-strategy.md](#file-docs-testing-testing-strategy-md) | Documentation & Blueprints | 154 | 13.6 KB |
+| 144 | [docs/workflows/inventory-lifecycle.md](#file-docs-workflows-inventory-lifecycle-md) | Documentation & Blueprints | 220 | 18.7 KB |
+| 145 | [docs/workflows/order-lifecycle.md](#file-docs-workflows-order-lifecycle-md) | Documentation & Blueprints | 252 | 18.4 KB |
+| 146 | [docs/workflows/payment-lifecycle.md](#file-docs-workflows-payment-lifecycle-md) | Documentation & Blueprints | 217 | 17.7 KB |
+| 147 | [docs/workflows/prescription-lifecycle.md](#file-docs-workflows-prescription-lifecycle-md) | Documentation & Blueprints | 229 | 15.3 KB |
+| 148 | [docs/workflows/service-bookings.md](#file-docs-workflows-service-bookings-md) | Documentation & Blueprints | 209 | 15.9 KB |
+| 149 | [eslint.config.mjs](#file-eslint-config-mjs) | Project Configuration & Root Tooling | 51 | 1.6 KB |
+| 150 | [gitignoresfiles/SPHERE_PHARMACY_OWNER_OPERATIONS_MANUAL.md](#file-gitignoresfiles-sphere_pharmacy_owner_operations_manual-md) | Documentation & Blueprints | 461 | 15.9 KB |
+| 151 | [next-env.d.ts](#file-next-env-d-ts) | Project Configuration & Root Tooling | 7 | 288 B |
+| 152 | [next.config.ts](#file-next-config-ts) | Project Configuration & Root Tooling | 46 | 1.9 KB |
+| 153 | [openapi/sphere-api.yaml](#file-openapi-sphere-api-yaml) | Documentation & Blueprints | 2,928 | 120.3 KB |
+| 154 | [package.json](#file-package-json) | Project Configuration & Root Tooling | 116 | 3.9 KB |
+| 155 | [postcss.config.mjs](#file-postcss-config-mjs) | Project Configuration & Root Tooling | 5 | 81 B |
+| 156 | [prisma/migrations/20260902000000_initial/migration.sql](#file-prisma-migrations-20260902000000_initial-migration-sql) | Database Schema, Migrations & Seeds (Prisma ORM) | 838 | 27.1 KB |
+| 157 | [prisma/migrations/20260903000000_security_hardening/migration.sql](#file-prisma-migrations-20260903000000_security_hardening-migration-sql) | Database Schema, Migrations & Seeds (Prisma ORM) | 169 | 11.7 KB |
+| 158 | [prisma/migrations/20260905100000_notification_delivery/migration.sql](#file-prisma-migrations-20260905100000_notification_delivery-migration-sql) | Database Schema, Migrations & Seeds (Prisma ORM) | 20 | 1.2 KB |
+| 159 | [prisma/migrations/20261022000000_medicine_requests/migration.sql](#file-prisma-migrations-20261022000000_medicine_requests-migration-sql) | Database Schema, Migrations & Seeds (Prisma ORM) | 16 | 628 B |
+| 160 | [prisma/migrations/20261027170000_booking_management_lookup_indexes/migration.sql](#file-prisma-migrations-20261027170000_booking_management_lookup_indexes-migration-sql) | Database Schema, Migrations & Seeds (Prisma ORM) | 8 | 549 B |
+| 161 | [prisma/migrations/20261027183500_promotion_redemption_limits/migration.sql](#file-prisma-migrations-20261027183500_promotion_redemption_limits-migration-sql) | Database Schema, Migrations & Seeds (Prisma ORM) | 7 | 634 B |
+| 162 | [prisma/migrations/20261028000000_order_payment_intent/migration.sql](#file-prisma-migrations-20261028000000_order_payment_intent-migration-sql) | Database Schema, Migrations & Seeds (Prisma ORM) | 4 | 286 B |
+| 163 | [prisma/migrations/20261028190000_private_promotion_visibility/migration.sql](#file-prisma-migrations-20261028190000_private_promotion_visibility-migration-sql) | Database Schema, Migrations & Seeds (Prisma ORM) | 2 | 157 B |
+| 164 | [prisma/migrations/20261028194500_admin_live_cursor_indexes/migration.sql](#file-prisma-migrations-20261028194500_admin_live_cursor_indexes-migration-sql) | Database Schema, Migrations & Seeds (Prisma ORM) | 6 | 510 B |
+| 165 | [prisma/migrations/20261104200000_add_bandago_pos_support/migration.sql](#file-prisma-migrations-20261104200000_add_bandago_pos_support-migration-sql) | Database Schema, Migrations & Seeds (Prisma ORM) | 79 | 3.2 KB |
+| 166 | [prisma/migrations/20261119120000_add_bandago_bidirectional_sync/migration.sql](#file-prisma-migrations-20261119120000_add_bandago_bidirectional_sync-migration-sql) | Database Schema, Migrations & Seeds (Prisma ORM) | 113 | 4.1 KB |
+| 167 | [prisma/migrations/migration_lock.toml](#file-prisma-migrations-migration_lock-toml) | Database Schema, Migrations & Seeds (Prisma ORM) | 1 | 24 B |
+| 168 | [prisma/schema.prisma](#file-prisma-schema-prisma) | Database Schema, Migrations & Seeds (Prisma ORM) | 833 | 27.5 KB |
+| 169 | [prisma/seed.ts](#file-prisma-seed-ts) | Database Schema, Migrations & Seeds (Prisma ORM) | 51 | 2.2 KB |
+| 170 | [public/firebase-messaging-sw.js](#file-public-firebase-messaging-sw-js) | Public Web Assets & Service Workers | 96 | 3.0 KB |
+| 171 | [public/logo.svg](#file-public-logo-svg) | Public Web Assets & Service Workers | 29 | 1.0 KB |
+| 172 | [public/robots.txt](#file-public-robots-txt) | Public Web Assets & Service Workers | 14 | 160 B |
+| 173 | [reference/archive/PROJECT_README.md](#file-reference-archive-project_readme-md) | Documentation & Blueprints | 83 | 8.3 KB |
+| 174 | [reference/archive/worklog.md](#file-reference-archive-worklog-md) | Documentation & Blueprints | 261 | 47.8 KB |
+| 175 | [reference/bandago-api-and-integration-architecture.md](#file-reference-bandago-api-and-integration-architecture-md) | Documentation & Blueprints | 720 | 431.5 KB |
+| 176 | [reference/bandago-pos-crm-blueprint.md](#file-reference-bandago-pos-crm-blueprint-md) | Documentation & Blueprints | 1,072 | 41.5 KB |
+| 177 | [scripts/dev-daemon.sh](#file-scripts-dev-daemon-sh) | Dev, Build & Service Scripts | 12 | 304 B |
+| 178 | [scripts/generate_codebase_file.py](#file-scripts-generate_codebase_file-py) | Dev, Build & Service Scripts | 526 | 19.1 KB |
+| 179 | [src/app/[...route]/page.tsx](#file-src-app-----route--page-tsx) | Frontend Pages & Global Styles (Next.js App Router) | 1 | 34 B |
+| 180 | [src/app/admin-workspace.css](#file-src-app-admin-workspace-css) | Frontend Pages & Global Styles (Next.js App Router) | 423 | 30.0 KB |
+| 181 | [src/app/ambient-background.css](#file-src-app-ambient-background-css) | Frontend Pages & Global Styles (Next.js App Router) | 84 | 2.6 KB |
+| 182 | [src/app/api/addresses/[id]/route.ts](#file-src-app-api-addresses--id--route-ts) | Backend API Routes (Next.js App Router) | 54 | 3.2 KB |
+| 183 | [src/app/api/addresses/route.ts](#file-src-app-api-addresses-route-ts) | Backend API Routes (Next.js App Router) | 48 | 2.4 KB |
+| 184 | [src/app/api/admin/audit/route.ts](#file-src-app-api-admin-audit-route-ts) | Backend API Routes (Next.js App Router) | 11 | 410 B |
+| 185 | [src/app/api/admin/live-changes/route.ts](#file-src-app-api-admin-live-changes-route-ts) | Backend API Routes (Next.js App Router) | 34 | 1.8 KB |
+| 186 | [src/app/api/admin/medicine-requests/[id]/photo/route.ts](#file-src-app-api-admin-medicine-requests--id--photo-route-ts) | Backend API Routes (Next.js App Router) | 22 | 1004 B |
+| 187 | [src/app/api/admin/medicine-requests/route.ts](#file-src-app-api-admin-medicine-requests-route-ts) | Backend API Routes (Next.js App Router) | 64 | 3.2 KB |
+| 188 | [src/app/api/admin/notification-health/route.ts](#file-src-app-api-admin-notification-health-route-ts) | Backend API Routes (Next.js App Router) | 15 | 1.2 KB |
+| 189 | [src/app/api/admin/pos-status/route.ts](#file-src-app-api-admin-pos-status-route-ts) | Backend API Routes (Next.js App Router) | 160 | 4.6 KB |
+| 190 | [src/app/api/admin/pos-sync/policy/route.ts](#file-src-app-api-admin-pos-sync-policy-route-ts) | Backend API Routes (Next.js App Router) | 80 | 2.6 KB |
+| 191 | [src/app/api/admin/pos-sync/reconcile/route.ts](#file-src-app-api-admin-pos-sync-reconcile-route-ts) | Backend API Routes (Next.js App Router) | 497 | 14.6 KB |
+| 192 | [src/app/api/admin/pos-sync/sales-export/route.ts](#file-src-app-api-admin-pos-sync-sales-export-route-ts) | Backend API Routes (Next.js App Router) | 417 | 13.6 KB |
+| 193 | [src/app/api/admin/reviews/[id]/route.ts](#file-src-app-api-admin-reviews--id--route-ts) | Backend API Routes (Next.js App Router) | 52 | 2.0 KB |
+| 194 | [src/app/api/admin/reviews/route.ts](#file-src-app-api-admin-reviews-route-ts) | Backend API Routes (Next.js App Router) | 42 | 1.5 KB |
+| 195 | [src/app/api/admin/service-analytics/route.ts](#file-src-app-api-admin-service-analytics-route-ts) | Backend API Routes (Next.js App Router) | 17 | 1.4 KB |
+| 196 | [src/app/api/admin/service-bookings/[id]/assign/route.ts](#file-src-app-api-admin-service-bookings--id--assign-route-ts) | Backend API Routes (Next.js App Router) | 15 | 1.4 KB |
+| 197 | [src/app/api/admin/service-bookings/route.ts](#file-src-app-api-admin-service-bookings-route-ts) | Backend API Routes (Next.js App Router) | 488 | 18.6 KB |
+| 198 | [src/app/api/admin/service-staff/route.ts](#file-src-app-api-admin-service-staff-route-ts) | Backend API Routes (Next.js App Router) | 10 | 582 B |
+| 199 | [src/app/api/admin/staff/[id]/route.ts](#file-src-app-api-admin-staff--id--route-ts) | Backend API Routes (Next.js App Router) | 89 | 4.3 KB |
+| 200 | [src/app/api/admin/staff/route.ts](#file-src-app-api-admin-staff-route-ts) | Backend API Routes (Next.js App Router) | 47 | 2.1 KB |
+| 201 | [src/app/api/admin/stats/route.ts](#file-src-app-api-admin-stats-route-ts) | Backend API Routes (Next.js App Router) | 52 | 3.9 KB |
+| 202 | [src/app/api/assistant/route.ts](#file-src-app-api-assistant-route-ts) | Backend API Routes (Next.js App Router) | 271 | 11.3 KB |
+| 203 | [src/app/api/auth/login/route.ts](#file-src-app-api-auth-login-route-ts) | Backend API Routes (Next.js App Router) | 34 | 1.7 KB |
+| 204 | [src/app/api/auth/logout/route.ts](#file-src-app-api-auth-logout-route-ts) | Backend API Routes (Next.js App Router) | 12 | 572 B |
+| 205 | [src/app/api/auth/me/route.ts](#file-src-app-api-auth-me-route-ts) | Backend API Routes (Next.js App Router) | 9 | 350 B |
+| 206 | [src/app/api/auth/otp/request/route.ts](#file-src-app-api-auth-otp-request-route-ts) | Backend API Routes (Next.js App Router) | 31 | 1.4 KB |
+| 207 | [src/app/api/auth/otp/verify/route.ts](#file-src-app-api-auth-otp-verify-route-ts) | Backend API Routes (Next.js App Router) | 50 | 2.8 KB |
+| 208 | [src/app/api/auth/profile/route.ts](#file-src-app-api-auth-profile-route-ts) | Backend API Routes (Next.js App Router) | 62 | 2.8 KB |
+| 209 | [src/app/api/auth/register/route.ts](#file-src-app-api-auth-register-route-ts) | Backend API Routes (Next.js App Router) | 53 | 2.6 KB |
+| 210 | [src/app/api/auth/staff-login/route.ts](#file-src-app-api-auth-staff-login-route-ts) | Backend API Routes (Next.js App Router) | 38 | 2.0 KB |
+| 211 | [src/app/api/categories/route.ts](#file-src-app-api-categories-route-ts) | Backend API Routes (Next.js App Router) | 12 | 434 B |
+| 212 | [src/app/api/cron/chronic-refills/route.ts](#file-src-app-api-cron-chronic-refills-route-ts) | Backend API Routes (Next.js App Router) | 70 | 2.4 KB |
+| 213 | [src/app/api/cron/notifications/route.ts](#file-src-app-api-cron-notifications-route-ts) | Backend API Routes (Next.js App Router) | 8 | 444 B |
+| 214 | [src/app/api/cron/order-reservations/route.ts](#file-src-app-api-cron-order-reservations-route-ts) | Backend API Routes (Next.js App Router) | 59 | 3.3 KB |
+| 215 | [src/app/api/cron/prescription-retention/route.ts](#file-src-app-api-cron-prescription-retention-route-ts) | Backend API Routes (Next.js App Router) | 23 | 1.3 KB |
+| 216 | [src/app/api/cron/service-booking-reminders/route.ts](#file-src-app-api-cron-service-booking-reminders-route-ts) | Backend API Routes (Next.js App Router) | 50 | 2.2 KB |
+| 217 | [src/app/api/docs-assistant/route.ts](#file-src-app-api-docs-assistant-route-ts) | Backend API Routes (Next.js App Router) | 142 | 5.9 KB |
+| 218 | [src/app/api/docs-index/route.ts](#file-src-app-api-docs-index-route-ts) | Backend API Routes (Next.js App Router) | 16 | 525 B |
+| 219 | [src/app/api/integrations/bandago/crm/route.ts](#file-src-app-api-integrations-bandago-crm-route-ts) | Backend API Routes (Next.js App Router) | 200 | 6.6 KB |
+| 220 | [src/app/api/integrations/bandago/csv-import/route.ts](#file-src-app-api-integrations-bandago-csv-import-route-ts) | Backend API Routes (Next.js App Router) | 149 | 5.6 KB |
+| 221 | [src/app/api/integrations/bandago/outbound/ack/route.ts](#file-src-app-api-integrations-bandago-outbound-ack-route-ts) | Backend API Routes (Next.js App Router) | 227 | 7.6 KB |
+| 222 | [src/app/api/integrations/bandago/outbound/route.ts](#file-src-app-api-integrations-bandago-outbound-route-ts) | Backend API Routes (Next.js App Router) | 249 | 7.2 KB |
+| 223 | [src/app/api/integrations/bandago/sync/route.ts](#file-src-app-api-integrations-bandago-sync-route-ts) | Backend API Routes (Next.js App Router) | 734 | 26.2 KB |
+| 224 | [src/app/api/integrations/bandago/telemetry/route.ts](#file-src-app-api-integrations-bandago-telemetry-route-ts) | Backend API Routes (Next.js App Router) | 88 | 4.0 KB |
+| 225 | [src/app/api/location/reverse-geocode/route.ts](#file-src-app-api-location-reverse-geocode-route-ts) | Backend API Routes (Next.js App Router) | 58 | 2.2 KB |
+| 226 | [src/app/api/location/search/route.ts](#file-src-app-api-location-search-route-ts) | Backend API Routes (Next.js App Router) | 21 | 1.2 KB |
+| 227 | [src/app/api/medicine-requests/route.ts](#file-src-app-api-medicine-requests-route-ts) | Backend API Routes (Next.js App Router) | 69 | 3.0 KB |
+| 228 | [src/app/api/notifications/dispatch-test/route.ts](#file-src-app-api-notifications-dispatch-test-route-ts) | Backend API Routes (Next.js App Router) | 109 | 5.2 KB |
+| 229 | [src/app/api/notifications/email-webhook/route.ts](#file-src-app-api-notifications-email-webhook-route-ts) | Backend API Routes (Next.js App Router) | 29 | 2.0 KB |
+| 230 | [src/app/api/notifications/prefs/route.ts](#file-src-app-api-notifications-prefs-route-ts) | Backend API Routes (Next.js App Router) | 42 | 1.9 KB |
+| 231 | [src/app/api/notifications/push-token/route.ts](#file-src-app-api-notifications-push-token-route-ts) | Backend API Routes (Next.js App Router) | 64 | 2.2 KB |
+| 232 | [src/app/api/notifications/route.ts](#file-src-app-api-notifications-route-ts) | Backend API Routes (Next.js App Router) | 59 | 1.6 KB |
+| 233 | [src/app/api/orders/[id]/assign/route.ts](#file-src-app-api-orders--id--assign-route-ts) | Backend API Routes (Next.js App Router) | 87 | 4.3 KB |
+| 234 | [src/app/api/orders/[id]/cancel/route.ts](#file-src-app-api-orders--id--cancel-route-ts) | Backend API Routes (Next.js App Router) | 162 | 8.6 KB |
+| 235 | [src/app/api/orders/[id]/cash-confirm/route.ts](#file-src-app-api-orders--id--cash-confirm-route-ts) | Backend API Routes (Next.js App Router) | 71 | 4.6 KB |
+| 236 | [src/app/api/orders/[id]/prepare/route.ts](#file-src-app-api-orders--id--prepare-route-ts) | Backend API Routes (Next.js App Router) | 72 | 4.3 KB |
+| 237 | [src/app/api/orders/[id]/request-payment/route.ts](#file-src-app-api-orders--id--request-payment-route-ts) | Backend API Routes (Next.js App Router) | 55 | 5.1 KB |
+| 238 | [src/app/api/orders/[id]/route.ts](#file-src-app-api-orders--id--route-ts) | Backend API Routes (Next.js App Router) | 142 | 8.1 KB |
+| 239 | [src/app/api/orders/loyalty/route.ts](#file-src-app-api-orders-loyalty-route-ts) | Backend API Routes (Next.js App Router) | 12 | 488 B |
+| 240 | [src/app/api/orders/riders/route.ts](#file-src-app-api-orders-riders-route-ts) | Backend API Routes (Next.js App Router) | 17 | 661 B |
+| 241 | [src/app/api/orders/route.ts](#file-src-app-api-orders-route-ts) | Backend API Routes (Next.js App Router) | 250 | 20.4 KB |
+| 242 | [src/app/api/payments/intasend/initiate/route.ts](#file-src-app-api-payments-intasend-initiate-route-ts) | Backend API Routes (Next.js App Router) | 50 | 4.3 KB |
+| 243 | [src/app/api/payments/intasend/webhook/route.ts](#file-src-app-api-payments-intasend-webhook-route-ts) | Backend API Routes (Next.js App Router) | 83 | 7.1 KB |
+| 244 | [src/app/api/payments/mpesa/callback/route.ts](#file-src-app-api-payments-mpesa-callback-route-ts) | Backend API Routes (Next.js App Router) | 80 | 5.7 KB |
+| 245 | [src/app/api/payments/mpesa/initiate/route.ts](#file-src-app-api-payments-mpesa-initiate-route-ts) | Backend API Routes (Next.js App Router) | 60 | 4.7 KB |
+| 246 | [src/app/api/payments/mpesa/query/route.ts](#file-src-app-api-payments-mpesa-query-route-ts) | Backend API Routes (Next.js App Router) | 22 | 1.9 KB |
+| 247 | [src/app/api/payments/mpesa/service-callback/route.ts](#file-src-app-api-payments-mpesa-service-callback-route-ts) | Backend API Routes (Next.js App Router) | 65 | 4.5 KB |
+| 248 | [src/app/api/payments/refund/route.ts](#file-src-app-api-payments-refund-route-ts) | Backend API Routes (Next.js App Router) | 98 | 7.7 KB |
+| 249 | [src/app/api/prescriptions/[id]/refill/route.ts](#file-src-app-api-prescriptions--id--refill-route-ts) | Backend API Routes (Next.js App Router) | 103 | 6.6 KB |
+| 250 | [src/app/api/prescriptions/[id]/route.ts](#file-src-app-api-prescriptions--id--route-ts) | Backend API Routes (Next.js App Router) | 169 | 8.5 KB |
+| 251 | [src/app/api/prescriptions/route.ts](#file-src-app-api-prescriptions-route-ts) | Backend API Routes (Next.js App Router) | 183 | 8.8 KB |
+| 252 | [src/app/api/products/[id]/reviews/route.ts](#file-src-app-api-products--id--reviews-route-ts) | Backend API Routes (Next.js App Router) | 89 | 3.8 KB |
+| 253 | [src/app/api/products/[id]/route.ts](#file-src-app-api-products--id--route-ts) | Backend API Routes (Next.js App Router) | 188 | 9.8 KB |
+| 254 | [src/app/api/products/[id]/stock-alert/route.ts](#file-src-app-api-products--id--stock-alert-route-ts) | Backend API Routes (Next.js App Router) | 39 | 1.5 KB |
+| 255 | [src/app/api/products/bulk/route.ts](#file-src-app-api-products-bulk-route-ts) | Backend API Routes (Next.js App Router) | 118 | 5.6 KB |
+| 256 | [src/app/api/products/route.ts](#file-src-app-api-products-route-ts) | Backend API Routes (Next.js App Router) | 175 | 9.2 KB |
+| 257 | [src/app/api/products/stock-alerts/route.ts](#file-src-app-api-products-stock-alerts-route-ts) | Backend API Routes (Next.js App Router) | 37 | 1.4 KB |
+| 258 | [src/app/api/promotions/[id]/route.ts](#file-src-app-api-promotions--id--route-ts) | Backend API Routes (Next.js App Router) | 79 | 5.5 KB |
+| 259 | [src/app/api/promotions/route.ts](#file-src-app-api-promotions-route-ts) | Backend API Routes (Next.js App Router) | 84 | 4.5 KB |
+| 260 | [src/app/api/promotions/validate/route.ts](#file-src-app-api-promotions-validate-route-ts) | Backend API Routes (Next.js App Router) | 97 | 6.3 KB |
+| 261 | [src/app/api/route.ts](#file-src-app-api-route-ts) | Backend API Routes (Next.js App Router) | 5 | 134 B |
+| 262 | [src/app/api/service-bookings/[id]/pay-at-pharmacy/route.ts](#file-src-app-api-service-bookings--id--pay-at-pharmacy-route-ts) | Backend API Routes (Next.js App Router) | 27 | 2.5 KB |
+| 263 | [src/app/api/service-bookings/[id]/pay/card/route.ts](#file-src-app-api-service-bookings--id--pay-card-route-ts) | Backend API Routes (Next.js App Router) | 40 | 3.7 KB |
+| 264 | [src/app/api/service-bookings/[id]/pay/mpesa/route.ts](#file-src-app-api-service-bookings--id--pay-mpesa-route-ts) | Backend API Routes (Next.js App Router) | 49 | 4.3 KB |
+| 265 | [src/app/api/service-bookings/[id]/payment-status/route.ts](#file-src-app-api-service-bookings--id--payment-status-route-ts) | Backend API Routes (Next.js App Router) | 17 | 1.2 KB |
+| 266 | [src/app/api/service-bookings/[id]/review/route.ts](#file-src-app-api-service-bookings--id--review-route-ts) | Backend API Routes (Next.js App Router) | 16 | 1.3 KB |
+| 267 | [src/app/api/service-bookings/mine/route.ts](#file-src-app-api-service-bookings-mine-route-ts) | Backend API Routes (Next.js App Router) | 10 | 1.0 KB |
+| 268 | [src/app/api/service-bookings/route.ts](#file-src-app-api-service-bookings-route-ts) | Backend API Routes (Next.js App Router) | 77 | 6.0 KB |
+| 269 | [src/app/api/services/[id]/availability/route.ts](#file-src-app-api-services--id--availability-route-ts) | Backend API Routes (Next.js App Router) | 34 | 2.5 KB |
+| 270 | [src/app/api/services/[id]/reviews/route.ts](#file-src-app-api-services--id--reviews-route-ts) | Backend API Routes (Next.js App Router) | 9 | 691 B |
+| 271 | [src/app/api/services/[id]/route.ts](#file-src-app-api-services--id--route-ts) | Backend API Routes (Next.js App Router) | 120 | 3.3 KB |
+| 272 | [src/app/api/services/[id]/slots/route.ts](#file-src-app-api-services--id--slots-route-ts) | Backend API Routes (Next.js App Router) | 43 | 2.4 KB |
+| 273 | [src/app/api/services/route.ts](#file-src-app-api-services-route-ts) | Backend API Routes (Next.js App Router) | 44 | 2.3 KB |
+| 274 | [src/app/api/settings/delivery-fee/route.ts](#file-src-app-api-settings-delivery-fee-route-ts) | Backend API Routes (Next.js App Router) | 17 | 1.0 KB |
+| 275 | [src/app/api/settings/route.ts](#file-src-app-api-settings-route-ts) | Backend API Routes (Next.js App Router) | 103 | 7.9 KB |
+| 276 | [src/app/api/upload/route.ts](#file-src-app-api-upload-route-ts) | Backend API Routes (Next.js App Router) | 92 | 5.6 KB |
+| 277 | [src/app/app-experience.css](#file-src-app-app-experience-css) | Frontend Pages & Global Styles (Next.js App Router) | 968 | 24.3 KB |
+| 278 | [src/app/docs/[...slug]/page.tsx](#file-src-app-docs-----slug--page-tsx) | Frontend Pages & Global Styles (Next.js App Router) | 105 | 3.6 KB |
+| 279 | [src/app/docs/api-reference/page.tsx](#file-src-app-docs-api-reference-page-tsx) | Frontend Pages & Global Styles (Next.js App Router) | 47 | 2.5 KB |
+| 280 | [src/app/docs/assistant/page.tsx](#file-src-app-docs-assistant-page-tsx) | Frontend Pages & Global Styles (Next.js App Router) | 49 | 2.4 KB |
+| 281 | [src/app/docs/database/page.tsx](#file-src-app-docs-database-page-tsx) | Frontend Pages & Global Styles (Next.js App Router) | 54 | 2.9 KB |
+| 282 | [src/app/docs/journeys/[...slug]/page.tsx](#file-src-app-docs-journeys-----slug--page-tsx) | Frontend Pages & Global Styles (Next.js App Router) | 176 | 7.1 KB |
+| 283 | [src/app/docs/journeys/page.tsx](#file-src-app-docs-journeys-page-tsx) | Frontend Pages & Global Styles (Next.js App Router) | 54 | 2.2 KB |
+| 284 | [src/app/docs/layout.tsx](#file-src-app-docs-layout-tsx) | Frontend Pages & Global Styles (Next.js App Router) | 18 | 726 B |
+| 285 | [src/app/docs/not-found.tsx](#file-src-app-docs-not-found-tsx) | Frontend Pages & Global Styles (Next.js App Router) | 35 | 1.8 KB |
+| 286 | [src/app/docs/page.tsx](#file-src-app-docs-page-tsx) | Frontend Pages & Global Styles (Next.js App Router) | 265 | 15.3 KB |
+| 287 | [src/app/globals.css](#file-src-app-globals-css) | Frontend Pages & Global Styles (Next.js App Router) | 498 | 15.6 KB |
+| 288 | [src/app/layout.tsx](#file-src-app-layout-tsx) | Frontend Pages & Global Styles (Next.js App Router) | 48 | 1.8 KB |
+| 289 | [src/app/page.tsx](#file-src-app-page-tsx) | Frontend Pages & Global Styles (Next.js App Router) | 91 | 5.3 KB |
+| 290 | [src/app/premium-landing.css](#file-src-app-premium-landing-css) | Frontend Pages & Global Styles (Next.js App Router) | 127 | 9.0 KB |
+| 291 | [src/app/reference-home-dark.css](#file-src-app-reference-home-dark-css) | Frontend Pages & Global Styles (Next.js App Router) | 13 | 875 B |
+| 292 | [src/app/reference-home.css](#file-src-app-reference-home-css) | Frontend Pages & Global Styles (Next.js App Router) | 248 | 16.3 KB |
+| 293 | [src/app/robots.ts](#file-src-app-robots-ts) | Frontend Pages & Global Styles (Next.js App Router) | 6 | 296 B |
+| 294 | [src/app/services-showcase.css](#file-src-app-services-showcase-css) | Frontend Pages & Global Styles (Next.js App Router) | 105 | 7.7 KB |
+| 295 | [src/app/sitemap.ts](#file-src-app-sitemap-ts) | Frontend Pages & Global Styles (Next.js App Router) | 19 | 777 B |
+| 296 | [src/app/sphere-public.css](#file-src-app-sphere-public-css) | Frontend Pages & Global Styles (Next.js App Router) | 752 | 27.2 KB |
+| 297 | [src/components/assistant/assistant-actions.tsx](#file-src-components-assistant-assistant-actions-tsx) | Shared Layout & Domain Components | 695 | 20.1 KB |
+| 298 | [src/components/assistant/assistant-widget.tsx](#file-src-components-assistant-assistant-widget-tsx) | Shared Layout & Domain Components | 376 | 14.6 KB |
+| 299 | [src/components/catalog/high-performance-pagination.tsx](#file-src-components-catalog-high-performance-pagination-tsx) | Shared Layout & Domain Components | 299 | 10.1 KB |
+| 300 | [src/components/catalog/luxury-category-ribbon.tsx](#file-src-components-catalog-luxury-category-ribbon-tsx) | Shared Layout & Domain Components | 85 | 2.9 KB |
+| 301 | [src/components/catalog/medicine-request.tsx](#file-src-components-catalog-medicine-request-tsx) | Shared Layout & Domain Components | 126 | 6.5 KB |
+| 302 | [src/components/docs/api-explorer.tsx](#file-src-components-docs-api-explorer-tsx) | Shared Layout & Domain Components | 266 | 13.5 KB |
+| 303 | [src/components/docs/code-block.tsx](#file-src-components-docs-code-block-tsx) | Shared Layout & Domain Components | 83 | 3.5 KB |
+| 304 | [src/components/docs/db-explorer.tsx](#file-src-components-docs-db-explorer-tsx) | Shared Layout & Domain Components | 203 | 9.8 KB |
+| 305 | [src/components/docs/doc-furniture.tsx](#file-src-components-docs-doc-furniture-tsx) | Shared Layout & Domain Components | 113 | 4.1 KB |
+| 306 | [src/components/docs/docs-assistant.tsx](#file-src-components-docs-docs-assistant-tsx) | Shared Layout & Domain Components | 261 | 11.8 KB |
+| 307 | [src/components/docs/docs-header.tsx](#file-src-components-docs-docs-header-tsx) | Shared Layout & Domain Components | 77 | 3.5 KB |
+| 308 | [src/components/docs/docs-shell.tsx](#file-src-components-docs-docs-shell-tsx) | Shared Layout & Domain Components | 110 | 4.4 KB |
+| 309 | [src/components/docs/docs-sidebar.tsx](#file-src-components-docs-docs-sidebar-tsx) | Shared Layout & Domain Components | 91 | 3.4 KB |
+| 310 | [src/components/docs/docs-toc.tsx](#file-src-components-docs-docs-toc-tsx) | Shared Layout & Domain Components | 84 | 3.2 KB |
+| 311 | [src/components/docs/docs.css](#file-src-components-docs-docs-css) | Shared Layout & Domain Components | 547 | 11.9 KB |
+| 312 | [src/components/docs/journey-directory.tsx](#file-src-components-docs-journey-directory-tsx) | Shared Layout & Domain Components | 211 | 9.4 KB |
+| 313 | [src/components/docs/markdown.tsx](#file-src-components-docs-markdown-tsx) | Shared Layout & Domain Components | 149 | 5.7 KB |
+| 314 | [src/components/docs/mermaid-diagram.tsx](#file-src-components-docs-mermaid-diagram-tsx) | Shared Layout & Domain Components | 220 | 8.9 KB |
+| 315 | [src/components/docs/search-palette.tsx](#file-src-components-docs-search-palette-tsx) | Shared Layout & Domain Components | 352 | 14.1 KB |
+| 316 | [src/components/home/luxury-categories-showcase.tsx](#file-src-components-home-luxury-categories-showcase-tsx) | Shared Layout & Domain Components | 329 | 12.7 KB |
+| 317 | [src/components/home/priority-products-section.tsx](#file-src-components-home-priority-products-section-tsx) | Shared Layout & Domain Components | 237 | 8.7 KB |
+| 318 | [src/components/home/reference-home-hero.tsx](#file-src-components-home-reference-home-hero-tsx) | Shared Layout & Domain Components | 221 | 10.3 KB |
+| 319 | [src/components/home/services-showcase.tsx](#file-src-components-home-services-showcase-tsx) | Shared Layout & Domain Components | 82 | 4.8 KB |
+| 320 | [src/components/home/sphere-landing.module.css](#file-src-components-home-sphere-landing-module-css) | Shared Layout & Domain Components | 1,513 | 27.9 KB |
+| 321 | [src/components/home/sphere-landing.tsx](#file-src-components-home-sphere-landing-tsx) | Shared Layout & Domain Components | 540 | 18.3 KB |
+| 322 | [src/components/layout/customer-hub-nav.tsx](#file-src-components-layout-customer-hub-nav-tsx) | Shared Layout & Domain Components | 50 | 2.4 KB |
+| 323 | [src/components/layout/footer.tsx](#file-src-components-layout-footer-tsx) | Shared Layout & Domain Components | 101 | 5.5 KB |
+| 324 | [src/components/layout/header.tsx](#file-src-components-layout-header-tsx) | Shared Layout & Domain Components | 452 | 19.8 KB |
+| 325 | [src/components/layout/mobile-nav.tsx](#file-src-components-layout-mobile-nav-tsx) | Shared Layout & Domain Components | 66 | 2.9 KB |
+| 326 | [src/components/layout/notification-center.tsx](#file-src-components-layout-notification-center-tsx) | Shared Layout & Domain Components | 58 | 3.7 KB |
+| 327 | [src/components/layout/sphere-header.tsx](#file-src-components-layout-sphere-header-tsx) | Shared Layout & Domain Components | 111 | 3.5 KB |
+| 328 | [src/components/member/member-intro.tsx](#file-src-components-member-member-intro-tsx) | Shared Layout & Domain Components | 126 | 3.8 KB |
+| 329 | [src/components/shared/empty-state.tsx](#file-src-components-shared-empty-state-tsx) | Shared Layout & Domain Components | 72 | 2.3 KB |
+| 330 | [src/components/shared/logo.tsx](#file-src-components-shared-logo-tsx) | Shared Layout & Domain Components | 29 | 1.3 KB |
+| 331 | [src/components/shared/premium-popular-card.tsx](#file-src-components-shared-premium-popular-card-tsx) | Shared Layout & Domain Components | 172 | 8.9 KB |
+| 332 | [src/components/shared/product-card.tsx](#file-src-components-shared-product-card-tsx) | Shared Layout & Domain Components | 596 | 25.3 KB |
+| 333 | [src/components/shared/product-image.tsx](#file-src-components-shared-product-image-tsx) | Shared Layout & Domain Components | 38 | 1.2 KB |
+| 334 | [src/components/shared/status-badges.tsx](#file-src-components-shared-status-badges-tsx) | Shared Layout & Domain Components | 107 | 6.1 KB |
+| 335 | [src/components/shared/use-current-location-button.tsx](#file-src-components-shared-use-current-location-button-tsx) | Shared Layout & Domain Components | 105 | 3.6 KB |
+| 336 | [src/components/ui/accordion.tsx](#file-src-components-ui-accordion-tsx) | UI Primitives (shadcn/ui & Radix UI) | 66 | 2.0 KB |
+| 337 | [src/components/ui/alert-dialog.tsx](#file-src-components-ui-alert-dialog-tsx) | UI Primitives (shadcn/ui & Radix UI) | 157 | 3.8 KB |
+| 338 | [src/components/ui/alert.tsx](#file-src-components-ui-alert-tsx) | UI Primitives (shadcn/ui & Radix UI) | 66 | 1.6 KB |
+| 339 | [src/components/ui/aspect-ratio.tsx](#file-src-components-ui-aspect-ratio-tsx) | UI Primitives (shadcn/ui & Radix UI) | 11 | 280 B |
+| 340 | [src/components/ui/avatar.tsx](#file-src-components-ui-avatar-tsx) | UI Primitives (shadcn/ui & Radix UI) | 53 | 1.1 KB |
+| 341 | [src/components/ui/badge.tsx](#file-src-components-ui-badge-tsx) | UI Primitives (shadcn/ui & Radix UI) | 46 | 1.6 KB |
+| 342 | [src/components/ui/breadcrumb.tsx](#file-src-components-ui-breadcrumb-tsx) | UI Primitives (shadcn/ui & Radix UI) | 109 | 2.3 KB |
+| 343 | [src/components/ui/button.tsx](#file-src-components-ui-button-tsx) | UI Primitives (shadcn/ui & Radix UI) | 59 | 2.1 KB |
+| 344 | [src/components/ui/calendar.tsx](#file-src-components-ui-calendar-tsx) | UI Primitives (shadcn/ui & Radix UI) | 213 | 7.5 KB |
+| 345 | [src/components/ui/card.tsx](#file-src-components-ui-card-tsx) | UI Primitives (shadcn/ui & Radix UI) | 92 | 1.9 KB |
+| 346 | [src/components/ui/carousel.tsx](#file-src-components-ui-carousel-tsx) | UI Primitives (shadcn/ui & Radix UI) | 241 | 5.4 KB |
+| 347 | [src/components/ui/chart.tsx](#file-src-components-ui-chart-tsx) | UI Primitives (shadcn/ui & Radix UI) | 353 | 9.6 KB |
+| 348 | [src/components/ui/checkbox.tsx](#file-src-components-ui-checkbox-tsx) | UI Primitives (shadcn/ui & Radix UI) | 32 | 1.2 KB |
+| 349 | [src/components/ui/collapsible.tsx](#file-src-components-ui-collapsible-tsx) | UI Primitives (shadcn/ui & Radix UI) | 33 | 800 B |
+| 350 | [src/components/ui/command.tsx](#file-src-components-ui-command-tsx) | UI Primitives (shadcn/ui & Radix UI) | 184 | 4.7 KB |
+| 351 | [src/components/ui/context-menu.tsx](#file-src-components-ui-context-menu-tsx) | UI Primitives (shadcn/ui & Radix UI) | 252 | 8.0 KB |
+| 352 | [src/components/ui/dialog.tsx](#file-src-components-ui-dialog-tsx) | UI Primitives (shadcn/ui & Radix UI) | 143 | 3.9 KB |
+| 353 | [src/components/ui/drawer.tsx](#file-src-components-ui-drawer-tsx) | UI Primitives (shadcn/ui & Radix UI) | 135 | 4.2 KB |
+| 354 | [src/components/ui/dropdown-menu.tsx](#file-src-components-ui-dropdown-menu-tsx) | UI Primitives (shadcn/ui & Radix UI) | 257 | 8.1 KB |
+| 355 | [src/components/ui/form.tsx](#file-src-components-ui-form-tsx) | UI Primitives (shadcn/ui & Radix UI) | 167 | 3.7 KB |
+| 356 | [src/components/ui/hover-card.tsx](#file-src-components-ui-hover-card-tsx) | UI Primitives (shadcn/ui & Radix UI) | 44 | 1.5 KB |
+| 357 | [src/components/ui/input-otp.tsx](#file-src-components-ui-input-otp-tsx) | UI Primitives (shadcn/ui & Radix UI) | 77 | 2.2 KB |
+| 358 | [src/components/ui/input.tsx](#file-src-components-ui-input-tsx) | UI Primitives (shadcn/ui & Radix UI) | 21 | 967 B |
+| 359 | [src/components/ui/label.tsx](#file-src-components-ui-label-tsx) | UI Primitives (shadcn/ui & Radix UI) | 24 | 611 B |
+| 360 | [src/components/ui/menubar.tsx](#file-src-components-ui-menubar-tsx) | UI Primitives (shadcn/ui & Radix UI) | 276 | 8.2 KB |
+| 361 | [src/components/ui/navigation-menu.tsx](#file-src-components-ui-navigation-menu-tsx) | UI Primitives (shadcn/ui & Radix UI) | 168 | 6.5 KB |
+| 362 | [src/components/ui/pagination.tsx](#file-src-components-ui-pagination-tsx) | UI Primitives (shadcn/ui & Radix UI) | 127 | 2.6 KB |
+| 363 | [src/components/ui/popover.tsx](#file-src-components-ui-popover-tsx) | UI Primitives (shadcn/ui & Radix UI) | 48 | 1.6 KB |
+| 364 | [src/components/ui/progress.tsx](#file-src-components-ui-progress-tsx) | UI Primitives (shadcn/ui & Radix UI) | 31 | 740 B |
+| 365 | [src/components/ui/radio-group.tsx](#file-src-components-ui-radio-group-tsx) | UI Primitives (shadcn/ui & Radix UI) | 45 | 1.4 KB |
+| 366 | [src/components/ui/resizable.tsx](#file-src-components-ui-resizable-tsx) | UI Primitives (shadcn/ui & Radix UI) | 56 | 2.0 KB |
+| 367 | [src/components/ui/scroll-area.tsx](#file-src-components-ui-scroll-area-tsx) | UI Primitives (shadcn/ui & Radix UI) | 58 | 1.6 KB |
+| 368 | [src/components/ui/select.tsx](#file-src-components-ui-select-tsx) | UI Primitives (shadcn/ui & Radix UI) | 185 | 6.1 KB |
+| 369 | [src/components/ui/separator.tsx](#file-src-components-ui-separator-tsx) | UI Primitives (shadcn/ui & Radix UI) | 28 | 699 B |
+| 370 | [src/components/ui/sheet.tsx](#file-src-components-ui-sheet-tsx) | UI Primitives (shadcn/ui & Radix UI) | 139 | 4.0 KB |
+| 371 | [src/components/ui/sidebar.tsx](#file-src-components-ui-sidebar-tsx) | UI Primitives (shadcn/ui & Radix UI) | 726 | 21.1 KB |
+| 372 | [src/components/ui/skeleton.tsx](#file-src-components-ui-skeleton-tsx) | UI Primitives (shadcn/ui & Radix UI) | 13 | 276 B |
+| 373 | [src/components/ui/slider.tsx](#file-src-components-ui-slider-tsx) | UI Primitives (shadcn/ui & Radix UI) | 63 | 2.0 KB |
+| 374 | [src/components/ui/sonner.tsx](#file-src-components-ui-sonner-tsx) | UI Primitives (shadcn/ui & Radix UI) | 25 | 564 B |
+| 375 | [src/components/ui/switch.tsx](#file-src-components-ui-switch-tsx) | UI Primitives (shadcn/ui & Radix UI) | 31 | 1.1 KB |
+| 376 | [src/components/ui/table.tsx](#file-src-components-ui-table-tsx) | UI Primitives (shadcn/ui & Radix UI) | 116 | 2.4 KB |
+| 377 | [src/components/ui/tabs.tsx](#file-src-components-ui-tabs-tsx) | UI Primitives (shadcn/ui & Radix UI) | 66 | 1.9 KB |
+| 378 | [src/components/ui/textarea.tsx](#file-src-components-ui-textarea-tsx) | UI Primitives (shadcn/ui & Radix UI) | 18 | 759 B |
+| 379 | [src/components/ui/toast.tsx](#file-src-components-ui-toast-tsx) | UI Primitives (shadcn/ui & Radix UI) | 129 | 4.7 KB |
+| 380 | [src/components/ui/toaster.tsx](#file-src-components-ui-toaster-tsx) | UI Primitives (shadcn/ui & Radix UI) | 35 | 785 B |
+| 381 | [src/components/ui/toggle-group.tsx](#file-src-components-ui-toggle-group-tsx) | UI Primitives (shadcn/ui & Radix UI) | 73 | 1.9 KB |
+| 382 | [src/components/ui/toggle.tsx](#file-src-components-ui-toggle-tsx) | UI Primitives (shadcn/ui & Radix UI) | 47 | 1.5 KB |
+| 383 | [src/components/ui/tooltip.tsx](#file-src-components-ui-tooltip-tsx) | UI Primitives (shadcn/ui & Radix UI) | 61 | 1.8 KB |
+| 384 | [src/components/views/account-view.tsx](#file-src-components-views-account-view-tsx) | Storefront Views & Customer Flows | 1,516 | 61.3 KB |
+| 385 | [src/components/views/admin/admin-access.tsx](#file-src-components-views-admin-admin-access-tsx) | Admin Workspace & Staff Control Room | 19 | 785 B |
+| 386 | [src/components/views/admin/admin-shared.tsx](#file-src-components-views-admin-admin-shared-tsx) | Admin Workspace & Staff Control Room | 263 | 8.6 KB |
+| 387 | [src/components/views/admin/admin-view.tsx](#file-src-components-views-admin-admin-view-tsx) | Admin Workspace & Staff Control Room | 549 | 26.7 KB |
+| 388 | [src/components/views/admin/sections/catalogue-section.tsx](#file-src-components-views-admin-sections-catalogue-section-tsx) | Admin Workspace & Staff Control Room | 1,109 | 49.7 KB |
+| 389 | [src/components/views/admin/sections/compliance-section.tsx](#file-src-components-views-admin-sections-compliance-section-tsx) | Admin Workspace & Staff Control Room | 363 | 23.2 KB |
+| 390 | [src/components/views/admin/sections/dispatch-control-room.tsx](#file-src-components-views-admin-sections-dispatch-control-room-tsx) | Admin Workspace & Staff Control Room | 600 | 38.1 KB |
+| 391 | [src/components/views/admin/sections/dispatch-section.tsx](#file-src-components-views-admin-sections-dispatch-section-tsx) | Admin Workspace & Staff Control Room | 725 | 29.7 KB |
+| 392 | [src/components/views/admin/sections/medicine-requests-section.tsx](#file-src-components-views-admin-sections-medicine-requests-section-tsx) | Admin Workspace & Staff Control Room | 124 | 7.4 KB |
+| 393 | [src/components/views/admin/sections/orders-section.tsx](#file-src-components-views-admin-sections-orders-section-tsx) | Admin Workspace & Staff Control Room | 1,509 | 80.1 KB |
+| 394 | [src/components/views/admin/sections/overview-section.tsx](#file-src-components-views-admin-sections-overview-section-tsx) | Admin Workspace & Staff Control Room | 288 | 17.4 KB |
+| 395 | [src/components/views/admin/sections/pos-sync-section.tsx](#file-src-components-views-admin-sections-pos-sync-section-tsx) | Admin Workspace & Staff Control Room | 1,630 | 67.0 KB |
+| 396 | [src/components/views/admin/sections/prescriptions-section.tsx](#file-src-components-views-admin-sections-prescriptions-section-tsx) | Admin Workspace & Staff Control Room | 983 | 45.5 KB |
+| 397 | [src/components/views/admin/sections/promotions-section.tsx](#file-src-components-views-admin-sections-promotions-section-tsx) | Admin Workspace & Staff Control Room | 373 | 27.1 KB |
+| 398 | [src/components/views/admin/sections/reports-section.tsx](#file-src-components-views-admin-sections-reports-section-tsx) | Admin Workspace & Staff Control Room | 319 | 14.6 KB |
+| 399 | [src/components/views/admin/sections/reviews-section.tsx](#file-src-components-views-admin-sections-reviews-section-tsx) | Admin Workspace & Staff Control Room | 285 | 9.9 KB |
+| 400 | [src/components/views/admin/sections/service-analytics-section.tsx](#file-src-components-views-admin-sections-service-analytics-section-tsx) | Admin Workspace & Staff Control Room | 43 | 3.9 KB |
+| 401 | [src/components/views/admin/sections/service-bookings-section.tsx](#file-src-components-views-admin-sections-service-bookings-section-tsx) | Admin Workspace & Staff Control Room | 452 | 34.4 KB |
+| 402 | [src/components/views/admin/sections/services-section.tsx](#file-src-components-views-admin-sections-services-section-tsx) | Admin Workspace & Staff Control Room | 279 | 33.9 KB |
+| 403 | [src/components/views/admin/sections/settings-section.tsx](#file-src-components-views-admin-sections-settings-section-tsx) | Admin Workspace & Staff Control Room | 836 | 38.2 KB |
+| 404 | [src/components/views/admin/sections/staff-section.tsx](#file-src-components-views-admin-sections-staff-section-tsx) | Admin Workspace & Staff Control Room | 465 | 19.5 KB |
+| 405 | [src/components/views/auth-view.tsx](#file-src-components-views-auth-view-tsx) | Storefront Views & Customer Flows | 479 | 22.2 KB |
+| 406 | [src/components/views/cart-view.tsx](#file-src-components-views-cart-view-tsx) | Storefront Views & Customer Flows | 296 | 15.8 KB |
+| 407 | [src/components/views/catalog-view.tsx](#file-src-components-views-catalog-view-tsx) | Storefront Views & Customer Flows | 703 | 28.9 KB |
+| 408 | [src/components/views/checkout-view.tsx](#file-src-components-views-checkout-view-tsx) | Storefront Views & Customer Flows | 1,852 | 93.6 KB |
+| 409 | [src/components/views/home-view.tsx](#file-src-components-views-home-view-tsx) | Storefront Views & Customer Flows | 458 | 22.2 KB |
+| 410 | [src/components/views/offers-view.tsx](#file-src-components-views-offers-view-tsx) | Storefront Views & Customer Flows | 167 | 9.0 KB |
+| 411 | [src/components/views/order-detail-view.tsx](#file-src-components-views-order-detail-view-tsx) | Storefront Views & Customer Flows | 1,104 | 42.1 KB |
+| 412 | [src/components/views/orders-view.tsx](#file-src-components-views-orders-view-tsx) | Storefront Views & Customer Flows | 396 | 13.7 KB |
+| 413 | [src/components/views/prescriptions-view.tsx](#file-src-components-views-prescriptions-view-tsx) | Storefront Views & Customer Flows | 754 | 27.3 KB |
+| 414 | [src/components/views/product-view.tsx](#file-src-components-views-product-view-tsx) | Storefront Views & Customer Flows | 750 | 30.8 KB |
+| 415 | [src/components/views/services-view.tsx](#file-src-components-views-services-view-tsx) | Storefront Views & Customer Flows | 1,841 | 75.4 KB |
+| 416 | [src/hooks/use-mobile.ts](#file-src-hooks-use-mobile-ts) | Custom React Hooks | 19 | 565 B |
+| 417 | [src/hooks/use-toast.ts](#file-src-hooks-use-toast-ts) | Custom React Hooks | 194 | 3.8 KB |
+| 418 | [src/lib/api-client.ts](#file-src-lib-api-client-ts) | Core Business Logic & Database Clients | 500 | 23.6 KB |
+| 419 | [src/lib/assistant/contracts.ts](#file-src-lib-assistant-contracts-ts) | AI Medication Assistant | 152 | 6.1 KB |
+| 420 | [src/lib/assistant/payment-review.ts](#file-src-lib-assistant-payment-review-ts) | AI Medication Assistant | 34 | 991 B |
+| 421 | [src/lib/bandago-normalizer.ts](#file-src-lib-bandago-normalizer-ts) | Bandago POS & CRM Integration | 359 | 10.4 KB |
+| 422 | [src/lib/constants.ts](#file-src-lib-constants-ts) | Core Business Logic & Database Clients | 199 | 7.6 KB |
+| 423 | [src/lib/crm/bandago-crm.ts](#file-src-lib-crm-bandago-crm-ts) | Bandago POS & CRM Integration | 163 | 5.2 KB |
+| 424 | [src/lib/db.ts](#file-src-lib-db-ts) | Core Business Logic & Database Clients | 83 | 2.4 KB |
+| 425 | [src/lib/docs/assistant.ts](#file-src-lib-docs-assistant-ts) | Core Business Logic & Database Clients | 143 | 6.0 KB |
+| 426 | [src/lib/docs/content.ts](#file-src-lib-docs-content-ts) | Core Business Logic & Database Clients | 350 | 11.1 KB |
+| 427 | [src/lib/docs/frontmatter.ts](#file-src-lib-docs-frontmatter-ts) | Core Business Logic & Database Clients | 146 | 4.7 KB |
+| 428 | [src/lib/docs/navigation.ts](#file-src-lib-docs-navigation-ts) | Core Business Logic & Database Clients | 286 | 8.4 KB |
+| 429 | [src/lib/docs/openapi.ts](#file-src-lib-docs-openapi-ts) | Core Business Logic & Database Clients | 186 | 6.6 KB |
+| 430 | [src/lib/docs/prisma-schema.ts](#file-src-lib-docs-prisma-schema-ts) | Core Business Logic & Database Clients | 273 | 8.5 KB |
+| 431 | [src/lib/docs/search.ts](#file-src-lib-docs-search-ts) | Core Business Logic & Database Clients | 208 | 6.7 KB |
+| 432 | [src/lib/docs/utils.ts](#file-src-lib-docs-utils-ts) | Core Business Logic & Database Clients | 71 | 2.0 KB |
+| 433 | [src/lib/dto.ts](#file-src-lib-dto-ts) | Core Business Logic & Database Clients | 277 | 11.2 KB |
+| 434 | [src/lib/email/resend.ts](#file-src-lib-email-resend-ts) | Notifications, Push Messaging & Communications | 81 | 2.6 KB |
+| 435 | [src/lib/email/templates.ts](#file-src-lib-email-templates-ts) | Notifications, Push Messaging & Communications | 463 | 20.6 KB |
+| 436 | [src/lib/firebase/admin.ts](#file-src-lib-firebase-admin-ts) | Notifications, Push Messaging & Communications | 261 | 7.4 KB |
+| 437 | [src/lib/firebase/client.ts](#file-src-lib-firebase-client-ts) | Notifications, Push Messaging & Communications | 192 | 6.4 KB |
+| 438 | [src/lib/format.ts](#file-src-lib-format-ts) | Core Business Logic & Database Clients | 64 | 1.9 KB |
+| 439 | [src/lib/hash.ts](#file-src-lib-hash-ts) | Core Business Logic & Database Clients | 88 | 3.3 KB |
+| 440 | [src/lib/image-library.ts](#file-src-lib-image-library-ts) | Core Business Logic & Database Clients | 80 | 3.4 KB |
+| 441 | [src/lib/image.ts](#file-src-lib-image-ts) | Core Business Logic & Database Clients | 24 | 1.0 KB |
+| 442 | [src/lib/intasend/client.ts](#file-src-lib-intasend-client-ts) | Payment Gateways (M-Pesa Daraja & IntaSend) | 141 | 7.3 KB |
+| 443 | [src/lib/inventory-guard.ts](#file-src-lib-inventory-guard-ts) | Core Business Logic & Database Clients | 318 | 10.4 KB |
+| 444 | [src/lib/loyalty.ts](#file-src-lib-loyalty-ts) | Core Business Logic & Database Clients | 85 | 4.5 KB |
+| 445 | [src/lib/medicine-request-dto.ts](#file-src-lib-medicine-request-dto-ts) | Core Business Logic & Database Clients | 15 | 571 B |
+| 446 | [src/lib/medicine-requests.ts](#file-src-lib-medicine-requests-ts) | Core Business Logic & Database Clients | 60 | 2.1 KB |
+| 447 | [src/lib/mpesa/daraja.ts](#file-src-lib-mpesa-daraja-ts) | Payment Gateways (M-Pesa Daraja & IntaSend) | 228 | 7.4 KB |
+| 448 | [src/lib/notifications/delivery.ts](#file-src-lib-notifications-delivery-ts) | Notifications, Push Messaging & Communications | 90 | 5.7 KB |
+| 449 | [src/lib/notifications/payment.ts](#file-src-lib-notifications-payment-ts) | Notifications, Push Messaging & Communications | 24 | 1.6 KB |
+| 450 | [src/lib/notify.ts](#file-src-lib-notify-ts) | Core Business Logic & Database Clients | 284 | 10.2 KB |
+| 451 | [src/lib/offer-intent.ts](#file-src-lib-offer-intent-ts) | Core Business Logic & Database Clients | 23 | 839 B |
+| 452 | [src/lib/pdf/daily-sales-pdf.ts](#file-src-lib-pdf-daily-sales-pdf-ts) | Core Business Logic & Database Clients | 272 | 9.8 KB |
+| 453 | [src/lib/pos-reconciliation-core.ts](#file-src-lib-pos-reconciliation-core-ts) | Bandago POS & CRM Integration | 265 | 10.3 KB |
+| 454 | [src/lib/pos-reconciliation.ts](#file-src-lib-pos-reconciliation-ts) | Bandago POS & CRM Integration | 444 | 13.4 KB |
+| 455 | [src/lib/promotions.ts](#file-src-lib-promotions-ts) | Core Business Logic & Database Clients | 98 | 4.5 KB |
+| 456 | [src/lib/r2.ts](#file-src-lib-r2-ts) | Core Business Logic & Database Clients | 100 | 5.1 KB |
+| 457 | [src/lib/security/bandago-auth.ts](#file-src-lib-security-bandago-auth-ts) | Security, Rate Limiting & Validation Guards | 45 | 1.3 KB |
+| 458 | [src/lib/security/bandago-bearer.ts](#file-src-lib-security-bandago-bearer-ts) | Security, Rate Limiting & Validation Guards | 50 | 1.8 KB |
+| 459 | [src/lib/security/file.ts](#file-src-lib-security-file-ts) | Security, Rate Limiting & Validation Guards | 28 | 1.8 KB |
+| 460 | [src/lib/security/order-workflow.ts](#file-src-lib-security-order-workflow-ts) | Security, Rate Limiting & Validation Guards | 20 | 1.2 KB |
+| 461 | [src/lib/security/payment-attempt.ts](#file-src-lib-security-payment-attempt-ts) | Security, Rate Limiting & Validation Guards | 32 | 2.6 KB |
+| 462 | [src/lib/security/payment.ts](#file-src-lib-security-payment-ts) | Security, Rate Limiting & Validation Guards | 24 | 1.3 KB |
+| 463 | [src/lib/security/request.ts](#file-src-lib-security-request-ts) | Security, Rate Limiting & Validation Guards | 54 | 2.6 KB |
+| 464 | [src/lib/security/service.ts](#file-src-lib-security-service-ts) | Security, Rate Limiting & Validation Guards | 53 | 2.7 KB |
+| 465 | [src/lib/session.ts](#file-src-lib-session-ts) | Core Business Logic & Database Clients | 159 | 5.9 KB |
+| 466 | [src/lib/settings.ts](#file-src-lib-settings-ts) | Core Business Logic & Database Clients | 48 | 2.5 KB |
+| 467 | [src/lib/sms.ts](#file-src-lib-sms-ts) | Notifications, Push Messaging & Communications | 21 | 1.5 KB |
+| 468 | [src/lib/types.ts](#file-src-lib-types-ts) | Core Business Logic & Database Clients | 456 | 9.6 KB |
+| 469 | [src/lib/utils.ts](#file-src-lib-utils-ts) | Core Business Logic & Database Clients | 6 | 166 B |
+| 470 | [src/store/use-app-store.ts](#file-src-store-use-app-store-ts) | Client State Stores (Zustand) | 222 | 7.9 KB |
+| 471 | [src/store/use-auth-store.ts](#file-src-store-use-auth-store-ts) | Client State Stores (Zustand) | 40 | 1.3 KB |
+| 472 | [src/store/use-cart-store.ts](#file-src-store-use-cart-store-ts) | Client State Stores (Zustand) | 93 | 3.4 KB |
+| 473 | [src/store/use-wish-store.ts](#file-src-store-use-wish-store-ts) | Client State Stores (Zustand) | 71 | 2.0 KB |
+| 474 | [tailwind.config.ts](#file-tailwind-config-ts) | Project Configuration & Root Tooling | 64 | 1.7 KB |
+| 475 | [tests/admin-live-sync.test.mjs](#file-tests-admin-live-sync-test-mjs) | Automated Test Suites & Verification | 74 | 4.1 KB |
+| 476 | [tests/assistant.test.ts](#file-tests-assistant-test-ts) | Automated Test Suites & Verification | 93 | 5.7 KB |
+| 477 | [tests/bandago-bidirectional-sync.test.mjs](#file-tests-bandago-bidirectional-sync-test-mjs) | Automated Test Suites & Verification | 237 | 9.4 KB |
+| 478 | [tests/bandago-pos-crm-integration.test.mjs](#file-tests-bandago-pos-crm-integration-test-mjs) | Automated Test Suites & Verification | 534 | 27.7 KB |
+| 479 | [tests/checkout-points-contrast.test.mjs](#file-tests-checkout-points-contrast-test-mjs) | Automated Test Suites & Verification | 19 | 1018 B |
+| 480 | [tests/compliance-workspace.test.mjs](#file-tests-compliance-workspace-test-mjs) | Automated Test Suites & Verification | 32 | 1.4 KB |
+| 481 | [tests/dispatch-readiness.test.mjs](#file-tests-dispatch-readiness-test-mjs) | Automated Test Suites & Verification | 37 | 2.0 KB |
+| 482 | [tests/medicine-requests.test.mjs](#file-tests-medicine-requests-test-mjs) | Automated Test Suites & Verification | 126 | 7.9 KB |
+| 483 | [tests/offer-workflow.test.mjs](#file-tests-offer-workflow-test-mjs) | Automated Test Suites & Verification | 77 | 4.4 KB |
+| 484 | [tests/order-dispatch-promotion-workflow.test.mjs](#file-tests-order-dispatch-promotion-workflow-test-mjs) | Automated Test Suites & Verification | 57 | 3.0 KB |
+| 485 | [tests/order-operations-ux.test.mjs](#file-tests-order-operations-ux-test-mjs) | Automated Test Suites & Verification | 112 | 6.3 KB |
+| 486 | [tests/promotion-validation-resilience.test.mjs](#file-tests-promotion-validation-resilience-test-mjs) | Automated Test Suites & Verification | 64 | 3.1 KB |
+| 487 | [tests/python-runtime-build.sh](#file-tests-python-runtime-build-sh) | Automated Test Suites & Verification | 64 | 1.8 KB |
+| 488 | [tests/python-runtime-container.sh](#file-tests-python-runtime-container-sh) | Automated Test Suites & Verification | 31 | 837 B |
+| 489 | [tests/reports-layout.test.mjs](#file-tests-reports-layout-test-mjs) | Automated Test Suites & Verification | 19 | 976 B |
+| 490 | [tests/security-static.test.mjs](#file-tests-security-static-test-mjs) | Automated Test Suites & Verification | 154 | 7.0 KB |
+| 491 | [tsconfig.json](#file-tsconfig-json) | Project Configuration & Root Tooling | 42 | 730 B |
 
 ---
 
@@ -2080,8 +2086,8 @@ jobs:
 - **Relative Path:** `.gitignore`
 - **Category:** Project Configuration & Root Tooling
 - **Language:** Git Ignore Rules
-- **Lines:** 55
-- **Size:** 602 B (602 bytes)
+- **Lines:** 56
+- **Size:** 640 B (640 bytes)
 
 `````gitignore
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
@@ -2127,6 +2133,7 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 local-*
+!docs/operations/local-development.md
 .claude
 .z-ai-config
 *.log
@@ -3122,8 +3129,8 @@ exec caddy run --config Caddyfile --adapter caddyfile
 - **Relative Path:** `AGENTS.md`
 - **Category:** Documentation & Blueprints
 - **Language:** Markdown Documentation
-- **Lines:** 68
-- **Size:** 7.5 KB (7,710 bytes)
+- **Lines:** 69
+- **Size:** 8.1 KB (8,336 bytes)
 
 `````markdown
 <!-- BEGIN:nextjs-agent-rules -->
@@ -3148,19 +3155,19 @@ You are working on **Sphere Pharmacy**, a full-stack retail pharmacy operations 
 - [docs/architecture/api-architecture.md](docs/architecture/api-architecture.md) + [docs/api/api-reference.md](docs/api/api-reference.md) — API surface and conventions
 - [docs/security/access-control.md](docs/security/access-control.md) — guards, roles, ownership rules
 - [docs/security/ai-access-and-authorized-sessions.md](docs/security/ai-access-and-authorized-sessions.md) — **the AI access policy (below)**
-- [docs/governance/architecture-decisions.md](docs/governance/architecture-decisions.md) — why the code is the way it is (15 ADRs)
+- [docs/governance/architecture-decisions.md](docs/governance/architecture-decisions.md) — why the code is the way it is (17 ADRs)
 - [docs/governance/technical-debt.md](docs/governance/technical-debt.md) — known issues; do not add to them silently
 
 ## Non-negotiable rules
 
 1. **Authorization guards are sacred.** Every privileged route uses `requireCustomer()` / `requireStaff([roles])` from `src/lib/session.ts` plus ownership checks. Never weaken, bypass, or "temporarily remove" a guard to make a feature work. Never rely on UI gating — the UI is derived from `/api/auth/me`; the server guards are the enforcement.
 2. **AI access is session-scoped.** AI features may freely use public catalogue data. Secure, account-scoped information may only be surfaced within an **authorized session**, through the same authenticated endpoints and guards a human uses. The assistant route never reads the session cookie, and account data must never transit the LLM. If you extend AI capabilities, inherit the existing guards — never read around them. Full policy: [docs/security/ai-access-and-authorized-sessions.md](docs/security/ai-access-and-authorized-sessions.md).
-3. **No secrets in code, ever.** This repository is public. Never commit real credentials, customer data, or prescription content. Anything prefixed `NEXT_PUBLIC_` is embedded in the browser bundle and is public by definition. Never add hard-coded fallback secrets (see the known csv-import incident in [docs/governance/technical-debt.md](docs/governance/technical-debt.md)). Never log secrets, tokens, or prescription content.
+3. **No secrets in code, ever.** This repository is public. Never commit real credentials, customer data, or prescription content. Anything prefixed `NEXT_PUBLIC_` is embedded in the browser bundle and is public by definition. Never add hard-coded fallback secrets (see the remediated H1 csv-import incident in [docs/governance/technical-debt.md](docs/governance/technical-debt.md) — never reintroduce one). Never log secrets, tokens, or prescription content.
 4. **Server-authoritative state.** Clients store intents (cart, promo codes, wishlist); the server re-validates everything at mutation time. Never trust client-side prices, stock, promo discounts, or payment status.
 5. **Clinical safety.** A medicine-classification heuristic is not pharmacist verification. Never build paths that dispense, diagnose, dose, or substitute without pharmacist review. The AI assistant must not diagnose or prescribe — it escalates to pharmacists.
 6. **Money is KES, `Decimal(12,2)` in the DB, 2-dp comparisons in code** (`money()` / `sameMoney()` in `src/lib/security/payment.ts`). M-Pesa amounts must be whole shillings.
 7. **Statuses are strings** with canonical value lists in `src/lib/constants.ts` (orders, payments, prescriptions, bookings, stock) — reuse the constants; never hard-code a status literal in a second place. Order transitions must go through `canTransitionOrder` (`src/lib/security/order-workflow.ts`).
-8. **Idempotency is structural.** Payments (`idempotencyKey`), webhook events (`PaymentWebhookEvent.eventId`), loyalty (`LoyaltyLedger.eventKey`), and promo redemptions (`PromotionRedemption.orderId`) rely on unique keys. Preserve them. Uncertain provider outcomes stay `PROCESSING` with a reconcile note — never falsely reset them.
+8. **Idempotency is structural.** Payments (`idempotencyKey`), webhook events (`PaymentWebhookEvent.eventId`), loyalty (`LoyaltyLedger.eventKey`), promo redemptions (`PromotionRedemption.orderId`), and outbound POS sync jobs (`PosOutboundJob.idempotencyKey`) rely on unique keys. Preserve them. Uncertain provider outcomes stay `PROCESSING` with a reconcile note — never falsely reset them.
 9. **Prescriptions are private R2 objects.** Access is owner-or-staff only, via presigned URLs (30–300 s) with an access log row on every read. Never expose `storageKey` or raw bytes through a public route.
 10. **Run the checks before declaring done:** `npm run typecheck`, `npm run lint`, `npm test`, and (for assistant changes) `npm run test:assistant`. CI runs all of these plus `prisma migrate deploy` and `npm audit`.
 
@@ -3183,14 +3190,15 @@ If your change falls into any of these categories, update the matching documenta
 
 | Path | What it is |
 | --- | --- |
-| `src/app/page.tsx` + `src/app/[...route]/page.tsx` | The entire SPA (one route; Zustand view router) |
+| `src/app/page.tsx` + `src/app/[...route]/page.tsx` | The SPA storefront/admin shell (Zustand view router); `src/app/docs/` + `src/lib/docs/` serve the interactive `/docs` portal over canonical Markdown, OpenAPI, and Prisma |
 | `src/store/` | `use-app-store` (views/URLs), `use-auth-store`, `use-cart-store`, `use-wish-store` |
-| `src/app/api/` | 87 route handlers — every mutation goes through these |
+| `src/app/api/` | 95 route handlers (126 HTTP method handlers) — every mutation goes through these |
 | `src/lib/session.ts` | Sessions and the role guard helpers |
-| `src/lib/security/` | Rate limits, file validation, payment integrity, order workflow |
+| `src/lib/security/` | Rate limits, file validation, payment integrity, order workflow, BandaGo timing-safe auth (`bandago-auth.ts`, `bandago-bearer.ts`) |
+| `src/lib/pos-reconciliation*.ts` + `src/lib/pdf/daily-sales-pdf.ts` | BandaGo stagnant-POS drift protection, outbound reconciliation ledger, Daily Sales PDF generator |
 | `src/lib/constants.ts` | Canonical status lists, roles, loyalty rules, delivery defaults |
-| `prisma/schema.prisma` | 39 models; stock-field authority explained in [docs/database/schema-overview.md](docs/database/schema-overview.md) |
-| `src/lib/assistant/` + `src/app/api/assistant/route.ts` | The AI assistant (Groq, deterministic-first, session-gated) |
+| `prisma/schema.prisma` | 41 models, 5 POS enums, 11 migrations; stock-field authority explained in [docs/database/schema-overview.md](docs/database/schema-overview.md) |
+| `src/lib/assistant/` + `src/app/api/assistant/route.ts` | The storefront AI assistant (Groq, deterministic-first, session-gated); companion `src/app/api/docs-assistant/route.ts` ("Ask Sphere Docs", public docs corpus only, session-free) |
 | `.zscripts/` + `Caddyfile` | Standalone deployment pipeline (authoritative path) |
 
 Known traps: `SPHERE_PHARMACY_FULL_CODEBASE.md` is a generated snapshot (use `npm run update:codebase` to refresh — do not treat as source of truth over live code); `reference/archive/worklog.md` describes the historical SQLite/simulated-payment era; `reference/archive/PROJECT_README.md` predates BandaGo and the real payment providers; several dependencies (`z-ai-web-dev-sdk`, `next-auth`, `@tanstack/react-query`) are declared but never imported. When docs and code disagree, **the code wins** — then fix the doc.
@@ -3265,8 +3273,8 @@ Known traps: `SPHERE_PHARMACY_FULL_CODEBASE.md` is a generated snapshot (use `np
 - **Relative Path:** `README.md`
 - **Category:** Documentation & Blueprints
 - **Language:** Markdown Documentation
-- **Lines:** 85
-- **Size:** 7.3 KB (7,481 bytes)
+- **Lines:** 88
+- **Size:** 7.9 KB (8,078 bytes)
 
 `````markdown
 # Sphere Pharmacy
@@ -3278,13 +3286,13 @@ This repository is more than a storefront. It is a pharmacy operations platform 
 | | |
 | --- | --- |
 | **Framework** | Next.js 16 (App Router, single-route SPA) · React 19 · TypeScript strict |
-| **Data** | PostgreSQL · Prisma 6 · 39 models · 10 migrations |
+| **Data** | PostgreSQL · Prisma 6 · 41 models · 11 migrations |
 | **UI** | Tailwind CSS 4 · shadcn/ui · Zustand · Recharts |
 | **Payments** | Safaricom Daraja (M-Pesa STK Push) · IntaSend hosted cards · cash on pickup/delivery |
 | **Messaging** | In-app inbox · Resend email · Firebase Cloud Messaging push · Africa's Talking SMS (OTP only) |
 | **Storage** | Cloudflare R2 (private prescriptions + public catalogue imagery) |
-| **POS/CRM** | BandaGo (iDempiere) ingestion API + CRM reconciliation |
-| **AI** | Groq-powered assistant with deterministic fallback — see the [AI access policy](docs/security/ai-access-and-authorized-sessions.md) |
+| **POS/CRM** | BandaGo (iDempiere) bi-directional POS sync, stagnant-POS drift protection, Daily Sales Export & CRM reconciliation |
+| **AI** | Groq-powered storefront assistant (deterministic fallback) + "Ask Sphere Docs" portal assistant — see the [AI access policy](docs/security/ai-access-and-authorized-sessions.md) |
 
 > **Architecture note:** although this uses the Next.js App Router, the frontend is a single-page application with a Zustand view router — the catch-all route re-exports the main page. See [docs/architecture/frontend-architecture.md](docs/architecture/frontend-architecture.md).
 
@@ -3304,7 +3312,7 @@ Key entry points:
 | --- | --- |
 | [docs/README.md](docs/README.md) | Documentation index and conventions |
 | [docs/architecture/system-architecture.md](docs/architecture/system-architecture.md) | How the system fits together |
-| [docs/api/api-reference.md](docs/api/api-reference.md) + [openapi/sphere-api.yaml](openapi/sphere-api.yaml) | All 87 route handlers + machine-readable contract |
+| [docs/api/api-reference.md](docs/api/api-reference.md) + [openapi/sphere-api.yaml](openapi/sphere-api.yaml) | All 95 route handlers + machine-readable contract |
 | [docs/security/security-architecture.md](docs/security/security-architecture.md) | Security model and known concerns |
 | [docs/security/ai-access-and-authorized-sessions.md](docs/security/ai-access-and-authorized-sessions.md) | **AI access policy — how AI can give secure information only within authorized sessions** |
 | [docs/operations/local-development.md](docs/operations/local-development.md) | Setup, seed truth, running tests |
@@ -3325,7 +3333,7 @@ npm run dev            # http://localhost:3000
 The seed creates **7 categories and (optionally) one development admin** — it never creates demo customers, orders, or prescription data. Bootstrap the first admin with `SEED_ADMIN_EMAIL` + `SEED_ADMIN_PASSWORD` (≥ 14 chars). Full details: [docs/operations/local-development.md](docs/operations/local-development.md).
 
 ```bash
-npm test               # node --test tests/*.test.mjs (12 suites)
+npm test               # node --test tests/*.test.mjs (13 suites)
 npm run test:assistant # bun test tests/assistant.test.ts (separate runner — keep both in CI)
 ```
 
@@ -3333,14 +3341,17 @@ npm run test:assistant # bun test tests/assistant.test.ts (separate runner — k
 
 ```
 sphere_pharmacy/
-├── docs/            # canonical documentation (see docs/README.md)
+├── docs/            # canonical documentation + 69 user journeys (see docs/README.md)
 ├── openapi/         # sphere-api.yaml — machine-readable API contract
-├── prisma/          # schema.prisma (39 models), migrations/, guarded seed
-├── src/app/api/     # 87 route handlers
-├── src/lib/         # business logic, security guards, integrations
+├── prisma/          # schema.prisma (41 models), migrations/ (11), guarded seed
+├── src/app/api/     # 95 route handlers
+├── src/app/docs/    # interactive documentation portal (/docs)
+├── src/lib/         # business logic, security guards, integrations, docs engine
 ├── src/store/       # Zustand stores (view router, auth, cart, wishlist)
-├── src/components/  # views/, admin sections, assistant, shared UI
-├── tests/           # 12 node:test suites + assistant bun tests
+├── src/components/  # views/, admin sections, assistant, docs portal, shared UI
+├── tests/           # 13 node:test suites + assistant bun tests
+├── reference/       # blueprints, owner manual, archived historical docs
+├── scripts/         # codebase snapshot generator (npm run update:codebase)
 ├── .zscripts/       # standalone build/deploy pipeline (Caddy, tarball)
 └── .github/         # CI: typecheck → lint → migrate deploy → test → build → audit
 ```
@@ -3349,7 +3360,7 @@ sphere_pharmacy/
 
 This repository is **public**. Never commit real credentials, customer or prescription data, or unredacted security findings. Keep restricted internal documents in a private location.
 
-Known issues being tracked — including the browser-exposed POS sync secret and the hard-coded CSV-import fallback — are catalogued with remediation guidance in [docs/governance/technical-debt.md](docs/governance/technical-debt.md) and [docs/integrations/bandago-pos-crm.md](docs/integrations/bandago-pos-crm.md). Clinical safety boundaries (no AI diagnosis or dosing; pharmacist verification before dispensing) are documented in [docs/security/privacy-and-health-data.md](docs/security/privacy-and-health-data.md).
+The former BandaGo browser-exposed secret and hardcoded CSV-import fallback (H1) were remediated in `061e923` with timing-safe fail-closed Bearer verification (`BANDAGO_SYNC_API_KEY`); rotate any deployed secrets that ever used the retired placeholder. Remaining open debt items — including external cron scheduling and payment-audit release blockers — are tracked in [docs/governance/technical-debt.md](docs/governance/technical-debt.md) and [docs/integrations/bandago-pos-crm.md](docs/integrations/bandago-pos-crm.md). Clinical safety boundaries (no AI diagnosis or dosing; pharmacist verification before dispensing) are documented in [docs/security/privacy-and-health-data.md](docs/security/privacy-and-health-data.md).
 
 ## AI coding agents
 
@@ -3405,8 +3416,8 @@ Known issues being tracked — including the browser-exposed POS sync secret and
 - **Relative Path:** `docs/README.md`
 - **Category:** Documentation & Blueprints
 - **Language:** Markdown Documentation
-- **Lines:** 123
-- **Size:** 11.7 KB (11,961 bytes)
+- **Lines:** 128
+- **Size:** 12.0 KB (12,243 bytes)
 
 `````markdown
 # Sphere Pharmacy — Documentation
@@ -3446,6 +3457,11 @@ AI coding agents are a first-class audience: [AGENTS.md](../AGENTS.md) at the re
 | [architecture/authentication.md](architecture/authentication.md) | Sessions, login/OTP flows, password hashing, guest tokens |
 | [architecture/state-management.md](architecture/state-management.md) | Zustand stores, persistence, client vs server authority |
 
+### User journeys
+| Document | What it covers |
+| --- | --- |
+| [journeys/README.md](journeys/README.md) | Complete flowchart-first catalogue across Customer, Pharmacist, Staff, Admin, Rider, and System journeys (69 files incl. role maps) |
+
 ### Features (subsystem deep-dives)
 [features/storefront-and-catalogue.md](features/storefront-and-catalogue.md) · [features/inventory-and-stock.md](features/inventory-and-stock.md) · [features/prescriptions.md](features/prescriptions.md) · [features/orders-and-fulfillment.md](features/orders-and-fulfillment.md) · [features/payments-and-refunds.md](features/payments-and-refunds.md) · [features/services-and-bookings.md](features/services-and-bookings.md) · [features/loyalty-and-promotions.md](features/loyalty-and-promotions.md) · [features/notifications.md](features/notifications.md) · [features/medicine-requests.md](features/medicine-requests.md) · [features/customer-crm.md](features/customer-crm.md) · [features/ai-assistant.md](features/ai-assistant.md)
 
@@ -3454,22 +3470,22 @@ Each follows the same 14-section template: purpose, users, screens, frontend, ba
 ### Database
 | Document | What it covers |
 | --- | --- |
-| [database/schema-overview.md](database/schema-overview.md) | Provider config, 39 models in 9 domains, design decisions (stock authority, loyalty fields, string statuses) |
+| [database/schema-overview.md](database/schema-overview.md) | Provider config, 41 models in 9 domains, design decisions (stock authority, loyalty fields, string statuses) |
 | [database/data-dictionary.md](database/data-dictionary.md) | Every model, every field, relations, indexes |
 | [database/entity-relationship-diagram.md](database/entity-relationship-diagram.md) | Mermaid ER diagrams per domain with relationship walkthroughs |
-| [database/migrations.md](database/migrations.md) | The 10 migrations, apply workflow, seed truth, production safety |
+| [database/migrations.md](database/migrations.md) | The 11 migrations, apply workflow, seed truth, production safety |
 | [database/data-lifecycle.md](database/data-lifecycle.md) | How each data class is born, transitions, and expires |
 
 ### API
 | Document | What it covers |
 | --- | --- |
-| [api/api-reference.md](api/api-reference.md) | All 87 route handlers: auth, rate limits, validation, errors, side effects, idempotency |
-| [../openapi/sphere-api.yaml](../openapi/sphere-api.yaml) | Machine-readable OpenAPI 3.1 contract (86 paths, 61 schemas) |
+| [api/api-reference.md](api/api-reference.md) | All 95 route handlers: auth, rate limits, validation, errors, side effects, idempotency |
+| [../openapi/sphere-api.yaml](../openapi/sphere-api.yaml) | Machine-readable OpenAPI 3.1 contract (94 paths, 125 operations, 61 schemas) |
 
 ### Integrations
 | Document | What it covers |
 | --- | --- |
-| [integrations/bandago-pos-crm.md](integrations/bandago-pos-crm.md) | BandaGo POS/CRM ingestion, normalization, FEFO, CRM matching — incl. security remediation required |
+| [integrations/bandago-pos-crm.md](integrations/bandago-pos-crm.md) | BandaGo bi-directional POS/CRM sync, drift protection, Daily Sales Export, FEFO, CRM matching (H1 remediated) |
 | [integrations/mpesa-daraja.md](integrations/mpesa-daraja.md) | Safaricom Daraja STK Push: OAuth, callbacks, verification |
 | [integrations/intasend.md](integrations/intasend.md) | Hosted card checkout, webhooks, refunds |
 | [integrations/cloudflare-r2.md](integrations/cloudflare-r2.md) | Object storage: public/private model, presigned URLs |
@@ -3504,8 +3520,8 @@ Each follows the same 14-section template: purpose, users, screens, frontend, ba
 ### Testing & governance
 | Document | What it covers |
 | --- | --- |
-| [testing/testing-strategy.md](testing/testing-strategy.md) | The 12 test suites, the assistant runner distinction, gaps |
-| [governance/architecture-decisions.md](governance/architecture-decisions.md) | 15 ADRs: why the code is the way it is |
+| [testing/testing-strategy.md](testing/testing-strategy.md) | The 13 Node test suites + 1 Bun assistant suite, runner distinction, gaps |
+| [governance/architecture-decisions.md](governance/architecture-decisions.md) | 17 ADRs: why the code is the way it is |
 | [governance/documentation-policy.md](governance/documentation-policy.md) | How documentation must evolve with the code |
 | [governance/technical-debt.md](governance/technical-debt.md) | Prioritized register of known issues |
 | [governance/release-history.md](governance/release-history.md) | Chronological release narrative |
@@ -3545,8 +3561,8 @@ Documentation changes are committed alongside the code changes they describe —
 - **Relative Path:** `docs/api/api-reference.md`
 - **Category:** Documentation & Blueprints
 - **Language:** Markdown Documentation
-- **Lines:** 523
-- **Size:** 60.5 KB (61,983 bytes)
+- **Lines:** 530
+- **Size:** 61.8 KB (63,328 bytes)
 
 `````markdown
 # API Reference — Sphere Pharmacy
@@ -3555,7 +3571,7 @@ Documentation changes are committed alongside the code changes they describe —
 | --- | --- | --- |
 | Engineers, AI coding agents | Implemented — verified against code | November 2026 |
 
-This reference covers **all 87 HTTP route handlers** under `src/app/api/` of the Sphere Pharmacy platform (Next.js 16 App Router + TypeScript + PostgreSQL/Prisma 6). Every statement here is grounded in the shipped route handlers and the security/commerce/clinical fact sheets. The machine-readable contract lives at [`../../openapi/sphere-api.yaml`](../../openapi/sphere-api.yaml); request/response DTOs are defined in `src/lib/types.ts` (the single frontend/backend contract consumed by `src/lib/api-client.ts`).
+This reference covers **all 95 HTTP route handlers** under `src/app/api/` of the Sphere Pharmacy platform (Next.js 16 App Router + TypeScript + PostgreSQL/Prisma 6). Every statement here is grounded in the shipped route handlers and the security/commerce/clinical fact sheets. The machine-readable contract lives at [`../../openapi/sphere-api.yaml`](../../openapi/sphere-api.yaml); request/response DTOs are defined in `src/lib/types.ts` (the single frontend/backend contract consumed by `src/lib/api-client.ts`).
 
 Related reading: [../architecture/api-architecture.md](../architecture/api-architecture.md) (layering, session model), [../security/access-control.md](../security/access-control.md) (route→role matrix, rate limits, webhook auth), [../workflows/](../workflows/) (order, payment, prescription, booking deep dives), [../integrations/](../integrations/) (BandaGo POS/CRM, M-Pesa, IntaSend, Resend, FCM).
 
@@ -3565,7 +3581,7 @@ Related reading: [../architecture/api-architecture.md](../architecture/api-archi
 
 ### 1.1 Base URL, content type, currency
 
-- All endpoints are same-origin relative paths under `/api` (e.g. `POST /api/orders`). Requests and responses are JSON (`Content-Type: application/json`) except `POST /api/upload` and `POST /api/integrations/bandago/csv-import` (`multipart/form-data`) and `GET /api/admin/medicine-requests/[id]/photo` (binary stream).
+- All endpoints are same-origin relative paths under `/api` (e.g. `POST /api/orders`). Requests and responses are JSON (`Content-Type: application/json`) except `POST /api/upload` and `POST /api/integrations/bandago/csv-import` (`multipart/form-data`), `GET /api/admin/medicine-requests/[id]/photo` (binary stream), and `GET /api/admin/pos-sync/sales-export` (`application/pdf`, `text/csv`, or `application/json` with `X-Export-Batch-Id`).
 - All money is Kenyan Shillings (KES), serialized as JSON numbers (2-dp `Decimal` columns behind the scenes). M-Pesa amounts must be whole KES; IntaSend uses `amount.toFixed(2)`.
 - `GET /api` is an unused scaffold stub returning `{ "message": "Hello, world!" }`.
 
@@ -3593,7 +3609,7 @@ Every error response is a single JSON object: `{ "error": "<human-readable messa
 - **Guest order access token** — guests who place orders receive a one-time opaque token (32-byte base64url) in the `POST /api/orders` response (also embedded as `#access=` URL fragment). Only its HMAC hash is stored; expiry is 7 days. Present it via the `x-order-access-token` header (≤256 chars; the M-Pesa initiators also accept `accessToken` in the body). Honored by: order GET, order cancel, M-Pesa initiate, IntaSend initiate, M-Pesa query. Cleared when the guest claims the order via OTP sign-in.
 - **Webhooks** — IntaSend: HMAC-SHA256 signature headers (or body challenge / shared-secret header) **plus** mandatory server-side invoice re-fetch. M-Pesa callbacks: `?token=` query vs `MPESA_CALLBACK_TOKEN` (timing-safe). Resend: Svix `svix-id`/`svix-timestamp`/HMAC verification. See [../security/access-control.md](../security/access-control.md).
 - **Cron** — `Authorization: Bearer <CRON_SECRET>` (≥32 chars). `/api/cron/notifications` uses a constant-time compare; the other four use plain comparison (documented concern).
-- **BandaGo sync** — `Authorization: Bearer <BANDAGO_SYNC_API_KEY>` **or** an active ADMIN/PHARMACIST staff session (dual-mode).
+- **BandaGo sync** — timing-safe, fail-closed `Authorization: Bearer <BANDAGO_SYNC_API_KEY>` (`verifyBandagoBearerHeader` / `authorizeBandagoRequest`) **or** an active ADMIN/PHARMACIST staff session (dual-mode; CRM GET adds STAFF).
 
 ### 1.4 Idempotency
 
@@ -3606,21 +3622,22 @@ Fixed-window buckets keyed `scope:sha256(clientIp + identity)`. On breach: 429 +
 
 ### 1.6 Caching
 
-Sensitive endpoints send `Cache-Control: no-store` (or `private, no-store`); admin live-changes additionally sends `Vary: Cookie`. The only shared-cache response is the popular-sorted product list (`public, s-maxage=60, stale-while-revalidate=300`); the frontend client defaults to `no-store` except catalog reads.
+Sensitive endpoints send `Cache-Control: no-store` (or `private, no-store`); admin live-changes additionally sends `Vary: Cookie`. The shared-cache responses are the popular-sorted product list (`public, s-maxage=60, stale-while-revalidate=300`) and `GET /api/docs-index` (`public, max-age=600, stale-while-revalidate=86400`); the frontend client defaults to `no-store` except catalog reads.
 
 ### 1.7 Roles and access model (quick matrix)
 
 | Capability | ADMIN | PHARMACIST | STAFF | RIDER | Customer | Guest |
 | --- | --- | --- | --- | --- | --- | --- |
-| Catalog / categories / services / promotions read | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| Catalog / categories / services / promotions read / docs-index / docs-assistant | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | Place orders, medicine requests, promo validate, location, assistant | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ (OTC orders only) |
 | Own orders / prescriptions / addresses / bookings / notifications | — | — | — | — | ✓ (own only) | order tracking via guest token |
 | Product create/update/bulk, prescriptions review, reviews moderation | ✓ | ✓ | — | — | — | — |
-| Orders scope=all/dispatch/dispatch-history, orders/riders, prepare, assign, medicine-requests admin, pos-status, live-changes | ✓ | ✓ | ✓ | — | — | — |
+| Orders scope=all/dispatch/dispatch-history, orders/riders, prepare, assign, medicine-requests admin, pos-status, pos-sync/policy GET, pos-sync/reconcile GET, live-changes | ✓ | ✓ | ✓ | — | — | — |
 | Order PATCH, cash-confirm, request-payment | ✓ | ✓ | ✓ | ✓ (assigned orders, restricted) | — | — |
 | GET /api/orders?scope=rider | — | — | — | ✓ only | — | — |
-| Product DELETE, order → REFUNDED, payments/refund, settings PUT, staff CRUD, audit, stats, service-analytics, notification-health, dispatch-test | ✓ only | — | — | — | — | — |
-| BandaGo sync / csv-import / CRM POST | ✓ | ✓ | — | — | — | — (or Bearer key) |
+| Product DELETE, order → REFUNDED, payments/refund, settings PUT, pos-sync/policy PUT, pos-sync/reconcile SET_BASELINE_NOW, staff CRUD, audit, stats, service-analytics, notification-health, dispatch-test | ✓ only | — | — | — | — | — |
+| POS Sync reconcile actions (except baseline) & sales-export | ✓ | ✓ | — | — | — | — |
+| BandaGo sync / csv-import / CRM POST / outbound / outbound/ack / telemetry | ✓ | ✓ | — | — | — | — (or Bearer key) |
 | BandaGo CRM GET | ✓ | ✓ | ✓ | — | — | — (or Bearer key) |
 
 Full reasoning, ownership rules, and the rider transition subset: [../security/access-control.md](../security/access-control.md).
@@ -3629,7 +3646,7 @@ Full reasoning, ownership rules, and the rider transition subset: [../security/a
 
 ## 2. Endpoint summary
 
-**Inventory**: 87 route files under `src/app/api/` (86 functional path items + the unused `/api` stub) exposing 115 operations across the 19 groups below — all covered in this reference and in [`../../openapi/sphere-api.yaml`](../../openapi/sphere-api.yaml).
+**Inventory**: 95 route files under `src/app/api/` (94 functional path items + the unused `/api` stub) exposing 125 documented operations (126 total HTTP method handlers) across the 19 groups below — all covered in this reference and in [`../../openapi/sphere-api.yaml`](../../openapi/sphere-api.yaml).
 
 `Auth` column: **Public** (no auth), **Customer** (own data), **Staff(roles)** (staff session, minimum roles listed), **Rider**, **Webhook/Cron/Bearer** (own scheme). Rate limits shown where a dedicated bucket exists.
 
@@ -3757,6 +3774,8 @@ Full reasoning, ownership rules, and the rider transition subset: [../security/a
 | GET | /api/settings/delivery-fee | Delivery fee quote | Public | — |
 | POST | /api/upload | Upload to R2 (direct or presign) | Any session (folder rules) | 20/15 min/principal |
 | POST | /api/assistant | AI assistant chat | Public | 40/h/IP |
+| GET | /api/docs-index | Documentation portal search index | Public | — |
+| POST | /api/docs-assistant | Ask Sphere Docs AI assistant | Public | 20/h/IP |
 | GET | /api/cron/notifications | Dispatch notification jobs | Bearer CRON_SECRET | — |
 | GET | /api/cron/order-reservations | Expire stale reservations | Bearer CRON_SECRET | — |
 | GET | /api/cron/chronic-refills | Chronic refill reminders | Bearer CRON_SECRET | — |
@@ -4071,6 +4090,10 @@ All buckets are fixed-window, keyed `scope:sha256(clientIp + ":" + identity)`; b
 | `mpesa-service:{...}` | M-Pesa service callback | Webhook event ledger (bookings) |
 | `intasend:{event_id\|invoice:state:tracking}` | IntaSend webhook | Webhook event ledger |
 | `earn:\|redeem:\|expire:\|cancel:\|refund-earn:\|refund-redeem:{orderId}` | callbacks, cancel, cron, refund | Loyalty ledger idempotency |
+| `sale:{orderId}:{productId}` | `enqueueOrderPosDeduction` | One outbound POS sale deduction job per order product |
+| `restock:{orderId}:{productId}` | `cancelOrderPosDeduction` | One compensating POS restock job when a synced sale is cancelled/refunded |
+| `admin_adj:{productId}:{timestamp}:{newQty}` | `enqueueAdminStockEdit` (`PATCH /api/products/[id]`) | Outbound POS stock adjustment job for staff edits |
+| `deterministicUuidFromKey(idempotencyKey)` | `pos-reconciliation-core.ts` | Stable UUIDv4 `externalInventoryUU` for BandaGo `M_Inventory.UU` idempotency |
 | `Order.version` optimistic guard | all order mutations | 409 "order changed" on concurrent writes |
 `````
 
@@ -4085,8 +4108,8 @@ All buckets are fixed-window, keyed `scope:sha256(clientIp + ":" + identity)`; b
 - **Relative Path:** `docs/architecture/api-architecture.md`
 - **Category:** Documentation & Blueprints
 - **Language:** Markdown Documentation
-- **Lines:** 168
-- **Size:** 13.9 KB (14,194 bytes)
+- **Lines:** 171
+- **Size:** 14.3 KB (14,640 bytes)
 
 `````markdown
 # Sphere Pharmacy — API Architecture
@@ -4099,7 +4122,7 @@ This document explains how the HTTP surface of Sphere Pharmacy is organized: the
 
 ## 1. Surface organization
 
-The API is one Next.js App Router tree: `src/app/api/**/route.ts`, **87 route modules exporting 116 HTTP method handlers**. (The bare `GET /api` stub returning a placeholder greeting is scaffold residue.) Routes are grouped by domain; authorization is a cross-cutting guard applied per handler, and the authoritative route→role matrix lives in [../security/access-control.md](../security/access-control.md).
+The API is one Next.js App Router tree: `src/app/api/**/route.ts`, **95 route modules exporting 126 HTTP method handlers**. (The bare `GET /api` stub returning a placeholder greeting is scaffold residue.) Routes are grouped by domain; authorization is a cross-cutting guard applied per handler, and the authoritative route→role matrix lives in [../security/access-control.md](../security/access-control.md).
 
 | Domain | Route prefix | Scope |
 | --- | --- | --- |
@@ -4115,12 +4138,12 @@ The API is one Next.js App Router tree: `src/app/api/**/route.ts`, **87 route mo
 | Promotions | `/api/promotions` | List (public = active, `isPublic`, in window, not exhausted), `[id]` admin CRUD, `validate` |
 | Medicine requests | `/api/medicine-requests` | Guest-friendly phone-only requests; staff queue under `/api/admin/medicine-requests` (+ `[id]/photo`) |
 | Notifications | `/api/notifications` | List, `prefs`, `push-token`, `email-webhook` (Resend), `dispatch-test` (ADMIN) |
-| Admin | `/api/admin` | `stats`, `audit`, `staff` (+ `[id]`), `reviews` (+ `[id]`), `medicine-requests`, `service-bookings` (+ `[id]/assign`), `pos-status`, `live-changes`, `notification-health`, `service-analytics`, `service-staff` |
-| Integrations | `/api/integrations/bandago` | `sync` (POS product/batch push), `crm` (GET any staff, POST PHARMACIST+ADMIN), `csv-import`; authenticated with `BANDAGO_SYNC_API_KEY` |
+| Admin | `/api/admin` | `stats`, `audit`, `staff` (+ `[id]`), `reviews` (+ `[id]`), `medicine-requests`, `service-bookings` (+ `[id]/assign`), `pos-status`, `pos-sync/policy`, `pos-sync/reconcile`, `pos-sync/sales-export`, `live-changes`, `notification-health`, `service-analytics`, `service-staff` |
+| Integrations | `/api/integrations/bandago` | `sync` (POS product/batch push + drift protection), `crm` (GET any staff, POST PHARMACIST+ADMIN), `csv-import`, `outbound` (claim jobs), `outbound/ack`, `telemetry`; dual-authenticated with timing-safe fail-closed `BANDAGO_SYNC_API_KEY` or staff session |
 | Location | `/api/location` | `search`, `reverse-geocode` (Nominatim proxies) |
 | Settings | `/api/settings` | GET public profile; PUT ADMIN; `delivery-fee` quote endpoint |
 | Upload | `/api/upload` | Direct + presigned uploads to R2 with folder-based permissions |
-| Assistant | `/api/assistant` | AI chat; deliberately **never reads the session cookie** — public data only |
+| Assistant & Docs | `/api/assistant`, `/api/docs-index`, `/api/docs-assistant` | AI storefront chat & documentation portal search/Q&A; deliberately **never read the session cookie** — public data only |
 | Cron | `/api/cron` | 5 maintenance jobs, `Authorization: Bearer CRON_SECRET` |
 
 ## 2. The guard pattern
@@ -4208,6 +4231,7 @@ Implemented in `src/lib/security/request.ts` (`enforceRateLimit`), state lives i
 | `refund` | 10 / 60 min | IP + staffId |
 | `notification-test` | 10 / 60 min | IP |
 | `assistant` | 40 / 60 min | IP |
+| `docs-assistant` | 20 / 60 min | IP |
 | `location-search` | 30 / 10 min | IP |
 | `reverse-geocode` | 30 / 10 min | IP |
 
@@ -4221,7 +4245,9 @@ Implemented in `src/lib/security/request.ts` (`enforceRateLimit`), state lives i
 | `POST /api/auth/login`, `/staff-login`, `/otp/request`, `/otp/verify` | 4,096 B |
 | `POST /api/orders` | 64 KB |
 | `POST /api/payments/refund` | 16 KB |
-| `POST /api/assistant` | 20,000 B |
+| `PUT /api/admin/pos-sync/policy` | 16,384 B |
+| `POST /api/admin/pos-sync/reconcile` | 65,536 B |
+| `POST /api/assistant`, `POST /api/docs-assistant` | 20,000 B |
 | Resend `email-webhook` | 65,536 B |
 | `POST /api/upload` / prescriptions | 10 MB + magic-byte sniffing; prescription direct uploads re-verified via `HeadObject` (1–10MB, owner metadata match) |
 | Medicine-request photos | 3 MB streamed |
@@ -4454,8 +4480,8 @@ These are documented in the code audit and **intentionally not fixed** at the ti
 - **Relative Path:** `docs/architecture/backend-architecture.md`
 - **Category:** Documentation & Blueprints
 - **Language:** Markdown Documentation
-- **Lines:** 156
-- **Size:** 16.7 KB (17,076 bytes)
+- **Lines:** 162
+- **Size:** 18.7 KB (19,177 bytes)
 
 `````markdown
 # Sphere Pharmacy — Backend Architecture
@@ -4468,12 +4494,12 @@ This document describes the server side: the API route layer in `src/app/api`, t
 
 ## 1. Route layer: `src/app/api`
 
-The API tree contains **87 `route.ts` modules exporting 116 HTTP method handlers** (verified count). One module — the bare `src/app/api/route.ts` returning a placeholder `GET /api` greeting — is scaffold residue. Handlers are deliberately thin and follow a common shape:
+The API tree contains **95 `route.ts` modules exporting 126 HTTP method handlers** (verified count). One module — the bare `src/app/api/route.ts` returning a placeholder `GET /api` greeting — is scaffold residue. Handlers are deliberately thin and follow a common shape:
 
 1. `rejectOversizedRequest(request, maxBytes)` — 413 via `Content-Length`.
 2. `enforceRateLimit(request, scope, limit, windowMs, identity?)` — 429 fixed window.
 3. `requireCustomer()` / `requireStaff(roles?)` / `requireAuth()` — 401/403 with an error `Response` to return early.
-4. Field-level validation (hand-rolled; zod is used for assistant intents).
+4. Field-level validation (hand-rolled; zod is used for assistant intents, POS sync policy, and POS reconciliation actions).
 5. Delegation to `src/lib` services and `db` for state changes.
 6. JSON response with `Cache-Control: no-store` (session-scoped data).
 
@@ -4499,7 +4525,11 @@ The API tree contains **87 `route.ts` modules exporting 116 HTTP method handlers
 | `notifications/delivery.ts` | Durable outbox: `NotificationDelivery` lease, attempts, backoff, dispatch |
 | `notifications/payment.ts` | Payment outcome notifications (in tx) |
 | `crm/bandago-crm.ts` | BandaGo/iDempiere CRM reconciliation (customers, loyalty deltas) |
-| `bandago-normalizer.ts` | POS product/batch normalization, duplicate batch aggregation, expired-flagging, FEFO sellable stock, `nearestExpiryDate`, `<90d` near-expiry |
+| `bandago-normalizer.ts` | POS product/batch normalization, duplicate batch aggregation, expired-flagging, min-shelf-life & FEFO sellable stock, `nearestExpiryDate`, `<90d` near-expiry |
+| `pos-reconciliation.ts` + `pos-reconciliation-core.ts` | Stagnant-POS drift protection (`computeReconciledStock`), `PosSyncPolicy` / `PosBridgeHeartbeat` settings, outbound job enqueue/cancel/restock (`ONLINE_SALE`, `REFUND_RESTOCK`, `ADMIN_STOCK_ADJUST`), deterministic UUIDv4 generation, deduplicated `PosSyncIncident` recording |
+| `pdf/daily-sales-pdf.ts` | Zero-PHI multi-page A4 `%PDF-1.4` Daily Sales Export generator with batch ID and pharmacist sign-off block |
+| `security/bandago-auth.ts` + `security/bandago-bearer.ts` | Dual-mode BandaGo authorization (`authorizeBandagoRequest`), fail-closed constant-time Bearer compare (`verifyBandagoBearerHeader`), and SHA-256 legacy-placeholder detection |
+| `docs/*` | Documentation portal engine: corpus registry (`content.ts`), navigation tree (`navigation.ts`), frontmatter parser (`frontmatter.ts`), OpenAPI parser (`openapi.ts`), Prisma ER parser (`prisma-schema.ts`), lexical search index (`search.ts`), and docs assistant retrieval (`assistant.ts`) |
 | `assistant/contracts.ts`, `assistant/payment-review.ts` | Assistant intent schema (zod), payables review |
 | `sms.ts`, `email/resend.ts`, `email/templates.ts`, `firebase/admin.ts`, `firebase/client.ts` | Africa's Talking SMS, Resend email + templates, FCM push |
 | `hash.ts` | scrypt hashing, `newOpaqueToken`, `tokenHash` (HMAC-SHA256 with `TOKEN_HASH_SECRET`), order reference / pickup code generation, `safeEqualHex`, `requiredSecret` |
@@ -4507,12 +4537,13 @@ The API tree contains **87 `route.ts` modules exporting 116 HTTP method handlers
 
 ## 3. Database connection: `src/lib/db.ts`
 
-- **URL resolution order:** `DATABASE_URL` → `sphere_pharmacy_PRISMA_DATABASE_URL` → `sphere_pharmacy_DATABASE_URL` → `sphere_pharmacy_POSTGRES_URL`; throws if none is set.
+- **URL resolution order:** `DATABASE_URL` → `sphere_pharmacy_PRISMA_DATABASE_URL` → `sphere_pharmacy_DATABASE_URL` → `sphere_pharmacy_POSTGRES_URL`.
+- **Lazy Proxy deferral:** `src/lib/db.ts` initializes eagerly only when a URL is present; otherwise it exports a `Proxy` whose `get` trap resolves `getClient()` at first runtime property access and throws if no URL is configured. This lets `next build` evaluate static `/docs` modules without a live database.
 - **Neon pooler fix:** if the hostname contains `-pooler.` (PgBouncer), `statement_cache_size=0` is appended unless already present — this prevents PostgreSQL error `0A000` ("cached plan must not change result type") after schema changes on pooled endpoints.
 - **Singleton:** the `PrismaClient` instance is cached on `globalThis` (survives dev hot reload), `log: ["warn","error"]`. Exports `db` and `prisma` (same instance).
 - **Blueprint compatibility:** a `db.productCategory` getter aliases `db.category`.
 
-Schema facts that shape the backend: 39 models, cuid ids (natural string keys for `Setting.key`, `RateLimitBucket.key`, `EmailSuppression.email`, `EmailDeliveryEvent.id`, `ScheduledJobDelivery.key`), `Decimal(12,2)` money, snake_case `@@map` in the BandaGo block, cascade deletes for children while `Order.user`, `Order.prescriptions`, `Product.category`, `Prescription.user/order` deliberately do **not** cascade (orphan-preserving). Details: [../database/](../database/) and `prisma/schema.prisma`.
+Schema facts that shape the backend: 41 models, 5 POS enums, cuid ids (natural string keys for `Setting.key`, `RateLimitBucket.key`, `EmailSuppression.email`, `EmailDeliveryEvent.id`, `ScheduledJobDelivery.key`), `Decimal(12,2)` money, snake_case `@@map` in the BandaGo block, cascade deletes for children while `Order.user`, `Order.prescriptions`, `Product.category`, `Prescription.user/order`, and `PosOutboundJob.order` (`SetNull`) deliberately do **not** cascade (orphan-preserving). Details: [../database/](../database/) and `prisma/schema.prisma`.
 
 ## 4. Contracts: `dto.ts`, `types.ts`, `api-client.ts`
 
@@ -4535,6 +4566,7 @@ Schema facts that shape the backend: 39 models, cuid ids (natural string keys fo
 | Stock decrement guard | Bulk SQL `UPDATE ... WHERE availability ≥ qty` | Insufficient stock → 409 "<name> does not have enough stock." + rollback |
 | `reservePaymentAttempt` | Before any provider network I/O | One active attempt per order; rejects duplicates/payability violations with 409 |
 | Durable outbox lease | `NotificationDelivery.lockedUntil`/`lockToken` | Cron dispatch is crash-safe; ≤8 attempts with exponential backoff |
+| POS outbound idempotency & lease | `PosOutboundJob.idempotencyKey` (`sale:`/`restock:`/`admin_adj:`), deterministic UUIDv4 `externalInventoryUU`, Serializable claim with 5-min `lockToken` lease | Deduplicates outbound stock events and makes BandaGo `M_Inventory.UU` retries idempotent |
 
 ## 6. Webhook callback verification model
 
@@ -4606,7 +4638,7 @@ Post-creation, payment capture is always webhook-driven (M-Pesa callback / IntaS
 
 ## 10. Inventory authority
 
-`getAvailableStock = max(0, min(stock, stockQty) − safetyStockBuffer(default 2) − max(0, virtualReservedStock))`, falling back `stock ?? stockQty ?? 0`. The primary order flow physically decrements `stockQty` and `stock` (COALESCE, clamped) and recomputes `in_stock`/`stockStatus` — `stockQty` is the effective authority. Release paths (cancel endpoint, expiry cron) restore stock and set `inventoryReleasedAt` to prevent double-release. Expired batches are excluded from `stockQty` at POS ingestion (Kenya PPB rule), so expired stock can never appear as online availability. The legacy virtual-reservation path (`reserveStockForCheckout`/`releaseReservation`/`commitReservation`) is dormant — only `getAvailableStock` and the 45-minute cleanup are invoked today. FEFO applies at ingestion/sellable-stock computation; batch-level deduction at order time is **Planned or not shipped**. See [../workflows/inventory-lifecycle.md](../workflows/inventory-lifecycle.md).
+`getAvailableStock = max(0, min(stock, stockQty) − safetyStockBuffer(default 2) − max(0, virtualReservedStock))`, falling back `stock ?? stockQty ?? 0`. The primary order flow physically decrements `stockQty` and `stock` (COALESCE, clamped) and recomputes `in_stock`/`stockStatus` — `stockQty` is the effective authority. Release paths (cancel endpoint, expiry cron) restore stock and set `inventoryReleasedAt` to prevent double-release. During inbound BandaGo sync, `computeReconciledStock` subtracts unreconciled `PosOutboundJob` deltas and unpaid order holds from incoming `lastPosStock`/`lastPosSellableStock` snapshots so stagnant POS reads never overwrite online sales back up; staff edits via `PATCH /api/products/[id]` mirror `stock` and `inStock` and queue `ADMIN_STOCK_ADJUST` outbound jobs via `enqueueAdminStockEdit`. Expired batches are excluded from `stockQty` at POS ingestion (Kenya PPB rule), so expired stock can never appear as online availability. The legacy virtual-reservation path (`reserveStockForCheckout`/`releaseReservation`/`commitReservation`) is dormant — only `getAvailableStock` and the 45-minute cleanup are invoked today. FEFO applies at ingestion/sellable-stock computation; batch-level deduction at order time is **Planned or not shipped**. See [../workflows/inventory-lifecycle.md](../workflows/inventory-lifecycle.md).
 
 ## 11. Related documentation
 
@@ -4628,7 +4660,7 @@ Post-creation, payment capture is always webhook-driven (M-Pesa callback / IntaS
 - **Category:** Documentation & Blueprints
 - **Language:** Markdown Documentation
 - **Lines:** 182
-- **Size:** 18.2 KB (18,674 bytes)
+- **Size:** 18.6 KB (19,065 bytes)
 
 `````markdown
 # Sphere Pharmacy — Frontend Architecture
@@ -4641,7 +4673,7 @@ This document describes the client side of Sphere Pharmacy: how a single-page ap
 
 ## 1. The SPA shell
 
-`src/app/page.tsx` is a `"use client"` component that renders the whole application. `src/app/[...route]/page.tsx` re-exports it (`export { default } from "../page"`), so **every URL serves the same shell** — there are no other pages in the app (only `robots.ts` and `sitemap.ts` sit alongside). `layout.tsx` provides metadata (title "Sphere Pharmacy — Your community pharmacy on Lumumba Drive, Roysambu", OpenGraph, canonical `/`, robots index/follow), `themeColor #0f766e`, `ThemeProvider` (next-themes), the sonner `Toaster` (bottom-left, richColors, closeButton), and `<html lang="en" suppressHydrationWarning>`.
+`src/app/page.tsx` is a `"use client"` component that renders the storefront, customer hub, and admin workspace. `src/app/[...route]/page.tsx` re-exports it (`export { default } from "../page"`), so every non-documentation URL serves the same SPA shell. Alongside it sits the dedicated App Router **documentation portal** subtree (`src/app/docs/**` — `/docs`, `/docs/[...slug]`, `/docs/journeys`, `/docs/api-reference`, `/docs/database`, `/docs/assistant` — backed by `src/components/docs/*` and `src/components/docs/docs.css`, linked from `SphereLanding` and `Footer`), plus `robots.ts` and `sitemap.ts`. `layout.tsx` provides metadata (title "Sphere Pharmacy — Your community pharmacy on Lumumba Drive, Roysambu", OpenGraph, canonical `/`, robots index/follow), `themeColor #0f766e`, `ThemeProvider` (next-themes), the sonner `Toaster` (bottom-left, richColors, closeButton), and `<html lang="en" suppressHydrationWarning>`.
 
 On mount, `page.tsx` runs three effects:
 
@@ -4766,7 +4798,7 @@ Supporting components: `components/catalog/` (`high-performance-pagination`, `lu
 | Management | `staff` | ADMIN | Team, roles, access, deactivate (465) |
 | Management | `compliance` | ADMIN / PHARMACIST | PPB licence + superintendent record (363) |
 | Management | `settings` | ADMIN | Pharmacy profile, delivery fees (zone/distance), demo data (836) |
-| Management | `pos-sync` | ADMIN / PHARMACIST | BandaGo hub: telemetry, stock-sync ledger, lot/expiry compliance, manual CSV import (306) |
+| Management | `pos-sync` | ADMIN / PHARMACIST | BandaGo 4-workspace hub: Overview & Policy, Daily Sales Export (PDF/CSV/JSON) & Reconciliation, Error Console (`PosSyncIncident`), Sync Audit Trail & staff-cookie CSV import (~1630) |
 
 `admin-access.tsx` provides the `AdminAccessFrame` used by the staff sign-in tab. Role enforcement is duplicated server-side — the UI hiding is never the security boundary (see [../security/access-control.md](../security/access-control.md)).
 
@@ -4779,7 +4811,7 @@ Supporting components: `components/catalog/` (`high-performance-pagination`, `lu
 
 46 shadcn/ui components in `src/components/ui/`: accordion, alert, alert-dialog, aspect-ratio, avatar, badge, breadcrumb, button, calendar, carousel, chart, checkbox, collapsible, command, context-menu, dialog, drawer, dropdown-menu, form, hover-card, input, input-otp, label, menubar, navigation-menu, pagination, popover, progress, radio-group, resizable, scroll-area, select, separator, sheet, sidebar, skeleton, slider, sonner, switch, table, tabs, textarea, toast, toaster, toggle, toggle-group, tooltip. Supporting libraries: recharts (admin charts), embla (carousel), vaul (drawer), input-otp, react-markdown (assistant replies), lucide-react (icons).
 
-> **Note:** `toast`/`toaster` plus `src/hooks/use-toast.ts` are a legacy notification system still referenced only by `pos-sync-section.tsx`; everything else uses sonner. Prefer sonner in new code.
+> **Note:** `toast`/`toaster` plus `src/hooks/use-toast.ts` are unused legacy notification code (`pos-sync-section.tsx` migrated to `sonner` in `061e923`). Prefer `sonner` in all code.
 
 ## 8. Loading, error, empty-state, and a11y patterns
 
@@ -4994,8 +5026,8 @@ This is the same property as "server-authoritative state" in [system-architectur
 - **Relative Path:** `docs/architecture/system-architecture.md`
 - **Category:** Documentation & Blueprints
 - **Language:** Markdown Documentation
-- **Lines:** 164
-- **Size:** 16.7 KB (17,084 bytes)
+- **Lines:** 166
+- **Size:** 18.3 KB (18,737 bytes)
 
 `````markdown
 # Sphere Pharmacy — System Architecture
@@ -5006,17 +5038,18 @@ This is the top-level map of Sphere Pharmacy, a full-stack retail pharmacy opera
 | --- | --- | --- |
 | Engineers, AI coding agents | Implemented — verified against code | November 2026 |
 
-## 1. Topology: one route, one client shell, one API tree
+## 1. Topology: SPA shell, `/docs` portal, and API tree
 
-The app is an SPA-on-one-route. There is exactly one page component:
+The storefront, customer account hub, and admin workspace ship as an SPA-on-one-route:
 
-- `src/app/page.tsx` — a `"use client"` root that renders the entire application from Zustand view state (`useAppStore.view`), including the storefront, customer account hub, and the admin workspace.
-- `src/app/[...route]/page.tsx` — a one-line catch-all (`export { default } from "../page"`) so that **every URL renders the same client shell**. Deep links such as `/products/<id>` or `/admin?section=orders` are resolved client-side by `hydrateFromLocation()` on mount and on every `popstate` event.
-- The only other files in `src/app/` are `layout.tsx` (metadata, `ThemeProvider`, sonner `Toaster`), `robots.ts`, `sitemap.ts`, and imported CSS layers. All CSS is imported from `page.tsx` (landing, public, and admin-workspace layers).
+- `src/app/page.tsx` — a `"use client"` root that renders the storefront, customer hub, and admin workspace from Zustand view state (`useAppStore.view`).
+- `src/app/[...route]/page.tsx` — a one-line catch-all (`export { default } from "../page"`) so that **every non-`/docs` URL renders the same client shell**. Deep links such as `/products/<id>` or `/admin?section=orders` are resolved client-side by `hydrateFromLocation()` on mount and on every `popstate` event.
+- **`src/app/docs/**` (dedicated documentation portal)** — Next.js App Router pages (`/docs`, `/docs/[...slug]`, `/docs/journeys`, `/docs/journeys/[...slug]`, `/docs/api-reference`, `/docs/database`, `/docs/assistant`) rendering the canonical Markdown corpus, Mermaid diagrams, OpenAPI contract, and Prisma ER schema interactively (`src/lib/docs/*`, `src/components/docs/*`), linked from `SphereLanding` and `Footer`, included in `src/app/sitemap.ts`, and traced into standalone builds via `outputFileTracingIncludes` in `next.config.ts`.
+- The only other root files in `src/app/` are `layout.tsx` (metadata, `ThemeProvider`, sonner `Toaster`), `robots.ts`, `sitemap.ts`, and imported CSS layers. All application CSS is imported from `page.tsx` (landing, public, and admin-workspace layers), while `/docs` loads `src/components/docs/docs.css`.
 
-All real routing — view selection, URL synchronization, back/forward support — is implemented in the client store, not by the Next.js router. See [frontend-architecture.md](frontend-architecture.md) for the full view-router contract.
+All storefront and admin routing — view selection, URL synchronization, back/forward support — is implemented in the client store, not by the Next.js router. See [frontend-architecture.md](frontend-architecture.md) for the full view-router contract.
 
-The server side is a classic App Router API tree: `src/app/api/**/route.ts` contains **87 route modules exporting 116 HTTP method handlers** (verified count, including one scaffold `GET /api` stub that returns a placeholder greeting). Handlers stay thin; business rules live in `src/lib` services.
+The server side is a classic App Router API tree: `src/app/api/**/route.ts` contains **95 route modules exporting 126 HTTP method handlers** (verified count, including one scaffold `GET /api` stub that returns a placeholder greeting). Handlers stay thin; business rules live in `src/lib` services.
 
 ## 2. Layer map
 
@@ -5027,8 +5060,8 @@ Every mutation flows through the same five layers, in order. Nothing skips a lay
 | 1 | Zustand views & stores | `src/store/*`, `src/components/views/**` | View state, navigation, client-owned intents (cart lines, promo intent, wishlist, recently viewed) |
 | 2 | Typed API client | `src/lib/api-client.ts` (~500 lines) | The single fetch contract for all frontend code: same-origin relative requests, JSON, `cache: "no-store"` (catalog reads use `"default"`), `ApiError` with server error string, XHR uploads with progress |
 | 3 | Next.js API routes | `src/app/api/**` | Body caps, rate limiting, session/role guards, payload validation, orchestration |
-| 4 | Service layer | `src/lib/*` | Business rules: `session`, `security/*`, `inventory-guard`, `loyalty`, `promotions`, `settings`, `mpesa/daraja`, `intasend/client`, `r2`, `notify`, `notifications/*`, `crm/bandago-crm`, `bandago-normalizer`, `assistant/*` |
-| 5 | Prisma 6 → PostgreSQL | `src/lib/db.ts`, `prisma/schema.prisma` | 39 models, Serializable transactions, unique-constraint idempotency |
+| 4 | Service layer | `src/lib/*` | Business rules: `session`, `security/*` (incl. `bandago-auth`, `bandago-bearer`), `inventory-guard`, `loyalty`, `promotions`, `settings`, `mpesa/daraja`, `intasend/client`, `r2`, `notify`, `notifications/*`, `crm/bandago-crm`, `bandago-normalizer`, `pos-reconciliation*`, `pdf/daily-sales-pdf`, `assistant/*`, `docs/*` |
+| 5 | Prisma 6 → PostgreSQL | `src/lib/db.ts`, `prisma/schema.prisma` | 41 models, 5 POS enums, lazy Proxy client, Serializable transactions, unique-constraint idempotency |
 
 Shared contracts: `src/lib/types.ts` defines every DTO ("the contract between frontend & backend"); `src/lib/dto.ts` converts Prisma rows to those DTOs; `src/lib/constants.ts` enumerates roles, statuses, and pharmacy profile facts. The API client and API routes both import the same types, so drift is a compile error.
 
@@ -5043,14 +5076,14 @@ flowchart TB
   end
 
   subgraph Server["Next.js server — App Router"]
-    API["/api route handlers<br/>87 modules, 116 handlers"]
+    API["/api route handlers<br/>95 modules, 126 handlers"]
     GUARD["request guards<br/>body caps, rate limits, session/role checks"]
     LIB["src/lib services<br/>business rules + DTO conversion"]
-    PRISMA["Prisma 6 client<br/>src/lib/db.ts singleton"]
+    PRISMA["Prisma 6 client<br/>src/lib/db.ts lazy Proxy singleton"]
   end
 
   subgraph DB["PostgreSQL — Neon"]
-    MODELS["39 models<br/>orders, payments, prescriptions,<br/>loyalty, notifications, POS sync"]
+    MODELS["41 models<br/>orders, payments, prescriptions,<br/>loyalty, notifications, POS sync"]
   end
 
   subgraph Providers["External providers"]
@@ -5077,14 +5110,14 @@ flowchart TB
   LIB --> RESEND
   LIB --> FCM
   LIB --> R2
-  API -->|"direct fetch, assistant route only"| GROQ
+  API -->|"direct fetch, assistant and docs-assistant routes"| GROQ
   LIB --> AT
-  LIB <-->|"REST + CSV, authenticated"| BANDAGO
+  LIB <-->|"bi-directional REST, telemetry, CSV, PDF export"| BANDAGO
   API --> NOMINATIM
   MODELS -->|"durable outbox rows"| RESEND
 ```
 
-Provider call sites: M-Pesa (`src/lib/mpesa/daraja.ts`), IntaSend (`src/lib/intasend/client.ts`), Resend (`src/lib/email/resend.ts`), FCM (`src/lib/firebase/admin.ts` server + `client.ts` browser), R2 (`src/lib/r2.ts` via `@aws-sdk/client-s3`), Groq (direct fetch inside `src/app/api/assistant/route.ts`), Africa's Talking (`src/lib/sms.ts`), BandaGo POS/iDempiere (`src/lib/crm/bandago-crm.ts`, `src/lib/bandago-normalizer.ts`, `/api/integrations/bandago/*`), Nominatim (`/api/location/*`). Per-domain integration notes live under [../integrations/](../integrations/) (bandago-pos-crm, mpesa-daraja, intasend, cloudflare-r2, firebase, resend, ai-provider).
+Provider call sites: M-Pesa (`src/lib/mpesa/daraja.ts`), IntaSend (`src/lib/intasend/client.ts`), Resend (`src/lib/email/resend.ts`), FCM (`src/lib/firebase/admin.ts` server + `client.ts` browser), R2 (`src/lib/r2.ts` via `@aws-sdk/client-s3`), Groq (direct fetch inside `src/app/api/assistant/route.ts` and `src/app/api/docs-assistant/route.ts`), Africa's Talking (`src/lib/sms.ts`), BandaGo POS/iDempiere (`src/lib/crm/bandago-crm.ts`, `src/lib/bandago-normalizer.ts`, `src/lib/pos-reconciliation.ts`, `src/lib/pdf/daily-sales-pdf.ts`, `/api/integrations/bandago/*`, `/api/admin/pos-sync/*`), Nominatim (`/api/location/*`). Per-domain integration notes live under [../integrations/](../integrations/) (bandago-pos-crm, mpesa-daraja, intasend, cloudflare-r2, firebase, resend, ai-provider).
 
 ## 4. The request lifecycle (8 steps)
 
@@ -5118,28 +5151,29 @@ These properties are load-bearing. Any change that weakens one of them is a regr
 
 | Concern | Choice | Notes |
 | --- | --- | --- |
-| Framework | Next.js ^16.4.3 (App Router) | One client page + API routes; `build` script runs `prisma generate` first |
-| UI runtime | React ^19 | Client components throughout |
+| Framework | Next.js ^16.4.6 (App Router, `v0.3.0`) | Storefront/admin SPA shell + `/docs` portal App Router pages; `build` runs `prisma generate` first |
+| UI runtime | React ^19 | Client views + `/docs` RSC corpus rendering |
 | Language | TypeScript 5 (strict) | `npm run typecheck` = `tsc --noEmit` |
-| Styling | Tailwind CSS 4 (`@theme inline` oklch tokens) + shadcn/ui | 46 shadcn components; teal/emerald palette; see [frontend-architecture.md](frontend-architecture.md) |
+| Styling | Tailwind CSS 4 (`@theme inline` oklch tokens) + shadcn/ui | 46 shadcn components; teal/emerald palette; `mermaid`/`js-yaml`/`remark-gfm` in `/docs`; see [frontend-architecture.md](frontend-architecture.md) |
 | Client state | Zustand ^5 (+ `persist` middleware) | 4 stores; see [state-management.md](state-management.md) |
-| Database | PostgreSQL (Neon) via Prisma ^6.11 | 39 models, 10 migrations (2026); see `prisma/schema.prisma` |
-| Auth | Hand-rolled DB-backed opaque sessions | httpOnly cookie; no JWT; see [authentication.md](authentication.md) |
+| Database | PostgreSQL (Neon) via Prisma ^6.19.3 | 41 models, 5 POS enums, 11 migrations (2026); lazy Proxy singleton in `src/lib/db.ts` |
+| Auth | Hand-rolled DB-backed opaque sessions | httpOnly cookie; no JWT; timing-safe BandaGo Bearer (`bandago-bearer.ts`); see [authentication.md](authentication.md) |
 | Payments | M-Pesa Daraja STK, IntaSend hosted card checkout, cash | KES only; webhook-driven capture |
 | Object storage | Cloudflare R2 (S3 API + presigner) | Private prescriptions, public product/service imagery |
 | Notifications | In-app + Resend email + Firebase FCM push + Africa's Talking SMS (OTP only) | Durable outbox for email/push |
-| AI | Groq OpenAI-compatible API (model `GROQ_MODEL` or `openai/gpt-oss-20b`) | Deterministic-first with hard fallback; see [../features/ai-assistant.md](../features/ai-assistant.md) |
-| POS/CRM | BandaGo (iDempiere) + external `api_data_transformer` extension | Product/batch sync, CRM reconciliation, CSV fallback |
-| Validation | zod ^4 (assistant intents), hand-rolled field checks elsewhere | — |
-| Testing | `node --test tests/*.test.mjs` + `bun test tests/assistant.test.ts` | Static security tests codify invariants; see [../testing/testing-strategy.md](../testing/testing-strategy.md) |
-| Runtime scripts | `dev` on port 3000, `start:standalone` via bun | `bun.lock` and `package-lock.json` both present |
+| AI | Groq OpenAI-compatible API (model `GROQ_MODEL` or `openai/gpt-oss-20b`) | Storefront deterministic-first assistant + `/docs/assistant` retrieval assistant; see [../features/ai-assistant.md](../features/ai-assistant.md) |
+| POS/CRM | BandaGo (iDempiere) + external `api_data_transformer` extension | Bi-directional product/batch sync, drift protection, Daily Sales Export (PDF/CSV/JSON), optional `AUTO_SYNC` writeback, CRM reconciliation |
+| Validation | zod ^4 (assistant intents, POS policy & reconcile actions), hand-rolled field checks elsewhere | — |
+| Testing | `node --test tests/*.test.mjs` (13 suites) + `bun test tests/assistant.test.ts` | Static security tests codify invariants; see [../testing/testing-strategy.md](../testing/testing-strategy.md) |
+| Runtime scripts | `dev` on port 3000, `start:standalone` via bun, `update:codebase` via python3 | `bun.lock` and `package-lock.json` both present |
 
 ## 7. Subsystem status classification
 
 | Subsystem | Classification | Notes |
 | --- | --- | --- |
 | Storefront, catalogue, orders, prescriptions, loyalty, promotions, notifications, admin workspace, state management | **Implemented** | Verified against code; exercised by static tests |
-| M-Pesa Daraja, IntaSend, BandaGo sync/CRM | **Environment-dependent** + **Requires live verification** | Code paths complete and fail-closed, but end-to-end behavior depends on provider credentials (`MPESA_*`, `INTASEND_*`, `BANDAGO_*`); sandbox values in `.env.example` are examples only |
+| Interactive `/docs` portal (journey explorer, API/DB explorers, ⌘K search, lexical docs assistant) | **Implemented** (`Ask Sphere Docs` LLM synthesis **Environment-dependent**) | Renders canonical Markdown/OpenAPI/Prisma; degrades cleanly to lexical retrieval without `GROQ_API_KEY` |
+| M-Pesa Daraja, IntaSend, BandaGo bi-directional sync/CRM & extension bridge | **Environment-dependent** + **Requires live verification** | Server paths (sync, drift protection, Daily Sales Export, outbound claim/ack, telemetry, policy, reconcile) implemented and fail-closed; live end-to-end depends on provider credentials and the external Chrome extension |
 | Email (Resend), web push (FCM), OTP SMS (Africa's Talking), AI assistant (Groq) | **Environment-dependent** | Degrade gracefully: assistant falls back to deterministic intents; delivery retries via outbox |
 | Cron jobs (notifications dispatch, order-reservation expiry, prescription retention, chronic refills, service-booking reminders) | **Implemented** endpoints; **Requires live verification** for scheduling | All `GET` with `Authorization: Bearer CRON_SECRET`; an external scheduler must call them |
 | Batch-level FEFO deduction at order time | **Planned or not shipped** | FEFO runs at POS ingestion/sellable-stock computation only |
@@ -5176,12 +5210,12 @@ The bare `src/app/api/route.ts` (`GET /api` → placeholder greeting) is also sc
 - **Category:** Documentation & Blueprints
 - **Language:** Markdown Documentation
 - **Lines:** 889
-- **Size:** 48.6 KB (49,737 bytes)
+- **Size:** 48.7 KB (49,825 bytes)
 
 `````markdown
 # Database Data Dictionary
 
-This document enumerates every field of all 39 Prisma models, organized into the 9 domains used across the database documentation set. For each model it lists fields with type, constraints/defaults, and meaning, followed by relations and notable indexes/uniques. Status fields list their allowed values (canonical sets defined in `src/lib/constants.ts`, not in the schema). See [schema-overview.md](schema-overview.md) for connection handling and design rationale, and [entity-relationship-diagram.md](entity-relationship-diagram.md) for visual relationships.
+This document enumerates every field of all 41 Prisma models, organized into the 9 domains used across the database documentation set. For each model it lists fields with type, constraints/defaults, and meaning, followed by relations and notable indexes/uniques. Status fields list their allowed values (canonical sets defined in `src/lib/constants.ts`, not in the schema). See [schema-overview.md](schema-overview.md) for connection handling and design rationale, and [entity-relationship-diagram.md](entity-relationship-diagram.md) for visual relationships.
 
 | Audience | Status | Verified |
 | --- | --- | --- |
@@ -5446,7 +5480,7 @@ Order header. Money fields `Decimal(12,2)`. Statuses/groups per [schema-overview
 | `createdAt` | DateTime | `@default(now())` | Row creation. |
 | `updatedAt` | DateTime | `@updatedAt` | Auto-updated. |
 
-**Relations:** `user` (no cascade), `items` (1:N `OrderItem`, cascade), `statusHistory` (1:N `OrderStatusHistory`, cascade), `payments` (1:N `Payment`, cascade), `prescriptions` (1:N `Prescription`, no cascade), `loyaltyEntries` (1:N `LoyaltyLedger`, cascade).
+**Relations:** `user` (no cascade), `items` (1:N `OrderItem`, cascade), `statusHistory` (1:N `OrderStatusHistory`, cascade), `payments` (1:N `Payment`, cascade), `prescriptions` (1:N `Prescription`, no cascade), `loyaltyEntries` (1:N `LoyaltyLedger`, cascade), `posOutboundJobs` (1:N `PosOutboundJob`, SetNull).
 
 **Indexes:** `@@index([status, createdAt])`, `@@index([userId, createdAt])`, `@@index([riderId, status, createdAt])`, `@@index([guestPhone, createdAt])`, `@@index([updatedAt, id])` and `@@index([createdAt, id])` (live-monitor cursor pairs).
 
@@ -5954,7 +5988,7 @@ Staff/system action audit trail.
 
 ### `Setting`
 
-Key/value application settings. Values for `pharmacy`, `delivery`, `compliance` keys are JSON documents.
+Key/value application settings. Values for `pharmacy`, `delivery`, `compliance`, `posSync`, and `posBridgeHeartbeat` keys are JSON documents.
 
 | Field | Type | Constraints/Default | Description |
 | --- | --- | --- | --- |
@@ -6081,8 +6115,8 @@ Outside the BandaGo POS integration block, every other status-like column remain
 - **Relative Path:** `docs/database/data-lifecycle.md`
 - **Category:** Documentation & Blueprints
 - **Language:** Markdown Documentation
-- **Lines:** 229
-- **Size:** 23.2 KB (23,766 bytes)
+- **Lines:** 232
+- **Size:** 25.2 KB (25,801 bytes)
 
 `````markdown
 # Data Lifecycle
@@ -6104,7 +6138,7 @@ This document describes how each class of data is born, moves through its states
 2. **Reservation** — physical deduct-and-restore (not virtual counters). See [Inventory](#inventory).
 3. **Payment** — see [Payments](#payments). A captured payment moves the order to `PAID` (from `AWAITING_PAYMENT`/`AVAILABILITY_CONFIRMED`/`PRESCRIPTION_VERIFIED`) in the same Serializable transaction as the loyalty award.
 4. **Fulfillment** — staff `prepare` action → `PREPARING` (requires `inventoryReservedAt` set and not released, Rx approved, paid or eligible-cash) → `READY_FOR_PICKUP` → rider assignment (DELIVERY orders in dispatch statuses; history "Rider assigned/reassigned") → `OUT_FOR_DELIVERY` → `COMPLETED_DELIVERY` (the latter two rider-settable) or `COMPLETED_PICKUP` (pickup orders with a `SUCCESS` payment).
-5. **Terminal** — `COMPLETED_PICKUP`, `COMPLETED_DELIVERY`, `REJECTED`, `CANCELLED`, `REFUNDED`. `CANCELLED` only via the cancel endpoint (refuses when a `SUCCESS` payment exists: 409); it restores stock, sets `inventoryReleasedAt`, re-credits redeemed points (`cancel:{orderId}`), fails dangling `PENDING`/`PROCESSING` payments and writes history (actor SYSTEM). `REFUNDED` is ADMIN-only, via the refund endpoint.
+5. **Terminal** — `COMPLETED_PICKUP`, `COMPLETED_DELIVERY`, `REJECTED`, `CANCELLED`, `REFUNDED`. `CANCELLED` only via the cancel endpoint (refuses when a `SUCCESS` payment exists: 409); it restores stock, sets `inventoryReleasedAt`, re-credits redeemed points (`cancel:{orderId}`), cancels/compensates POS outbound jobs (`cancelOrderPosDeduction`), fails dangling `PENDING`/`PROCESSING` payments and writes history (actor SYSTEM). `REFUNDED` is ADMIN-only, via the refund endpoint (which also calls `cancelOrderPosDeduction`).
 
 **Status history** — every transition writes an `OrderStatusHistory` row plus an `AuditLog` `ORDER_STATUS_<STATUS>` entry, guarded by optimistic concurrency (`updateMany` on `version`+`status` → 409 "order changed"). The authoritative transition map (`STAFF_TRANSITIONS` in `src/lib/security/order-workflow.ts`) is:
 
@@ -6147,8 +6181,8 @@ stateDiagram-v2
 
 **Expiry (unpaid reservations).** Two mechanisms restore stock for orders that never pay:
 
-- `/api/cron/order-reservations` — TTL-driven: `ORDER_RESERVATION_TTL_MINUTES` (15–10,080; **required, else 503**; not in `.env.example`). Targets `[RECEIVED, UNDER_REVIEW, PRESCRIPTION_VERIFIED, AVAILABILITY_CONFIRMED, AWAITING_PAYMENT]` with `inventoryReservedAt ≤ cutoff` and no `SUCCESS` payment; claims orders via a `version` guard; batch of 100 per run; writes `expire:{orderId}` loyalty re-credit (`RESERVATION_EXPIRED`), fails dangling payments and records history (actor SYSTEM, "Inventory reservation expired before payment.").
-- Legacy `cleanupExpiredReservations` (default 45 min, invoked from the BandaGo sync) — same restore behavior for `[RECEIVED, UNDER_REVIEW, PRESCRIPTION_VERIFIED, AVAILABILITY_CONFIRMED, legacy 'PENDING']` with no `SUCCESS` payment.
+- `/api/cron/order-reservations` — TTL-driven: `ORDER_RESERVATION_TTL_MINUTES` (15–10,080; **required, else 503**; not in `.env.example`). Targets `[RECEIVED, UNDER_REVIEW, PRESCRIPTION_VERIFIED, AVAILABILITY_CONFIRMED, AWAITING_PAYMENT]` with `inventoryReservedAt ≤ cutoff` and no `SUCCESS` payment; claims orders via a `version` guard; batch of 100 per run; writes `expire:{orderId}` loyalty re-credit (`RESERVATION_EXPIRED`), calls `cancelOrderPosDeduction`, fails dangling payments and records history (actor SYSTEM, "Inventory reservation expired before payment.").
+- Legacy `cleanupExpiredReservations` (default 45 min, invoked from the BandaGo sync) — same restore behavior (including `cancelOrderPosDeduction`) for `[RECEIVED, UNDER_REVIEW, PRESCRIPTION_VERIFIED, AVAILABILITY_CONFIRMED, legacy 'PENDING']` with no `SUCCESS` payment.
 
 **Retention** — orders, items and status history are permanent financial records. **No deletion job exists**; guest PII (`guestName`/`guestPhone`/`guestEmail`) is retained on the order rows. Scheduling details: [../operations/scheduled-jobs.md](../operations/scheduled-jobs.md).
 
@@ -6158,7 +6192,7 @@ stateDiagram-v2
 
 - **Attempt creation** — `reservePaymentAttempt` runs Serializable **before any network I/O**: rejects duplicate `idempotencyKey`, rejects a second active attempt (any payment in `PENDING`/`PROCESSING`/`SUCCESS`/`REFUND_PENDING`/`REFUNDED`), verifies payability, then creates a `PROCESSING` `Payment` (or `ServicePayment`). Keys: `order:{id}:mpesa|intasend:{clientKey}`, `staff:{orderId}:mpesa:{key}`, `service:{id}:mpesa|intasend:{key}`, `cash:{orderId}`.
 - **Provider resolution** — M-Pesa STK callback (token `timingSafeEqual`, then a re-query plus `paymentMatchesExpected`: amount, currency, normalized phone, well-formed receipt); IntaSend webhook (signature-verified, then a server-to-server invoice re-fetch — the webhook body is only a trigger; success state is exactly `COMPLETE`); cash confirmation (staff endpoint creating a `SUCCESS` `CASH` payment). Each resolution writes its `PaymentWebhookEvent` ledger row (unique `eventId`, `payloadHash` = sha256 of the raw body) **inside the same transaction** as the payment update — benign replays are acknowledged, conflicting payloads 409.
-- **Success** — payment → `SUCCESS` (+`providerReference`), order → `PAID` (+`version` bump + history), loyalty award `earn:{orderId}` (floor of amount/100 points; guests earn nothing).
+- **Success** — payment → `SUCCESS` (+`providerReference`), order → `PAID` (+`version` bump + history), `enqueueOrderPosDeduction` queues `ONLINE_SALE` POS outbound jobs, loyalty award `earn:{orderId}` (floor of amount/100 points; guests earn nothing).
 - **Refunds** — ADMIN-only `POST /api/payments/refund`: M-Pesa `SUCCESS` is refused (manual B2C portal process); cash needs explicit confirmation plus a till reference (`refundReference CASH:<ref>`); IntaSend creates a refund → payment `REFUND_PENDING` with `refundReference = refund.id` → polling `getIntaSendRefund` until `COMPLETED` → `finalizeRefund` (Serializable): payment `REFUNDED`, order `REFUNDED` + history, loyalty clawback `refund-earn:{orderId}` (clamped to balance) and re-credit `refund-redeem:{orderId}`, refund notice in-app + email. Note: no admin UI currently calls the refund endpoint, and captured payments are **never** auto-refunded on cancel despite a customer-facing toast that implies otherwise.
 - **Retention** — payments and webhook events are kept indefinitely (audit/financial record).
 
@@ -6189,7 +6223,8 @@ Deletion policy detail: [../security/retention-and-deletion.md](../security/rete
 
 **BandaGo sync → batches → FEFO sellable stock → reservation → commit/release.**
 
-- **Sync in** — BandaGo/iDempiere feeds arrive via `EXTENSION_STREAM`, `BACKGROUND_POLL`, `CSV_IMPORT` or `MANUAL_RECONCILE` (`/api/integrations/bandago/*`). The normalizer aggregates duplicate `batchNumber`s, flags `isExpired` (expiry ≤ now), **excludes expired lots from sellable stock** (Kenya PPB rule), tracks `nearestExpiryDate` and near-expiry (<90d). Products upsert by `externalPosId`; lots land in `ProductBatch`; every run writes a `PosSyncLog` row (items received/upserted/failed, details capped at 50 entries).
+- **Sync in** — BandaGo/iDempiere feeds arrive via `EXTENSION_STREAM`, `BACKGROUND_POLL`, `CSV_IMPORT` or `MANUAL_RECONCILE` (`/api/integrations/bandago/*`). The normalizer aggregates duplicate `batchNumber`s, flags `isExpired` (expiry ≤ now), **excludes expired lots from sellable stock** (Kenya PPB rule), respects `minShelfLifeDays`, tracks `nearestExpiryDate` and near-expiry (<90d). Products upsert by `externalPosId`; `computeReconciledStock` subtracts unreconciled `PosOutboundJob` offsets and unpaid order holds (`protectUnreconciledSales`) so stagnant POS reads cannot resurrect sold online units; `lastPosStock`/`lastPosSellableStock` record the raw POS baseline; lots land in `ProductBatch`; every run writes a `PosSyncLog` row (`direction: INBOUND`, items received/upserted/failed, details capped at 50 entries).
+- **Outbound reconciliation & incidents** — `ONLINE_SALE` jobs are enqueued idempotently on payment capture (`mpesa/callback`, `intasend/webhook`, `cash-confirm`) and `prepare`; `ADMIN_STOCK_ADJUST` jobs are queued on `PATCH /api/products/[id]` stock edits; cancellations/rejections/refunds/expiries call `cancelOrderPosDeduction` (`CANCELLED` if still open, or compensating `REFUND_RESTOCK` if already synced). Under the default `MANUAL_EXPORT` policy, jobs transition `PENDING → EXPORTED → RECONCILED_MANUAL` via Daily Sales Export + staff confirmation; under opt-in `AUTO_SYNC`, the bridge claims `PENDING → PROCESSING` (5-min `lockToken` lease) and acknowledges `SYNCED`, `RELEASE` (back to `PENDING`), or `FAILED`. Errors deduplicate into `PosSyncIncident` (`CRITICAL` incidents trigger hourly-throttled `POS_SYNC_CRITICAL` staff notifications).
 - **FEFO** — first-expiry-first-out applies at POS ingestion / sellable-stock computation only. **Batch-level deduction at order time is not implemented** — orders decrement the aggregate `stockQty`/`stock`.
 - **Reservation** — physical deduct-and-restore: order creation decrements `stockQty` + `stock` and recomputes `inStock`/`stockStatus` (`stockQty` is the effective authority); cancel/expiry restores them, sets `inventoryReleasedAt`, recomputes status. The availability formula (`max(0, min(stock, stockQty) − safetyStockBuffer − max(0, virtualReservedStock))`) gates both listing and reservation `WHERE` clauses.
 - **Cleanup** — the legacy `cleanupExpiredReservations` (45 min, called from the BandaGo sync) and the TTL cron described under [Orders](#orders) release stale reservations.
@@ -6259,7 +6294,7 @@ Every points movement is an idempotent `LoyaltyLedger` row keyed by `eventKey` (
 
 ## Audit logs
 
-`AuditLog` rows are written by the `audit()` helper inside staff-action transactions: `ORDER_STATUS_<STATUS>`, `ORDER_CANCELLED`, `ORDER_PREPARATION_STARTED`, `CASH_CONFIRMED`, `REFUND_REQUESTED`, `PAYMENT_REQUESTED`, `RIDER_ASSIGNED`, `RX_<STATUS>`, `RX_REFILL_REQUESTED`, `PROMOTION_ARCHIVED`, `UPDATE_MEDICINE_REQUEST`, `NOTIFICATION_TEST`. `entity`/`entityId` are plain strings (often the human reference). **No retention** — the audit trail is permanent and indexed by `createdAt` and `(entity, entityId, createdAt)`.
+`AuditLog` rows are written by the `audit()` helper inside staff-action transactions: `ORDER_STATUS_<STATUS>`, `ORDER_CANCELLED`, `ORDER_PREPARATION_STARTED`, `CASH_CONFIRMED`, `REFUND_REQUESTED`, `PAYMENT_REQUESTED`, `RIDER_ASSIGNED`, `RX_<STATUS>`, `RX_REFILL_REQUESTED`, `PROMOTION_ARCHIVED`, `UPDATE_MEDICINE_REQUEST`, `NOTIFICATION_TEST`, `STOCK_UPDATE`, `POS_SYNC_POLICY_UPDATED`, `POS_DAILY_SALES_EXPORTED`, `POS_JOBS_MARKED_RECONCILED`, `POS_JOBS_RETRIED`, `POS_JOBS_CANCELLED`, `POS_INCIDENT_RESOLVED`, `POS_INCIDENTS_BULK_RESOLVED`, `POS_MANUAL_STOCK_PUSH_QUEUED`, and `POS_RECONCILIATION_BASELINE_SET`. `entity`/`entityId` are plain strings (often the human reference). **No retention** — the audit trail is permanent and indexed by `createdAt` and `(entity, entityId, createdAt)`.
 
 ## Sessions and OTP codes
 
@@ -6303,7 +6338,9 @@ Guests create `MedicineRequest` rows without an account (10/hour per IP; name 2�
 | `AuditLog` | Staff actions | Nothing | None |
 | `RateLimitBucket` | Rate limiter | Nothing (windows reset via `windowEnds`) | Counter semantics only |
 | `PushToken` | Device registration | Delete/unsubscribe; pruned when FCM reports invalid | Prune-on-invalid |
-| `PosSyncLog` | POS sync runs | Nothing | None |
+| `PosSyncLog` | POS sync runs (inbound/outbound) | Nothing | None |
+| `PosOutboundJob` | Online sale/refund/admin stock edit | Cascades on `Product` delete (`Order` `SetNull`) | None (transitions to terminal `SYNCED`/`RECONCILED_MANUAL`/`CANCELLED`) |
+| `PosSyncIncident` | Bridge telemetry, sync errors, drift warnings | Nothing | Resolved by auto-sync recovery or staff (`resolved = true`); retained |
 
 ## Related documents
 
@@ -6327,8 +6364,8 @@ Guests create `MedicineRequest` rows without an account (10/hour per IP; name 2�
 - **Relative Path:** `docs/database/entity-relationship-diagram.md`
 - **Category:** Documentation & Blueprints
 - **Language:** Markdown Documentation
-- **Lines:** 489
-- **Size:** 18.2 KB (18,675 bytes)
+- **Lines:** 521
+- **Size:** 19.9 KB (20,420 bytes)
 
 `````markdown
 # Entity Relationship Diagram
@@ -6760,10 +6797,13 @@ erDiagram
 
 ## Operations
 
-These models keep operational state and telemetry. They have **no foreign keys** — `AuditLog.entity`/`entityId` are plain strings, `PosSyncLog` is standalone, and the settings/rate-limit models are natural-keyed.
+These models keep operational state, POS reconciliation jobs, and telemetry. `PosOutboundJob` carries foreign keys to `Product` (cascade) and `Order` (SetNull), whereas `MedicineRequest`, `AuditLog`, `Setting`, `RateLimitBucket`, `PosSyncLog`, and `PosSyncIncident` have **no foreign keys**.
 
 ```mermaid
 erDiagram
+    PRODUCT ||--o{ POS_OUTBOUND_JOB : queues
+    ORDER |o--o{ POS_OUTBOUND_JOB : triggers
+
     MEDICINE_REQUEST {
         string id PK "cuid"
         string medicineName
@@ -6792,10 +6832,37 @@ erDiagram
     POS_SYNC_LOG {
         string id PK "cuid"
         string posSource "default BANDAGO"
+        string direction "INBOUND or OUTBOUND"
         string trigger "PosSyncTrigger enum"
         string status "PosSyncStatus enum"
         int itemsUpserted
         datetime startedAt
+    }
+    POS_OUTBOUND_JOB {
+        string id PK "cuid"
+        string idempotencyKey UK "event dedupe key"
+        string eventType "ONLINE_SALE ADMIN_STOCK_ADJUST REFUND_RESTOCK"
+        string status "PosOutboundStatus enum"
+        string productId FK "cascade"
+        string orderId FK "nullable SetNull"
+        int qtyDelta "signed stock delta"
+        string exportBatchId "daily export tag"
+    }
+    POS_SYNC_INCIDENT {
+        string id PK "cuid"
+        string direction "INBOUND or OUTBOUND"
+        string severity "CRITICAL ERROR WARNING"
+        string code "remediation key"
+        int occurrences
+        boolean resolved
+    }
+    PRODUCT {
+        string id PK "cuid"
+        string externalPosId UK
+    }
+    ORDER {
+        string id PK "cuid"
+        string reference UK
     }
 ```
 
@@ -6814,6 +6881,8 @@ erDiagram
 **Product → ProductBatch.** Each product owns per-lot rows unique on `(productId, batchNumber)` with `expiryDate` from iDempiere. The BandaGo normalizer aggregates lots, flags `isExpired`, and computes sellable `stockQty` excluding expired lots (FEFO, PPB-compliant); `nearestExpiryDate` on the product tracks the earliest live expiry.
 
 **User → PushToken / NotificationDelivery.** A user (or staff member) registers device tokens (`PushToken.token` unique; either `userId` or `staffId`). Enqueueing a notification writes the in-app `Notification` row plus one `NotificationDelivery` job per channel target — `{key}:email` for the recipient and `{key}:push:{tokenId}` per registered device — keyed unique by `dedupeKey`. Dispatch, retries, leases and reconciliation are covered in [data-lifecycle.md](data-lifecycle.md#notifications).
+
+**Product / Order → PosOutboundJob.** Whenever an online order is paid or prepared (`enqueueOrderPosDeduction`) or staff edit `stockQty` (`enqueueAdminStockEdit`), an idempotent `PosOutboundJob` row (`idempotencyKey` unique, deterministic UUIDv4-formatted `externalInventoryUU`) records the signed `qtyDelta` so inbound POS syncs protect unreconciled sales from stale-POS resurrection (`computeReconciledStock`) and either Daily Sales Export or opt-in `AUTO_SYNC` can reconcile BandaGo. Order cancellation/rejection/refund/expiry calls `cancelOrderPosDeduction` to cancel unsynced jobs or queue a compensating `REFUND_RESTOCK` job. Deleting a `Product` cascades its outbound jobs; deleting an `Order` nulls `orderId` (`SetNull`).
 
 ## Reading notes
 
@@ -6834,7 +6903,7 @@ erDiagram
 - **Category:** Documentation & Blueprints
 - **Language:** Markdown Documentation
 - **Lines:** 139
-- **Size:** 14.4 KB (14,697 bytes)
+- **Size:** 14.4 KB (14,734 bytes)
 
 `````markdown
 # Database Migrations
@@ -6859,7 +6928,7 @@ This document records every Prisma migration in `prisma/migrations/` in chronolo
 
 ## Migration history (chronological)
 
-Ten migrations, year-2026 timestamps. `prisma migrate deploy` applies them in this order.
+Eleven migrations, year-2026 timestamps. `prisma migrate deploy` applies them in this order.
 
 | # | Migration | One-line summary |
 | --- | --- | --- |
@@ -6958,7 +7027,7 @@ Adds durable bi-directional POS reconciliation, daily sales export batching, and
 - Optionally upserts **one dev ADMIN** — only when **both** `SEED_ADMIN_EMAIL` and `SEED_ADMIN_PASSWORD` are set, with the password ≥14 chars (otherwise it throws). On update it re-hashes the password, keeps `role: "ADMIN"`, `active: true`, increments `authVersion`, and purges that admin's sessions.
 - Creates **no products, demo customers, orders, prescriptions, loyalty balances or clinical history** — ever.
 
-**Correction of `PROJECT_README.md` claims.** The README instructs *"Apply the Prisma schema with `bun run db:push`, then seed it with `bun prisma/seed.ts`"* and lists a demo accounts table (`admin@spherepharmacy.co.ke` / `admin123`, a customer preloaded with 620 points, a rider with an assigned delivery) plus a demo catalogue. None of that data is produced by the seed: those accounts and datasets do not exist unless someone creates them manually, `db:push` is the prototyping path (see the `--accept-data-loss` warning above), and the seed's guards will refuse a bare `bun prisma/seed.ts` run against anything it considers unapproved. Treat the README's demo-account section as aspirational; treat this section as the verified behavior. **Requires live verification** only for what a fresh deployment's operator manually provisions on top of the seed.
+**Correction of `reference/archive/PROJECT_README.md` claims.** The archived README instructs *"Apply the Prisma schema with `bun run db:push`, then seed it with `bun prisma/seed.ts`"* and lists a demo accounts table (`admin@spherepharmacy.co.ke` / `admin123`, a customer preloaded with 620 points, a rider with an assigned delivery) plus a demo catalogue. None of that data is produced by the seed: those accounts and datasets do not exist unless someone creates them manually, `db:push` is the prototyping path (see the `--accept-data-loss` warning above), and the seed's guards will refuse a bare `bun prisma/seed.ts` run against anything it considers unapproved. Treat the archived README's demo-account section as historical; treat this section as the verified behavior. **Requires live verification** only for what a fresh deployment's operator manually provisions on top of the seed.
 
 ## Production safety notes
 
@@ -6990,12 +7059,12 @@ Adds durable bi-directional POS reconciliation, daily sales export batching, and
 - **Category:** Documentation & Blueprints
 - **Language:** Markdown Documentation
 - **Lines:** 235
-- **Size:** 16.0 KB (16,385 bytes)
+- **Size:** 16.4 KB (16,838 bytes)
 
 `````markdown
 # Database Schema Overview
 
-This document is the entry point to the Sphere Pharmacy PostgreSQL schema: how the application connects to the database, what the 39 Prisma models are and what each is for, and the design decisions an engineer or AI agent must know before touching `prisma/schema.prisma` or writing queries. Field-level detail lives in [data-dictionary.md](data-dictionary.md); relationships in [entity-relationship-diagram.md](entity-relationship-diagram.md); DDL history in [migrations.md](migrations.md); record lifetimes in [data-lifecycle.md](data-lifecycle.md).
+This document is the entry point to the Sphere Pharmacy PostgreSQL schema: how the application connects to the database, what the 41 Prisma models are and what each is for, and the design decisions an engineer or AI agent must know before touching `prisma/schema.prisma` or writing queries. Field-level detail lives in [data-dictionary.md](data-dictionary.md); relationships in [entity-relationship-diagram.md](entity-relationship-diagram.md); DDL history in [migrations.md](migrations.md); record lifetimes in [data-lifecycle.md](data-lifecycle.md).
 
 | Audience | Status | Verified |
 | --- | --- | --- |
@@ -7004,7 +7073,7 @@ This document is the entry point to the Sphere Pharmacy PostgreSQL schema: how t
 ## Provider and connection resolution
 
 - **Provider:** `postgresql` (declared in `prisma/schema.prisma` `datasource db`).
-- **Generator:** `prisma-client-js`. **Prisma version:** 6 (`prisma` / `@prisma/client` `^6.11.1`).
+- **Generator:** `prisma-client-js`. **Prisma version:** 6 (`prisma` / `@prisma/client` `^6.19.3`).
 - **Status:** **Implemented**.
 
 ### Environment variable resolution order
@@ -7016,7 +7085,7 @@ This document is the entry point to the Sphere Pharmacy PostgreSQL schema: how t
 3. `sphere_pharmacy_DATABASE_URL`
 4. `sphere_pharmacy_POSTGRES_URL`
 
-If none is set, module import throws: *"Database configuration missing. Set DATABASE_URL, sphere_pharmacy_PRISMA_DATABASE_URL, sphere_pharmacy_DATABASE_URL, or sphere_pharmacy_POSTGRES_URL."* The Prisma datasource block itself reads `env("DATABASE_URL")`; the runtime client overrides it via `datasourceUrl` with the resolved value.
+If none is set, `src/lib/db.ts` exports a lazy `Proxy` (`getClient()`) so build-time static evaluation (such as Next.js `/docs` generation) can import the module without throwing; the first runtime property access throws: *"Database configuration missing. Set DATABASE_URL, sphere_pharmacy_PRISMA_DATABASE_URL, sphere_pharmacy_DATABASE_URL, or sphere_pharmacy_POSTGRES_URL."* The Prisma datasource block itself reads `env("DATABASE_URL")`; the runtime client overrides it via `datasourceUrl` with the resolved value.
 
 ### Neon pooler handling (`statement_cache_size=0`)
 
@@ -7024,11 +7093,11 @@ Neon pooled endpoints (hostname containing `-pooler.`) sit behind PgBouncer. Pri
 
 ### Client singleton and the `productCategory` alias
 
-- The `PrismaClient` instance is cached on `globalThis` (survives Next.js hot reload in dev), constructed with `log: ["warn", "error"]`.
+- The `PrismaClient` instance is created lazily via `getClient()` and cached on `globalThis` (survives Next.js hot reload in dev), constructed with `log: ["warn", "error"]`.
 - The module exports `db` and `prisma` — **the same instance** under two names.
 - A `db.productCategory` getter aliases `db.category` "for blueprint compatibility" with the BandaGo/iDempiere integration blueprint's naming. Read it as `Category`; do not assume a second model exists.
 
-## Model inventory — 39 models in 9 domains
+## Model inventory — 41 models in 9 domains
 
 ### Identity / auth (5)
 
@@ -7104,13 +7173,13 @@ Neon pooled endpoints (hostname containing `-pooler.`) sit behind PgBouncer. Pri
 | `EmailSuppression` | Addresses that bounced or complained; email dispatch skips them. |
 | `EmailDeliveryEvent` | Resend/Svix delivery webhook events awaiting reconciliation. |
 
-### Operations (5)
+### Operations (7)
 
 | Model | Purpose |
 | --- | --- |
 | `MedicineRequest` | Guest "find this medicine" request with optional private R2 photo. |
 | `AuditLog` | Staff/system action audit (`actor`, `action`, `entity`, `entityId`, `details`). |
-| `Setting` | Key/value app settings (JSON values for `pharmacy`/`delivery`/`compliance` keys). |
+| `Setting` | Key/value app settings (JSON values for `pharmacy`/`delivery`/`compliance`/`posSync`/`posBridgeHeartbeat` keys). |
 | `RateLimitBucket` | Fixed-window rate-limit counters (natural key). |
 | `PosSyncLog` | BandaGo POS sync telemetry (table `pos_sync_logs`; uses Prisma enums for direction, trigger, and status). |
 | `PosOutboundJob` | Outbound Website → BandaGo deduction/restock/stock-edit ledger and daily export batching (`pos_outbound_jobs`). |
@@ -7147,7 +7216,7 @@ Loyalty rules (constants `LOYALTY` in `src/lib/constants.ts`): earn 1 pt per KSh
 
 ### 3. String statuses, canonical values in `src/lib/constants.ts`
 
-Domain statuses are plain `String` columns — the schema defines **no** enums for them (the only Prisma enums are `PosSyncTrigger` and `PosSyncStatus` for POS sync). The canonical value sets live in `src/lib/constants.ts`. Write these exact strings — never new spellings.
+Domain statuses are plain `String` columns — the schema defines **no** enums for them (the only Prisma enums are the five POS sync enums: `PosSyncStatus`, `PosSyncTrigger`, `PosSyncDirection`, `PosOutboundStatus`, and `PosOutboundEventType`). The canonical value sets live in `src/lib/constants.ts`. Write these exact strings — never new spellings.
 
 **`Order.status`** (`ORDER_STATUSES`, 14 values):
 
@@ -7217,13 +7286,13 @@ All models default to `cuid` ids except these five natural-key tables:
 
 ### 7. Column naming
 
-`@@map` snake_case mapping is used heavily in the BandaGo POS block (`User` POS fields, `Product` stock fields, `ProductBatch` → table `product_batches`, `PosSyncLog` → table `pos_sync_logs`), while `Order` and most core tables keep camelCase columns. Raw SQL must respect each table's actual column casing (see the quoting note in design decision 1).
+`@@map` snake_case mapping is used heavily in the BandaGo POS block (`User` POS fields, `Product` stock & POS baseline/warehouse fields, `ProductBatch` → table `product_batches`, `PosSyncLog` → table `pos_sync_logs`, `PosOutboundJob` → table `pos_outbound_jobs`, `PosSyncIncident` → table `pos_sync_incidents`), while `Order` and most core tables keep camelCase columns. Raw SQL must respect each table's actual column casing (see the quoting note in design decision 1).
 
 ## Related documents
 
-- [data-dictionary.md](data-dictionary.md) — every field of all 39 models.
+- [data-dictionary.md](data-dictionary.md) — every field of all 41 models.
 - [entity-relationship-diagram.md](entity-relationship-diagram.md) — per-domain ER diagrams.
-- [migrations.md](migrations.md) — the 10 migrations and how to apply them.
+- [migrations.md](migrations.md) — the 11 migrations and how to apply them.
 - [data-lifecycle.md](data-lifecycle.md) — creation → terminal state → retention per data class.
 - [../api/api-reference.md](../api/api-reference.md) — endpoints that read/write these tables.
 - [../operations/database-operations.md](../operations/database-operations.md) — operational runbooks.
@@ -7242,14 +7311,14 @@ All models default to `cuid` ids except these five natural-key tables:
 - **Category:** Documentation & Blueprints
 - **Language:** Markdown Documentation
 - **Lines:** 118
-- **Size:** 13.0 KB (13,291 bytes)
+- **Size:** 13.2 KB (13,481 bytes)
 
 `````markdown
 # AI assistant
 
 The customer-facing AI companion ("Sphere"): a chat widget that answers shopping and navigation questions, prepares bookings and payments, and defers all medical judgment to pharmacists. It is **deterministic-first** — the LLM (Groq, OpenAI-compatible) enriches replies but provider outages never break it — and it is architected so **account data never transits the LLM**.
 
-> **Read first — the policy doc:** [../security/ai-access-and-authorized-sessions.md](../security/ai-access-and-authorized-sessions.md) defines the session-gating and authorized-session rules summarized in §8. Provider details: [../integrations/ai-provider.md](../integrations/ai-provider.md).
+> **Read first — the policy doc:** [../security/ai-access-and-authorized-sessions.md](../security/ai-access-and-authorized-sessions.md) defines the session-gating and authorized-session rules summarized in §8. Provider details: [../integrations/ai-provider.md](../integrations/ai-provider.md). A companion public documentation assistant (`POST /api/docs-assistant` at `/docs/assistant`) uses the same session-free, Groq-optional architecture over the repository Markdown corpus only.
 
 | Audience | Status | Verified |
 | --- | --- | --- |
@@ -7496,8 +7565,8 @@ Register/OTP → session → profile/addresses → checkout uses the address boo
 - **Relative Path:** `docs/features/inventory-and-stock.md`
 - **Category:** Documentation & Blueprints
 - **Language:** Markdown Documentation
-- **Lines:** 150
-- **Size:** 14.6 KB (14,996 bytes)
+- **Lines:** 157
+- **Size:** 18.3 KB (18,706 bytes)
 
 `````markdown
 # Inventory and stock
@@ -7528,7 +7597,7 @@ Compliance framing: the PPB-aligned rules (expired stock never sellable online, 
 
 - **Storefront** — stock badges on `ProductView`/`ProductCard` (`StockStatusBadge`), quantity clamping to availability, back-in-stock alert bell.
 - **Admin → Catalogue** — `catalogue-section.tsx` (1109 ln; ADMIN/PHARMACIST/STAFF): product CRUD, pricing, stock fields, low-stock threshold, CSV bulk import; delete is admin-only.
-- **Admin → POS sync** — `pos-sync-section.tsx` (306 ln; ADMIN/PHARMACIST): BandaGo hub with sync telemetry (`PosSyncLog`), stock-sync ledger, lot/expiry compliance view, manual CSV import.
+- **Admin → POS sync** — `pos-sync-section.tsx` (~1630 ln; ADMIN/PHARMACIST): BandaGo 4-workspace hub with Overview & Policy (`MANUAL_EXPORT` vs `AUTO_SYNC`, stagnant-POS drift protection, tenant pinning, extension heartbeat, key-hygiene alerts), Sales Export & Reconciliation (Zero-PHI A4 PDF/CSV/JSON exports, `Confirm Entered in BandaGo POS`, Live Stock Variance Inspector, baseline cutover), Error Console (`PosSyncIncident` triage), and Synchronization Audit Trail + staff-cookie CSV import.
 - **Admin → Orders** — focus lanes and the prepare flow depend on `inventoryReservedAt` (see [orders-and-fulfillment.md](orders-and-fulfillment.md)); the live-changes poll surfaces stock-relevant edits within 15s.
 - **Account** — stock-alert watchlist management (`account-view.tsx`).
 
@@ -7536,7 +7605,7 @@ Compliance framing: the PPB-aligned rules (expired stock never sellable online, 
 
 - Product detail (`product-view.tsx`) renders `stockStatus` + Rx badges and the alert bell (`ProductAlert` subscribe when out of stock); `account-view.tsx` lists the watchlist.
 - Admin `catalogue-section.tsx` calls `adminApi.productUpsert/update/delete/importCsv` (typed client in `src/lib/api-client.ts`); CSV import uploads through the admin API, not the generic upload route. `downloadCsv` (Blob + BOM) powers exports of filtered views.
-- `pos-sync-section.tsx` reads `/api/admin/pos-status` telemetry (it is the one section still using the legacy `use-toast` system).
+- `pos-sync-section.tsx` reads `/api/admin/pos-status`, `/api/admin/pos-sync/policy`, `/api/admin/pos-sync/reconcile`, and downloads exports from `/api/admin/pos-sync/sales-export` (migrated to `sonner` toasts in `061e923`).
 - Catalogue admin list uses the same `GET /api/products?admin=yes` surface as the storefront, with `stockStatus`/`oldest`/`stock-asc|desc` sorts reserved for staff.
 - KPI skeletons (`KpiSkeletonGrid`, `TableSkeleton`) and `SectionError` (Alert + Retry) cover telemetry load states.
 
@@ -7568,21 +7637,24 @@ flowchart LR
 - **Deduct-and-restore (live path)** — `POST /api/orders` runs a bulk SQL `UPDATE` inside the Serializable creation transaction: decrements `stockQty` and `stock` (COALESCE, clamped ≥ 0), sets `in_stock`/`stockStatus`, guarded by `WHERE availability formula ≥ qty`; a missing row means OUT_OF_STOCK → 409 + rollback (see [orders-and-fulfillment.md](orders-and-fulfillment.md)). `stockQty` is the effective authority for status recompute: `≤0 → OUT_OF_STOCK`, `≤ lowStockThreshold (default 5) → LOW_STOCK`, else `IN_STOCK`.
 - **Release paths** — `POST /api/orders/[id]/cancel` and `GET /api/cron/order-reservations` restore `stockQty`/`stock`, recompute status, set `inventoryReleasedAt`, re-credit redeemed points, fail dangling PENDING/PROCESSING payments, and write `OrderStatusHistory` actor SYSTEM.
 - **Legacy virtual path** — `InventoryGuard` reserve/release/commit reservation methods and `cleanupExpiredReservations` (45 min) are mostly legacy; only `getAvailableStock` and the 45-minute cleanup (invoked from the BandaGo sync) still run.
-- **BandaGo ingestion** — `/api/integrations/bandago/sync` (trigger enum: EXTENSION_STREAM / BACKGROUND_POLL / MANUAL_RECONCILE) and `/api/integrations/bandago/csv-import`, both normalized through `src/lib/bandago-normalizer.ts` (`BandaGoNormalizer`, `parseCsv`, `normalizeKenyaPhone`):
+- **BandaGo ingestion & drift protection** — `/api/integrations/bandago/sync` (trigger enum: EXTENSION_STREAM / BACKGROUND_POLL / CSV_IMPORT / MANUAL_RECONCILE) and `/api/integrations/bandago/csv-import`, both normalized through `src/lib/bandago-normalizer.ts` (`BandaGoNormalizer`, `parseCsv`, `normalizeKenyaPhone`):
   - Slugs are url-safe and prefixed with the external POS id tail (e.g. `panadol-extra-500mg-20s-bp-001`) so re-syncs upsert rather than duplicate.
   - **Rx classification is OR'd and never downgraded:** `requiresPrescription = existing || POS flag` — a web-side Rx flag survives any POS row that omits it.
   - **Image preservation:** existing web images/URLs are kept on upsert; the normalizer never blanks imagery the POS does not know about.
-  - `processBatches` aggregates duplicate batch numbers per product and recomputes the FEFO-derived fields.
-  - Every run writes a `PosSyncLog` row (status SUCCESS/PARTIAL/FAILED, item counters, error stacks capped at 50).
-- **Telemetry** — `GET /api/admin/pos-status` (ADMIN/PHARMACIST/STAFF) exposes recent `PosSyncLog` runs (items received/upserted/failed, error stacks capped at 50).
+  - `processBatches` aggregates duplicate batch numbers per product, respects `policy.minShelfLifeDays`, and recomputes the FEFO-derived fields.
+  - **Stagnant-POS drift protection (`computeReconciledStock`):** subtracts unreconciled `PosOutboundJob` offsets (`getUnreconciledOffsetsByProduct`) and unpaid order holds from incoming `lastPosStock`/`lastPosSellableStock` snapshots so stale POS reads never overwrite online sales back up. Single-tenant pinning (`expectedTenantUU` → `403 TENANT_MISMATCH`) and `policy.inboundEnabled` pause are also enforced.
+  - Every run writes a `PosSyncLog` row (`direction: INBOUND` / `OUTBOUND`, status SUCCESS/PARTIAL/FAILED, item counters, error stacks capped at 50) and deduplicates per-item or drift warnings into `PosSyncIncident`.
+- **Outbound POS reconciliation (`src/lib/pos-reconciliation.ts`)** — payment capture (`mpesa/callback`, `intasend/webhook`, `cash-confirm`) and `prepare` enqueue `ONLINE_SALE` `PosOutboundJob` rows via `enqueueOrderPosDeduction`; `PATCH /api/products/[id]` stock edits mirror `stock`/`inStock` and queue `ADMIN_STOCK_ADJUST` via `enqueueAdminStockEdit`; order cancellations/rejections/refunds/expiries invoke `cancelOrderPosDeduction` (cancelling open jobs or creating compensating `REFUND_RESTOCK` jobs). Jobs resolve either via Daily Sales Export (`/api/admin/pos-sync/sales-export` + `MARK_RECONCILED`) or opt-in `AUTO_SYNC` writeback (`/api/integrations/bandago/outbound` + `/outbound/ack`).
+- **Telemetry** — `GET /api/admin/pos-status` (ADMIN/PHARMACIST/STAFF) exposes recent 25 `PosSyncLog` runs (with `direction`), active `PosSyncPolicy`, `PosBridgeHeartbeat` (from `/api/integrations/bandago/telemetry`), outbound counts, open incident counts, and key configuration health flags.
 
 ## 6. Database
 
-- **Product** (stock block, snake_case-mapped): `stockQty Int` (effective), `stock Int?`, `virtualReservedStock Int @default(0)`, `safetyStockBuffer Int @default(2)`, `inStock Boolean`, `lowStockThreshold Int @default(5)`, `stockStatus String`, `externalPosId? @unique`, `posSource @default("BANDAGO")`, `lastSyncedAt?`. Raw SQL in the order flow quotes `"virtual_reserved_stock"`, `"in_stock"`, `"stockStatus"`, `"lowStockThreshold"`.
+- **Product** (stock & POS block, snake_case-mapped): `stockQty Int` (effective), `stock Int?`, `virtualReservedStock Int @default(0)`, `safetyStockBuffer Int @default(2)`, `inStock Boolean`, `lowStockThreshold Int @default(5)`, `stockStatus String`, `externalPosId? @unique`, `posSource @default("BANDAGO")`, `lastSyncedAt?`, `lastPosStock?`, `lastPosSellableStock?`, `externalWarehouseId?`, `externalLocatorId?`, `externalOrgId?`, `externalClientId?`. Raw SQL in the order flow quotes `"virtual_reserved_stock"`, `"in_stock"`, `"stockStatus"`, `"lowStockThreshold"`.
 - **ProductBatch** (`product_batches`): `batchNumber` (iDempiere Lot/Batch), `quantityOnHand Int`, `expiryDate` (iDempiere `M_AttributeSetInstance.GuaranteeDate`), `externalBatchId?`, `isExpired @default(false)`; unique `[productId, batchNumber]`, index `[productId, expiryDate]`.
 - **ProductAlert**: `productId`, `userId`, `notifiedAt?`; unique `[productId, userId]`.
-- **PosSyncLog**: `posSource`, `trigger` (EXTENSION_STREAM/BACKGROUND_POLL/CSV_IMPORT/MANUAL_RECONCILE), `status` (SUCCESS/PARTIAL/FAILED), `itemsReceived/itemsUpserted/itemsFailed`, `details Json` (error stacks, capped 50), `startedAt/completedAt/durationMs`; indexes `[startedAt]`, `[status]`.
-- Audit events written from this domain: `PRODUCT_CREATED/UPDATED/DISCONTINUED/DELETED` (entityId = SKU), `CSV_IMPORT`.
+- **PosSyncLog**: `posSource`, `direction` (`INBOUND`/`OUTBOUND`), `trigger` (`EXTENSION_STREAM`/`BACKGROUND_POLL`/`CSV_IMPORT`/`MANUAL_RECONCILE`/`OUTBOUND_WRITEBACK`/`MANUAL_EXPORT_RECONCILE`/`BRIDGE_ERROR`), `status` (SUCCESS/PARTIAL/FAILED), `itemsReceived/itemsUpserted/itemsFailed`, `details Json` (error stacks, capped 50), `startedAt/completedAt/durationMs`; indexes `[startedAt]`, `[status]`.
+- **PosOutboundJob** (`pos_outbound_jobs`) & **PosSyncIncident** (`pos_sync_incidents`): durable outbound reconciliation ledger and deduplicated Zero-PHI error console. `Setting` keys `posSync` and `posBridgeHeartbeat` store policy and extension heartbeat.
+- Audit events written from this domain: `PRODUCT_CREATED/UPDATED/DISCONTINUED/DELETED` (entityId = SKU), `STOCK_UPDATE`, `CSV_IMPORT`, `POS_SYNC_POLICY_UPDATED`, `POS_DAILY_SALES_EXPORTED`, `POS_JOBS_*`, `POS_INCIDENT*`, `POS_MANUAL_STOCK_PUSH_QUEUED`, `POS_RECONCILIATION_BASELINE_SET`.
 - See [../database/data-dictionary.md](../database/data-dictionary.md).
 
 ## 7. Workflow
@@ -7597,8 +7669,10 @@ flowchart LR
 ## 8. Permissions
 
 - Product `POST`/`PATCH` and bulk import: ADMIN/PHARMACIST. Product `DELETE`/discontinue: **ADMIN only**.
-- `GET /api/admin/pos-status`: any staff (ADMIN/PHARMACIST/STAFF).
-- BandaGo routes authenticate with their own bearer secret (documented concerns in the security fact base — see §14).
+- `GET /api/admin/pos-status`, `GET /api/admin/pos-sync/policy`, `GET /api/admin/pos-sync/reconcile`: any staff (ADMIN/PHARMACIST/STAFF).
+- `PUT /api/admin/pos-sync/policy` and `SET_BASELINE_NOW` on `/api/admin/pos-sync/reconcile`: **ADMIN only**.
+- `GET /api/admin/pos-sync/sales-export` and all other `/api/admin/pos-sync/reconcile` actions: ADMIN/PHARMACIST.
+- BandaGo integration routes (`/api/integrations/bandago/sync`, `csv-import`, `crm`, `outbound`, `outbound/ack`, `telemetry`) use dual-mode auth: timing-safe, fail-closed `Authorization: Bearer <BANDAGO_SYNC_API_KEY>` (`verifyBandagoBearerHeader`) or an active ADMIN/PHARMACIST session (CRM GET adds STAFF; H1 browser secret remediated in `061e923`).
 - Stock-alert subscribe/list: customer session only.
 - The admin catalogue section hides the delete action for non-admin staff; the API remains the enforcement point (`requireStaff(["ADMIN"])` on the delete route).
 
@@ -7630,6 +7704,7 @@ flowchart LR
 ## 12. Testing
 
 - `tests/bandago-pos-crm-integration.test.mjs` — normalizer (slug generation with POS-id prefix, `normalizeKenyaPhone` E.164 canonicalization, CSV parsing, Rx OR logic, batch aggregation/expiry flags).
+- `tests/bandago-bidirectional-sync.test.mjs` — stagnant-POS drift protection (`computeReconciledStock`), policy normalization, deterministic UUIDv4 generation, A4 Daily Sales PDF generation, timing-safe fail-closed Bearer helper & legacy default detection, and H1 remediation + auth-guard static contracts.
 - `tests/order-dispatch-promotion-workflow.test.mjs` and `tests/dispatch-readiness.test.mjs` — order-side stock reservation invariants (schema + SQL shape).
 - `tests/security-static.test.mjs` — admin product view requires staff; security-hardening migration expectations.
 - See [../testing/testing-strategy.md](../testing/testing-strategy.md).
@@ -7637,15 +7712,16 @@ flowchart LR
 ## 13. Operational requirements
 
 - Cron `GET /api/cron/order-reservations` (Bearer `CRON_SECRET` ≥ 32) on a schedule matching the reservation TTL; requires `ORDER_RESERVATION_TTL_MINUTES` (15–10080) — **not in `.env.example`**.
-- BandaGo credentials (`BANDAGO_SYNC_API_KEY` / `NEXT_PUBLIC_POS_SYNC_SECRET`) — see known limitations below and [../operations/scheduled-jobs.md](../operations/scheduled-jobs.md).
-- Sync cadence is POS-driven (extension stream / background poll); the admin POS-sync section also offers manual reconcile and CSV import as fallbacks.
-- Monitor `PosSyncLog` for PARTIAL/FAILED runs via `/api/admin/pos-status`; treat prolonged failures as a catalogue-staleness incident.
+- BandaGo credential `BANDAGO_SYNC_API_KEY` (strong random server-only secret — never the retired placeholder; see [../operations/environment-variables.md](../operations/environment-variables.md) and [../operations/scheduled-jobs.md](../operations/scheduled-jobs.md)).
+- Sync cadence is POS-driven (extension stream / background poll); the admin POS-sync hub also offers Daily Sales Export (PDF/CSV/JSON), reconciliation controls, and authenticated CSV import fallbacks.
+- Monitor `PosSyncLog` and `PosSyncIncident` for PARTIAL/FAILED runs via `/api/admin/pos-status` and `/api/admin/pos-sync/reconcile`; treat prolonged failures as a catalogue-staleness incident.
 
 ## 14. Known limitations
 
 - No per-batch (FEFO) deduction at order time — batch data informs sellable stock and compliance views only; aggregate `stockQty` is decremented.
 - Legacy `InventoryGuard` virtual-reservation methods remain in code (only `getAvailableStock` + 45-min cleanup are live); `virtualReservedStock` is effectively zero in the live flow.
-- Documented security debt: the POS sync secret is sent as a browser Bearer token (client-bundle-exposed) and the CSV-import route has a hard-coded fallback secret; `.env.example` ships the same value for both keys. See the security fact base before relying on these boundaries.
+- Historical H1 security debt (`NEXT_PUBLIC_POS_SYNC_SECRET` and hardcoded CSV-import fallback) was remediated in `061e923`; deployed environments must still ensure `BANDAGO_SYNC_API_KEY` is rotated away from any legacy default.
+- Opt-in `AUTO_SYNC` outbound writeback executes via an open authenticated `go.bandahealth.org` Chrome tab; when no POS tab is open, jobs stay queued (`RELEASE`) until the dispensary workstation is online or reconciled manually via Daily Sales Export.
 - The 45-minute legacy cleanup runs only when a BandaGo sync triggers it — the TTL cron is the dependable sweeper.
 - Stock alerts notify on restock but there is no customer-facing threshold preference — one size fits all.
 - `lowStockThreshold` is per-product (default 5) with no global override in the admin UI beyond editing each product.
@@ -8019,7 +8095,7 @@ Business event → `notifyCustomer/notifyStaff` (in-tx) → in-app row + per-rec
 - **Category:** Documentation & Blueprints
 - **Language:** Markdown Documentation
 - **Lines:** 155
-- **Size:** 15.7 KB (16,073 bytes)
+- **Size:** 16.2 KB (16,572 bytes)
 
 `````markdown
 # Orders and fulfillment
@@ -8066,7 +8142,7 @@ Status groups (constants): ACTIVE = the first nine statuses; TERMINAL = REJECTED
 ## 5. Backend implementation
 
 - **`POST /api/orders`** — body ≤64KB; `order-create` 12/15min; 1–50 items; qty 1–99 per line and aggregate; products active, not DISCONTINUED, availability ≥ qty (409 `"<name> does not have enough stock."`). Guest: OTC only (Rx → 401), name ≥2, Kenyan phone, optional email, one-time `guestAccessToken` (opaque 32B base64url; only the HMAC hash is stored; 7-day expiry; client keeps it in sessionStorage `sphere_order_access_<orderId>` and sends `x-order-access-token`). Rx lines require owned, unlinked, non-soft-deleted prescriptions, linked inside the create transaction. Type derivation: `hasRx ? (all Rx ? PRESCRIPTION : MIXED) : (reservation ? RESERVATION : OTC)`. Initial status: `hasRx ? UNDER_REVIEW : (MPESA|CARD) ? AWAITING_PAYMENT : RECEIVED`.
-- **Create transaction (Serializable, maxWait 10s, timeout 30s):** `pg_advisory_xact_lock(hashtext(promotion.id))` + promo re-validation; bulk stock UPDATE (see [inventory-and-stock.md](inventory-and-stock.md)); loyalty debit (`updateMany` gte guard); `Order.create` (reference `SPH-<12hex>`, `inventoryReservedAt=now`, item snapshots, initial history); prescription linking; `PromotionRedemption`; `LoyaltyLedger redeem:<orderId>`; post-transaction notifications.
+- **Create transaction (Serializable, maxWait 10s, timeout 30s):** `pg_advisory_xact_lock(hashtext(promotion.id))` + promo re-validation; bulk stock UPDATE (see [inventory-and-stock.md](inventory-and-stock.md)); loyalty debit (`updateMany` gte guard); `Order.create` (reference `SPH-<12hex>`, `inventoryReservedAt=now`, item snapshots, initial history); prescription linking; `PromotionRedemption`; `LoyaltyLedger redeem:<orderId>`; post-transaction notifications. When payment captures (`mpesa/callback`, `intasend/webhook`, `cash-confirm`) or staff run `prepare`, `enqueueOrderPosDeduction` idempotently queues `PosOutboundJob` (`ONLINE_SALE`) rows for BandaGo reconciliation; cancellations, rejections, refunds, and reservation expiries invoke `cancelOrderPosDeduction`.
 - **Delivery fee** (`src/lib/settings.ts` `computeDeliveryFee`): `freeOver` (pre-discount subtotal, default 3000) → 0; mode `flat` → flatFee; `distance` → haversine bands; else zone match (case-insensitive, fallback last zone, else flatFee). Defaults: mode zone, flat 200, zones below. Quote: `GET /api/settings/delivery-fee?area&lat&lon&subtotal`.
 
   | Zone | Fee (KES) |
@@ -8129,7 +8205,7 @@ flowchart LR
 ## 9. Integrations
 
 - Payment providers (M-Pesa Daraja, IntaSend) are invoked from order payment endpoints — see [payments-and-refunds.md](payments-and-refunds.md) and [../integrations/mpesa-daraja.md](../integrations/mpesa-daraja.md), [../integrations/intasend.md](../integrations/intasend.md).
-- BandaGo CRM consumes order history for customer mapping and chronic-patient detection: [customer-crm.md](customer-crm.md).
+- BandaGo POS/CRM reconciles online order sales via `PosOutboundJob` (`enqueueOrderPosDeduction` / `cancelOrderPosDeduction`) and consumes order history for customer mapping and chronic-patient detection: [customer-crm.md](customer-crm.md), [../integrations/bandago-pos-crm.md](../integrations/bandago-pos-crm.md).
 
 ## 10. Validation and business rules
 
@@ -8813,8 +8889,8 @@ flowchart LR
 - **Relative Path:** `docs/governance/architecture-decisions.md`
 - **Category:** Documentation & Blueprints
 - **Language:** Markdown Documentation
-- **Lines:** 159
-- **Size:** 13.3 KB (13,584 bytes)
+- **Lines:** 179
+- **Size:** 17.2 KB (17,642 bytes)
 
 `````markdown
 # Architecture Decision Records
@@ -8833,7 +8909,7 @@ Lightweight ADRs (Context / Decision / Consequences) for the major architectural
 
 **Context.** The storefront (catalog, product pages, cart, checkout, account, and admin panels) lives in one Next.js App Router page at `/`; the original sandbox build targeted a single-page app and the team wanted instant view switching and persistent client state (cart, auth, theme) without route-level server round-trips.
 
-**Decision.** Implement the UI as a single route whose views are swapped by a Zustand-driven view router; persist cart/auth state in `localStorage`/`sessionStorage` keys (`sphere-cart`, etc.). Next.js pages/routes are reserved for API handlers and static assets.
+**Decision.** Implement the UI as a single route whose views are swapped by a Zustand-driven view router; persist cart/auth state in `localStorage`/`sessionStorage` keys (`sphere-cart`, etc.). Next.js App Router page routes outside the SPA catch-all are reserved for the dedicated `/docs` documentation portal (ADR-016), API handlers, and static assets.
 
 **Consequences.** (+) Fast, app-like UX; simple mental model; state survives reloads. (−) No per-view URLs or SSR SEO for deep content; the browser bundle carries all views; deep links depend on hash/`?promo=` conventions. The AI assistant similarly sits on one public route (ADR-010).
 
@@ -8865,7 +8941,7 @@ Lightweight ADRs (Context / Decision / Consequences) for the major architectural
 
 **Decision.** Statuses are plain `String` columns; the canonical sets live in code (`src/lib/constants.ts`, workflow guards like `STAFF_TRANSITIONS`), with legacy values deliberately still queried where history demands.
 
-**Consequences.** (+) Cheap evolution; legacy data readable; transitions enforceable in typed maps. (−) No database-level constraint against typos; constants must be kept in sync with DTO/API docs. Exception: BandaGo `PosSyncTrigger`/`PosSyncStatus` **are** Prisma enums (ingestion-side stability). Legacy `'DELIVERED'` handling is tracked debt.
+**Consequences.** (+) Cheap evolution; legacy data readable; transitions enforceable in typed maps. (−) No database-level constraint against typos; constants must be kept in sync with DTO/API docs. Exception: BandaGo POS sync enums (`PosSyncStatus`, `PosSyncTrigger`, `PosSyncDirection`, `PosOutboundStatus`, `PosOutboundEventType`) **are** Prisma enums (ingestion/reconciliation stability). Legacy `'DELIVERED'` handling is tracked debt.
 
 ## ADR-005 — Physical stock deduct-and-restore reservations with optimistic version guards
 
@@ -8943,9 +9019,9 @@ Lightweight ADRs (Context / Decision / Consequences) for the major architectural
 
 **Context.** BandaGo (iDempiere-based POS at go.bandahealth.org) exposes no integration API; the pharmacy needs inventory, batches (Lot/GuaranteeDate), prices, and CRM data mirrored into Sphere.
 
-**Decision.** Sphere implements only the **server-side receiving end**: `/api/integrations/bandago/sync`, `csv-import`, and `crm` with a normalizer, PPB classification, FEFO batch logic, InventoryGuard interplay, PosSyncLog telemetry, and admin hub. The browser-side transformer (Chrome MV3 extension `api_data_transformer`) is deliberately **external** to this repo.
+**Decision.** Sphere implements the **server-side bi-directional integration** (`/api/integrations/bandago/sync`, `csv-import`, `crm`, `outbound`, `outbound/ack`, `telemetry`, plus `/api/admin/pos-sync/{policy,reconcile,sales-export}` and `/api/admin/pos-status`) with a normalizer, PPB classification, FEFO batch logic, stagnant-POS drift protection, `PosOutboundJob` & `PosSyncIncident` ledgers, and the 4-workspace admin hub. The browser-side transformer (Chrome MV3 extension `api_data_transformer`) remains deliberately **external** to this repo.
 
-**Consequences.** (+) Clean trust boundary (bearer-key or staff session), all hardening server-side; Day-1 CSV path exists. (−) The extension is unversioned here; the browser-borne CSV secret is a HIGH debt item; sync normalizes/never downgrades Rx flags (PPB). Blueprint: [../integrations/bandago-pos-crm.md](../integrations/bandago-pos-crm.md).
+**Consequences.** (+) Clean trust boundary (timing-safe fail-closed bearer key or `ADMIN`/`PHARMACIST` staff session — the former H1 browser-borne CSV secret was remediated in `061e923`), all hardening server-side; Manual-First Daily Sales Export and opt-in `AUTO_SYNC` both supported. (−) The extension is unversioned here; `AUTO_SYNC` writeback requires an open BandaGo tab; sync normalizes/never downgrades Rx flags (PPB). Blueprint: [../integrations/bandago-pos-crm.md](../integrations/bandago-pos-crm.md).
 
 ## ADR-013 — Private R2 + presigned 30–300s URLs + access logging for prescriptions
 
@@ -8976,6 +9052,26 @@ Lightweight ADRs (Context / Decision / Consequences) for the major architectural
 **Decision.** Build with `STANDALONE=true` (Next.js `output: "standalone"`), package `.next/standalone` + `static` + `public` + `Caddyfile` + `start.sh` via `.zscripts/build.sh` (with a self-healing guard that re-injects the standalone output if missing), and run `start.sh` where **Caddy is PID 1** proxying to the Next server (`bun next-service-dist/server.js`, port 3000), hard-failing without the `sphere_pharmacy_*` database URLs.
 
 **Consequences.** (+) Single-artifact deploys, no bundled database, graceful shutdown owned by Caddy. (−) `.zscripts` hard-codes the sandbox path `/home/z/my-project` (templates to adjust); Vercel remains a documented alternative requiring its own cron setup. Full runbook: [../operations/deployment.md](../operations/deployment.md).
+
+## ADR-016 — In-app `/docs` portal over canonical Markdown, OpenAPI & Prisma schema (with lazy DB Proxy)
+
+**Status:** Accepted (`89b680c`)
+
+**Context.** Storing technical docs only as raw Markdown files makes operational onboarding, API contract exploration, schema visualization, and cross-document search harder for staff and engineers; yet maintaining a separate CMS/Docusaurus copy creates guaranteed drift. Meanwhile, `src/lib/db.ts` previously threw at module import time when `DATABASE_URL` was unset, breaking build-time static analysis/prerendering.
+
+**Decision.** Render the repository's canonical `docs/` Markdown files, 69 user journeys, `openapi/sphere-api.yaml`, and `prisma/schema.prisma` directly via a dedicated Next.js App Router subtree (`/docs`, `/docs/journeys`, `/docs/api-reference`, `/docs/database`, `/docs/assistant`) with client-side Mermaid rendering, ⌘K lexical search (`/api/docs-index`), and a session-free documentation assistant (`/api/docs-assistant`, Groq optional with lexical fallback). Wrap `PrismaClient` in `src/lib/db.ts` behind a lazy `Proxy` (`getClient()`) so missing-DB-URL checks happen on first runtime query rather than module import, and trace doc assets into standalone builds via `outputFileTracingIncludes` in `next.config.ts` without root-wide tracing (`src/lib/docs/content.ts`).
+
+**Consequences.** (+) Markdown remains the single source of truth; zero drift between code, OpenAPI, schema, and portal; builds pass without a live database. (−) New docs must keep valid frontmatter and Mermaid v12 syntax; `content.ts` path restrictions are enforced by static tests (`tests/security-static.test.mjs`).
+
+## ADR-017 — Bi-directional BandaGo POS reconciliation: Manual-First Daily Sales Export, opt-in Auto-Sync, and Stagnant-POS Drift Protection
+
+**Status:** Accepted (`061e923`)
+
+**Context.** Online sales decrement Sphere stock immediately, while BandaGo POS sits at counter level without continuous real-time writeback. Naive inbound POS syncs overwrote online stock back up to stagnant POS counts ("stock resurrection"), and forcing automated writebacks into a live iDempiere POS without explicit operator consent risked double-deducting or failing when no POS browser tab was open. Additionally, the legacy browser-borne CSV secret (H1) needed elimination.
+
+**Decision.** Add an idempotent outbound ledger (`PosOutboundJob` queued on payment capture, order prepare, and `PATCH /api/products/[id]` stock edits; reversed/compensated via `cancelOrderPosDeduction`), stagnant-POS drift protection (`computeReconciledStock` subtracting unreconciled outbound deltas and unpaid holds from inbound POS snapshots), single-tenant pinning (`expectedTenantUU`), and a policy-controlled (`MANUAL_EXPORT` default vs opt-in `AUTO_SYNC` writeback) 4-workspace POS Hub with Zero-PHI Daily Sales Export (A4 PDF, formula-safe CSV, JSON) and deduplicated `PosSyncIncident` triage. Eliminate H1 by moving admin UI calls strictly to the `sphere_session` cookie and enforcing timing-safe fail-closed `verifyBandagoBearerHeader` on machine endpoints.
+
+**Consequences.** (+) Eliminates stock resurrection on stale POS syncs, provides a complete Zero-PHI paper/CSV reconciliation trail even without the Chrome extension open, and closes H1 credential exposure. (−) `AUTO_SYNC` requires an authenticated `go.bandahealth.org` Chrome tab; manual operators must click **Confirm Entered in BandaGo POS** (or set a baseline cutover) so stagnant-POS offsets do not remain open indefinitely.
 `````
 
 [↑ Back to Master Index](#4-master-alphabetical-file-index) | [↑ Back to Categorized Index](#3-categorized-source-code-index)
@@ -8990,7 +9086,7 @@ Lightweight ADRs (Context / Decision / Consequences) for the major architectural
 - **Category:** Documentation & Blueprints
 - **Language:** Markdown Documentation
 - **Lines:** 81
-- **Size:** 5.8 KB (5,975 bytes)
+- **Size:** 6.2 KB (6,310 bytes)
 
 `````markdown
 # Documentation Policy
@@ -9071,9 +9167,9 @@ AI coding agents are expected to:
 - **Flag** (never silently "fix") contradictions between code and docs: when the code wins, correct the doc; when the doc reflects an intended behavior the code lost, raise it as an issue.
 - **Never** widen authorization guards, expose secrets, or route secure data outside authorized sessions to make an AI-assisted feature work — see [security/ai-access-and-authorized-sessions.md](../security/ai-access-and-authorized-sessions.md).
 
-## 7. Future: publishing a documentation portal
+## 7. The in-app documentation portal (`/docs`)
 
-When the documentation matures, build a branded portal (Docusaurus is the leading candidate; MkDocs Material and Mintlify are alternatives) **from these same Markdown files**. The portal is a presentation layer with search and navigation — never a second authoring surface. Versioning should follow releases. Until then, GitHub-rendered Markdown is the interface.
+The repository ships a built-in Next.js App Router documentation portal at **`/docs`** (`src/app/docs/**`, `src/lib/docs/**`, `src/components/docs/**`, shipped in `89b680c`). It renders these exact Markdown files, interactive Mermaid diagrams, the OpenAPI 3.1 contract (`/docs/api-reference`), the Prisma ER explorer (`/docs/database`), the user-journey explorer (`/docs/journeys`), full-text search (⌘K via `/api/docs-index`), and "Ask Sphere Docs" (`/docs/assistant` via `/api/docs-assistant`). The portal is purely a presentation and retrieval layer — **never** author documentation in TSX components or duplicate prose outside `docs/`, `README.md`, `AGENTS.md`, and `openapi/sphere-api.yaml`.
 `````
 
 [↑ Back to Master Index](#4-master-alphabetical-file-index) | [↑ Back to Categorized Index](#3-categorized-source-code-index)
@@ -9087,8 +9183,8 @@ When the documentation matures, build a branded portal (Docusaurus is the leadin
 - **Relative Path:** `docs/governance/release-history.md`
 - **Category:** Documentation & Blueprints
 - **Language:** Markdown Documentation
-- **Lines:** 150
-- **Size:** 14.8 KB (15,142 bytes)
+- **Lines:** 170
+- **Size:** 18.1 KB (18,584 bytes)
 
 `````markdown
 # Release History
@@ -9139,15 +9235,32 @@ The same window hardened checkout/promotions: persisted promo codes revalidated 
 
 ## 5 November 2026 — full-codebase snapshot
 
-`FULL_CODEBASE.md` / `SPHERE_PHARMACY_FULL_CODEBASE.md` generated ("Complete Platform Codebase & Architecture", 314 source files, 58,693 lines, 2.52MB) — a point-in-time snapshot for review, not a living document.
+`SPHERE_PHARMACY_FULL_CODEBASE.md` generated ("Complete Platform Codebase & Architecture") — a point-in-time snapshot for review, not a living document (refreshable via `npm run update:codebase`).
 
-## November 2026 — documentation program
+## 18 November 2026 — canonical documentation program (`55eba08`)
 
-A full code audit re-verified the codebase (39 models, 87 routes, 10 migrations, 12+1 test suites) and produced this documentation tree — operations, testing, and governance runbooks grounded in verified fact sheets.
+A full code audit re-verified the codebase (39 models, 87 routes, 10 migrations, 12+1 test suites) and shipped the canonical documentation tree under `docs/`, `AGENTS.md`, `README.md`, and `openapi/sphere-api.yaml` — operations, testing, security, workflows, and governance runbooks grounded in verified fact sheets.
 
-## Recent commit history (verbatim `git log --oneline -60`)
+## 19 November 2026 — interactive `/docs` portal, lazy DB client & v0.3.0 upgrades (`89b680c`)
+
+Shipped the built-in documentation portal at `/docs` (`src/app/docs/**`, `src/lib/docs/**`, `src/components/docs/**`, `sitemap.ts` + footer/landing links): interactive Mermaid diagrams, 68 flowchart-backed user journeys (`docs/journeys/**`), OpenAPI API explorer, Prisma ER database explorer, ⌘K lexical search (`GET /api/docs-index`), and "Ask Sphere Docs" (`POST /api/docs-assistant`). Fixed build-time evaluation by wrapping `PrismaClient` in `src/lib/db.ts` behind a lazy `Proxy` (`getClient()`), added `outputFileTracingIncludes` in `next.config.ts` (pinned by `tests/security-static.test.mjs`), bumped `package.json` to `0.3.0`, and upgraded `next` (`^16.4.6`) and `prisma` / `@prisma/client` (`^6.19.3`).
+
+## 19 November 2026 — BandaGo bi-directional POS sync, drift protection, Daily Sales Export & H1 fix (`061e923`)
+
+Added migration `20261119120000_add_bandago_bidirectional_sync` (`pos_outbound_jobs`, `pos_sync_incidents`, POS baseline/warehouse fields on `Product`, `PosSyncLog.direction`, and 3 new + 1 extended POS enums), stagnant-POS drift protection (`computeReconciledStock`), order/refund/expiry/admin-stock-edit reconciliation hooks (`enqueueOrderPosDeduction`, `cancelOrderPosDeduction`, `enqueueAdminStockEdit`), Zero-PHI Daily Sales Export (`GET /api/admin/pos-sync/sales-export` generating multi-page A4 PDF, formula-safe CSV, or JSON), policy & reconciliation APIs (`/api/admin/pos-sync/policy`, `/api/admin/pos-sync/reconcile`), extension bridge endpoints (`/api/integrations/bandago/outbound`, `/outbound/ack`, `/telemetry`), the 4-workspace `pos-sync-section.tsx` hub (migrated to `sonner`), and `tests/bandago-bidirectional-sync.test.mjs`. **Closed H1** by removing `NEXT_PUBLIC_POS_SYNC_SECRET` and the hardcoded `csv-import` fallback, clearing the `.env.example` placeholder, and enforcing timing-safe fail-closed Bearer verification (`src/lib/security/bandago-bearer.ts`).
+
+## 19 November 2026 — root cleanup, `reference/` archive & `update:codebase` script (`c4629b7`, `6e5aad0`)
+
+Organized historical and blueprint files into `reference/` (`reference/archive/PROJECT_README.md`, `reference/archive/worklog.md`, `reference/bandago-pos-crm-blueprint.md`, `reference/bandago-api-and-integration-architecture.md`, `reference/SPHERE_PHARMACY_OWNER_OPERATIONS_MANUAL.pdf`), deleted the duplicate `FULL_CODEBASE.md` and stray `--full-page` binary, and added `npm run update:codebase` (`scripts/generate_codebase_file.py`).
+
+## Recent commit history (verbatim `git log --oneline -65`)
 
 ```text
+6e5aad0 chore: keep single update:codebase npm script
+c4629b7 chore: organize root files, remove duplicates, and add codebase export npm scripts
+061e923 feat: BandaGo bidirectional POS sync, telemetry, reconciliation & docs
+89b680c feat(docs): ship interactive documentation portal, fix build-time db evaluation and upgrade dependencies
+55eba08 documentation
 77c8689 add the sphere pharmacy changes to it
 ea52096 fix(pos-sync): harden sync transactions, slug collision, image preservation, and expired reservation cleanup
 184c370 preparation with bandaGo
@@ -9221,23 +9334,26 @@ ed2c5cd feat(checkout): restore and revalidate saved cart promo across reloads
 | 27 Oct 2026 | `20261027170000_booking_management_lookup_indexes`, `20261027183500_promotion_redemption_limits` | Booking lookup indexes; promotion limits |
 | 28 Oct 2026 | `20261028000000_order_payment_intent`, `20261028190000_private_promotion_visibility`, `20261028194500_admin_live_cursor_indexes` | Payment intent, private codes, live admin |
 | 4 Nov 2026 | `…1104200000_add_bandago_pos_support` (+ `ea52096` hardening) | BandaGo POS/CRM integration lands and hardens |
-| 5 Nov 2026 | `FULL_CODEBASE.md` snapshot (314 files / 58,693 lines) | Point-in-time review artifact |
-| Nov 2026 | docs tree (operations/testing/governance) | Code audit → this documentation program |
+| 5 Nov 2026 | `SPHERE_PHARMACY_FULL_CODEBASE.md` snapshot | Point-in-time review artifact (`npm run update:codebase`) |
+| 18 Nov 2026 | `55eba08` documentation | Canonical docs tree + OpenAPI 3.1 contract |
+| 19 Nov 2026 | `89b680c` `/docs` portal + `v0.3.0` | Interactive docs portal, 68 journeys, lazy DB Proxy, Next `^16.4.6` & Prisma `^6.19.3` |
+| 19 Nov 2026 | `…1119120000_add_bandago_bidirectional_sync` (`061e923`) | Bi-directional POS reconciliation, drift protection, Daily Sales Export, H1 fixed |
+| 19 Nov 2026 | `c4629b7`, `6e5aad0` | Root organization into `reference/`, single `update:codebase` script |
 
 ## How this history was reconstructed
 
-Sources, in order of reliability: the ten committed Prisma migrations (dates are in the migration directory names and are the strongest signal); the audit document's own date (5 Sep 2026); the recording program's dates (22 Oct 2026, stated in its files); the worklog (31 Aug 2026 era — historical only); the generated snapshot's stated date (5 Nov 2026); and `git log --oneline` (below) for commit-level sequencing. Where the worklog and migrations disagree, the migrations win. Known source weaknesses: `package.json` version (`0.2.1`) does not track releases; the git history begins mid-project (the pre-October work is represented by the migrations and docs, not individual commits).
+Sources, in order of reliability: the eleven committed Prisma migrations (dates are in the migration directory names and are the strongest signal); the audit document's own date (5 Sep 2026); the recording program's dates (22 Oct 2026, stated in its files); the worklog (31 Aug 2026 era — historical only); the generated snapshot's stated date; and `git log --oneline` (above) for commit-level sequencing. Where the worklog and migrations disagree, the migrations win. Known source weaknesses: earlier pre-`0.3.0` versions (`0.2.1`) did not track releases; the git history begins mid-project (the pre-October work is represented by the migrations and docs, not individual commits).
 
 ## State at time of writing (November 2026)
 
-For orientation of future readers: 39 Prisma models, 87 API routes, 10 migrations, 12 Node test suites + 1 Bun assistant suite, five cron endpoints awaiting an external scheduler, three HIGH debt items (credential exposure, scheduling gap, payment blockers) — full inventory in [../operations/](../operations/) and [technical-debt.md](technical-debt.md). The platform's payment layer is real-provider capable and fail-closed, but **no environment has been certified with live production provider credentials**; treat "production-ready" claims accordingly.
+For orientation of future readers: 41 Prisma models, 95 API routes (126 HTTP method handlers), 11 migrations, 13 Node test suites + 1 Bun assistant suite, five cron endpoints awaiting an external scheduler, two remaining open HIGH debt items (scheduling gap, payment blockers — H1 closed in `061e923`) — full inventory in [../operations/](../operations/) and [technical-debt.md](technical-debt.md). The platform's payment layer is real-provider capable and fail-closed, but **no environment has been certified with live production provider credentials**; treat "production-ready" claims accordingly.
 
 Reading order for someone catching up on this project: this file (how it got here) → [architecture-decisions.md](architecture-decisions.md) (why it is built this way) → [../operations/local-development.md](../operations/local-development.md) (how to run it) → [technical-debt.md](technical-debt.md) (what to fix first).
 
 ## Going forward
 
 - **This file is the release log.** Each meaningful change wave gets a dated section (what shipped, why, migration numbers if any) and an updated [technical-debt.md](technical-debt.md) cross-reference where relevant.
-- **Tag releases** (`git tag -a v0.x.y`) at deployment points and reference the tag in the narrative above; the current `package.json` version (`0.2.1`) does not track releases.
+- **Tag releases** (`git tag -a v0.x.y`) at deployment points and reference the tag in the narrative above (`package.json` is at `0.3.0`).
 - **Release-notes convention:** one dated section per release containing — shipped changes (user-visible first), migrations added, env vars added/changed, deployment/ops actions required (cron, callbacks, secrets), and debt items opened or closed. Anything requiring an operator action must also update the relevant runbook in [../operations/](../operations/).
 - Keep narrative sections short and factual; link to the runbooks that explain operation rather than duplicating them.
 - **Corrections welcome, evidence required:** if a date or attribution above is wrong, fix it with the commit/migration/document that proves the correction — never from memory alone.
@@ -9254,8 +9370,8 @@ Reading order for someone catching up on this project: this file (how it got her
 - **Relative Path:** `docs/governance/technical-debt.md`
 - **Category:** Documentation & Blueprints
 - **Language:** Markdown Documentation
-- **Lines:** 151
-- **Size:** 16.4 KB (16,795 bytes)
+- **Lines:** 152
+- **Size:** 17.2 KB (17,635 bytes)
 
 `````markdown
 # Technical Debt Register
@@ -9270,29 +9386,27 @@ Prioritized register of known debt and defects, verified against the November 20
 
 | Tier | Count | Meaning |
 | --- | --- | --- |
-| HIGH | 3 | Blocks production trust; security exposure or payment certification failure |
-| MEDIUM | 5 | Hygiene, dead weight, and false documentation — misleads maintainers, inflates risk surface |
+| HIGH | 2 Open (1 Closed) | Blocks production trust; security exposure or payment certification failure (`H1` fixed in `061e923`) |
+| MEDIUM | 5 | Hygiene, dead weight, and historical documentation — misleads maintainers, inflates risk surface |
 | LOW | 9 | Hardening and polish; fix opportunistically when touching the area |
 
 ## HIGH — fix before production trust
 
 | # | What | Where | Impact | Recommended action | Status |
 | --- | --- | --- | --- | --- | --- |
-| H1 | Browser-exposed POS sync secret + hard-coded fallback + shared default (detail below) | `pos-sync-section.tsx`, `api/integrations/bandago/csv-import/route.ts`, `.env.example` | Credential exposure to any browser; fail-closed defeated | Remove browser secret, remove fallback, rotate reused credentials | **Fixed** (browser secret & hardcoded fallback removed; admin UI uses staff cookie; rotate deployed secrets before go-live) |
+| H1 | Browser-exposed POS sync secret + hard-coded fallback + shared default (detail below) | `pos-sync-section.tsx`, `api/integrations/bandago/csv-import/route.ts`, `.env.example` | Formerly exposed credential to any browser and defeated fail-closed auth | Browser secret, fallback, and placeholder removed; rotate any deployed secrets that ever matched the retired default | **Closed** (`Fixed in 061e923` — see Closed section) |
 | H2 | No in-repo cron scheduler; scheduling is external and undocumented per environment | `/api/cron/*`, deployment layer | Silent operational failure across five jobs | Checklist enforcement + ship a scheduler reference | Open |
 | H3 | Payment-audit release blockers (six items) | payments/service-payment paths | Production payments uncertifiable | Implement per audit, preserving ADR-007/008/009 invariants | Open |
 
-### H1 — BandaGo credential exposure (detail)
+### H1 — BandaGo credential exposure (remediated in `061e923`)
 
-Three compounding problems:
+Three compounding problems existed prior to commit `061e923`:
 
-1. **Browser-borne credential.** The admin "BandaGo POS Integration Hub" CSV dropzone sends `Authorization: Bearer ${process.env.NEXT_PUBLIC_POS_SYNC_SECRET}` from the browser, so the value is embedded in the public client bundle and extractable by any visitor — then honored by the sync/CRM endpoints as a server credential.
-2. **Hard-coded fallback.** `csv-import/route.ts` (line 122) falls back to a hard-coded secret literal when `BANDAGO_SYNC_API_KEY` is unset, so internal bearer auth passes even in an unconfigured environment — defeating the fail-closed expectation elsewhere in the codebase. (The literal is deliberately not reproduced in docs.)
-3. **Shipped default, shared value.** `.env.example` sets `BANDAGO_SYNC_API_KEY` and `NEXT_PUBLIC_POS_SYNC_SECRET` to the **same** default value, encouraging copy-paste reuse across environments and making the "secret" public by construction.
+1. **Browser-borne credential.** The admin "BandaGo POS Integration Hub" CSV dropzone formerly sent `Authorization: Bearer ${process.env.NEXT_PUBLIC_POS_SYNC_SECRET}` from the browser, embedding it in the public client bundle.
+2. **Hard-coded fallback.** `csv-import/route.ts` formerly fell back to a hard-coded secret literal when `BANDAGO_SYNC_API_KEY` was unset.
+3. **Shipped default, shared value.** `.env.example` formerly set both keys to the same example default value.
 
-**Impact:** unauthorized catalog/stock writes, CRM profile manipulation, and POS telemetry pollution; any environment that kept the shipped default is effectively open.
-
-**Remediation order:** (a) make the CSV upload rely on the already-implemented staff-session auth path and delete the `NEXT_PUBLIC_POS_SYNC_SECRET` usage; (b) delete the hard-coded fallback so an unset key fails closed like every other integration; (c) set distinct strong `BANDAGO_SYNC_API_KEY` values per environment; (d) **rotate every credential that ever equaled the shipped default**; (e) update [../operations/environment-variables.md](../operations/environment-variables.md) and the admin UI copy. See also the security callout there.
+**Resolution (`061e923`):** `NEXT_PUBLIC_POS_SYNC_SECRET` was removed from `.env.example` and `pos-sync-section.tsx` (the admin hub now authenticates strictly via the `sphere_session` cookie); the hard-coded fallback and `.env.example` literal were deleted; machine Bearer auth (`verifyBandagoBearerHeader` / `authorizeBandagoRequest`) fails closed with constant-time comparison; and `isUsingInsecureDefaultBandagoKey()` flags any environment still configured with the retired placeholder. Verified by `tests/bandago-bidirectional-sync.test.mjs`. Operational action remaining per environment: **rotate any deployed credential that ever equaled the retired default**.
 
 ### H2 — Scheduling is someone else's job (detail)
 
@@ -9319,15 +9433,15 @@ From [../payment-notification-audit.md](../payment-notification-audit.md) (5 Sep
 | --- | --- | --- | --- | --- | --- |
 | M1 | Dual lockfiles (`bun.lock` + `package-lock.json`) and mixed bun/npm scripts | repo root, `package.json`, `.zscripts/*` | Installs are not reproducible across environments; CI (npm) and deployment (bun) can drift apart | Pick one package manager per environment (CI is npm today); delete the unused lockfile; align scripts and docs | Open |
 | M2 | Unused declared dependencies: `z-ai-web-dev-sdk`, `next-auth`, `@tanstack/react-query`, `@tanstack/react-table`, `next-intl`, `@mdxeditor/editor` — none used in `src/` | `package.json` | Bigger install/attack surface, audit noise, false capability signals (e.g. next-auth implies a second auth system) | Verify per package, then remove; re-run `npm audit` + build | Open |
-| M3 | Dead code: `ScheduledJobDelivery` table (zero references — the active queue is `NotificationDelivery`); `awardPointsForOrder`/`reversePointsForOrder` (callbacks write the ledger inline); legacy `InventoryGuard` virtual-reservation path (only `getAvailableStock` + `cleanupExpiredReservations(45)` are still invoked, by BandaGo sync); unused home view + home components; unused layout header | `prisma/schema.prisma`, `src/lib/loyalty.ts`, `src/lib/inventory-guard.ts`, view/layout components | Maintainers edit the wrong implementation; schema carries a phantom table; the reservation story is ambiguous next to ADR-005 | Remove dead exports/components; drop the table via a dedicated migration once historical queries are confirmed unnecessary | Open |
-| M4 | Documentation drift: README demo accounts/orders (the seed creates none — 7 categories + optional admin only); "payments (simulated for demo)" while the code is real-provider-capable and fail-closed; broken `upload/requirements.md` PRD reference; `worklog.md` describes only the SQLite/simulated era; README credits `z-ai-web-dev-sdk` for an assistant that uses Groq; README predates BandaGo entirely | `PROJECT_README.md`, `worklog.md` | New staff try demo logins that don't exist; readers underestimate payment integration maturity; POS integration invisible | Rewrite the README against the current docs tree; mark the worklog historical; treat this register + [release-history.md](release-history.md) as authoritative | Open |
+| M3 | Dead code: `ScheduledJobDelivery` table (zero references — the active queue is `NotificationDelivery`); `awardPointsForOrder`/`reversePointsForOrder` (callbacks write the ledger inline); legacy `InventoryGuard` virtual-reservation path (only `getAvailableStock` + `cleanupExpiredReservations(45)` are still invoked, by BandaGo sync); unused `src/hooks/use-toast.ts` + `src/components/ui/toaster.tsx` (now zero app callers after `pos-sync-section.tsx` migrated to `sonner`); unused home view + home components; unused layout header | `prisma/schema.prisma`, `src/lib/loyalty.ts`, `src/lib/inventory-guard.ts`, `src/hooks/use-toast.ts`, view/layout components | Maintainers edit the wrong implementation; schema carries a phantom table; the reservation story is ambiguous next to ADR-005 | Remove dead exports/components; drop the table via a dedicated migration once historical queries are confirmed unnecessary | Open |
+| M4 | Historical archive docs carry demo-era claims (demo accounts `admin123`, SQLite, "simulated payments", `z-ai-web-dev-sdk`, broken `upload/requirements.md` reference); root `README.md` was rewritten against the docs tree (`55eba08`), and the files moved to `reference/archive/` (`c4629b7`), while the archived copies remain historical | `reference/archive/PROJECT_README.md`, `reference/archive/worklog.md` | Readers opening archived files directly can mistake demo-era claims for live behavior | Keep archived banner clear; treat the `docs/` tree + [release-history.md](release-history.md) as authoritative | Partial (root `README.md` rewritten; archive relocated to `reference/archive/`) |
 | M5 | Customer cancel toast promises automatic refunds; the server blocks cancelling captured payments (SUCCESS → 409) and refunds are ADMIN-only and partly manual (M-Pesa portal B2C) | cancel flow UI vs `api/orders/[id]/cancel` + `api/payments/refund` | Customers expect instant money-back that requires staff action → complaints, support load, trust damage | Reword the toast to set the real expectation (refund handled by staff); optionally add a refund-request intent endpoint feeding H3-remediation work | Open |
 
 ## LOW — hardening and polish
 
 | # | What | Where | Impact | Recommended action | Status |
 | --- | --- | --- | --- | --- | --- |
-| L1 | Non-constant-time Bearer comparison (`===`) in cron routes and BandaGo routes | cron + bandago route handlers | Theoretical timing side-channel | Route all bearer checks through one `timingSafeEqual` helper | **Partial** (all BandaGo routes fixed via `verifyBandagoBearerHeader`; 4 cron routes still use plain compare) |
+| L1 | Non-constant-time Bearer comparison (`===`) in 4 of 5 cron routes (BandaGo routes fixed) | `src/app/api/cron/*` (excl. `notifications`) | Theoretical timing side-channel | Route all cron bearer checks through `authorizedJob()` / `timingSafeEqual` | **Partial** (`061e923` fixed all BandaGo routes via `verifyBandagoBearerHeader`; 4 cron routes still use plain compare) |
 | L2 | Chronic-refills queries legacy `'DELIVERED'` order status alongside `COMPLETED_DELIVERY`/`COMPLETED_PICKUP` | `src/lib/crm/bandago-crm.ts` | Legacy rows skew eligibility; semantic ambiguity | Keep for history, but normalize legacy values at the constants layer (ADR-004) | Open |
 | L3 | `GET /api/prescriptions` header comment says "GET /api/orders" (copy-paste artifact) | `api/prescriptions/route.ts` | Minor reader confusion | Fix the comment | Open |
 | L4 | `Payment.cardLast4` declared but never populated by any code path | `prisma/schema.prisma` | Dead column; misleading schema | Populate from IntaSend webhook data or drop via migration | Open |
@@ -9400,13 +9514,16 @@ Order matters when remediating — several items unlock or constrain others:
 
 | # | What | Fixed in | Verification |
 | --- | --- | --- | --- |
-| — | — | — | — |
+| H1 | Browser-exposed `NEXT_PUBLIC_POS_SYNC_SECRET` + hard-coded `csv-import` fallback + shared `.env.example` default | `061e923` | `tests/bandago-bidirectional-sync.test.mjs` asserts removal of `NEXT_PUBLIC_POS_SYNC_SECRET`, absence of the legacy placeholder, fail-closed `verifyBandagoBearerHeader`, and `isUsingInsecureDefaultBandagoKey()`; admin UI uses `sphere_session` cookie. (Rotate any previously deployed credentials.) |
 
 ## Activity log
 
 | Date | Item | Change |
 | --- | --- | --- |
 | Nov 2026 | — | Register created from the full code audit (17 items: 3 HIGH, 5 MEDIUM, 9 LOW) |
+| 19 Nov 2026 | — | `89b680c`: shipped interactive `/docs` portal, lazy DB Proxy, and v0.3.0 dependency upgrades |
+| 19 Nov 2026 | H1, L1 | `061e923`: H1 closed (removed browser POS secret, hardcoded fallback, and `.env.example` default; added fail-closed `verifyBandagoBearerHeader`); L1 partially closed (all BandaGo routes now timing-safe; 4 cron routes remain) |
+| 19 Nov 2026 | M3, M4 | `061e923`, `c4629b7`, `6e5aad0`: `pos-sync-section.tsx` migrated to `sonner` (leaving `use-toast.ts` unused in M3); legacy `PROJECT_README.md` & `worklog.md` archived under `reference/archive/` (M4 partial); docs synced across repository |
 
 *(Append one row per status change — picked up, fixed, verified — so the register doubles as its own audit trail.)*
 `````
@@ -9422,8 +9539,8 @@ Order matters when remediating — several items unlock or constrain others:
 - **Relative Path:** `docs/integrations/ai-provider.md`
 - **Category:** Documentation & Blueprints
 - **Language:** Markdown Documentation
-- **Lines:** 157
-- **Size:** 10.1 KB (10,357 bytes)
+- **Lines:** 164
+- **Size:** 11.0 KB (11,259 bytes)
 
 `````markdown
 # AI Provider — Groq
@@ -9439,9 +9556,9 @@ The Sphere AI assistant is powered by **Groq**'s OpenAI-compatible chat-completi
 ## What it is
 
 - **Provider:** Groq — `POST https://api.groq.com/openai/v1/chat/completions`, an OpenAI-compatible endpoint.
-- **Caller:** `src/app/api/assistant/route.ts` (272 lines) — the only code path that talks to Groq.
+- **Callers:** `src/app/api/assistant/route.ts` (storefront AI companion) and `src/app/api/docs-assistant/route.ts` ("Ask Sphere Docs" at `/docs/assistant`).
 - **Model default:** `GROQ_MODEL` or `openai/gpt-oss-20b`.
-- **Key gating:** the LLM branch runs only when `GROQ_API_KEY` is set; without it the assistant is fully functional in deterministic mode.
+- **Key gating:** the LLM branch runs only when `GROQ_API_KEY` is set; without it the storefront assistant runs in deterministic mode and the docs assistant returns lexical-retrieval excerpts.
 
 ## Configuration
 
@@ -9473,6 +9590,13 @@ Endpoint-level limits that frame the call:
 | LLM timeout | 15 seconds (`AbortSignal.timeout`) |
 | Completion size | `max_completion_tokens` 650 |
 | Reply display | Truncated to 2000 characters |
+
+### Documentation assistant (`POST /api/docs-assistant`)
+
+The `/docs` portal's "Ask Sphere Docs" route (`src/app/api/docs-assistant/route.ts`, retrieval in `src/lib/docs/assistant.ts`) uses the same Groq provider pattern over **public documentation only** (`docs/**`, `README.md`, `AGENTS.md`, never reading `sphere_session`):
+
+- **Limits:** body ≤ 20,000 B (413), `docs-assistant` rate limit **20 requests / hour / IP** (429), last **6 messages**, last question truncated to **1,200 characters**, **20 s** timeout, `max_completion_tokens: 700`.
+- **Fallback:** scores headings/excerpts lexically across the documentation corpus; if `GROQ_API_KEY` is unset, times out, or fails `hasCredential()`, it answers directly with the top retrieved documentation citations (`provider: "lexical"`).
 
 ## Deterministic-first design
 
@@ -9596,17 +9720,17 @@ sequenceDiagram
 - **Relative Path:** `docs/integrations/bandago-pos-crm.md`
 - **Category:** Documentation & Blueprints
 - **Language:** Markdown Documentation
-- **Lines:** 363
-- **Size:** 28.9 KB (29,551 bytes)
+- **Lines:** 390
+- **Size:** 33.7 KB (34,517 bytes)
 
 `````markdown
 # BandaGo POS & CRM Integration
 
-The physical pharmacy in Roysambu runs its counter sales, stock, and customer records in **BandaGo**, an iDempiere-based POS/CRM hosted at `go.bandahealth.org`. This repository contains the **server-side receiving end** of that integration: three API routes, a hardened data normalizer, a CRM reconciler, an inventory guard, a chronic-refill cron job, and an admin "POS Integration Hub" that together keep the online storefront's catalogue, stock levels, batch/expiry records, and customer loyalty data synchronized with the physical shop. The pushing side — a Chrome MV3 extension called `api_data_transformer` that runs in the pharmacist's browser — is **external to this repo** (see [Blueprint: implemented here vs external](#blueprint-implemented-here-vs-external)).
+The physical pharmacy in Roysambu runs its counter sales, stock, and customer records in **BandaGo**, an iDempiere-based POS/CRM hosted at `go.bandahealth.org`. This repository contains the **server-side bi-directional integration** layer: six `/api/integrations/bandago/*` endpoints, three `/api/admin/pos-sync/*` policy/reconciliation/export endpoints, `GET /api/admin/pos-status`, a hardened data normalizer, stagnant-POS drift protection (`computeReconciledStock`), an outbound job ledger (`PosOutboundJob`), a Zero-PHI Daily Sales Export generator (`PDF`/`CSV`/`JSON`), a deduplicated error console (`PosSyncIncident`), a CRM reconciler, an inventory guard, a chronic-refill cron job, and a 4-workspace admin "BandaGo POS Integration Hub". The browser-side bridge — the `api_data_transformer` Chrome MV3 extension running on the dispensary workstation — is **external to this repo** (see [Blueprint: implemented here vs external](#blueprint-implemented-here-vs-external)).
 
 | Audience | Status | Verified |
 | --- | --- | --- |
-| Engineers, AI coding agents | **Implemented** (server side; open security items in the [security warning](#security-warning-requires-remediation)) | November 2026 |
+| Engineers, AI coding agents | **Implemented** (server side; H1 security remediation verified; extension bridge **Requires live verification**) | November 2026 |
 
 ## What it is
 
@@ -9616,8 +9740,12 @@ BandaGo is built on iDempiere, so the integration is expressed in iDempiere voca
 - **`C_BPartner`** — the POS's business-partner (customer) record; stored locally as `User.externalBPartnerId`.
 - **Lot / `GuaranteeDate`** — batch numbers and expiry dates; stored locally as `ProductBatch` rows.
 - **`BH_SellPrice`** — the POS selling price, accepted as a column alias by CSV import.
+- **`AD_Client_UU` / Warehouse / Locator / Org** — tenant and inventory coordinates (`Product.externalClientId`, `externalWarehouseId`, `externalLocatorId`, `externalOrgId`) supporting single-tenant pinning (`expectedTenantUU`).
 
-Data flows one way into this app (inventory and customer profiles are *received*, never pushed to BandaGo), and the outbound side of the loop is human-mediated: online orders reserve stock, staff are notified, the pharmacist deducts stock at the BandaGo counter terminal, and the updated levels flow back through the extension.
+Data flows **bi-directionally** under an explicit, policy-governed reconciliation model:
+
+- **Inbound (POS → Website):** products, prices, batches, and customer profiles flow from BandaGo into Sphere (`EXTENSION_STREAM`, `BACKGROUND_POLL`, `CSV_IMPORT`, `MANUAL_RECONCILE`). Before committing stock, `computeReconciledStock` subtracts unreconciled outbound sales deltas and unpaid order holds (`protectUnreconciledSales`) so stagnant POS snapshots never resurrect units sold online.
+- **Outbound (Website → POS):** paid/prepared orders (`enqueueOrderPosDeduction`), staff stock edits (`enqueueAdminStockEdit`), and cancellations/refunds/expiries (`cancelOrderPosDeduction`) write idempotent `PosOutboundJob` ledger rows. By default (`MANUAL_EXPORT`), pharmacists download Zero-PHI Daily Sales sheets (A4 PDF with sign-off, CSV, or JSON) and click **Confirm Entered in BandaGo POS**; optionally (`AUTO_SYNC`), an `ADMIN` can allow the Chrome bridge to claim jobs (`GET /api/integrations/bandago/outbound?claim=1`) and execute idempotent `M_Inventory` Physical Inventory documents inside the open BandaGo tab.
 
 ## Architecture
 
@@ -9627,43 +9755,57 @@ flowchart TB
         MPROD["M_Product_UU catalog"]
         LOTS["Lot + GuaranteeDate batches"]
         CBP["C_BPartner customers"]
+        MINV["M_Inventory Physical Inventory"]
     end
 
     subgraph BROWSER["Pharmacist browser - external to this repo"]
-        EXT["api_data_transformer - Chrome MV3 extension<br>sniffs POS responses and pushes JSON batches"]
+        EXT["api_data_transformer - Chrome MV3 extension<br/>inbound sniffer + optional AUTO_SYNC writeback + heartbeat"]
     end
 
     subgraph COUNTER["Pharmacy counter"]
-        TERM["Counter terminal deducts stock in BandaGo"]
+        TERM["Counter terminal / Daily Sales PDF/CSV manual entry"]
     end
 
     subgraph SPHERE["Sphere Pharmacy server - this repo"]
         SYNC["POST /api/integrations/bandago/sync"]
         CSVIMP["POST /api/integrations/bandago/csv-import"]
-        NORM["BandaGoNormalizer<br>numbers, slugs, Rx rules, FEFO"]
-        CRM["POST /api/integrations/bandago/crm"]
+        OUTCLAIM["GET /api/integrations/bandago/outbound"]
+        OUTACK["POST /api/integrations/bandago/outbound/ack"]
+        TELEM["POST /api/integrations/bandago/telemetry"]
+        NORM["BandaGoNormalizer + computeReconciledStock"]
+        CRM["GET/POST /api/integrations/bandago/crm"]
         RECON["BandaGoCrmReconciler"]
         CRON["GET /api/cron/chronic-refills"]
         STATUS["GET /api/admin/pos-status"]
-        HUB["Admin POS Integration Hub"]
-        DB[("PostgreSQL - Product, ProductBatch,<br>PosSyncLog, User")]
+        POLICY["GET/PUT /api/admin/pos-sync/policy"]
+        RECONAPI["GET/POST /api/admin/pos-sync/reconcile"]
+        EXPORT["GET /api/admin/pos-sync/sales-export"]
+        HUB["Admin POS Integration Hub - 4 workspaces"]
+        DB[("PostgreSQL - Product, ProductBatch,<br/>PosSyncLog, PosOutboundJob, PosSyncIncident, User")]
     end
 
     MPROD -->|"response sniffing"| EXT
     LOTS --> EXT
     CBP --> EXT
-    EXT -->|"Bearer BANDAGO_SYNC_API_KEY"| SYNC
+    EXT -->|"Timing-safe Bearer BANDAGO_SYNC_API_KEY"| SYNC
     EXT -->|"customer profile batches"| CRM
-    CSVIMP -->|"internal delegation - trigger CSV_IMPORT"| SYNC
+    EXT -->|"Zero-PHI heartbeat + errors"| TELEM
+    EXT <-->|"opt-in AUTO_SYNC claim + ack"| OUTCLAIM
+    OUTCLAIM --> OUTACK
+    EXT -->|"M_Inventory writeback"| MINV
+    CSVIMP -->|"staff session or Bearer -> sync CSV_IMPORT"| SYNC
     SYNC --> NORM
     NORM --> DB
-    SYNC --> DB
     CRM --> RECON
     RECON --> DB
     CRON --> RECON
-    STATUS --> DB
+    TELEM --> DB
+    OUTACK --> DB
     HUB --> STATUS
-    DB -->|"order + dispatch notifications"| TERM
+    HUB --> POLICY
+    HUB --> RECONAPI
+    HUB --> EXPORT
+    EXPORT -->|"PDF / CSV / JSON"| TERM
     TERM -->|"updated stock flows back"| EXT
 ```
 
@@ -9685,27 +9827,33 @@ The chronic-refill cron closes the care loop: 30 days after a prescription order
 | `/api/cron/chronic-refills` | `GET` | Bearer `CRON_SECRET` | Refill eligibility + reminder dispatch. |
 | `/api/admin/pos-status` | `GET` | `ADMIN`/`PHARMACIST`/`STAFF` | Telemetry, heartbeat, policy, and audit logs for the admin hub. |
 
-Key source files: `src/app/api/integrations/bandago/*`, `src/lib/bandago-normalizer.ts`, `src/lib/crm/bandago-crm.ts`, `src/lib/inventory-guard.ts`, `src/components/views/admin/sections/pos-sync-section.tsx`, `prisma/migrations/20261104200000_add_bandago_pos_support/`.
+Key source files: `src/app/api/integrations/bandago/*`, `src/app/api/admin/pos-status/route.ts`, `src/app/api/admin/pos-sync/*`, `src/lib/bandago-normalizer.ts`, `src/lib/pos-reconciliation.ts`, `src/lib/pos-reconciliation-core.ts`, `src/lib/pdf/daily-sales-pdf.ts`, `src/lib/security/bandago-auth.ts`, `src/lib/security/bandago-bearer.ts`, `src/lib/crm/bandago-crm.ts`, `src/lib/inventory-guard.ts`, `src/components/views/admin/sections/pos-sync-section.tsx`, `prisma/migrations/20261104200000_add_bandago_pos_support/`, `prisma/migrations/20261119120000_add_bandago_bidirectional_sync/`.
 
 ## Configuration
 
 | Name | Required | Secret | Sandbox / production | Description |
 | --- | --- | --- | --- | --- |
-| `BANDAGO_SYNC_API_KEY` | Yes (machine auth) | Yes | Same value both | Bearer secret accepted by `/sync`, `/csv-import`, and CRM `POST`. If unset, the bearer path never validates and only staff sessions pass. **Must not** reuse the default shipped in `.env.example` — see the security warning below. |
-| `NEXT_PUBLIC_POS_SYNC_SECRET` | No (should be removed) | Exposed | Same value both | Sent as a Bearer header **from the browser** by the admin CSV dropzone. Because `NEXT_PUBLIC_*` values are inlined into the client bundle, this is a browser-exposed credential. See the security warning. |
+| `BANDAGO_SYNC_API_KEY` | Yes (machine auth) | Yes | Unique strong random secret per env | Server-only Bearer secret accepted (timing-safe, fail-closed) across all `/api/integrations/bandago/*` endpoints. Unset in `.env.example`; `isUsingInsecureDefaultBandagoKey()` alerts admins in the POS Hub if unset or equal to the retired placeholder. |
+| `NEXT_PUBLIC_POS_SYNC_SECRET` | **Removed (`061e923`)** | — | — | Retired browser-exposed variable (H1). Deleted from `.env.example` and `pos-sync-section.tsx`; the admin hub authenticates strictly via the `sphere_session` cookie. Never reintroduce. |
 | `CRON_SECRET` | Yes | Yes | Same value both | Bearer secret (≥32 chars) required by `GET /api/cron/chronic-refills`. |
-| `NEXT_PUBLIC_APP_URL` | Yes | No | Production HTTPS | Base URL used to build refill reminder links (defaults to `https://spherepharmacy.co.ke`). |
+| `NEXT_PUBLIC_APP_URL` | Yes | No | Production HTTPS | Base URL used to build refill reminder and critical POS alert links (defaults to `https://spherepharmacy.co.ke`). |
 
 ## POST /api/integrations/bandago/sync
 
-The primary ingestion endpoint (485-line route at `src/app/api/integrations/bandago/sync/route.ts`).
+The primary ingestion endpoint (`src/app/api/integrations/bandago/sync/route.ts`).
 
 **Authentication is dual-mode:**
 
-1. `Authorization: Bearer <BANDAGO_SYNC_API_KEY>` (machine-to-machine, used by the extension), **or**
+1. `Authorization: Bearer <BANDAGO_SYNC_API_KEY>` (machine-to-machine, verified timing-safe via `timingSafeEqualStrings`, failing closed if `BANDAGO_SYNC_API_KEY` is unset), **or**
 2. an active staff session with role `ADMIN` or `PHARMACIST` (used by browser flows).
 
-If neither passes, the route answers `401` with `Unauthorized: Invalid POS Sync Credentials`. Note the bearer comparison is a plain string equality, not constant-time.
+If neither passes, the route answers `401` with `Unauthorized: Invalid POS Sync Credentials`.
+
+Before committing items, the route loads `PosSyncPolicy` (`getPosSyncPolicy()`):
+- **Single-tenant pinning:** if `policy.expectedTenantUU` is configured and `payload.tenantUU` disagrees, the route rejects the packet with `403` (`TENANT_MISMATCH`), logs a `FAILED` `PosSyncLog`, and records a `CRITICAL` `PosSyncIncident`.
+- **Inbound pause:** if `policy.inboundEnabled` is `false` (except `MANUAL_RECONCILE`), the route returns `{ success: true, paused: true, upsertedCount: 0 }`.
+- **Stagnant-POS drift protection:** pre-fetches `getUnreconciledOffsetsByProduct()` and applies `computeReconciledStock()` per item so stale POS counts cannot overwrite unreconciled online sales or unpaid holds back up. When `isActive === false` or `discontinued === true`, the item is clamped to `stockQty: 0`, `active: false`, `stockStatus: DISCONTINUED`.
+- **Minimum shelf life:** passes `policy.minShelfLifeDays` to `BandaGoNormalizer.processBatches()` to exclude batches expiring within that buffer from sellable stock.
 
 **Payload shape** (strings shown for price/stock to illustrate tolerant parsing):
 
@@ -9735,16 +9883,16 @@ If neither passes, the route answers `401` with `Unauthorized: Invalid POS Sync 
 }
 ```
 
-- `trigger` must be one of `EXTENSION_STREAM`, `BACKGROUND_POLL`, `CSV_IMPORT`, `MANUAL_RECONCILE`; anything else silently defaults to `EXTENSION_STREAM`.
+- `trigger` must be one of `EXTENSION_STREAM`, `BACKGROUND_POLL`, `CSV_IMPORT`, `MANUAL_RECONCILE` (`CDP_INTERCEPT` maps to `EXTENSION_STREAM`); anything else silently defaults to `EXTENSION_STREAM`.
 - Each item's identifier is resolved as `externalPosId ?? id ?? uu ?? M_Product_UU`. Items missing an identifier **or** a name are pushed onto `errors[]` and skipped — one bad item never crashes the batch.
-- Before processing, `InventoryGuard.cleanupExpiredReservations(45)` releases virtual reservations older than 45 minutes (warnings are non-fatal).
+- Before processing, `InventoryGuard.cleanupExpiredReservations(45)` releases virtual reservations older than 45 minutes (calling `cancelOrderPosDeduction` for expired holds; warnings are non-fatal).
 
-**Processing** is chunked: items are upserted in chunks of **50** inside `prisma.$transaction` (`maxWait` 10s, `timeout` 30s). If a whole chunk transaction fails, the route falls back to **per-item isolated transactions**, so one poisoned item only fails itself. Failures accumulate in `errors[]` keyed by `externalPosId` + `name` + error message.
+**Processing** is chunked: items are upserted in chunks of **50** inside `prisma.$transaction` (`maxWait` 10s, `timeout` 30s). If a whole chunk transaction fails, the route falls back to **per-item isolated transactions**, so one poisoned item only fails itself. Failures accumulate in `errors[]` keyed by `externalPosId` + `name` + error message, and also record deduplicated `INBOUND_ITEM_FAILED` / `POSSIBLE_MANUAL_RECONCILE` `PosSyncIncident` rows.
 
 **Statuses and response.** The final `PosSyncLog.status` is `SUCCESS` (zero errors), `PARTIAL` (some), or `FAILED` (every item failed). The HTTP response is **200 even for partial failure** — callers must inspect the body:
 
 ```json
-{ "success": true, "upsertedCount": 48, "failedCount": 2, "durationMs": 1840, "timestamp": "...", "errors": [ ... up to 20 ... ] }
+{ "success": true, "upsertedCount": 48, "failedCount": 2, "reconciledProtectedCount": 3, "durationMs": 1840, "timestamp": "...", "policySummary": { ... }, "errors": [ ... up to 20 ... ] }
 ```
 
 A truly fatal pipeline error returns `500` with `POS Sync pipeline encountered an unrecoverable failure`.
@@ -9916,35 +10064,38 @@ When enabled by an `ADMIN` in Policy **and** permitted in the extension, `BandaG
 
 ## Blueprint: implemented here vs external
 
-The full design lives in [`bandago-pos-crm-blueprint.md`](../../reference/bandago-pos-crm-blueprint.md) (9 sections: architecture, schema extensions, sync API spec, CSV ingestion, reservation engine, patient CRM, admin control center, regulatory compliance, rollout checklist). The shipped code hardens the blueprint with staff-session auth, item identifier fallbacks, image and Rx-flag preservation, SKU/slug collision handling, and reservation cleanup.
+The full design lives in [`bandago-pos-crm-blueprint.md`](../../reference/bandago-pos-crm-blueprint.md) (9 sections) and [`bandago-api-and-integration-architecture.md`](../../reference/bandago-api-and-integration-architecture.md) (iDempiere GraphQL & bi-directional bridge architecture). The shipped code hardens the blueprint with timing-safe fail-closed auth, staff-session auth, item identifier fallbacks, image and Rx-flag preservation, SKU/slug collision handling, stagnant-POS drift protection, Manual-First Daily Sales Export, and reservation cleanup.
 
-- **Implemented in this repo:** all server-side pieces — the three API routes, `Product`/`ProductBatch`/`PosSyncLog`/`User` schema extensions (migration `add_bandago_pos_support`), `BandaGoNormalizer`, `BandaGoCrmReconciler`, `InventoryGuard`, the chronic-refills cron, `GET /api/admin/pos-status`, the admin POS hub, and `tests/bandago-pos-crm-integration.test.mjs`. (The blueprint's `ProductCategory` model shipped as `Category`; `src/lib/db.ts` aliases `prisma.productCategory` → `prisma.category` for compatibility.)
-- **Not in this repo:** the `api_data_transformer` Chrome MV3 extension — it runs in the pharmacist's browser, sniffs BandaGo POS network/CDP responses, transforms them, and pushes batches with the bearer secret. It also provides the CSV exporter used for Day-1 migrations.
+- **Implemented in this repo:** all server-side pieces — the six `/api/integrations/bandago/*` routes, the three `/api/admin/pos-sync/*` routes, `GET /api/admin/pos-status`, schema extensions across migrations `20261104200000_add_bandago_pos_support` and `20261119120000_add_bandago_bidirectional_sync` (`Product`, `ProductBatch`, `PosSyncLog`, `PosOutboundJob`, `PosSyncIncident`, `User`), `BandaGoNormalizer`, `pos-reconciliation*.ts`, `daily-sales-pdf.ts`, `security/bandago-*.ts`, `BandaGoCrmReconciler`, `InventoryGuard`, the chronic-refills cron, the 4-workspace admin POS hub, `tests/bandago-pos-crm-integration.test.mjs`, and `tests/bandago-bidirectional-sync.test.mjs`. (The blueprint's `ProductCategory` model shipped as `Category`; `src/lib/db.ts` aliases `prisma.productCategory` → `prisma.category` for compatibility.)
+- **Not in this repo:** the `api_data_transformer` Chrome MV3 extension — it runs in the pharmacist's browser, sniffs BandaGo POS network/CDP responses, posts telemetry/heartbeats, pushes inbound batches, and (when `AUTO_SYNC` is enabled) executes `M_Inventory` writebacks in the open BandaGo tab.
 
 ## Regulatory notes
 
 - **Kenya PPB (Pharmacy and Poisons Act, Cap 244).** The normalizer enforces three PPB-derived rules at ingestion: expired batches never count toward sellable stock; `requiresPrescription` can be raised but never lowered by a sync; near-expiry (<90 days) stock is flagged for audit in the admin hub. Prescription records themselves are retained separately by the prescription-retention cron (`PRESCRIPTION_RETENTION_DAYS`; the blueprint states a 2-year intent, CI pins 365).
-- **Kenya DPA / ODPC.** Patient diagnoses, doctor notes, and clinical records held in BandaGo are **never synced** — only sanitized inventory, customer contact details, and basic loyalty data cross the boundary. Sphere acts as data processor; the database connection is encrypted (`sslmode=require`) and secrets live in environment variables.
+- **Kenya DPA / ODPC.** Patient diagnoses, doctor notes, and clinical records held in BandaGo are **never synced** — only sanitized inventory, customer contact details, and basic loyalty data cross the boundary. Daily Sales Exports and `PosSyncIncident`s are strictly Zero-PHI. Sphere acts as data processor; the database connection is encrypted (`sslmode=require`) and secrets live in environment variables.
 
 ## Operational requirements
 
-- Deploy the `add_bandago_pos_support` migration before enabling any sync traffic.
-- Set `BANDAGO_SYNC_API_KEY` to a fresh random value and verify the route answers `401` without a bearer (rollout checklist item from the blueprint).
+- Deploy both `20261104200000_add_bandago_pos_support` and `20261119120000_add_bandago_bidirectional_sync` migrations before enabling sync traffic.
+- Set `BANDAGO_SYNC_API_KEY` to a fresh random value (e.g. `openssl rand -hex 32`) — never the retired `.env.example` placeholder — and verify the route answers `401` without a valid bearer or staff session.
+- Configure `PosSyncPolicy` in Admin → POS Sync (starts in safe `MANUAL_EXPORT` mode with `protectUnreconciledSales: true`; optionally set `expectedTenantUU` to pin the pharmacy's `AD_Client_UU` and set the reconciliation baseline on cutover).
 - Schedule `GET /api/cron/chronic-refills` with `Authorization: Bearer <CRON_SECRET>`; there is no in-repo scheduler, so this is a deployment responsibility (see [operations docs](../operations/environment-variables.md)).
-- Point `api_data_transformer` at the sync endpoint and confirm the admin hub's Last Live Signal card turns over.
+- Point `api_data_transformer` at the sync/telemetry/outbound endpoints and confirm the admin hub's Bridge Heartbeat and Last Live Signal cards turn over.
 - Verify reservation behavior beyond `stock − safetyBuffer` is rejected (blueprint's "double-selling nightmare" scenario).
-- Monitor `PosSyncLog` via `/api/admin/pos-status`; investigate `PARTIAL`/`FAILED` runs using the capped error details.
+- Monitor `PosSyncLog` and the POS Error Console (`PosSyncIncident`) via `/api/admin/pos-status` and `/api/admin/pos-sync/reconcile`.
 
 ## Testing
 
-`tests/bandago-pos-crm-integration.test.mjs` (run with the `npm test` node test runner) covers the load-bearing rules:
+`tests/bandago-pos-crm-integration.test.mjs` and `tests/bandago-bidirectional-sync.test.mjs` (run with `npm test`) cover the load-bearing rules:
 
 - Slug generation and external-ID suffixing.
 - PPB prescription classification (raw flag, category, name keywords; word-boundary behavior).
 - FEFO expired-lot exclusion from valid stock.
 - The available-stock formula (physical − safety buffer − virtual reservations).
-- Kenyan phone normalization.
-- Source-contract greps that pin the route/auth wiring in place.
+- Stagnant-POS drift protection (`computeReconciledStock`), policy normalization, and deterministic UUIDv4 generation (`deterministicUuidFromKey`).
+- Multi-page A4 Daily Sales PDF generation (`buildDailySalesPdfBuffer` with batch ID and pharmacist sign-off).
+- Timing-safe fail-closed Bearer auth (`verifyBandagoBearerHeader`), legacy default placeholder detection (`isUsingInsecureDefaultBandagoKey`), and static contract checks verifying H1 elimination and auth guards on all new routes.
+- Kenyan phone normalization and source-contract greps pinning the route/auth wiring in place.
 
 The admin live-sync surface additionally has `tests/admin-live-sync.test.mjs`. These are static/unit tests — they do not call BandaGo; end-to-end verification against a live POS happens through the rollout checklist above.
 
@@ -10843,8 +10994,8 @@ The dispatcher's reconciliation pass (`reconcileEmailEvents`, ≤100 unprocessed
 - **Relative Path:** `docs/journeys/README.md`
 - **Category:** Documentation & Blueprints
 - **Language:** Markdown Documentation
-- **Lines:** 143
-- **Size:** 10.0 KB (10,227 bytes)
+- **Lines:** 144
+- **Size:** 10.2 KB (10,406 bytes)
 
 `````markdown
 ---
@@ -10983,6 +11134,7 @@ Start with the actor map, then follow the links:
 | SYS-08 | [BandaGo inventory ingestion](system/bandago-inventory-sync.md) | POS sync to catalogue |
 | SYS-09 | [Assistant request lifecycle](system/assistant-pipeline.md) | AI request handling and fallback |
 | SYS-10 | [Notification fan-out pipeline](system/notification-dispatch.md) | Event to in-app/email/push/SMS |
+| SYS-11 | [BandaGo outbound reconciliation and daily sales export](system/bandago-outbound-reconciliation.md) | Website → POS sales export, Auto-Sync writeback, error triage |
 
 ## Conventions
 
@@ -19229,8 +19381,8 @@ flowchart TD
 - **Relative Path:** `docs/journeys/roles/admin.md`
 - **Category:** Documentation & Blueprints
 - **Language:** Markdown Documentation
-- **Lines:** 93
-- **Size:** 6.6 KB (6,751 bytes)
+- **Lines:** 94
+- **Size:** 6.9 KB (7,070 bytes)
 
 `````markdown
 ---
@@ -19322,6 +19474,7 @@ Pharmacist-adjacent rights: ADMIN shares the pharmacist's prescription review au
 - **Customers write reviews (C09) → Admin/Pharmacist moderate (A13) → Storefront shows the result (P03):** published reviews shape product ratings; hidden reviews stay visible to their authors with their status.
 - **Admin changes roles or passwords (A15) → Every staff session re-scopes (A01):** session revocation applies the change on the member's next request, and rider availability on the dispatch board (A03) follows active RIDER accounts.
 - **Pharmacists review prescriptions (A04/A05) → Admin monitors via audit (A16) and retention (SYS-06):** prescription decisions and document access are logged; the admin can evidence the whole clinical trail without holding clinical authority exclusively.
+- **Admin governs POS sync policy & baseline (SYS-08/SYS-11):** Admins exclusively toggle `MANUAL_EXPORT` vs `AUTO_SYNC`, stagnant-POS drift protection, `expectedTenantUU`, and cutover baselines in POS Sync while pharmacists and admins share Daily Sales Exports, reconciliation confirmations, and Error Console triage.
 
 ## Related journeys and documents
 
@@ -19694,7 +19847,7 @@ The workspace UI and the API surface agree — and only the API surface is load-
 - **Category:** Documentation & Blueprints
 - **Language:** Markdown Documentation
 - **Lines:** 95
-- **Size:** 7.8 KB (7,938 bytes)
+- **Size:** 7.8 KB (7,947 bytes)
 
 `````markdown
 ---
@@ -19772,7 +19925,7 @@ flowchart LR
 | A02 | [Process an order to pickup](../staff/process-order-to-pickup.md) | Order queue, availability confirmation, payment, packing, cash at handover |
 | A06 | [Manage medicine requests](../staff/manage-medicine-requests.md) | Request queue, private photo view, callback, status and notes |
 | A07 | [Update products and stock](../staff/update-products-stock.md) | Product edits, pricing, stock statuses, thresholds, the write-role boundary |
-| A09 | [Import products from CSV](../staff/import-products-csv.md) | Template, paste/upload, SKU upsert, per-row errors, the BandaGo caveat |
+| A09 | [Import products from CSV](../staff/import-products-csv.md) | Template, paste/upload, SKU upsert, per-row errors, BandaGo POS CSV counterpart |
 | A10 | [Publish a service and set booking hours](../staff/publish-service-booking-hours.md) | Service editor, images, weekly availability windows, slot generation |
 | A11 | [Run the appointment workflow](../staff/run-appointment-workflow.md) | Bookings board, confirm, check-in, visit, completion, no-show |
 | A12 | [Reschedule and cancel appointments](../staff/reschedule-cancel-appointments.md) | Slot re-validation, cancellation, notification, the paid-booking refund gap |
@@ -19805,8 +19958,8 @@ The order journey is the daily spine: most staff shifts start in the Orders queu
 - **Relative Path:** `docs/journeys/roles/system.md`
 - **Category:** Documentation & Blueprints
 - **Language:** Markdown Documentation
-- **Lines:** 91
-- **Size:** 7.1 KB (7,290 bytes)
+- **Lines:** 95
+- **Size:** 7.7 KB (7,874 bytes)
 
 `````markdown
 ---
@@ -19857,13 +20010,16 @@ flowchart LR
     end
     subgraph Integrations
         POS[BandaGo POS<br/>extension or CSV] --> SYS08[SYS-08 Inventory<br/>ingestion]
+        SYS08 -. drift offsets .-> SYS11[SYS-11 Outbound<br/>reconciliation]
     end
     subgraph Pipelines
         CHAT[Assistant widget] --> SYS09[SYS-09 Assistant<br/>request lifecycle]
         EVENTS[Business events<br/>notifyCustomer notifyStaff] --> SYS10[SYS-10 Notification<br/>fan-out]
     end
     SYS01 -. payment outcome .-> SYS10
+    SYS01 -. PAID order .-> SYS11
     SYS02 -. payment outcome .-> SYS10
+    SYS02 -. PAID order .-> SYS11
     SYS04 -- reminders queued --> SYS10
     SYS07 -- reminders queued --> SYS10
     SYS10 -- outbox jobs --> SYS05
@@ -19882,17 +20038,18 @@ flowchart LR
 | SYS-05 | [Notification queue job](../system/cron-notifications.md) | Outbox dispatcher: leases, Resend/FCM delivery, backoff, reconciliation |
 | SYS-06 | [Prescription retention job](../system/cron-prescription-retention.md) | Retention window enforcement, R2-first deletion, shared-key protection |
 | SYS-07 | [Service booking reminders job](../system/cron-service-booking-reminders.md) | 24-hour and 2-hour appointment reminders with stable dedupe keys |
-| SYS-08 | [BandaGo inventory ingestion](../system/bandago-inventory-sync.md) | POS product/stock/batch ingestion, FEFO and PPB rules, PosSyncLog telemetry |
+| SYS-08 | [BandaGo inventory ingestion](../system/bandago-inventory-sync.md) | POS product/stock/batch ingestion, FEFO, drift protection, PosSyncLog telemetry |
 | SYS-09 | [Assistant request lifecycle](../system/assistant-pipeline.md) | Guardrails, deterministic intent, Groq enhancement, action resolution |
 | SYS-10 | [Notification fan-out pipeline](../system/notification-dispatch.md) | Event to in-app row plus email/push outbox jobs, suppression loop |
+| SYS-11 | [BandaGo outbound reconciliation and daily sales export](../system/bandago-outbound-reconciliation.md) | PosOutboundJob ledger, Daily Sales PDF/CSV/JSON export, opt-in Auto-Sync & Error Console |
 
 Scheduling is external for every cron route: the repository contains no scheduler, so the runbook cadences (notifications every minute, reminders at least every 15 minutes, retention and refills daily) are deployment responsibilities, and each job is safe to re-run by hand.
 
 ## Cross-role handoffs
 
-- **Customer pays → System confirms → Staff fulfill:** the M-Pesa and card webhooks (SYS-01/SYS-02) flip orders to `PAID` with loyalty credited; staff pick the order up on the board (A02) and admins dispatch it (A03), while the customer tracks it (O06).
+- **Customer pays → System confirms → Staff fulfill:** the M-Pesa and card webhooks (SYS-01/SYS-02) flip orders to `PAID` with loyalty credited and queue `PosOutboundJob` rows (SYS-11); staff pick the order up on the board (A02) and admins dispatch it (A03), while the customer tracks it (O06).
 - **Customer uploads a prescription → Pharmacist reviews → System retains:** X01 puts the prescription in the pharmacist queue (A04/A05); once soft-deleted, SYS-06 enforces the retention window and removes the private file, with audit evidence surviving in `AuditLog`.
-- **Physical shop ↔ online catalogue:** BandaGo ingestion (SYS-08) keeps products, stock and batch expiry current for customers browsing (P02) and staff managing (A07); reservation expiry (SYS-03) returns abandoned checkout holds to that pool.
+- **Physical shop ↔ online catalogue:** BandaGo ingestion (SYS-08) keeps products, stock and batch expiry current for customers browsing (P02) and staff managing (A07), while outbound reconciliation (SYS-11) protects online sales from stale-POS overwrites and feeds Daily Sales Exports or `AUTO_SYNC` back to BandaGo; reservation expiry (SYS-03) returns abandoned checkout holds to that pool and cancels/compensates outbound jobs.
 - **System outreach reaches customers through one pipeline:** refill and booking reminders (SYS-04/SYS-07) and payment outcomes (SYS-01/SYS-02) all queue through the fan-out (SYS-10) and are delivered by the dispatcher (SYS-05); customers control channels in C06 and admins watch health in A16.
 - **Assistant prepares, humans verify:** the assistant pipeline (SYS-09) only ever returns action cards — customers complete products, bookings and payments in the real flows (H01–H03), and escalated turns hand off to pharmacists and contact channels (P06).
 - **Operators keep the system actor alive:** every cron route depends on an external scheduler and the `CRON_SECRET`; the scheduled-jobs runbook is the contract operators must honour or the queue stalls, holds linger and retention never fires.
@@ -19914,7 +20071,7 @@ Scheduling is external for every cron route: the repository contains no schedule
 - **Category:** Documentation & Blueprints
 - **Language:** Markdown Documentation
 - **Lines:** 165
-- **Size:** 14.1 KB (14,418 bytes)
+- **Size:** 13.9 KB (14,258 bytes)
 
 `````markdown
 ---
@@ -20058,7 +20215,7 @@ flowchart TD
 - **Row-level errors:** reported per row with the reason; the remaining rows still import. Correct the failed rows and re-run — SKU matching makes the retry idempotent for the rows that already landed.
 - **Unknown category:** the row still imports, uncategorised, with a note in the error list — create the category or fix the spelling and re-import.
 - **No undo:** the import is not transactional and there is no rollback; reversing a bad import means re-importing corrected rows (updates) or discontinuing unwanted products (journey A07). The audit row preserves what was done.
-- **BandaGo POS CSV dropzone (separate surface, honest caveat):** the POS Sync hub posts multipart CSVs to `POST /api/integrations/bandago/csv-import`, a different importer (flexible POS column aliases, `externalPosId`-keyed, delegating to the BandaGo sync). It authenticates with a Bearer key or a staff session, and it currently falls back to a hard-coded secret literal when `BANDAGO_SYNC_API_KEY` is unset while the admin page also ships a browser-borne `NEXT_PUBLIC_POS_SYNC_SECRET` — a registered HIGH technical-debt item (H1 in `docs/governance/technical-debt.md`). Until remediated, treat that surface as compromised-by-design and prefer the session-based catalogue importer documented above for staff-driven imports.
+- **BandaGo POS CSV dropzone (separate surface):** the POS Sync hub (`pos-sync-section.tsx`) posts multipart CSVs to `POST /api/integrations/bandago/csv-import`, a different importer (flexible POS column aliases, `externalPosId`-keyed, delegating to the BandaGo sync). The former H1 credential defect (`NEXT_PUBLIC_POS_SYNC_SECRET` and hardcoded fallback) was remediated in `061e923`: the admin dropzone authenticates via the signed-in staff session cookie (`sphere_session`), and Bearer auth fails closed using constant-time `verifyBandagoBearerHeader`.
 
 ## Traceability
 
@@ -20072,7 +20229,7 @@ flowchart TD
 | Image validation | `managedImage` in `src/lib/security/service.ts` |
 | Audit record | `audit(... "CSV_IMPORT" ...)` in the bulk route; `AuditLog` model |
 | BandaGo POS CSV importer | `src/app/api/integrations/bandago/csv-import/route.ts` |
-| Hard-coded fallback secret incident | H1 in `docs/governance/technical-debt.md` |
+| H1 credential exposure (remediated in `061e923`) | H1 in `docs/governance/technical-debt.md` |
 | Role matrix for products | `docs/security/access-control.md` |
 
 ## Related journeys and documents
@@ -21570,8 +21727,8 @@ sequenceDiagram
 - **Relative Path:** `docs/journeys/system/bandago-inventory-sync.md`
 - **Category:** Documentation & Blueprints
 - **Language:** Markdown Documentation
-- **Lines:** 195
-- **Size:** 17.4 KB (17,787 bytes)
+- **Lines:** 209
+- **Size:** 20.0 KB (20,523 bytes)
 
 `````markdown
 ---
@@ -21585,29 +21742,29 @@ entryPoint: POST /api/integrations/bandago/sync (Chrome extension with Bearer ke
 objective: Keep the online catalogue synchronized with the physical pharmacy — ingest products, prices, stock and batch/expiry data from the BandaGo POS, enforce Kenya PPB FEFO and prescription rules, protect staff-curated product data, and record every run in PosSyncLog telemetry
 startCondition: The api_data_transformer extension pushes a JSON batch (or staff upload a CSV from the admin POS hub) with items carrying at least an externalPosId and a name
 endCondition: Valid items are upserted in chunks of 50 with per-item fallback, the PosSyncLog row records SUCCESS, PARTIAL or FAILED with counts and capped errors, and the caller receives a 200 JSON body with upserted and failed counts
-relatedJourneys: [A07, A09, P02, SYS-03, O02]
+relatedJourneys: [SYS-11, A07, A09, P02, SYS-03, O02]
 relatedDocs:
   - docs/integrations/bandago-pos-crm.md
   - docs/features/inventory-and-stock.md
   - docs/operations/environment-variables.md
 recordingRefs: []
 verified: November 2026
-evidence: Screenshots deliberately deferred — this is a system-to-system flow; verify via PosSyncLog and /api/admin/pos-status.
+evidence: Screenshots deliberately deferred — this is a system-to-system flow; verify via PosSyncLog, PosSyncIncident and /api/admin/pos-status.
 ---
 
 # SYS-08 — BandaGo inventory ingestion
 
-The physical pharmacy runs its counter sales and stock in BandaGo, an iDempiere-based POS. This journey is the server-side receiving end: a browser extension (external to this repo) pushes product, price, stock and batch data to the sync route — or staff upload a CSV, which delegates into the same handler. The route treats every payload as untrusted: it re-parses numbers, classifies prescription requirements under Kenya PPB rules, applies first-expired-first-out (FEFO) batch hygiene so expired stock can never sell online, preserves staff-curated images and Rx flags, and upserts in chunked transactions with per-item isolation so one poisoned item cannot ruin a batch. Every run is audited in `PosSyncLog`. The ingestion code is implemented and testable locally; end-to-end operation depends on the live BandaGo side and its extension — hence environment-dependent.
+The physical pharmacy runs its counter sales and stock in BandaGo, an iDempiere-based POS. This journey is the **inbound** receiving end of the bi-directional sync: a browser extension (external to this repo) pushes product, price, stock and batch data to the sync route — or staff upload a CSV, which delegates into the same handler. The route treats every payload as untrusted: it authenticates fail-closed in constant time, verifies single-tenant pinning (`expectedTenantUU`) and `inboundEnabled`, re-parses numbers, classifies prescription requirements under Kenya PPB rules, applies first-expired-first-out (FEFO) and `minShelfLifeDays` batch hygiene so expired stock can never sell online, protects unreconciled online sales against stagnant-POS resurrection (`computeReconciledStock`), preserves staff-curated images and Rx flags, and upserts in chunked transactions with per-item isolation. Every run is audited in `PosSyncLog` (`direction: INBOUND`) and deduplicated failures/warnings land in `PosSyncIncident`. The ingestion code is implemented and testable locally; end-to-end operation depends on the live BandaGo side and its extension — hence environment-dependent.
 
 | Metadata | Value |
 | --- | --- |
 | Primary actor | System (BandaGo POS → Sphere ingestion routes) |
 | Secondary actors | Pharmacist, Admin (staff-session uploads, CSV imports, telemetry) |
 | Functional area | Inventory and catalogue |
-| Entry point | `POST /api/integrations/bandago/sync` (machine bearer or staff session) |
-| Status | Environment-dependent (requires live provider credentials) — verified against code — routes and normalizer implemented; live flow needs BandaGo, the extension and `BANDAGO_SYNC_API_KEY` |
-| End condition | 200 JSON `{success, upsertedCount, failedCount, durationMs, errors}` — even partial failures answer 200 — with the `PosSyncLog` row finalized as SUCCESS, PARTIAL or FAILED |
-| Related journeys | A07 (staff stock management), A09 (CSV product import), P02 (the catalogue customers browse), SYS-03 (reservation release pre-step), O02 (orders that consume synced stock) |
+| Entry point | `POST /api/integrations/bandago/sync` (timing-safe machine bearer or staff session) |
+| Status | Environment-dependent (requires live provider credentials) — verified against code — routes, drift protection and normalizer implemented; live flow needs BandaGo, the extension and `BANDAGO_SYNC_API_KEY` |
+| End condition | 200 JSON `{success, upsertedCount, failedCount, reconciledProtectedCount, durationMs, policySummary, errors}` — even partial failures answer 200 — with `PosSyncLog` finalized as SUCCESS, PARTIAL or FAILED (or 403 `TENANT_MISMATCH` / paused notice) |
+| Related journeys | SYS-11 (outbound reconciliation & Daily Sales Export), A07 (staff stock management), A09 (CSV product import), P02 (the catalogue customers browse), SYS-03 (reservation release pre-step), O02 (orders that consume synced stock) |
 
 ## Journey map
 
@@ -21617,29 +21774,39 @@ sequenceDiagram
     participant A as Sync route
     participant G as InventoryGuard
     participant N as BandaGoNormalizer
+    participant R as Drift Reconciler
     participant D as PostgreSQL
-    E->>A: POST items - bearer key or ADMIN/PHARMACIST session
+    E->>A: POST items - timing-safe bearer or ADMIN/PHARMACIST session
     alt Auth fails
         A-->>E: 401 Invalid POS Sync Credentials
     end
+    A->>D: Load PosSyncPolicy
+    alt Tenant mismatch
+        A->>D: Log FAILED PosSyncLog + CRITICAL PosSyncIncident
+        A-->>E: 403 TENANT_MISMATCH
+    else Inbound paused
+        A-->>E: 200 paused true upsertedCount 0
+    end
     A->>G: cleanupExpiredReservations - 45 minutes
     A->>A: Sanitize items - externalPosId and name required
-    A->>D: Create PosSyncLog with raw itemsReceived
+    A->>D: Create PosSyncLog INBOUND with raw itemsReceived
     alt Zero valid items
         A->>D: Finalize log - SUCCESS or FAILED with reason
         A-->>E: 200 with synced 0 and errors
     end
+    A->>R: Fetch unreconciled outbound offsets and unpaid holds
     loop Chunks of 50 items
-        A->>N: Normalize price, stock, batches, Rx flag, slug
+        A->>N: Normalize price, stock, batches, minShelfLifeDays, Rx flag, slug
         N-->>A: FEFO validStock, nearest expiry, Rx classification
+        A->>R: computeReconciledStock - apply signedOffset and baseline
         A->>D: Transaction - resolve category, match product, upsert
         alt Chunk transaction fails
             A->>D: Retry each item in its own transaction
             A->>A: Record per-item error
         end
     end
-    A->>D: Finalize PosSyncLog - SUCCESS, PARTIAL or FAILED
-    A-->>E: 200 JSON - upsertedCount, failedCount, errors
+    A->>D: Record PosSyncIncident warnings and finalize PosSyncLog
+    A-->>E: 200 JSON - upsertedCount, failedCount, reconciledProtectedCount, errors
 ```
 
 ## Journey steps
@@ -21649,11 +21816,11 @@ sequenceDiagram
 - **Trigger:** The `api_data_transformer` Chrome extension (running in the pharmacist's browser, sniffing BandaGo responses) POSTs a JSON batch, or a staff member triggers an import from the admin POS hub.
 - **Location:** `POST /api/integrations/bandago/sync` — `src/app/api/integrations/bandago/sync/route.ts`.
 - **Destination:** No navigation — a JSON response for the caller.
-- **Purpose:** Allow machine-to-machine pushes and human uploads through one dual-mode gate.
-- **System behaviour:** The route accepts either `Authorization: Bearer <BANDAGO_SYNC_API_KEY>` (plain string comparison) or an active staff session with role `ADMIN` or `PHARMACIST` (via `requireStaff` from `src/lib/session.ts`). Neither passes → 401 "Unauthorized: Invalid POS Sync Credentials".
-- **Outcome:** An authenticated ingestion request.
+- **Purpose:** Allow machine-to-machine pushes and human uploads through one fail-closed, timing-safe dual-mode gate.
+- **System behaviour:** The route accepts either `Authorization: Bearer <BANDAGO_SYNC_API_KEY>` (constant-time `timingSafeEqualStrings`, failing closed when `BANDAGO_SYNC_API_KEY` is unset) or an active staff session with role `ADMIN` or `PHARMACIST` (via `requireStaff` from `src/lib/session.ts`). Neither passes → 401 "Unauthorized: Invalid POS Sync Credentials".
+- **Outcome:** An authenticated ingestion request, followed by loading `PosSyncPolicy` (`expectedTenantUU` pinning → 403 `TENANT_MISMATCH` on mismatch; `inboundEnabled: false` pauses non-manual syncs).
 - **Next step:** Release stale reservations.
-- **Alternative paths:** The CSV route (`src/app/api/integrations/bandago/csv-import/route.ts`) uses the same dual auth and delegates internally to this handler. Known credential-handling defects (browser-exposed `NEXT_PUBLIC_POS_SYNC_SECRET`, a hard-coded fallback secret in the CSV route, example-file defaults) are documented in the integration doc as requiring remediation.
+- **Alternative paths:** The CSV route (`src/app/api/integrations/bandago/csv-import/route.ts`) uses the same timing-safe dual auth (`authorizeBandagoRequest` / `timingSafeEqualStrings`) and delegates internally to this handler. The historical H1 credential issues (browser-exposed `NEXT_PUBLIC_POS_SYNC_SECRET` and hardcoded CSV fallback) were remediated in commit `061e923`.
 
 ### Step 2 — Release expired virtual reservations
 
@@ -21699,50 +21866,52 @@ sequenceDiagram
 - **Next step:** Upsert with FEFO and PPB rules.
 - **Alternative paths:** The category cache makes repeated slugs cheap; the collision ladder guarantees the upsert's `where: { externalPosId }` is always well-defined.
 
-### Step 6 — Upsert with FEFO and PPB rules
+### Step 6 — Upsert with FEFO, drift protection, and PPB rules
 
 - **Trigger:** A matched item inside the chunk transaction.
-- **Location:** Same route; `BandaGoNormalizer.processBatches`/`classifyRequiresPrescription`; `Product` and `ProductBatch` models.
+- **Location:** Same route; `BandaGoNormalizer.processBatches`/`classifyRequiresPrescription` and `computeReconciledStock` (`src/lib/pos-reconciliation-core.ts`); `Product` and `ProductBatch` models.
 - **Destination:** Product upsert plus batch replacement.
-- **Purpose:** Make expired stock unsellable, keep Rx flags honest, and never overwrite staff-curated data.
-- **System behaviour:** `processBatches` aggregates duplicate batch numbers across warehouse locators (quantities summed, earliest expiry wins; a missing expiry defaults to now + 365 days), flags batches with `expiry <= now` as `isExpired`, and excludes them from `validStock`; `nearestExpiryDate` is the earliest valid expiry and `hasNearExpiry` flags under 90 days. With batches present, `stockQty` = FEFO-valid stock; without batches it is the raw stock, or 0 if the item-level expiry has passed. `classifyRequiresPrescription` returns true for an explicit flag, an Rx/POM/Prescription category or name, or a ~30-item keyword list of prescription-only medicines — and the result is OR'd with the existing flag, so a sync can **raise** but never lower the Rx requirement. Custom local images under `/images/products/*` (other than the generic placeholder) are never overwritten. `inStock`/`stockStatus` are computed from effective stock after subtracting `virtualReservedStock` (`OUT_OF_STOCK` / `LOW_STOCK` at ≤ 5 / `IN_STOCK`). Batch persistence: `stock === 0` deletes all batches; a non-empty `batches[]` replaces them (blank batch numbers filtered); no batches array leaves existing batches untouched.
-- **Outcome:** The catalogue row reflects POS truth under PPB constraints; `lastSyncedAt` is stamped.
-- **Next step:** Continue the chunk loop; finalize.
-- **Alternative paths:** New products are created with `posSource: BANDAGO`, `safetyStockBuffer: 2`, the incoming image or the generic placeholder, and an empty description.
+- **Purpose:** Make expired/short-shelf-life stock unsellable, keep Rx flags honest, protect unreconciled online sales from stagnant-POS resurrection, and never overwrite staff-curated data.
+- **System behaviour:** `processBatches` aggregates duplicate batch numbers across warehouse locators (quantities summed, earliest expiry wins; a missing expiry defaults to now + 365 days), flags batches with `expiry <= now` as `isExpired`, and excludes expired lots and lots inside `policy.minShelfLifeDays` from `validStock`; `nearestExpiryDate` is the earliest valid expiry and `hasNearExpiry` flags under 90 days. Before writing `stock` and `stockQty`, `computeReconciledStock` applies `signedOffset = pendingOutboundNetDelta - unpaidOrderHoldQty` (when `policy.protectUnreconciledSales` is true) and clamps `active: false` / `DISCONTINUED` if the incoming POS item is inactive/discontinued; `lastPosStock` and `lastPosSellableStock` capture the raw POS snapshot, and warehouse/locator/org/client UUs are stored. `classifyRequiresPrescription` returns true for an explicit flag, an Rx/POM/Prescription category or name, or a ~30-item keyword list of prescription-only medicines — OR'd with the existing flag. Custom local images under `/images/products/*` (other than the generic placeholder) are never overwritten. Batch persistence: `stock === 0` deletes all batches; a non-empty `batches[]` replaces them; no batches array leaves existing batches untouched.
+- **Outcome:** The catalogue row reflects reconciled POS truth under PPB constraints; `lastSyncedAt` is stamped.
+- **Next step:** Continue the chunk loop; finalize logs and incidents.
+- **Alternative paths:** If POS stock dropped by at least the pending online sales quantity (`possibleManualReconcileDetected`), a `POSSIBLE_MANUAL_RECONCILE` `PosSyncIncident` warning is recorded so staff can verify whether they already entered the sales manually.
 
 ### Step 7 — Chunk, fall back, finalize and respond
 
 - **Trigger:** All items processed or failed.
 - **Location:** Same route, chunk loop and finalization.
-- **Destination:** `PosSyncLog` finalization and the HTTP response.
-- **Purpose:** Bound transaction size, isolate poison items, and report honestly.
-- **System behaviour:** Items are processed in chunks of 50 inside `prisma.$transaction` (`maxWait` 10 s, `timeout` 30 s). A chunk failure falls back to per-item isolated transactions; individual failures accumulate in `errors[]` (externalPosId, name, message). The log is finalized as `SUCCESS` (no errors), `PARTIAL` (some) or `FAILED` (every item failed), and the response is **200 even for partial failure** — `{success, upsertedCount, failedCount, durationMs, timestamp, errors}` with at most 20 errors inline. A global catch finalizes the log as FAILED and answers 500.
+- **Destination:** `PosSyncLog` finalization, `PosSyncIncident` recording, and the HTTP response.
+- **Purpose:** Bound transaction size, isolate poison items, surface actionable errors, and report honestly.
+- **System behaviour:** Items are processed in chunks of 50 inside `prisma.$transaction` (`maxWait` 10 s, `timeout` 30 s). A chunk failure falls back to per-item isolated transactions; individual failures accumulate in `errors[]` and record deduplicated `INBOUND_ITEM_FAILED` `PosSyncIncident` rows. The log (`direction: INBOUND`) is finalized as `SUCCESS` (no errors), `PARTIAL` (some) or `FAILED` (every item failed), and the response is **200 even for partial failure** — `{success, upsertedCount, failedCount, reconciledProtectedCount, durationMs, timestamp, policySummary, errors}` with at most 20 errors inline. A global catch finalizes the log as FAILED, records a `CRITICAL` incident, and answers 500.
 - **Outcome:** A converged catalogue and an auditable run.
-- **Next step:** Customers see fresh stock (P02); orders reserve against it (O02).
+- **Next step:** Customers see fresh stock (P02); orders reserve against it (O02); outbound reconciliation runs via SYS-11.
 - **Alternative paths:** Automation must read `success`/`failedCount`, not the status code. FEFO applies at ingestion only — batch-level deduction per pick is not implemented (a documented limitation).
 
 ## Decision points
 
 | Decision | Branches | Enforced by/where |
 | --- | --- | --- |
-| Caller authenticated? | Bearer key or ADMIN/PHARMACIST session → run; else → 401 | Dual auth in the sync and CSV routes; `requireStaff` in `src/lib/session.ts` |
+| Caller authenticated? | Timing-safe Bearer key or ADMIN/PHARMACIST session → run; else → 401 | Dual auth in the sync and CSV routes; `timingSafeEqualStrings` / `requireStaff` |
+| Tenant & policy check? | `expectedTenantUU` mismatch → 403 `TENANT_MISMATCH`; `!inboundEnabled` (non-manual) → 200 paused | `PosSyncPolicy` check in sync route |
 | Item valid? | `externalPosId` + name present → ingest; else → errors[] | Sanitization loop in the route |
-| Trigger recognized? | One of the four enum values → use it; else → `EXTENSION_STREAM` | `validTriggers` check |
+| Trigger recognized? | One of the enum values (`CDP_INTERCEPT` → `EXTENSION_STREAM`) → use it; else → `EXTENSION_STREAM` | `validTriggers` check |
 | Product matched? | externalPosId → slug/baseSlug → legacy name (externalPosId null) → link and keep slug; slug/SKU collisions disambiguated with suffixes; no match → create | Matching ladder and collision handling in `processSingleItem` |
-| Batch expired? | `expiry <= now` → `isExpired`, excluded from `validStock`; valid → counted, nearest expiry tracked | `processBatches` in `src/lib/bandago-normalizer.ts` |
+| Batch expired / shelf buffer? | `expiry <= now` → `isExpired`, excluded (along with `minShelfLifeDays` buffer) from `validStock`; valid → counted, nearest expiry tracked | `processBatches` in `src/lib/bandago-normalizer.ts` |
+| Stagnant POS drift? | `protectUnreconciledSales` → apply `pendingOutboundNetDelta - unpaidOrderHoldQty`; flag `POSSIBLE_MANUAL_RECONCILE` when warranted | `computeReconciledStock` in `src/lib/pos-reconciliation-core.ts` |
 | Rx classification? | Flag/category/keyword → true; result OR'd with existing flag (never downgraded) | `classifyRequiresPrescription` |
 | Batch payload shape? | `stock === 0` → delete all; batches present → replace; absent → keep existing | Batch persistence rules in the route |
 | Chunk failure? | Whole-chunk transaction → per-item retry; item error recorded | Chunk loop with fallback |
 
 ## Error and recovery paths
 
-- **Unauthorized (401):** neither bearer key nor staff session passed; verify `BANDAGO_SYNC_API_KEY` and staff role. Rotate the key if it ever ran with the example value (documented credential defects).
+- **Unauthorized (401):** neither timing-safe bearer key nor staff session passed; verify `BANDAGO_SYNC_API_KEY` (fails closed when unset) and staff role. Rotate the key if it ever matched the retired `.env.example` placeholder.
+- **Tenant mismatch (403):** incoming `tenantUU` disagrees with `policy.expectedTenantUU`; switch the BandaGo tab back to Sphere Pharmacy or update Policy.
 - **Invalid items:** rejected individually into `errors[]`; the rest of the batch proceeds — one bad item never crashes the run.
-- **Chunk transaction failure:** the chunk is retried item-by-item in isolated transactions; only the true offenders fail.
+- **Chunk transaction failure:** the chunk is retried item-by-item in isolated transactions; only the true offenders fail and appear in the POS Error Console (`INBOUND_ITEM_FAILED`).
 - **Partial failure (HTTP 200):** callers must inspect `failedCount`/`errors`; the `PosSyncLog` row records `PARTIAL` with capped error details for the admin hub.
-- **Fatal pipeline error (500):** the log is finalized FAILED with a `fatalError` detail; the extension's next push is a fresh, fully idempotent run (externalPosId-keyed upserts converge).
-- **Idempotence:** repeated pushes converge to the same state — upserts by `externalPosId`, not request dedupe.
-- **Security remediation owed:** browser-exposed `NEXT_PUBLIC_POS_SYNC_SECRET`, the CSV route's hard-coded fallback secret, and plain `===` bearer comparisons are documented as requiring remediation; operators must compensate until fixed.
+- **Fatal pipeline error (500):** the log is finalized FAILED with a `fatalError` detail and a `CRITICAL` incident; the extension's next push is a fresh, fully idempotent run (externalPosId-keyed upserts converge).
+- **Idempotence:** repeated pushes converge to the same state — upserts by `externalPosId`, protected by `computeReconciledStock` offsets.
 
 ## Traceability
 
@@ -21750,19 +21919,21 @@ sequenceDiagram
 | --- | --- |
 | Sync endpoint | `src/app/api/integrations/bandago/sync/route.ts` |
 | CSV import (delegates to sync) | `src/app/api/integrations/bandago/csv-import/route.ts`, `parseCsv` in `src/lib/bandago-normalizer.ts` |
-| Auth | `BANDAGO_SYNC_API_KEY` bearer or `requireStaff(['ADMIN','PHARMACIST'])` in `src/lib/session.ts` |
+| Auth | `verifyBandagoBearerHeader` / `authorizeBandagoRequest` in `src/lib/security/bandago-auth.ts` & `bandago-bearer.ts`, `requireStaff` in `src/lib/session.ts` |
+| Drift protection & policy | `computeReconciledStock`, `getUnreconciledOffsetsByProduct`, `getPosSyncPolicy` in `src/lib/pos-reconciliation*.ts` |
 | Reservation pre-cleanup | `InventoryGuard.cleanupExpiredReservations(45)` in `src/lib/inventory-guard.ts` |
 | Normalization and FEFO | `BandaGoNormalizer` (`parseNumber`, `parseInteger`, `slugify`, `processBatches`) in `src/lib/bandago-normalizer.ts` |
 | Rx classification (PPB) | `BandaGoNormalizer.classifyRequiresPrescription` |
-| Telemetry models | `PosSyncLog`, `ProductBatch`, `Product`, `Category` in `prisma/schema.prisma` |
+| Telemetry models | `PosSyncLog`, `PosSyncIncident`, `PosOutboundJob`, `ProductBatch`, `Product`, `Category` in `prisma/schema.prisma` |
 | Chunking and fallback | Chunk loop (50 items, `maxWait` 10 s, `timeout` 30 s) in the sync route |
 | Admin observability | `GET /api/admin/pos-status`; `src/components/views/admin/sections/pos-sync-section.tsx` |
-| Tests | `tests/bandago-pos-crm-integration.test.mjs` |
+| Tests | `tests/bandago-pos-crm-integration.test.mjs`, `tests/bandago-bidirectional-sync.test.mjs` |
 | Integration doc | `docs/integrations/bandago-pos-crm.md` |
-| API contract | `openapi/sphere-api.yaml` — `POST /integrations/bandago/sync` |
+| API contract | `openapi/sphere-api.yaml` — `POST /api/integrations/bandago/sync` |
 
 ## Related journeys and documents
 
+- **SYS-11** — outbound BandaGo reconciliation, Daily Sales Export, and Auto-Sync writeback
 - **A07** — staff stock and product management over the synced catalogue
 - **A09** — the staff CSV import journey (the human counterpart of machine ingestion)
 - **P02** — the catalogue customers browse, kept fresh by this job
@@ -21775,7 +21946,171 @@ sequenceDiagram
 
 ---
 
-### File #111: `docs/journeys/system/cron-chronic-refills.md`
+### File #111: `docs/journeys/system/bandago-outbound-reconciliation.md`
+
+<a id="file-docs-journeys-system-bandago-outbound-reconciliation-md"></a>
+
+- **Relative Path:** `docs/journeys/system/bandago-outbound-reconciliation.md`
+- **Category:** Documentation & Blueprints
+- **Language:** Markdown Documentation
+- **Lines:** 147
+- **Size:** 14.4 KB (14,741 bytes)
+
+`````markdown
+---
+id: SYS-11
+title: BandaGo outbound reconciliation and daily sales export
+actor: System
+secondaryActors: [Admin, Pharmacist]
+area: Inventory
+status: environment-dependent
+entryPoint: Payment capture / order prepare / admin stock edit -> PosOutboundJob ledger -> Daily Sales Export or /api/integrations/bandago/outbound
+objective: Keep BandaGo POS aligned with every online sale, refund/cancellation, and admin stock adjustment without risking double-deductions or stale-POS stock resurrection, while giving staff a safe Zero-PHI manual export fallback and structured error triage
+startCondition: A customer order is paid or prepared (enqueueOrderPosDeduction), a staff member edits stockQty (enqueueAdminStockEdit), or an order is cancelled/refunded/expired (cancelOrderPosDeduction)
+endCondition: Each PosOutboundJob reaches SYNCED (Auto-Sync writeback), RECONCILED_MANUAL (Daily Sales Export + pharmacist confirmation), or CANCELLED/REFUND_RESTOCK, and any bridge incidents are surfaced and resolved in PosSyncIncident
+relatedJourneys: [SYS-08, O01, O02, O03, O04, A07]
+relatedDocs:
+  - docs/integrations/bandago-pos-crm.md
+  - docs/features/inventory-and-stock.md
+  - docs/workflows/inventory-lifecycle.md
+recordingRefs: []
+verified: November 2026
+evidence: Screenshots deliberately deferred — verify via PosOutboundJob, PosSyncIncident, /api/admin/pos-status, and /api/admin/pos-sync/reconcile.
+---
+
+# SYS-11 — BandaGo outbound reconciliation and daily sales export
+
+While inbound sync (`SYS-08`) keeps Sphere updated from BandaGo, online purchases and admin edits happen in Sphere first. If BandaGo is closed or sits idle between shifts, a naive inbound sync would overwrite online sales back up. This journey documents the outbound half of the bi-directional loop: Sphere queues idempotent `PosOutboundJob` ledger rows on paid/prepared orders and staff stock edits, protects those pending deductions during inbound sync (`computeReconciledStock`), and reconciles them back into BandaGo either through the **default Manual-First Daily Sales Export** (`PDF`/`CSV`/`JSON` + one-click confirmation) or **opt-in `AUTO_SYNC` writeback** executed by the external Chrome bridge (`api_data_transformer`). Bridge health and errors flow into `/api/integrations/bandago/telemetry` and the POS Error Console (`PosSyncIncident`).
+
+| Metadata | Value |
+| --- | --- |
+| Primary actor | System (Order/Product hooks + Outbound reconciliation engine) |
+| Secondary actors | Admin (policy & baseline cutover), Pharmacist (Daily Sales Export, manual confirmation, incident triage) |
+| Functional area | Inventory and POS synchronization |
+| Entry point | `enqueueOrderPosDeduction` / `enqueueAdminStockEdit` / `cancelOrderPosDeduction` → Admin → POS Sync (`pos-sync-section.tsx`) & `/api/integrations/bandago/outbound*` |
+| Status | Environment-dependent — server routes, PDF generator, drift protection and Error Console implemented; live `AUTO_SYNC` writebacks depend on the external Chrome extension & open `go.bandahealth.org` tab |
+| End condition | Outbound jobs resolved (`SYNCED`, `RECONCILED_MANUAL`, or `CANCELLED`), `Product.lastPosStock` updated, and transient incidents auto-resolved |
+| Related journeys | SYS-08 (inbound BandaGo ingestion), O01/O02 (checkout orders), O03/O04 (payment webhooks), A07 (staff stock edits) |
+
+## Journey map
+
+```mermaid
+sequenceDiagram
+    participant OH as Order or Product Hook
+    participant DB as PostgreSQL
+    participant EX as Sales Export and Reconcile API
+    participant BR as Chrome Bridge Extension
+    participant BG as BandaGo POS
+
+    OH->>DB: Enqueue PosOutboundJob PENDING - sale, admin_adj, or cancel/restock
+    alt Default policy MANUAL_EXPORT
+        EX->>DB: GET /api/admin/pos-sync/sales-export - PDF, CSV, or JSON
+        EX-->>DB: Optional markExported=1 marks EXPORTED with exportBatchId
+        EX->>DB: POST /api/admin/pos-sync/reconcile MARK_RECONCILED -> RECONCILED_MANUAL
+    else Opt-in policy AUTO_SYNC
+        BR->>DB: GET /api/integrations/bandago/outbound?claim=1 - Serializable lockToken
+        BR->>BG: Idempotent M_Inventory writeback via deterministic externalInventoryUU
+        alt Tab closed or transient failure
+            BR->>DB: POST /api/integrations/bandago/outbound/ack RELEASE or FAILED
+        else Writeback succeeded
+            BR->>DB: POST /api/integrations/bandago/outbound/ack SYNCED + posStockAfter
+            DB->>DB: Update Product.lastPosStock and resolve transient PosSyncIncident
+        end
+    end
+    BR->>DB: POST /api/integrations/bandago/telemetry - PosBridgeHeartbeat and PosSyncIncident
+```
+
+## Journey steps
+
+### Step 1 — Enqueue or compensate outbound POS jobs
+
+- **Trigger:** Payment succeeds (`mpesa/callback`, `intasend/webhook`, `cash-confirm`), staff start preparing an order (`POST /api/orders/[id]/prepare`), staff edit `stockQty` (`PATCH /api/products/[id]`), or an order is cancelled, rejected, refunded, or expired (`cancel`, `orders/[id]` PATCH, `payments/refund`, `/api/cron/order-reservations`, `InventoryGuard.cleanupExpiredReservations`).
+- **Location:** `src/lib/pos-reconciliation.ts` (`enqueueOrderPosDeduction`, `enqueueAdminStockEdit`, `cancelOrderPosDeduction`).
+- **Destination:** `pos_outbound_jobs` (`PosOutboundJob` model).
+- **Purpose:** Record every Sphere-initiated stock change once with an idempotent key so inbound syncs never erase online deductions.
+- **System behaviour:** `enqueueOrderPosDeduction` groups order lines by product and inserts `ONLINE_SALE` jobs (`PENDING`, negative `qtyDelta`, `idempotencyKey = sale:{orderId}:{productId}`, deterministic UUIDv4 `externalInventoryUU`). `enqueueAdminStockEdit` records `ADMIN_STOCK_ADJUST` (`admin_adj:{productId}:{timestamp}:{newQty}`). `cancelOrderPosDeduction` marks unsynced jobs `CANCELLED` or, if an online sale already `SYNCED` or `RECONCILED_MANUAL`, inserts a compensating `REFUND_RESTOCK` job (`restock:{orderId}:{productId}`, positive `qtyDelta`).
+- **Outcome:** Open `PosOutboundJob` rows exist and immediately feed `getUnreconciledOffsetsByProduct` for `SYS-08` drift protection.
+- **Next step:** Jobs await either Manual Daily Sales Export or `AUTO_SYNC` writeback, depending on `PosSyncPolicy.outboundSyncMode`.
+- **Alternative paths:** Admins can also manually push the current Sphere stock for any mapped product via `POST /api/admin/pos-sync/reconcile` (`QUEUE_STOCK_PUSH`).
+
+### Step 2 — Manual-First Daily Sales Export & confirmation (`MANUAL_EXPORT` default)
+
+- **Trigger:** Pharmacist or Admin opens Admin → POS Sync → **Sales Export & Reconciliation** and exports pending/today/range online sales.
+- **Location:** `GET /api/admin/pos-sync/sales-export`, `src/lib/pdf/daily-sales-pdf.ts`, `POST /api/admin/pos-sync/reconcile`.
+- **Destination:** Downloaded Zero-PHI A4 PDF, formula-safe UTF-8 BOM CSV, or JSON payload with `X-Export-Batch-Id` (`EXP-...`), followed by job status update.
+- **Purpose:** Let dispensary staff enter online deductions cleanly at the BandaGo counter without requiring automated browser writebacks.
+- **System behaviour:** `sales-export` (`ADMIN`/`PHARMACIST`) aggregates or itemizes `ONLINE_SALE`, `REFUND_RESTOCK`, and `ADMIN_STOCK_ADJUST` jobs without patient PII (Zero-PHI). Passing `?markExported=1` transitions `PENDING`/`FAILED` jobs to `EXPORTED` under `exportBatchId` and audits `POS_DAILY_SALES_EXPORTED`. Once entered in BandaGo, staff click **Confirm Entered in BandaGo POS** (`POST /api/admin/pos-sync/reconcile` with `action: 'MARK_RECONCILED'`), transitioning those jobs to `RECONCILED_MANUAL` and clearing the drift-protection offset.
+- **Outcome:** POS and Sphere balances converge cleanly without stock resurrection or double-deduction.
+- **Next step:** Subsequent `SYS-08` inbound syncs observe the updated BandaGo stock with zero pending offset.
+- **Alternative paths:** If an Admin configures a fresh cutover date, `SET_BASELINE_NOW` on `/api/admin/pos-sync/reconcile` updates `reconciliationBaselineAt` and optionally closes pre-cutover open jobs.
+
+### Step 3 — Opt-in `AUTO_SYNC` claim and acknowledgement
+
+- **Trigger:** An `ADMIN` switches `PosSyncPolicy.outboundSyncMode` to `AUTO_SYNC` (`PUT /api/admin/pos-sync/policy`) and the Chrome bridge runs its outbound poll (every `outboundPollIntervalMinutes`, default 2 min).
+- **Location:** `GET /api/integrations/bandago/outbound` and `POST /api/integrations/bandago/outbound/ack`.
+- **Destination:** `PosOutboundJob` lease state and `Product.lastPosStock` + `PosSyncLog` (`direction: OUTBOUND`).
+- **Purpose:** Automate Physical Inventory (`M_Inventory`) deductions inside the pharmacist's open `go.bandahealth.org` tab safely under retries and restarts.
+- **System behaviour:** First, `outbound` releases any `PROCESSING` locks stale past 5 minutes and skips unmapped products (`SKIPPED_UNMAPPED` + `UNMAPPED_PRODUCT` warning). When `?claim=1` and `AUTO_SYNC` is enabled for the job's `eventType`, a Serializable transaction claims up to `limit` (1–50) `PENDING` rows into `PROCESSING` with a fresh `lockToken` and increments `attempts`. The extension posts writebacks into BandaGo using `externalInventoryUU` for idempotency and reports back to `/outbound/ack`: `SYNCED` updates the job, stamps `Product.lastPosStock = posStockAfter`, and auto-resolves transient outbound incidents (`NO_POS_TAB`, `OUTBOUND_WRITEBACK_FAILED`, `NETWORK_TIMEOUT`, `AUTH_EXPIRED`); `RELEASE` restores the job to `PENDING` without burning attempts; `FAILED` retries until `maxAttempts` (5) or permanent codes (`POS_PERMISSION_DENIED`, `TENANT_MISMATCH`, `UNMAPPED_PRODUCT`).
+- **Outcome:** Writeback results are durably recorded in `PosOutboundJob` and `PosSyncLog` (`direction: OUTBOUND`, `trigger: OUTBOUND_WRITEBACK`).
+- **Next step:** Bridge reports ongoing heartbeat and any errors in Step 4.
+- **Alternative paths:** Staff can manually trigger `RETRY_JOBS` or `CANCEL_JOBS` on `/api/admin/pos-sync/reconcile` at any time.
+
+### Step 4 — Bridge telemetry & Zero-PHI Error Console triage
+
+- **Trigger:** Extension heartbeat cycle or any inbound/outbound sync failure.
+- **Location:** `POST /api/integrations/bandago/telemetry`, `recordPosIncident` (`src/lib/pos-reconciliation.ts`), and `POST /api/admin/pos-sync/reconcile`.
+- **Destination:** `Setting` (`posBridgeHeartbeat`), `pos_sync_incidents` (`PosSyncIncident`), and `AuditLog`.
+- **Purpose:** Give admins and pharmacists immediate visibility into offline POS tabs, expired BandaGo logins, tenant mismatches, or permission errors with copy-free Zero-PHI remediation guides.
+- **System behaviour:** `/telemetry` saves the structural `PosBridgeHeartbeat` (`bandagoTabOpen`, `tenantUU`, queue counts, poll timestamps) and deduplicates up to 20 reported errors by `(code, externalPosId, resolved: false)`, incrementing `occurrences`. `CRITICAL` incidents (`AUTH_EXPIRED`, `TENANT_MISMATCH`, `POS_PERMISSION_DENIED`) trigger hourly-throttled `POS_SYNC_CRITICAL` notifications to `ADMIN` and `PHARMACIST`. Staff resolve single or bulk incidents via `RESOLVE_INCIDENT` / `RESOLVE_ALL_INCIDENTS` on `/api/admin/pos-sync/reconcile`.
+- **Outcome:** Live bridge status and guided troubleshooting remain visible in Admin → POS Sync.
+- **Next step:** Normal bi-directional sync resumes on the next inbound/outbound cycle.
+- **Alternative paths:** If `AUTO_SYNC` stays blocked by `NO_POS_TAB` or `POS_PERMISSION_DENIED`, staff switch back to Daily Sales Export (`Step 2`).
+
+## Decision points
+
+| Decision | Branches | Enforced by/where |
+| --- | --- | --- |
+| Outbound mode? | `MANUAL_EXPORT` → `/outbound?claim=1` returns `AUTO_SYNC_DISABLED`; `AUTO_SYNC` → claim `PENDING` jobs | `getPosSyncPolicy` in `outbound/route.ts` |
+| Policy edits allowed? | `ADMIN` → 200 `{ ok, policy }` + audit; non-ADMIN → 403 | `requireStaff(['ADMIN'])` in `policy/route.ts` |
+| Export/reconcile allowed? | `SET_BASELINE_NOW` → `ADMIN` only; other reconcile actions & export → `ADMIN`/`PHARMACIST` | `reconcile/route.ts` and `sales-export/route.ts` |
+| Outbound ack outcome? | `SYNCED` → update `lastPosStock` & auto-resolve; `RELEASE` → revert to `PENDING`; `FAILED` → retry or terminal `FAILED` | `outbound/ack/route.ts` |
+| Critical incident? | `CRITICAL` severity → hourly-deduped `notifyStaff` alert to `ADMIN` & `PHARMACIST` | `recordPosIncident` in `src/lib/pos-reconciliation.ts` |
+
+## Error and recovery paths
+
+- **`NO_POS_TAB`:** Extension releases claimed jobs (`RELEASE`) without burning attempts; open an authenticated `go.bandahealth.org` tab or export Daily Sales PDF/CSV.
+- **`AUTH_EXPIRED` / `POS_PERMISSION_DENIED`:** Surfaces as `CRITICAL` in the Error Console with guided remediation; sign back into BandaGo or grant `M_Inventory` permissions (or keep `MANUAL_EXPORT`).
+- **Stale claim lease (> 5 min):** Automatically unlocked back to `PENDING` on the next `GET /api/integrations/bandago/outbound` call.
+- **`INSUFFICIENT_POS_STOCK`:** Warning incident recorded when BandaGo clamped physical stock to 0; check physical shelf counts in Live Stock Variance Inspector.
+
+## Traceability
+
+| Concern | Implementation reference |
+| --- | --- |
+| Core math & policy defaults | `src/lib/pos-reconciliation-core.ts` |
+| Outbound hooks & incident deduplication | `src/lib/pos-reconciliation.ts` |
+| Daily Sales PDF generator | `src/lib/pdf/daily-sales-pdf.ts` |
+| Admin POS Sync APIs | `src/app/api/admin/pos-sync/{policy,reconcile,sales-export}/route.ts`, `src/app/api/admin/pos-status/route.ts` |
+| Bridge APIs | `src/app/api/integrations/bandago/{outbound,outbound/ack,telemetry}/route.ts` |
+| Order/product/expiry hooks | `src/app/api/payments/{mpesa/callback,intasend/webhook,refund}/route.ts`, `src/app/api/orders/[id]/{prepare,cash-confirm,cancel,route}.ts`, `src/app/api/products/[id]/route.ts`, `src/app/api/cron/order-reservations/route.ts`, `src/lib/inventory-guard.ts` |
+| Timing-safe dual auth | `src/lib/security/bandago-auth.ts`, `src/lib/security/bandago-bearer.ts` |
+| Admin UI | `src/components/views/admin/sections/pos-sync-section.tsx` |
+| Schema & migration | `PosOutboundJob`, `PosSyncIncident`, `PosSyncLog` in `prisma/migrations/20261119120000_add_bandago_bidirectional_sync/` |
+| Tests | `tests/bandago-bidirectional-sync.test.mjs` |
+
+## Related journeys and documents
+
+- **SYS-08** — inbound BandaGo inventory ingestion & drift protection
+- **O01 / O02 / O03 / O04** — checkout and payment confirmations that enqueue `ONLINE_SALE` jobs
+- **A07** — manual product and stock edits that enqueue `ADMIN_STOCK_ADJUST` jobs
+- Docs: [BandaGo POS & CRM integration](../../integrations/bandago-pos-crm.md) · [inventory lifecycle](../../workflows/inventory-lifecycle.md) · [inventory and stock](../../features/inventory-and-stock.md)
+`````
+
+[↑ Back to Master Index](#4-master-alphabetical-file-index) | [↑ Back to Categorized Index](#3-categorized-source-code-index)
+
+---
+
+### File #112: `docs/journeys/system/cron-chronic-refills.md`
 
 <a id="file-docs-journeys-system-cron-chronic-refills-md"></a>
 
@@ -21948,7 +22283,7 @@ flowchart TD
 
 ---
 
-### File #112: `docs/journeys/system/cron-notifications.md`
+### File #113: `docs/journeys/system/cron-notifications.md`
 
 <a id="file-docs-journeys-system-cron-notifications-md"></a>
 
@@ -22148,7 +22483,7 @@ flowchart TD
 
 ---
 
-### File #113: `docs/journeys/system/cron-order-reservations.md`
+### File #114: `docs/journeys/system/cron-order-reservations.md`
 
 <a id="file-docs-journeys-system-cron-order-reservations-md"></a>
 
@@ -22339,7 +22674,7 @@ flowchart TD
 
 ---
 
-### File #114: `docs/journeys/system/cron-prescription-retention.md`
+### File #115: `docs/journeys/system/cron-prescription-retention.md`
 
 <a id="file-docs-journeys-system-cron-prescription-retention-md"></a>
 
@@ -22515,7 +22850,7 @@ flowchart TD
 
 ---
 
-### File #115: `docs/journeys/system/cron-service-booking-reminders.md`
+### File #116: `docs/journeys/system/cron-service-booking-reminders.md`
 
 <a id="file-docs-journeys-system-cron-service-booking-reminders-md"></a>
 
@@ -22686,7 +23021,7 @@ flowchart TD
 
 ---
 
-### File #116: `docs/journeys/system/intasend-webhook.md`
+### File #117: `docs/journeys/system/intasend-webhook.md`
 
 <a id="file-docs-journeys-system-intasend-webhook-md"></a>
 
@@ -22900,7 +23235,7 @@ sequenceDiagram
 
 ---
 
-### File #117: `docs/journeys/system/mpesa-callback.md`
+### File #118: `docs/journeys/system/mpesa-callback.md`
 
 <a id="file-docs-journeys-system-mpesa-callback-md"></a>
 
@@ -23076,7 +23411,7 @@ sequenceDiagram
 
 ---
 
-### File #118: `docs/journeys/system/notification-dispatch.md`
+### File #119: `docs/journeys/system/notification-dispatch.md`
 
 <a id="file-docs-journeys-system-notification-dispatch-md"></a>
 
@@ -23270,7 +23605,7 @@ sequenceDiagram
 
 ---
 
-### File #119: `docs/operations/backup-and-restore.md`
+### File #120: `docs/operations/backup-and-restore.md`
 
 <a id="file-docs-operations-backup-and-restore-md"></a>
 
@@ -23278,7 +23613,7 @@ sequenceDiagram
 - **Category:** Documentation & Blueprints
 - **Language:** Markdown Documentation
 - **Lines:** 150
-- **Size:** 12.3 KB (12,564 bytes)
+- **Size:** 12.4 KB (12,695 bytes)
 
 `````markdown
 # Backup and Restore
@@ -23293,10 +23628,10 @@ What must be backed up to recover Sphere Pharmacy, with restore procedures, RPO/
 
 | Asset | Contents | Backup mechanism |
 | --- | --- | --- |
-| **PostgreSQL database** | Orders, payments, prescriptions (rows + storage keys), loyalty ledger, users/staff, settings, audit trail, PosSyncLog — 39 models. | Logical dumps (`pg_dump`) **plus** the provider's own snapshots. On Neon, use built-in backups/restore points; if you use pointer/branch workflows, tag the branches you may restore from. |
+| **PostgreSQL database** | Orders, payments, prescriptions (rows + storage keys), loyalty ledger, users/staff, settings, audit trail, PosSyncLog, PosOutboundJob, PosSyncIncident — 41 models. | Logical dumps (`pg_dump`) **plus** the provider's own snapshots. On Neon, use built-in backups/restore points; if you use pointer/branch workflows, tag the branches you may restore from. |
 | **R2 objects** | Private: `prescriptions/{userId}/{uuid}.{ext}` (compliance-relevant), `medicine-requests/{uuid}.{ext}` photos. Public: product/service imagery, avatars, general uploads. | Bucket-level copy to a second bucket/account or an S3-compatible mirror. Do not rely on versioning alone — confirm it is enabled for the private prefixes at minimum. |
 | **Env / secrets vault** | All server-secrets from [environment-variables.md](environment-variables.md): database URLs, `CRON_SECRET`, `MPESA_CALLBACK_TOKEN`, provider keys, the three hash secrets, `BANDAGO_SYNC_API_KEY`. | Encrypted secret store (password manager / KMS / provider vault) with access review. `.env.example` structure + real values held separately. |
-| **Setting table contents** | `pharmacy`, `delivery`, `compliance` JSON blobs — pharmacy identity, delivery zones/fees, internal PPB compliance record. | Covered by the PostgreSQL dump, but note it: it is hand-curated data with no code-level regeneration path. |
+| **Setting table contents** | `pharmacy`, `delivery`, `compliance`, `posSync`, `posBridgeHeartbeat` JSON blobs — pharmacy identity, delivery zones/fees, internal PPB compliance record, POS sync strategy & bridge heartbeat. | Covered by the PostgreSQL dump, but note it: it is hand-curated data with no code-level regeneration path. |
 
 Example nightly logical dump (run from a host with network access to the **direct** (non-pooler) database URL):
 
@@ -23361,7 +23696,7 @@ Before restoring, decide scope: **app-only rollback** (see [deployment.md](deplo
 ```bash
 # From a logical dump
 pg_restore --clean --if-exists -d "$DATABASE_URL" dumpfile   # or psql for plain SQL dumps
-npx prisma migrate status   # MUST report all 10 migrations applied, none pending
+npx prisma migrate status   # MUST report all 11 migrations applied, none pending
 ```
 
 If `migrate status` reports pending migrations after restore, apply `npx prisma migrate deploy` **before** accepting traffic. If it reports applied-but-missing drift, stop and reconcile deliberately ([database-operations.md](database-operations.md)).
@@ -23377,7 +23712,7 @@ Restore from the vault into the deployment environment. **Rotation consideration
 - `TOKEN_HASH_SECRET` — rotation breaks HMAC comparability for existing promotion IP/browser hashes and guest-order token hashes. Rotate only with an explicit migration plan; this is why the secret must never rotate casually ([environment-variables.md](environment-variables.md)).
 - `SESSION_SECRET` / `OTP_HASH_SECRET` — rotation invalidates sessions / in-flight OTPs; schedule during a quiet window.
 - Provider keys (`RESEND_API_KEY`, Daraja, IntaSend, R2, FCM, `BANDAGO_SYNC_API_KEY`) — rotate per provider, then update webhook/callback configuration to match.
-- If any credential ever equaled a value shipped in `.env.example` (notably the BandaGo default pair), **treat rotation as mandatory, not optional** — those values are public by construction ([../governance/technical-debt.md](../governance/technical-debt.md) H1).
+- If any credential ever equaled a value shipped in `.env.example` (formerly the BandaGo default pair, now retired in `061e923`), **treat rotation as mandatory, not optional** — those values are public by construction ([../governance/technical-debt.md](../governance/technical-debt.md) H1).
 
 ### 4. Cron and integrations after restore
 
@@ -23437,15 +23772,15 @@ A backup is only real if a restore has been rehearsed. Quarterly, against a scra
 
 ---
 
-### File #120: `docs/operations/database-operations.md`
+### File #121: `docs/operations/database-operations.md`
 
 <a id="file-docs-operations-database-operations-md"></a>
 
 - **Relative Path:** `docs/operations/database-operations.md`
 - **Category:** Documentation & Blueprints
 - **Language:** Markdown Documentation
-- **Lines:** 159
-- **Size:** 12.3 KB (12,549 bytes)
+- **Lines:** 164
+- **Size:** 13.1 KB (13,400 bytes)
 
 `````markdown
 # Database Operations Runbook
@@ -23460,7 +23795,7 @@ Operational procedures for the Sphere Pharmacy PostgreSQL database: connection r
 
 `src/lib/db.ts`:
 
-- Resolves the connection URL in this order: `DATABASE_URL` → `sphere_pharmacy_PRISMA_DATABASE_URL` → `sphere_pharmacy_DATABASE_URL` → `sphere_pharmacy_POSTGRES_URL`, and **throws** when none is set.
+- Resolves the connection URL in this order: `DATABASE_URL` → `sphere_pharmacy_PRISMA_DATABASE_URL` → `sphere_pharmacy_DATABASE_URL` → `sphere_pharmacy_POSTGRES_URL`, using a lazy `Proxy` so build-time imports without a DB URL do not fail, and **throws on the first runtime query** when none is set.
 - Maintains a **singleton client** on `globalThis` (prevents connection exhaustion from hot-reload in dev).
 - Detects pooled Neon URLs (hostname contains `-pooler.`) and appends `statement_cache_size=0` unless already present — this prevents the PgBouncer stale-prepared-plan error (`0A000`) after schema changes.
 - Logs at `["warn", "error"]` only.
@@ -23475,7 +23810,7 @@ Practical rules: use the pooled URL for the app, the direct (non-pooler) URL for
 - **Status check:** `npx prisma migrate status`.
 - `migration_lock.toml` pins the provider to `postgresql` — do not change it.
 
-The ten committed migrations (chronological, 2026 timestamps):
+The eleven committed migrations (chronological, 2026 timestamps):
 
 | # | Migration | One-liner |
 | --- | --- | --- |
@@ -23489,6 +23824,7 @@ The ten committed migrations (chronological, 2026 timestamps):
 | 8 | `20261028190000_private_promotion_visibility` | `isPublic` gating for share-only promotion codes. |
 | 9 | `20261028194500_admin_live_cursor_indexes` | Cursor-pair indexes (`updatedAt,id` / `createdAt,id`) for low-cost admin live updates. |
 | 10 | `20261104200000_add_bandago_pos_support` | POS/CRM tables and columns: `externalPosId`, `ProductBatch`, `PosSyncLog`, CRM user fields. |
+| 11 | `20261119120000_add_bandago_bidirectional_sync` | Bi-directional POS reconciliation & telemetry: `pos_outbound_jobs`, `pos_sync_incidents`, POS drift baseline columns, `PosSyncDirection` & outbound enums. |
 
 ## `db:push` — development only
 
@@ -23503,7 +23839,7 @@ The ten committed migrations (chronological, 2026 timestamps):
 A schema change in this codebase touches **four** places, not one:
 
 1. **Migration** — `prisma/schema.prisma` + a named migration via `prisma migrate dev`.
-2. **Constants** — most statuses are **strings validated in code, not Prisma enums** (`src/lib/constants.ts`, workflow guards). The only schema-level enums are the BandaGo `PosSyncTrigger`/`PosSyncStatus` pair (see [../governance/architecture-decisions.md](../governance/architecture-decisions.md) ADR-004). Add new status values to the canonical lists first.
+2. **Constants** — most statuses are **strings validated in code, not Prisma enums** (`src/lib/constants.ts`, workflow guards). The only schema-level enums are the five BandaGo POS enums (`PosSyncStatus`, `PosSyncTrigger`, `PosSyncDirection`, `PosOutboundStatus`, `PosOutboundEventType`) (see [../governance/architecture-decisions.md](../governance/architecture-decisions.md) ADR-004). Add new status values to the canonical lists first.
 3. **DTO layer** — `src/lib/dto.ts` serializes to API shapes (`moneyNumber`, ISO dates, status casts). New columns need explicit DTO mapping; note `toPrescriptionDTO` hardcodes `fileUrl: null` / `storageKey: null` so storage keys never leak.
 4. **API contract** — update [../api/api-reference.md](../api/api-reference.md) and `openapi/sphere-api.yaml`, and extend the relevant test suite (`tests/*.test.mjs`).
 
@@ -23529,7 +23865,7 @@ Worked example — adding a nullable `preferredContact` column to `User`:
 
 Useful targets for ad-hoc checks (run with the Prisma console or SQL client; scope reads narrowly):
 
-- **PosSyncLog** (`pos_sync_logs`) — BandaGo sync health: `status` (SUCCESS/PARTIAL/FAILED), `itemsReceived/Upserted/Failed`, `durationMs`, `details` (errors capped at 50). Surfaced in-app via `GET /api/admin/pos-status`.
+- **PosSyncLog / PosOutboundJob / PosSyncIncident** (`pos_sync_logs`, `pos_outbound_jobs`, `pos_sync_incidents`) — BandaGo bi-directional sync health: `direction`, `status` (SUCCESS/PARTIAL/FAILED), `itemsReceived/Upserted/Failed`, `durationMs`, pending/exported/failed outbound jobs, and open Zero-PHI incidents. Surfaced in-app via `GET /api/admin/pos-status` and `GET /api/admin/pos-sync/reconcile`.
 - **NotificationDelivery** — dispatcher health: group by `status` (PENDING/PROCESSING/SENT/FAILED/…), `oldestPendingAt`, `attempts`, `lastError`. Surfaced via `GET /api/admin/notification-health` (ADMIN) — prefer the endpoint; it leaks no message bodies.
 - **RateLimitBucket** — `windowEnds` index exists for sweeping stale fixed-window buckets; if the table grows unbounded, sweep rows with `windowEnds < now()` during a quiet window.
 - **AuditLog** — the admin audit trail (`GET /api/admin/audit`, latest 200).
@@ -23543,9 +23879,13 @@ SELECT status, channel, count(*), min(available_at) AS oldest
 FROM "NotificationDelivery" GROUP BY status, channel ORDER BY status;
 
 -- BandaGo sync outcomes, last 7 days
-SELECT status, count(*), avg("durationMs") AS avg_ms
-FROM pos_sync_logs WHERE "startedAt" > now() - interval '7 days'
-GROUP BY status;
+SELECT direction, status, count(*), avg("duration_ms") AS avg_ms
+FROM pos_sync_logs WHERE "started_at" > now() - interval '7 days'
+GROUP BY direction, status;
+
+-- Open POS outbound reconciliation jobs and unresolved incidents
+SELECT status, count(*) FROM pos_outbound_jobs GROUP BY status ORDER BY status;
+SELECT severity, code, count(*) FROM pos_sync_incidents WHERE resolved = false GROUP BY severity, code;
 
 -- Stale rate-limit buckets eligible for a sweep
 SELECT count(*) FROM "RateLimitBucket" WHERE "windowEnds" < now();
@@ -23613,7 +23953,7 @@ ALLOW_DESTRUCTIVE_SEED=true bun prisma/seed.ts   # guarded minimal seed (dev)
 
 ---
 
-### File #121: `docs/operations/deployment.md`
+### File #122: `docs/operations/deployment.md`
 
 <a id="file-docs-operations-deployment-md"></a>
 
@@ -23621,7 +23961,7 @@ ALLOW_DESTRUCTIVE_SEED=true bun prisma/seed.ts   # guarded minimal seed (dev)
 - **Category:** Documentation & Blueprints
 - **Language:** Markdown Documentation
 - **Lines:** 151
-- **Size:** 12.6 KB (12,926 bytes)
+- **Size:** 12.7 KB (13,054 bytes)
 
 `````markdown
 # Deployment Guide
@@ -23689,7 +24029,7 @@ On a real server you will typically terminate TLS upstream or adjust the Caddyfi
 
 | Artifact | Purpose |
 | --- | --- |
-| `next-service-dist/` | The standalone Next.js server (`server.js`) + traced dependencies |
+| `next-service-dist/` | The standalone Next.js server (`server.js`) + traced dependencies (incl. `docs/`, `openapi/`, `prisma/schema.prisma`, `README.md`, `AGENTS.md` via `outputFileTracingIncludes` for `/docs` & `/api/docs-*`) |
 | `next-service-dist/.next/static/` | Client assets (copied in by the build pipeline / `build:standalone`) |
 | `next-service-dist/public/` | Public assets incl. the curated product image library |
 | `Caddyfile` | Reverse proxy config (`:81`, `XTransformPort` route, `:3000` proxy with `X-Forwarded-*`) |
@@ -23724,7 +24064,7 @@ Run top-to-bottom on first deployment; re-check items 3–5 after any environmen
 
 | # | Item | How |
 | --- | --- | --- |
-| 1 | **Migrations applied** | `npx prisma migrate deploy`, then `npx prisma migrate status` must show all 10 applied, none pending — before accepting traffic |
+| 1 | **Migrations applied** | `npx prisma migrate deploy`, then `npx prisma migrate status` must show all 11 applied, none pending — before accepting traffic |
 | 2 | **Admin bootstrap** | Create the first ADMIN (guarded seed refuses production; controlled manual procedure — one-off script or direct insert with a correctly scrypt-hashed password). **Requires live verification**; no dedicated bootstrap command exists in-repo |
 | 3 | **Provider callbacks** | M-Pesa callback with `?token=` (appended automatically), IntaSend webhook → `/api/payments/intasend/webhook`, Resend → `/api/notifications/email-webhook`; confirm `MPESA_CALLBACK_TOKEN` / `INTASEND_WEBHOOK_SECRET` / `RESEND_WEBHOOK_SECRET` match the dashboards |
 | 4 | **Cron scheduling** | Every-minute notifications + ≥ 15-min reminders + TTL/retention jobs scheduled by the platform — the repo does **not** schedule cron itself ([scheduled-jobs.md](scheduled-jobs.md)) |
@@ -23773,7 +24113,7 @@ This mirrors CI ([testing-strategy.md](../testing/testing-strategy.md)) plus the
 - [scheduled-jobs.md](scheduled-jobs.md) — the cron scheduling this deployment must provide.
 - [../governance/architecture-decisions.md](../governance/architecture-decisions.md) — ADR-015 records why standalone + Caddy is the chosen pipeline.
 - [../payment-notification-audit.md](../payment-notification-audit.md) — provider configuration the audit found missing locally (`MPESA_CALLBACK_TOKEN`, `CRON_SECRET`, `RESEND_WEBHOOK_SECRET`) — ensure these exist in production.
-- [../governance/technical-debt.md](../governance/technical-debt.md) — deployment-relevant debt (no in-repo scheduler, hard-coded `.zscripts` path, browser-exposed POS secret).
+- [../governance/technical-debt.md](../governance/technical-debt.md) — deployment-relevant debt (no in-repo scheduler, hard-coded `.zscripts` path, payment blockers).
 - [backup-and-restore.md](backup-and-restore.md) — artifact retention and the restore side of rollback.
 `````
 
@@ -23781,15 +24121,15 @@ This mirrors CI ([testing-strategy.md](../testing/testing-strategy.md)) plus the
 
 ---
 
-### File #122: `docs/operations/environment-variables.md`
+### File #123: `docs/operations/environment-variables.md`
 
 <a id="file-docs-operations-environment-variables-md"></a>
 
 - **Relative Path:** `docs/operations/environment-variables.md`
 - **Category:** Documentation & Blueprints
 - **Language:** Markdown Documentation
-- **Lines:** 170
-- **Size:** 15.4 KB (15,756 bytes)
+- **Lines:** 168
+- **Size:** 15.3 KB (15,711 bytes)
 
 `````markdown
 # Environment Variables Reference
@@ -23802,7 +24142,7 @@ This is the complete matrix of environment variables consumed by Sphere Pharmacy
 
 ## Classification rules
 
-- **Public** — any `NEXT_PUBLIC_*` variable is compiled into the browser bundle. It is **not a secret** and must never hold a credential value. See the [security callout](#security-callout-next_public_pos_sync-secret) below.
+- **Public** — any `NEXT_PUBLIC_*` variable is compiled into the browser bundle. It is **not a secret** and must never hold a credential value. See the [retired browser-secret note](#security-note-retired-next_public_pos_sync_secret-remediated) below.
 - **Server-secret** — must only exist in server-side env / a secrets vault. Marked **Yes** in the Secret column.
 - **Required** — the feature or endpoint hard-fails (or refuses to run) without it. **Cron-only** means the variable is required by a cron endpoint but not by normal request paths. **Optional** — feature degrades gracefully (usually fail-closed or silently disabled).
 
@@ -23819,7 +24159,7 @@ This is the complete matrix of environment variables consumed by Sphere Pharmacy
 
 | Variable | Scope | Required | Secret | Notes |
 | --- | --- | --- | --- | --- |
-| `GROQ_API_KEY` | Server | Optional | Yes | Enables the LLM-backed assistant mode. **Without it the assistant runs in deterministic rule-based mode** — no error, no network calls. |
+| `GROQ_API_KEY` | Server | Optional | Yes | Enables LLM-backed replies in `/api/assistant` and `/api/docs-assistant` ("Ask Sphere Docs"). **Without it both fall back cleanly** — deterministic mode for storefront assistant, lexical citation retrieval for docs assistant. |
 | `GROQ_MODEL` | Server | Optional | No | Defaults to `openai/gpt-oss-20b` in `.env.example`. |
 
 ## Email (Resend)
@@ -23907,8 +24247,7 @@ All three must be ≥ 32 chars (the app throws otherwise). Do not derive one fro
 
 | Variable | Scope | Required | Secret | Notes |
 | --- | --- | --- | --- | --- |
-| `BANDAGO_SYNC_API_KEY` | Server | Optional (required for POS sync) | Yes | Bearer secret for `POST /api/integrations/bandago/sync`, `csv-import`, and `crm`. **The sync route never validates the bearer when the variable is unset** — set it in every environment. Also see the hard-coded fallback issue below. |
-| `NEXT_PUBLIC_POS_SYNC_SECRET` | Public | Optional | **No — browser-visible by definition** | Sent as a Bearer token from the admin CSV dropzone UI, so it is embedded in the client bundle. See the security callout. |
+| `BANDAGO_SYNC_API_KEY` | Server | Optional (required for machine-to-machine POS bridge) | Yes | Server-only fail-closed Bearer secret verified timing-safe across all six `/api/integrations/bandago/*` routes (`sync`, `csv-import`, `crm`, `outbound`, `outbound/ack`, `telemetry`). `.env.example` leaves it `""`; `isUsingInsecureDefaultBandagoKey()` warns admins in POS Sync if unset or equal to the retired placeholder. |
 
 ## Runtime-only variables (NOT in `.env.example`)
 
@@ -23926,11 +24265,10 @@ These exist only in code/CI. Missing ones are a common cause of confusing 503s a
 | `ALLOW_DESTRUCTIVE_SEED` | Server | Required to run seed at all | No | Must be `true`; seed also refuses when `NODE_ENV=production`. |
 | `SEED_DATABASE_ACK` | Server | Required for non-localhost seed | No | Must equal the database host being seeded (explicit remote acknowledgement). |
 | `STANDALONE` | Build-time | Optional | No | `true` makes `next.config.ts` emit `output: "standalone"` (used by `build:standalone` and `.zscripts/build.sh`). |
-| `NEXT_PUBLIC_POS_SYNC_SECRET` fallback value | — | — | — | Documented here only as the known-issue cross-reference in the callout below. |
 
-## Security callout: NEXT_PUBLIC_POS_SYNC_SECRET
+## Security note: retired NEXT_PUBLIC_POS_SYNC_SECRET (remediated)
 
-`NEXT_PUBLIC_POS_SYNC_SECRET` is **browser-visible by definition** (the `NEXT_PUBLIC_` prefix inlines it into the client bundle) yet is used as a Bearer credential for the BandaGo sync/CRM endpoints from the admin CSV upload UI. `.env.example` additionally ships the **same default value** for it and `BANDAGO_SYNC_API_KEY`, and `csv-import/route.ts` contains a hard-coded fallback secret (the literal is intentionally not reproduced here). Consequences and remediation are tracked as a HIGH item in [../governance/technical-debt.md](../governance/technical-debt.md): remove the browser-borne secret (use staff sessions instead), remove the fallback, and rotate any credential that ever equaled the shipped default.
+Historically (`H1` in [../governance/technical-debt.md](../governance/technical-debt.md)), `NEXT_PUBLIC_POS_SYNC_SECRET` was exposed via the admin CSV upload UI, `.env.example` shipped a shared placeholder for both BandaGo keys, and `csv-import/route.ts` carried a hardcoded fallback. **This was remediated in commit `061e923`**: `NEXT_PUBLIC_POS_SYNC_SECRET`, the hardcoded fallback, and the `.env.example` literal were all deleted; the admin UI authenticates strictly with the httpOnly `sphere_session` cookie; and machine Bearer auth (`verifyBandagoBearerHeader`) fails closed with constant-time comparison. Any previously deployed environment that ever used the retired placeholder must rotate `BANDAGO_SYNC_API_KEY` immediately (surfaced via `usingDefaultKeyWarning` in the POS Sync Hub).
 
 ## CI reference values (safe, non-secret)
 
@@ -23968,7 +24306,132 @@ Use these checklists when standing up an environment; everything else degrades g
 
 ---
 
-### File #123: `docs/operations/scheduled-jobs.md`
+### File #124: `docs/operations/local-development.md`
+
+<a id="file-docs-operations-local-development-md"></a>
+
+- **Relative Path:** `docs/operations/local-development.md`
+- **Category:** Documentation & Blueprints
+- **Language:** Markdown Documentation
+- **Lines:** 108
+- **Size:** 6.2 KB (6,322 bytes)
+
+`````markdown
+# Local Development Setup
+
+This guide covers standing up Sphere Pharmacy on a developer workstation, understanding the guarded database seed, running the automated test suites, reproducing CI locally, and refreshing the generated single-file codebase snapshot.
+
+| Audience | Status | Verified |
+| --- | --- | --- |
+| Developers, AI coding agents | **Implemented** | November 2026 |
+
+## Prerequisites
+
+| Tool | Version / Notes | Needed for |
+| --- | --- | --- |
+| **Node.js** | 22 (matches `.github/workflows/ci.yml`) | App runtime, `npm test`, Next.js build |
+| **PostgreSQL** | 16 (local Docker/native instance or a Neon dev branch) | Schema migrations, API routes, test suites |
+| **Bun** | Optional (`^1.3`) | `npm run test:assistant` and `npm run start:standalone` |
+| **Python 3** | 3.x | `npm run update:codebase` snapshot script |
+
+## Quick start
+
+```bash
+npm install            # postinstall runs: prisma generate
+cp .env.example .env   # populate database URL + required secrets
+npm run db:migrate     # creates/applies the 11 PostgreSQL migrations (prisma migrate dev)
+npm run dev            # http://localhost:3000 (also serves /docs portal)
+```
+
+### Minimum environment for local boot
+
+`src/lib/db.ts` resolves the PostgreSQL connection string from the first non-empty variable in this order:
+
+1. `DATABASE_URL`
+2. `sphere_pharmacy_PRISMA_DATABASE_URL`
+3. `sphere_pharmacy_DATABASE_URL`
+4. `sphere_pharmacy_POSTGRES_URL`
+
+If you use a Neon pooled endpoint (`-pooler.` in the hostname), `src/lib/db.ts` automatically appends `statement_cache_size=0` so PgBouncer does not serve stale prepared plans after schema changes.
+
+You must also generate independent ≥ 32-character values for the hash/session secrets (otherwise authenticated/token operations throw via `requiredSecret()`):
+
+```bash
+openssl rand -base64 48   # run separately for SESSION_SECRET, TOKEN_HASH_SECRET, OTP_HASH_SECRET
+```
+
+For full variable coverage (including runtime-only cron variables `ORDER_RESERVATION_TTL_MINUTES` and `PRESCRIPTION_RETENTION_DAYS`), see [environment-variables.md](environment-variables.md).
+
+### Build-time DB deferral (`src/lib/db.ts`)
+
+`src/lib/db.ts` wraps the Prisma client in a lazy `Proxy` (`getClient()`), so missing-database-URL errors are deferred until runtime property access rather than thrown at module import. This allows `npm run build` and static generation of the `/docs` portal (`http://localhost:3000/docs`) to succeed without a live database connection while still failing fast whenever an API route or query executes without configuration.
+
+## Guarded database seed (`prisma/seed.ts`)
+
+`prisma/seed.ts` is intentionally minimal and **never** creates products, customers, orders, prescriptions, or clinical history.
+
+| Guard / behavior | Detail |
+| --- | --- |
+| Production refusal | Refuses when `NODE_ENV=production` or `ALLOW_DESTRUCTIVE_SEED≠true` |
+| Remote host guard | Any hostname other than `localhost` / `127.0.0.1` / `::1` requires `SEED_DATABASE_ACK=<hostname>` |
+| Categories upserted | Exactly 7 starter categories: `prescription`, `otc`, `pain-fever`, `cold-flu`, `vitamins`, `personal-care`, `medical-devices` |
+| Optional dev `ADMIN` | Upserted only when both `SEED_ADMIN_EMAIL` and `SEED_ADMIN_PASSWORD` (≥ 14 characters) are set; bumps `authVersion` and deletes that admin's sessions |
+
+Example local seed run:
+
+```bash
+ALLOW_DESTRUCTIVE_SEED=true \
+SEED_ADMIN_EMAIL="admin@example.com" \
+SEED_ADMIN_PASSWORD="change-me-to-14-plus-chars" \
+bun prisma/seed.ts
+```
+
+> **Historical README correction:** Older build docs (`reference/archive/PROJECT_README.md`) describe a SQLite seed with demo staff/customer accounts (`admin123`, `pharm123`, etc.) and 62 preloaded products. That seed no longer exists — use `prisma/seed.ts` for categories and an optional admin account, then import products via Admin → Catalogue / POS Sync CSV import or BandaGo POS sync.
+
+## Scripts & testing
+
+| Script | Command | Notes |
+| --- | --- | --- |
+| `npm run dev` | `next dev -p 3000 2>&1 \| tee dev.log` | Local dev server (`http://localhost:3000` and `/docs`) |
+| `npm run typecheck` | `tsc --noEmit --pretty false` | Strict TypeScript check |
+| `npm run lint` | `eslint .` | CI enforces `--max-warnings=0` |
+| `npm test` | `node --test tests/*.test.mjs` | Runs all **13** `.mjs` test suites |
+| `npm run test:assistant` | `bun test tests/assistant.test.ts` | Bun runner — **not run in CI**; run manually when touching assistant code |
+| `npm run build` | `prisma generate && next build` | Production build incl. `/docs` static corpus generation |
+| `npm run build:standalone` | `STANDALONE=true next build` + asset copy | Packages `.next/standalone` for Caddy/standalone deployment |
+| `npm run db:migrate` | `prisma migrate dev` | Generates and applies a new migration locally |
+| `npm run db:push` | `prisma db push --accept-data-loss` | Throwaway dev prototyping only — never use on shared/prod DBs |
+| `npm run update:codebase` | `python3 scripts/generate_codebase_file.py` | Regenerates `SPHERE_PHARMACY_FULL_CODEBASE.md` (`--check` validates freshness) |
+
+### CI parity check
+
+Before pushing changes, run the same check sequence enforced by `.github/workflows/ci.yml` (plus the Bun assistant suite):
+
+```bash
+npm run typecheck
+npm run lint -- --max-warnings=0
+npx prisma migrate deploy
+npm test
+npm run test:assistant
+npm run build
+```
+
+If you run tests against a local throwaway Postgres instance matching CI, export `DATABASE_URL="postgresql://sphere:sphere@localhost:5432/sphere_test"`, 32+-char test values for `CRON_SECRET`, `SESSION_SECRET`, `OTP_HASH_SECRET`, and `TOKEN_HASH_SECRET`, plus `PRESCRIPTION_RETENTION_DAYS=365` and `ORDER_RESERVATION_TTL_MINUTES=60`. See [../testing/testing-strategy.md](../testing/testing-strategy.md) for the full suite inventory.
+
+## Related reading
+
+- [environment-variables.md](environment-variables.md) — complete environment variable matrix and runtime-only flags
+- [database-operations.md](database-operations.md) — migrations, connection pooling, and transaction budgets
+- [deployment.md](deployment.md) — standalone + Caddy and Vercel deployment guides
+- [../testing/testing-strategy.md](../testing/testing-strategy.md) — test suites, CI ordering, and gaps
+- [../README.md](../README.md) — canonical documentation index
+`````
+
+[↑ Back to Master Index](#4-master-alphabetical-file-index) | [↑ Back to Categorized Index](#3-categorized-source-code-index)
+
+---
+
+### File #125: `docs/operations/scheduled-jobs.md`
 
 <a id="file-docs-operations-scheduled-jobs-md"></a>
 
@@ -24135,15 +24598,15 @@ Cutoff is computed from the **soft-delete time** (`deletedAt`), not creation. Ro
 
 ---
 
-### File #124: `docs/operations/troubleshooting.md`
+### File #126: `docs/operations/troubleshooting.md`
 
 <a id="file-docs-operations-troubleshooting-md"></a>
 
 - **Relative Path:** `docs/operations/troubleshooting.md`
 - **Category:** Documentation & Blueprints
 - **Language:** Markdown Documentation
-- **Lines:** 153
-- **Size:** 14.4 KB (14,781 bytes)
+- **Lines:** 157
+- **Size:** 15.7 KB (16,064 bytes)
 
 `````markdown
 # Troubleshooting Guide
@@ -24158,7 +24621,7 @@ Symptom → likely cause → fix, organized by area, plus a "where to look" evid
 
 | Symptom | Likely cause | Fix |
 | --- | --- | --- |
-| `db.ts` throws on boot ("none of the database URL variables is set") | No `DATABASE_URL` / `sphere_pharmacy_*` URL variable in the environment | Set one of the four accepted variables ([environment-variables.md](environment-variables.md)); the standalone `start.sh` hard-fails for the same reason. |
+| `db.ts` throws on first DB access ("Database configuration missing...") | No `DATABASE_URL` / `sphere_pharmacy_*` URL variable in the environment | Set one of the four accepted variables ([environment-variables.md](environment-variables.md)); `db.ts` uses a lazy `Proxy` so builds pass, while the standalone `start.sh` hard-fails on boot. |
 | TypeScript errors about `@prisma/client` after install | Prisma client not generated | `npx prisma generate` (or reinstall — `postinstall` runs it). |
 | Standalone deployment boots but health checks time out | `.next/standalone/server.js` missing from the artifact (build produced non-standalone output) | The `.zscripts/build.sh` guard self-heals this at build time; if deploying manually, ensure `STANDALONE=true` build and that `build:standalone` copied `.next/static` + `public/` in. See [deployment.md](deployment.md). |
 | App runs but every page 500s after a schema edit | Prisma client generated from an older schema, or migrations pending | Regenerate client; `npx prisma migrate status`; see Database below. |
@@ -24204,10 +24667,13 @@ Symptom → likely cause → fix, organized by area, plus a "where to look" evid
 
 | Symptom | Likely cause | Fix |
 | --- | --- | --- |
-| Sync returns 401 "Invalid POS Sync Credentials" | Bearer ≠ `BANDAGO_SYNC_API_KEY`, or the variable is unset (route then never validates bearer) — or staff session lacks ADMIN/PHARMACIST | Set the key in every environment; see the browser-secret caveat in [../governance/technical-debt.md](../governance/technical-debt.md). |
-| Sync reports PARTIAL | Per-item errors (bad rows) — chunk failure fell back to isolated transactions | Read `errors[]` in the response and the `PosSyncLog.details` (capped 50) via `/api/admin/pos-status`. |
+| Sync returns 401 "Invalid POS Sync Credentials" | Bearer ≠ `BANDAGO_SYNC_API_KEY`, variable unset (route fails closed on Bearer auth), or staff session lacks ADMIN/PHARMACIST | Set a strong random `BANDAGO_SYNC_API_KEY` (never the retired placeholder); admin CSV uploads use the `sphere_session` cookie automatically. |
+| Sync returns 403 `TENANT_MISMATCH` | Chrome bridge sent a packet from a different BandaGo clinic (`AD_Client_UU`) than `policy.expectedTenantUU` | Switch BandaGo back to Sphere Pharmacy's clinic tab, or update `expectedTenantUU` in Admin → POS Sync → Policy. |
+| Inbound sync answers `{ paused: true, upsertedCount: 0 }` | `policy.inboundEnabled` is toggled off (only `MANUAL_RECONCILE` runs while paused) | Re-enable inbound sync in Admin → POS Sync → Overview & Policy when ready. |
+| Sync reports PARTIAL | Per-item errors (bad rows) — chunk failure fell back to isolated transactions | Read `errors[]` in the response, `PosSyncLog.details` (capped 50), and the POS Error Console via `/api/admin/pos-status`. |
 | Products not linking | `externalPosId` missing on the incoming item, or slug/SKU collision resolution kicked in | Ensure the extension/CSV maps `uu`/`M_Product_UU`/`id` to `externalPosId`; matching is `externalPosId` first, then slug-based linking for legacy rows. |
-| Stock looks wrong | Expired batches excluded from `stockQty` (PPB rule) or virtual reservations held | Compare `stock` (physical) vs `stockQty` (FEFO-valid) vs effective availability (minus safety buffer 2 and virtual reservations). |
+| Stock looks wrong or `POSSIBLE_MANUAL_RECONCILE` warning | Expired/short-shelf-life batches excluded (`minShelfLifeDays`), stagnant-POS drift offset active (`computeReconciledStock`), or manual POS drop detected | Check Live Stock Variance Inspector (`POS Sync → Sales Export & Reconciliation`), confirm already-entered sales via **Confirm Entered**, or run an Admin `SET_BASELINE_NOW` cutover. |
+| `NO_POS_TAB` / `AUTH_EXPIRED` / `AUTO_SYNC` stalled | No open authenticated `go.bandahealth.org` Chrome tab or BandaGo session expired | Re-authenticate in BandaGo Chrome tab, or download the Daily Sales PDF/CSV from POS Sync and confirm manual entry. |
 
 ## Orders
 
@@ -24223,7 +24689,7 @@ Symptom → likely cause → fix, organized by area, plus a "where to look" evid
 | Symptom | Likely cause | Fix |
 | --- | --- | --- |
 | Answers feel "canned" / no LLM | `GROQ_API_KEY` unset — deterministic-first mode | Intentional; set the key (and optionally `GROQ_MODEL`) to enable LLM mode. |
-| 429 from assistant | Rate limit 40/min per IP | Expected behavior; retry later. |
+| 429 from assistant | Rate limit 40/hour per IP (`/api/assistant`) or 20/hour per IP (`/api/docs-assistant`) | Expected behavior; retry later. |
 | Private-data questions refused | Session-scoped access by design — the assistant route gets no session cookie | See [../security/ai-access-and-authorized-sessions.md](../security/ai-access-and-authorized-sessions.md). |
 
 ## Admin
@@ -24256,7 +24722,8 @@ Symptom → likely cause → fix, organized by area, plus a "where to look" evid
 | Source | What it tells you |
 | --- | --- |
 | `AuditLog` (`GET /api/admin/audit`, ADMIN) | Staff/admin actions: settings, staff changes, order transitions, refunds, Rx decisions, POS CSV imports. |
-| `PosSyncLog` (`GET /api/admin/pos-status`) | BandaGo sync runs: trigger, status, item counts, duration, error details. |
+| `PosSyncLog` (`GET /api/admin/pos-status`) | BandaGo sync runs (`direction`: INBOUND/OUTBOUND): trigger, status, item counts, duration, error details. |
+| `PosOutboundJob` & `PosSyncIncident` (`GET /api/admin/pos-sync/reconcile`) | Outbound deductions/restocks awaiting export or `AUTO_SYNC` writeback, stock variance offsets, and deduplicated Zero-PHI bridge incidents. |
 | `NotificationDelivery` via `/api/admin/notification-health` | Queue depth, oldest pending, failed/bounced jobs, config flags. |
 | `dev.log` / `server.log` | Dev (`npm run dev` tees to `dev.log`) and standalone server output. |
 | Provider dashboards | M-Pesa portal (STK results, B2C refunds), IntaSend (invoices/chargebacks), Resend (deliveries/bounces), FCM console, Cloudflare R2 (objects). |
@@ -24305,7 +24772,7 @@ Before escalating, check whether the "bug" is a deliberate invariant:
 
 ---
 
-### File #125: `docs/payment-notification-audit.md`
+### File #127: `docs/payment-notification-audit.md`
 
 <a id="file-docs-payment-notification-audit-md"></a>
 
@@ -24394,7 +24861,7 @@ SMS OTP uses its existing synchronous Africa’s Talking adapter and checks prov
 
 ---
 
-### File #126: `docs/product/customer-journeys.md`
+### File #128: `docs/product/customer-journeys.md`
 
 <a id="file-docs-product-customer-journeys-md"></a>
 
@@ -24615,15 +25082,15 @@ Each journey has a step-by-step engineering walkthrough in [../workflows/](../wo
 
 ---
 
-### File #127: `docs/product/feature-catalogue.md`
+### File #129: `docs/product/feature-catalogue.md`
 
 <a id="file-docs-product-feature-catalogue-md"></a>
 
 - **Relative Path:** `docs/product/feature-catalogue.md`
 - **Category:** Documentation & Blueprints
 - **Language:** Markdown Documentation
-- **Lines:** 209
-- **Size:** 22.4 KB (22,930 bytes)
+- **Lines:** 223
+- **Size:** 24.9 KB (25,503 bytes)
 
 `````markdown
 # Feature catalogue
@@ -24822,12 +25289,26 @@ This is the complete inventory of what the Sphere Pharmacy platform does, module
 | Feature | Purpose | Primary users | Where | Backend status | Notes |
 | --- | --- | --- | --- | --- | --- |
 | Sync API | Receive stock, price and batch updates from the POS | Server-side | `/api/integrations/bandago/sync` | **Implemented** | Accepts streamed or CSV-triggered batches; chunked, error-tolerant |
+| Stagnant-POS drift protection | Prevent stale POS snapshots from overwriting online sales back up | Server-side | `/api/integrations/bandago/sync` | **Implemented** | Subtracts unreconciled outbound sales and unpaid order holds during inbound sync |
+| Daily Sales Export & reconciliation | Export Zero-PHI online sales sheets and confirm manual POS entry | Admins, Pharmacists | Admin → POS Sync | **Implemented** | Multi-page A4 PDF (with pharmacist sign-off), formula-safe CSV, JSON; one-click **Confirm Entered in BandaGo POS** |
+| Outbound ledger & opt-in Auto-Sync | Queue online sales/restocks/stock edits and optionally write back to BandaGo | Server-side / Admins (policy) | Admin → POS Sync; `/api/integrations/bandago/outbound*` | **Implemented** | Defaults to safe Manual Export; Admins can opt into `AUTO_SYNC` writeback via open POS tab |
+| Sync policy & tenant pinning | Configure sync direction, drift guard, min shelf life, and tenant UU pin | Admins (edit), Staff (read) | Admin → POS Sync | **Implemented** | Rejects mismatched BandaGo clinic tabs (`TENANT_MISMATCH`); cutover baseline control |
+| Error Console & bridge heartbeat | Triage deduplicated POS/extension errors and watch bridge status | Admins, Pharmacists | Admin → POS Sync | **Implemented** | Guided remediation per error code; critical incidents alert admins/pharmacists |
 | Data normalizer | Clean prices ("KSh 3,400"), names, categories, Rx flags | Server-side | — | **Implemented** | Kenya PPB keyword list classifies prescription items; existing Rx flags are never downgraded |
 | FEFO batch handling | Deduplicate batches, exclude expired stock | Server-side | — | **Implemented** | Sellable stock ignores expired batches (PPB-aligned) |
 | CRM sync | Reconcile customer profiles by phone number | Server-side | `/api/integrations/bandago/crm` | **Implemented** | Links loyalty balances and chronic-patient flags; clinical data is never synced |
 | Chronic refill reminders | Nudge patients ~30 days after an Rx order | Server-side | — | **Environment-dependent** | Implemented as a scheduled job (in-app + email); time-based only |
-| POS Sync hub | Watch sync telemetry and import CSVs | Admins, Pharmacists | Admin → POS Sync | **Implemented** | Products mapped, active batches, near-expiry flags, last sync signal, sync ledger |
-| Browser extension (api_data_transformer) | Capture data from the BandaGo POS screen | Pharmacists | External | **Requires live verification** | A separate Chrome extension, not part of this repository; the hub shows "awaiting extension" until connected |
+| POS Sync hub | 4-workspace hub: Overview & Policy, Export & Reconcile, Error Console, Audit & CSV | Admins, Pharmacists | Admin → POS Sync | **Implemented** | Authenticated via staff cookie; alerts admins if `BANDAGO_SYNC_API_KEY` is missing or retired default |
+| Browser extension (api_data_transformer) | Capture data from the BandaGo POS screen and run optional Auto-Sync writebacks | Pharmacists | External | **Requires live verification** | A separate Chrome extension, not part of this repository; the hub shows live heartbeat once connected |
+
+## Interactive documentation portal (`/docs`)
+
+| Feature | Purpose | Primary users | Where | Backend status | Notes |
+| --- | --- | --- | --- | --- | --- |
+| Documentation & journey explorer | Browse architecture, runbooks, and 69 flowchart-backed user journeys | Everyone, Staff, Engineers | `/docs`, `/docs/journeys` | **Implemented** | Renders canonical Markdown and Mermaid diagrams interactively (zoom/pan/SVG export) |
+| API & Database explorers | Search endpoints and inspect models with generated ER diagrams | Engineers, Agents | `/docs/api-reference`, `/docs/database` | **Implemented** | Generated directly from `openapi/sphere-api.yaml` and `prisma/schema.prisma` |
+| Command palette search (⌘K) | Full-text search across docs, journeys, and endpoints | Everyone | `/docs` header | **Implemented** | Powered by `/api/docs-index` |
+| Ask Sphere Docs assistant | Answer questions grounded in the public docs with citations | Everyone | `/docs/assistant` | **Environment-dependent** | Uses Groq when `GROQ_API_KEY` is set; falls back cleanly to lexical retrieval excerpts; never reads sessions |
 
 ## Related documentation
 
@@ -24841,15 +25322,15 @@ This is the complete inventory of what the Sphere Pharmacy platform does, module
 
 ---
 
-### File #128: `docs/product/pharmacy-operations.md`
+### File #130: `docs/product/pharmacy-operations.md`
 
 <a id="file-docs-product-pharmacy-operations-md"></a>
 
 - **Relative Path:** `docs/product/pharmacy-operations.md`
 - **Category:** Documentation & Blueprints
 - **Language:** Markdown Documentation
-- **Lines:** 165
-- **Size:** 15.1 KB (15,477 bytes)
+- **Lines:** 170
+- **Size:** 15.6 KB (15,981 bytes)
 
 `````markdown
 # Pharmacy operations guide
@@ -24955,7 +25436,12 @@ An internal record of the premise licence (number and expiry) and the superinten
 - **Demo data** — helpers used when preparing recordings; leave untouched in production.
 
 ### POS Sync hub (Admin, Pharmacist)
-The BandaGo integration control room: metric cards for POS products mapped, active batches (lots), near-expiry flags (<90 days, shown as a Kenya PPB audit alert) and the last live signal ("Awaiting extension" until the external Chrome extension is connected). Below, a stock-sync ledger of every synchronization event, and a manual CSV dropzone for imports. The hub auto-refreshes every 30 seconds. One known hardening item: the browser-side CSV import carries the POS sync key in the page (it is a client-exposed credential) — acceptable for controlled pharmacy use, and tracked with the other security follow-ups in [../security/access-control.md](../security/access-control.md).
+The bi-directional BandaGo integration control room has four tabs:
+
+1. **Overview & Policy** — metric cards (mapped products, active batches, near-expiry <90d audit alerts, extension bridge heartbeat), key-configuration alerts, and **Admin-only** policy controls (`MANUAL_EXPORT` default vs `AUTO_SYNC` with confirmation modal, Stagnant-POS Drift Protection, Expected Tenant UU pin, minimum shelf-life days).
+2. **Sales Export & Reconciliation** — export Zero-PHI Daily Sales sheets (**A4 PDF** with pharmacist sign-off block, formula-safe **CSV**, or **JSON**), click **Confirm Entered in BandaGo POS** to clear reconciled items, retry/cancel outbound jobs, inspect live stock variances (`Queue Push to POS`), or run an Admin baseline cutover (`SET_BASELINE_NOW`).
+3. **Error Console** — deduplicated Zero-PHI bridge/sync incidents (`CRITICAL`, `ERROR`, `WARNING`) with step-by-step remediation instructions and resolve actions.
+4. **Synchronization Audit Trail** — bi-directional (`INBOUND` / `OUTBOUND`) sync history and a manual CSV dropzone authenticated strictly through your signed-in staff session cookie (the former browser-exposed sync secret was removed in `061e923`).
 
 ## Cash handling rules
 
@@ -25023,15 +25509,15 @@ Be aware of what a fresh install gives you:
 
 ---
 
-### File #129: `docs/product/product-overview.md`
+### File #131: `docs/product/product-overview.md`
 
 <a id="file-docs-product-product-overview-md"></a>
 
 - **Relative Path:** `docs/product/product-overview.md`
 - **Category:** Documentation & Blueprints
 - **Language:** Markdown Documentation
-- **Lines:** 150
-- **Size:** 15.1 KB (15,496 bytes)
+- **Lines:** 151
+- **Size:** 15.5 KB (15,846 bytes)
 
 `````markdown
 # Sphere Pharmacy platform — product overview
@@ -25050,7 +25536,7 @@ The platform brings all of it together:
 
 - A **public storefront** customers can browse any time — with or without an account.
 - A **pharmacist-controlled prescription workflow**: uploads are reviewed by a qualified pharmacist before any prescription-only medicine can be paid for or dispatched.
-- **Live stock, prices, batches and expiry dates** flowing in from the BandaGo POS.
+- **Live stock, prices, batches and expiry dates** flowing in from the BandaGo POS — with stagnant-POS drift protection and Daily Sales Export / optional Auto-Sync reconciliation back to the till.
 - **Order and delivery management** with rider dispatch.
 - **Payments** (M-Pesa, cards, cash), **loyalty** (Sphere Points), **promotions**, **clinical service bookings**, **medicine requests** and **notifications** — all in the same system.
 
@@ -25135,7 +25621,8 @@ Two things to notice in that picture: nothing reaches payment for prescription i
 | Medicine requests | "Find this medicine" requests with optional photo | [../features/medicine-requests.md](../features/medicine-requests.md) |
 | Notifications | In-app inbox, email, push alerts | [../features/notifications.md](../features/notifications.md) |
 | AI assistant | Product-finding and navigation help with strict medical guardrails | [../features/ai-assistant.md](../features/ai-assistant.md) |
-| BandaGo POS sync & CRM | Stock/batch sync from the till, customer profile reconciliation | [../integrations/](../integrations/) |
+| BandaGo POS sync & CRM | Bi-directional stock/batch sync, stagnant-POS drift protection, Daily Sales Export, CRM reconciliation | [../integrations/bandago-pos-crm.md](../integrations/bandago-pos-crm.md) |
+| Interactive documentation portal | `/docs` hub with 69 user journeys, API & DB explorers, ⌘K search, and "Ask Sphere Docs" | [../README.md](../README.md) |
 
 ## System boundaries — what the platform does NOT do today
 
@@ -25190,15 +25677,15 @@ Quick, honest answers to questions the team hears most often:
 
 ---
 
-### File #130: `docs/product/user-roles-and-permissions.md`
+### File #132: `docs/product/user-roles-and-permissions.md`
 
 <a id="file-docs-product-user-roles-and-permissions-md"></a>
 
 - **Relative Path:** `docs/product/user-roles-and-permissions.md`
 - **Category:** Documentation & Blueprints
 - **Language:** Markdown Documentation
-- **Lines:** 155
-- **Size:** 12.3 KB (12,547 bytes)
+- **Lines:** 156
+- **Size:** 12.7 KB (13,055 bytes)
 
 `````markdown
 # User roles and permissions
@@ -25253,7 +25740,7 @@ Guests are not a fifth staff role — they are simply visitors on the public sto
 | --- | --- |
 | What do they do? | Run the business: money, people, settings, reporting and compliance records |
 | Screens they see | All 16 admin sections (see the matrix below) |
-| Key actions | Everything staff and pharmacists can do, plus: record refunds, manage staff accounts and roles, edit pharmacy settings and delivery pricing, view reports and service analytics, delete products, read the full audit log, send test notifications |
+| Key actions | Everything staff and pharmacists can do, plus: record refunds, manage staff accounts and roles, edit pharmacy settings and delivery pricing, configure POS sync policy (`MANUAL_EXPORT` vs `AUTO_SYNC`, drift guard, tenant pin) and reconciliation baseline cutover, view reports and service analytics, delete products, read the full audit log, send test notifications |
 | Actions needing a higher privilege | None within the platform — Admin is the highest role |
 | What they cannot do | See clinical data that lives only in BandaGo (it is never synced); skip pharmacist review for prescription medicines — the workflow applies to everyone |
 | How sessions end | Signing out; 7-day absolute expiry; 12-hour idle timeout; immediate revocation if another admin changes their role, password or active status |
@@ -25264,8 +25751,8 @@ Guests are not a fifth staff role — they are simply visitors on the public sto
 | --- | --- |
 | What do they do? | Clinical gatekeeping: they are the only role (with Admin) that decides prescriptions |
 | Screens they see | Workspace (overview, orders, dispatch control room), Patient care (prescriptions, medicine requests, service bookings, services), Business (catalogue, reviews), Management (compliance, POS Sync) — 12 of 16 sections |
-| Key actions | Approve / reject / clarify / partially approve prescriptions and set refills and validity; manage medicine requests; create and edit products and import CSVs; moderate reviews; manage service bookings and the service catalogue; view compliance records |
-| Actions needing a higher privilege | Recording refunds (Admin); managing staff and roles (Admin); editing pharmacy settings and delivery fees (Admin); reports and service analytics (Admin); deleting products (Admin) |
+| Key actions | Approve / reject / clarify / partially approve prescriptions and set refills and validity; manage medicine requests; create and edit products and import CSVs; export Daily Sales sheets, confirm manual POS entry, retry/cancel outbound POS jobs, and resolve POS sync incidents; moderate reviews; manage service bookings and the service catalogue; view compliance records |
+| Actions needing a higher privilege | Recording refunds (Admin); managing staff and roles (Admin); editing pharmacy settings and delivery fees (Admin); changing POS sync policy or resetting the reconciliation baseline (Admin); reports and service analytics (Admin); deleting products (Admin) |
 | What they cannot do | Change order status to "refunded"; access staff management or settings |
 | How sessions end | Signing out; 7-day absolute expiry; 12-hour idle timeout; immediate revocation on role, password or active-status change by an admin |
 
@@ -25346,6 +25833,7 @@ That last row matters: if a staff member leaves the team, an Admin deactivating 
 | Can counter staff approve a prescription? | No — only a Pharmacist or an Admin. |
 | Who can record a refund? | Only an Admin, through the secure refund endpoint (no admin screen calls it yet). |
 | Who can change delivery fees or pharmacy details? | Only an Admin, in Settings. |
+| Who can switch POS Sync between Manual Export and Auto-Sync? | Only an Admin, in POS Sync → Policy (Pharmacists can export Daily Sales sheets, confirm manual entry, and resolve incidents). |
 | Can a pharmacist see the staff roster? | No — staff management is Admin-only. |
 | What happens the moment a role or password changes? | That person's open staff sessions end immediately. |
 | Can a customer see another customer's order? | No — the server checks ownership on every request. |
@@ -25362,7 +25850,7 @@ That last row matters: if a staff member leaves the team, an Admin deactivating 
 
 ---
 
-### File #131: `docs/recording/platform-recording-script.md`
+### File #133: `docs/recording/platform-recording-script.md`
 
 <a id="file-docs-recording-platform-recording-script-md"></a>
 
@@ -26471,7 +26959,7 @@ Checked against these current repository areas; no application behavior was chan
 
 ---
 
-### File #132: `docs/recording/recording-captions.txt`
+### File #134: `docs/recording/recording-captions.txt`
 
 <a id="file-docs-recording-recording-captions-txt"></a>
 
@@ -26850,7 +27338,7 @@ T02.05  Restricted owner and pharmacist controls stay separate.
 
 ---
 
-### File #133: `docs/recording/recording-checklist.md`
+### File #135: `docs/recording/recording-checklist.md`
 
 <a id="file-docs-recording-recording-checklist-md"></a>
 
@@ -26955,7 +27443,7 @@ Core scenes are marked with an asterisk. Each take should show the entry point, 
 
 ---
 
-### File #134: `docs/recording/recording-journeys.json`
+### File #136: `docs/recording/recording-journeys.json`
 
 <a id="file-docs-recording-recording-journeys-json"></a>
 
@@ -28820,15 +29308,15 @@ Core scenes are marked with an asterisk. Each take should show the entry point, 
 
 ---
 
-### File #135: `docs/security/access-control.md`
+### File #137: `docs/security/access-control.md`
 
 <a id="file-docs-security-access-control-md"></a>
 
 - **Relative Path:** `docs/security/access-control.md`
 - **Category:** Documentation & Blueprints
 - **Language:** Markdown Documentation
-- **Lines:** 182
-- **Size:** 12.9 KB (13,167 bytes)
+- **Lines:** 187
+- **Size:** 13.6 KB (13,922 bytes)
 
 `````markdown
 # Access Control
@@ -28890,6 +29378,8 @@ Grouped by who may call. Within a group, narrower ownership rules still apply (n
 | Product `DELETE` / discontinue |
 | `POST /api/payments/refund` (order → `REFUNDED` is ADMIN-only from paid/preparing/ready/out-for-delivery/completed states) |
 | `PUT /api/settings` |
+| `PUT /api/admin/pos-sync/policy` (switch `MANUAL_EXPORT` / `AUTO_SYNC`, drift guard, tenant pin) |
+| `POST /api/admin/pos-sync/reconcile` (`SET_BASELINE_NOW` cutover action only) |
 | `GET /api/admin/service-analytics` |
 
 ### PHARMACIST + ADMIN
@@ -28899,7 +29389,8 @@ Grouped by who may call. Within a group, narrower ownership rules still apply (n
 | `GET /api/prescriptions?scope=queue`, `PATCH /api/prescriptions/[id]` (review) |
 | Product `POST`/`PATCH`/bulk import |
 | Review moderation actions (publish/hide) |
-| `POST /api/integrations/bandago/sync`, `csv-import`, `crm` (the staff-session path of the dual auth) |
+| `POST /api/admin/pos-sync/reconcile` (`MARK_RECONCILED`, `RETRY_JOBS`, `CANCEL_JOBS`, `RESOLVE_INCIDENT`, `RESOLVE_ALL_INCIDENTS`, `QUEUE_STOCK_PUSH`) and `GET /api/admin/pos-sync/sales-export` |
+| `POST /api/integrations/bandago/sync`, `csv-import`, `crm`, `outbound/ack`, `telemetry` and `GET /api/integrations/bandago/outbound` (the staff-session path of the dual auth) |
 
 ### Any staff (ADMIN, PHARMACIST, STAFF)
 
@@ -28909,7 +29400,7 @@ Grouped by who may call. Within a group, narrower ownership rules still apply (n
 | `POST /api/orders/[id]/assign` (rider assignment) |
 | Orders prepare (`startPreparing`), status transitions per workflow map (STAFF blocked from `REFUNDED`/`REJECTED`) |
 | `GET/PATCH /api/admin/medicine-requests*` (incl. photo streaming) |
-| `GET /api/admin/pos-status`, `GET /api/admin/live-changes` (adds `Vary: Cookie`) |
+| `GET /api/admin/pos-status`, `GET /api/admin/pos-sync/policy`, `GET /api/admin/pos-sync/reconcile`, `GET /api/admin/live-changes` (adds `Vary: Cookie`) |
 | `GET /api/integrations/bandago/crm` (lookup/eligibility) |
 | Service bookings management (`PATCH /api/admin/service-bookings`, assignment, `GET /api/admin/service-staff`) |
 | Services `POST`/`PATCH`, availability `PUT` |
@@ -28945,6 +29436,7 @@ Grouped by who may call. Within a group, narrower ownership rules still apply (n
 | `POST /api/promotions/validate` | Rate-limited |
 | `GET /api/location/search`, `POST /api/location/reverse-geocode` | Rate-limited |
 | `POST /api/assistant` | Never reads the session — see [ai-access-and-authorized-sessions.md](ai-access-and-authorized-sessions.md) |
+| `GET /api/docs-index`, `POST /api/docs-assistant` | Public documentation portal search & AI Q&A (public corpus only; never reads session) |
 | Payment initiate/status with guest token | Ownership via `x-order-access-token` |
 | Webhooks + cron | Own secret-based auth |
 
@@ -28995,6 +29487,7 @@ Rate limits are the outermost authorization layer: they cap what any identity �
 | `prescription-refill` | 5 / 24 h per user | Refill abuse |
 | `medicine-request-create` | 10 / 60 min per IP | Anonymous spam + 3 MB photo floods |
 | `assistant` | 40 / 60 min per IP | LLM cost and abuse |
+| `docs-assistant` | 20 / 60 min per IP | Documentation AI abuse and cost protection |
 
 ## Adding a new guarded route (checklist)
 
@@ -29019,15 +29512,15 @@ Rate limits are the outermost authorization layer: they cap what any identity �
 
 ---
 
-### File #136: `docs/security/ai-access-and-authorized-sessions.md`
+### File #138: `docs/security/ai-access-and-authorized-sessions.md`
 
 <a id="file-docs-security-ai-access-and-authorized-sessions-md"></a>
 
 - **Relative Path:** `docs/security/ai-access-and-authorized-sessions.md`
 - **Category:** Documentation & Blueprints
 - **Language:** Markdown Documentation
-- **Lines:** 300
-- **Size:** 24.9 KB (25,528 bytes)
+- **Lines:** 308
+- **Size:** 25.8 KB (26,438 bytes)
 
 `````markdown
 # AI Access and Authorized Sessions
@@ -29258,6 +29751,14 @@ It would be technically easy to read the cookie in `/api/assistant` and let the 
 
 If a product need genuinely requires server-side account context, that is a Part 3 decision to be recorded here, not a route edit.
 
+### Companion surface — "Ask Sphere Docs" (`POST /api/docs-assistant`)
+
+The `/docs` portal includes a documentation Q&A assistant (`POST /api/docs-assistant`, UI at `/docs/assistant`) that follows the exact same session-gating invariant by construction:
+
+- **Public documentation corpus only:** retrieves excerpts via heading-aware lexical scoring over `docs/**`, `README.md`, and `AGENTS.md` (`src/lib/docs/assistant.ts`) — never touches `User`, `Order`, `Prescription`, or `Session` tables.
+- **No session read:** never invokes `getSession()` or any auth guard.
+- **Guards and fallback:** enforces a 20,000 B cap, a dedicated `docs-assistant` rate-limit bucket (20 requests/hour/IP), a 6-message window (1,200-char last question), optional Groq synthesis (20 s timeout, 700 max tokens), deterministic lexical fallback when `GROQ_API_KEY` is absent or Groq fails, and `hasCredential()` output screening.
+
 ## Part 2 — AI coding agents working on this repository
 
 AI agents (Claude Code, Codex, Cursor, etc.) develop this codebase. The repository-level rules live in [../../AGENTS.md](../../AGENTS.md); the security-relevant subset is restated here because agents are AI systems with far broader reach than the chat assistant:
@@ -29336,7 +29837,7 @@ Suppose the product asks: "let the assistant tell me when my order will arrive."
 
 ---
 
-### File #137: `docs/security/file-storage-security.md`
+### File #139: `docs/security/file-storage-security.md`
 
 <a id="file-docs-security-file-storage-security-md"></a>
 
@@ -29535,7 +30036,7 @@ Anything else — external hosts, HTTP, relative tricks — is rejected ("Hero i
 
 ---
 
-### File #138: `docs/security/privacy-and-health-data.md`
+### File #140: `docs/security/privacy-and-health-data.md`
 
 <a id="file-docs-security-privacy-and-health-data-md"></a>
 
@@ -29734,7 +30235,7 @@ Run them with `npm test` and `npm run test:assistant`; extend them whenever a ch
 
 ---
 
-### File #139: `docs/security/retention-and-deletion.md`
+### File #141: `docs/security/retention-and-deletion.md`
 
 <a id="file-docs-security-retention-and-deletion-md"></a>
 
@@ -29933,15 +30434,15 @@ When the pharmacy changes a retention decision:
 
 ---
 
-### File #140: `docs/security/security-architecture.md`
+### File #142: `docs/security/security-architecture.md`
 
 <a id="file-docs-security-security-architecture-md"></a>
 
 - **Relative Path:** `docs/security/security-architecture.md`
 - **Category:** Documentation & Blueprints
 - **Language:** Markdown Documentation
-- **Lines:** 221
-- **Size:** 20.0 KB (20,472 bytes)
+- **Lines:** 223
+- **Size:** 21.1 KB (21,623 bytes)
 
 `````markdown
 # Security Architecture
@@ -29952,7 +30453,7 @@ Sphere Pharmacy processes prescriptions, customer identities, phone numbers, del
 | --- | --- | --- |
 | Engineers, security reviewers, AI coding agents | **Implemented** — exceptions tracked in the concerns register | November 2026 |
 
-> This repository is public. No real credential value may ever appear in documentation, code or examples. Where a concern involves a literal secret, this document refers to it by location (for example, "the hard-coded fallback in `csv-import/route.ts`") rather than repeating the value.
+> This repository is public. No real credential value may ever appear in documentation, code or examples. Where a concern involves a literal secret, this document refers to it by location (for example, "the remediated hard-coded fallback formerly in `csv-import/route.ts`") rather than repeating the value.
 
 ## In this section
 
@@ -30069,6 +30570,7 @@ Implemented in `src/lib/security/request.ts` on the `RateLimitBucket` table (fix
 | `refund` | 10 | 60 min | staff id |
 | `notification-test` | 10 | 60 min | admin |
 | `assistant` | 40 | 60 min | IP |
+| `docs-assistant` | 20 | 60 min | IP |
 | `location-search` | 30 | 10 min | IP |
 | `reverse-geocode` | 30 | 10 min | IP |
 
@@ -30081,6 +30583,7 @@ Every machine-to-machine entry point requires its own secret; no endpoint trusts
 | IntaSend | `POST /api/payments/intasend/webhook` | `INTASEND_WEBHOOK_SECRET` (≥24 chars). Accepts an HMAC-SHA256 signature over the raw body (`x-intasend-signature` / `x-webhook-signature`, `sha256=` prefix stripped, timing-safe), a shared-secret header, or a body challenge | Always re-fetches the invoice server-side (`getIntaSendInvoice`) before trusting state; `PaymentWebhookEvent.eventId` unique (replay → ok, conflict → 409); amount/currency/phone/receipt/apiRef re-checked; serializable transactions |
 | M-Pesa Daraja | `POST /api/payments/mpesa/callback`, `/service-callback` | `?token=` query compared `timingSafeEqual` against `MPESA_CALLBACK_TOKEN` (≥24 chars) | `ResultCode 0` still requires a re-query (`queryStkPush` = SUCCESS) plus `paymentMatchesExpected`; event id dedupe on `(provider, checkoutRequestId)`; unknown → 404 |
 | Resend | `POST /api/notifications/email-webhook` | Svix verification with `RESEND_WEBHOOK_SECRET`: `svix-id` + `svix-timestamp` (±300 s) + HMAC-SHA256 over `id.timestamp.raw`; `v1,` signatures compared timing-safe | Persists an `EmailDeliveryEvent` row **before** acknowledging (events can precede the send response); maps delivered/bounced/complained/failed |
+| BandaGo POS bridge | `POST/GET /api/integrations/bandago/*` | Timing-safe, fail-closed `Authorization: Bearer <BANDAGO_SYNC_API_KEY>` (`verifyBandagoBearerHeader`) **or** an active `ADMIN`/`PHARMACIST` staff session (CRM GET adds `STAFF`) | Optional `expectedTenantUU` pins the clinic (`403 TENANT_MISMATCH`); `isUsingInsecureDefaultBandagoKey()` warns admins if the key matches the retired `.env.example` placeholder |
 | Cron jobs | `GET /api/cron/*` | `Authorization: Bearer CRON_SECRET` (≥32 chars) | The notifications route uses `authorizedJob()` (timing-safe); the other four use a plain `===` comparison — see concern S-3 |
 
 Two invariants hold across all payment webhooks: **state is never trusted from the webhook body alone** (the server re-fetches or re-queries the provider), and **every accepted event is recorded exactly once** (`PaymentWebhookEvent` unique `eventId`).
@@ -30105,9 +30608,9 @@ The `unsafe-inline` entries for scripts and styles are a known gap (concern S-8)
 
 Three write-mostly logs record security-relevant activity:
 
-- **`AuditLog`** (`src/lib/notify.ts audit()`): actor, actorRole, action, entity, entityId, details. Events include settings/compliance updates, staff lifecycle, promotions, product changes (entityId = SKU), CSV import, order cancellations and status transitions, rider assignment, cash confirmation, payment requests and refunds, all prescription review outcomes (`RX_APPROVED`, `RX_REJECTED`, `RX_CLARIFICATION_REQUESTED`, `RX_PARTIALLY_APPROVED`, `RX_REFILL_REQUESTED`), notification tests and medicine-request updates. Readable only by ADMIN via `GET /api/admin/audit` (latest 200, newest first).
+- **`AuditLog`** (`src/lib/notify.ts audit()`): actor, actorRole, action, entity, entityId, details. Events include settings/compliance updates, staff lifecycle, promotions, product changes (entityId = SKU), CSV import, POS sync policy/export/reconcile/baseline actions (`POS_SYNC_POLICY_UPDATED`, `POS_DAILY_SALES_EXPORTED`, `POS_JOBS_*`, `POS_INCIDENT*`, `POS_RECONCILIATION_BASELINE_SET`), order cancellations and status transitions, rider assignment, cash confirmation, payment requests and refunds, all prescription review outcomes (`RX_APPROVED`, `RX_REJECTED`, `RX_CLARIFICATION_REQUESTED`, `RX_PARTIALLY_APPROVED`, `RX_REFILL_REQUESTED`), notification tests and medicine-request updates. Readable only by ADMIN via `GET /api/admin/audit` (latest 200, newest first).
 - **`PrescriptionAccessLog`**: one row per `GET /api/prescriptions/[id]` (action VIEW or DOWNLOAD), regardless of who accessed it — a compliance record for health-data access. Write-only; no API reads it back.
-- **`PosSyncLog`**: BandaGo POS synchronization telemetry (trigger, status, counts, capped error details), readable by ADMIN/PHARMACIST/STAFF via `/api/admin/pos-status`.
+- **`PosSyncLog`, `PosOutboundJob`, `PosSyncIncident`**: BandaGo bi-directional POS synchronization telemetry (`direction`, trigger, status, counts, capped error details), outbound deduction/adjustment ledger, and deduplicated Zero-PHI error incidents, readable by ADMIN/PHARMACIST/STAFF via `/api/admin/pos-status` and `/api/admin/pos-sync/reconcile`.
 
 Retention of these logs is a governance decision — see [retention-and-deletion.md](retention-and-deletion.md).
 
@@ -30125,7 +30628,7 @@ All secrets arrive via environment variables; none are committed (the repository
 | `MPESA_CALLBACK_TOKEN` | ≥24 chars | M-Pesa callback query token |
 | `RESEND_WEBHOOK_SECRET` | Svix format | Resend email webhook verification |
 
-If `OTP_HASH_SECRET` or `TOKEN_HASH_SECRET` is unset they fall back to `SESSION_SECRET` — the effective value must still meet the length floor. Provider credentials (`GROQ_API_KEY`, `RESEND_API_KEY`/`RESEND_FROM_EMAIL`, Africa's Talking trio, Daraja credentials, IntaSend keys, the six `R2_*` variables, Firebase service account / web config plus `VAPID_KEY`) are documented with their constraints in [../operations/environment-variables.md](../operations/environment-variables.md). `SEED_ADMIN_EMAIL` plus a ≥14-character `SEED_ADMIN_PASSWORD` are required before the seed will create an administrator. The BandaGo pair (`BANDAGO_SYNC_API_KEY`, `NEXT_PUBLIC_POS_SYNC_SECRET`) is a live concern — see S-1/S-2 below and [../governance/technical-debt.md](../governance/technical-debt.md).
+If `OTP_HASH_SECRET` or `TOKEN_HASH_SECRET` is unset they fall back to `SESSION_SECRET` — the effective value must still meet the length floor. Provider credentials (`GROQ_API_KEY`, `RESEND_API_KEY`/`RESEND_FROM_EMAIL`, Africa's Talking trio, Daraja credentials, IntaSend keys, the six `R2_*` variables, Firebase service account / web config plus `VAPID_KEY`) are documented with their constraints in [../operations/environment-variables.md](../operations/environment-variables.md). `SEED_ADMIN_EMAIL` plus a ≥14-character `SEED_ADMIN_PASSWORD` are required before the seed will create an administrator. `BANDAGO_SYNC_API_KEY` is a server-only fail-closed Bearer credential verified in constant time (`src/lib/security/bandago-bearer.ts`), with SHA-256 detection (`isUsingInsecureDefaultBandagoKey()`) flagging any environment still carrying the retired placeholder; the historical browser/fallback exposure (S-1/S-2) was remediated in `061e923`.
 
 ## 9 · Error handling and fail-safe behaviour
 
@@ -30143,9 +30646,9 @@ These are verified, documented, and deliberately not fixed in the current tree. 
 
 | # | Concern | Impact | Recommended remediation |
 | --- | --- | --- | --- |
-| S-1 | `NEXT_PUBLIC_POS_SYNC_SECRET` is sent as a Bearer token from the browser (`pos-sync-section.tsx`) to `/api/integrations/bandago/*` | The credential ships in the client bundle and is readable by anyone; possession authorizes POS sync calls | Route manual CSV import through a staff-session endpoint; remove the `NEXT_PUBLIC_` variant; rotate the secret |
-| S-2 | Hard-coded fallback secret in `csv-import/route.ts` (line 122) when the env var is unset; `.env.example` ships the same literal as the default for both BandaGo keys | An unset environment still accepts the publicly known fallback, defeating the bearer check | Delete the fallback, require the env var at boot, rotate the value out of example files |
-| S-3 | Non-constant-time Bearer comparisons in the BandaGo routes and 4 of 5 cron routes | Theoretical timing side channel on secret comparison | Use `timingSafeEqual` everywhere (the `authorizedJob()` helper already does) |
+| S-1 | **(Remediated in `061e923`)** Formerly, `NEXT_PUBLIC_POS_SYNC_SECRET` was sent as a Bearer token from the browser (`pos-sync-section.tsx`) | Previously exposed the credential in the client bundle | **Fixed:** `NEXT_PUBLIC_POS_SYNC_SECRET` removed; admin hub uses `sphere_session` cookie exclusively; rotate any secret that ever matched the retired default |
+| S-2 | **(Remediated in `061e923`)** Formerly, `csv-import/route.ts` fell back to a hard-coded secret and `.env.example` shipped a default placeholder | Previously bypassed unset-secret protection | **Fixed:** fallback and `.env.example` literal removed; `verifyBandagoBearerHeader` fails closed (`isUsingInsecureDefaultBandagoKey` alerts if retired value reused) |
+| S-3 | Non-constant-time Bearer comparisons in 4 of 5 cron routes (BandaGo routes remediated via `verifyBandagoBearerHeader` / `timingSafeEqualStrings` in `061e923`) | Theoretical timing side channel on the 4 remaining cron routes | Route those 4 cron routes through `authorizedJob()` / `timingSafeEqual` (as `/api/cron/notifications` and BandaGo routes already do) |
 | S-4 | `clientIp()` trusts the first `x-forwarded-for` entry, then `cf-connecting-ip`/`x-real-ip` | Callers can spoof their IP and fan out across rate-limit buckets | Trust only the edge proxy hop (Caddy) and strip inbound forwarding headers |
 | S-5 | `rejectOversizedRequest()` relies on `Content-Length` (medicine-requests is the one route that also bounds the stream) | A lying header can push oversized bodies at routes that parse them | Bound the actual stream on every body-accepting route |
 | S-6 | Session tokens are stored plaintext in the `Session` table (guest tokens are stored as HMAC hashes) | A database read compromises live sessions | Store an HMAC of the session token, as guest tokens already do |
@@ -30171,15 +30674,15 @@ Related operational notes: OTP codes are never demo-mode (a static test asserts 
 
 ---
 
-### File #141: `docs/testing/testing-strategy.md`
+### File #143: `docs/testing/testing-strategy.md`
 
 <a id="file-docs-testing-testing-strategy-md"></a>
 
 - **Relative Path:** `docs/testing/testing-strategy.md`
 - **Category:** Documentation & Blueprints
 - **Language:** Markdown Documentation
-- **Lines:** 152
-- **Size:** 12.6 KB (12,922 bytes)
+- **Lines:** 154
+- **Size:** 13.6 KB (13,898 bytes)
 
 `````markdown
 # Testing Strategy
@@ -30193,17 +30696,18 @@ This document inventories what is actually tested in Sphere Pharmacy, how to run
 ## Two commands, two runners — the distinction matters
 
 ```bash
-npm test                 # node --test tests/*.test.mjs   — 12 suites, Node test runner
+npm test                 # node --test tests/*.test.mjs   — 13 suites, Node test runner
 npm run test:assistant   # bun test tests/assistant.test.ts — 1 TypeScript suite, Bun runner
 ```
 
 `npm test` globs only `tests/*.test.mjs`. `tests/assistant.test.ts` is **not** picked up by it (different extension, different runner) and is **not run in CI** — anyone touching the assistant must run `test:assistant` manually. CI only executes `npm test`. (The two shell scripts in `tests/` — `python-runtime-build.sh`, `python-runtime-container.sh` — are deployment-flow stubs, not tests.)
 
-## Inventory of the 12 `.mjs` suites
+## Inventory of the 13 `.mjs` suites
 
 | Suite (actual file) | Area | What it validates |
 | --- | --- | --- |
 | `admin-live-sync.test.mjs` | Admin live updates | Order/booking cursors and live-change behavior for the admin work queues. |
+| `bandago-bidirectional-sync.test.mjs` | BandaGo bi-directional sync & H1 security | Stagnant-POS drift protection (`computeReconciledStock`), policy normalization, deterministic UUIDv4 generation, multi-page A4 Daily Sales PDF generation (`buildDailySalesPdfBuffer`), timing-safe fail-closed Bearer auth (`verifyBandagoBearerHeader`) & legacy placeholder detection (`isUsingInsecureDefaultBandagoKey`), H1 secret elimination, auth guards, and no-`catch(...: any)` checks. |
 | `bandago-pos-crm-integration.test.mjs` | BandaGo POS/CRM | Slug generation, Kenya PPB prescription classification (word-boundary rules), FEFO expired-lot exclusion, available-stock formula, Kenya phone normalization, and **source-contract greps** that pin key implementation strings. |
 | `checkout-points-contrast.test.mjs` | Checkout + loyalty | Sphere Points redemption visibility/contrast in checkout (dark theme regression). |
 | `compliance-workspace.test.mjs` | Compliance | Admin compliance workspace behavior and redaction below ADMIN/PHARMACIST. |
@@ -30214,7 +30718,7 @@ npm run test:assistant   # bun test tests/assistant.test.ts — 1 TypeScript sui
 | `order-operations-ux.test.mjs` | Order operations UX | Work-queue labels/ages, batch-selection UX, responsive tables. |
 | `promotion-validation-resilience.test.mjs` | Promotions | Validation resilience: infrastructure failures fail closed (503 + errorId), limits enforced, cookies set. |
 | `reports-layout.test.mjs` | Reports | Admin reports layout/labels. |
-| `security-static.test.mjs` | Security (static) | Codifies: no build-error bypass; private prescription storage strings; no OTP demo code; `codeHash` column present; webhook auth functions present; security-hardening migration exists; staff-login legacy-hash upgrade; real FCM tokens (no placeholders); admin product view requires staff. |
+| `security-static.test.mjs` | Security (static) | Codifies: no build-error bypass; private prescription storage strings; no OTP demo code; `codeHash` column present; webhook auth functions present; security-hardening migration exists; staff-login legacy-hash upgrade; real FCM tokens (no placeholders); admin product view requires staff; lazy `db.ts` Proxy defers missing-URL throw to runtime property access; `/docs` loader avoids root-wide tracing. |
 
 Plus the Bun suite:
 
@@ -30248,8 +30752,8 @@ Locally, a throwaway database plus the same variables is enough — nothing in `
 | `npm ci` → `npx prisma generate` | Deterministic install; client generation for typecheck. |
 | `npm run typecheck` **before any migration step** | Comment in ci.yml: *"Static checks must run even when a database migration is broken."* Type errors should surface regardless of DB state. |
 | `npm run lint -- --max-warnings=0` | Zero-warning policy. |
-| `npx prisma migrate deploy` | Applies the 10 committed migrations to the service database — tests run against the real schema. |
-| `npm test` | The 12 `.mjs` suites (assistant suite excluded — run it manually). |
+| `npx prisma migrate deploy` | Applies the 11 committed migrations to the service database — tests run against the real schema. |
+| `npm test` | The 13 `.mjs` suites (assistant suite excluded — run it manually). |
 | `npm run build` | Production build must pass. |
 | `npm audit --omit=dev --audit-level=high` | Advisory only — comment: *"Build still runs even if the separate dependency audit reports a vulnerability."* The audit informs; it does not block. |
 
@@ -30277,7 +30781,7 @@ export CRON_SECRET="local-only-secret-that-is-at-least-32-characters"   # same f
 export PRESCRIPTION_RETENTION_DAYS=365 ORDER_RESERVATION_TTL_MINUTES=60
 
 npx prisma migrate deploy   # schema for the test database
-npm test                    # the 12 suites
+npm test                    # the 13 suites
 npm run test:assistant      # requires Bun; run before touching assistant code
 ```
 
@@ -30288,7 +30792,8 @@ npm run test:assistant      # requires Bun; run before touching assistant code
 | `prisma/schema.prisma` or migrations | typecheck, `npm test` (esp. `security-static`), `migrate deploy` on a scratch DB | Static greps pin migration names/columns; CI applies migrations before tests. |
 | Payment/webhook code | `npm test` + manual provider-sandbox check | No provider tests exist in CI — the audit's blockers live here. |
 | Notification enqueue/dispatch | `npm test`; watch `notification-health` on a dev environment | Queue semantics (leases, dedupe keys, backoff) are only partially covered statically. |
-| BandaGo normalizer/CRM | `bandago-pos-crm-integration.test.mjs` | Contract greps pin source behavior (slug/Rx/FEFO/stock/phone). |
+| BandaGo normalizer/CRM/reconciliation | `bandago-pos-crm-integration.test.mjs` + `bandago-bidirectional-sync.test.mjs` | Unit tests + contract greps pin FEFO, drift protection, PDF export, and fail-closed Bearer auth. |
+| `/docs` portal, Markdown corpus, `openapi/sphere-api.yaml` | `npm run typecheck && npm run build` + `security-static.test.mjs` | Verifies static corpus/OpenAPI/Prisma parsing and ensures `docs/content.ts` avoids root-wide tracing. |
 | Assistant code | `npm run test:assistant` (**CI will not**) | The only suite for intent schema and determinism. |
 | Admin UI strings/layout | the matching UX suite (`order-operations-ux`, `reports-layout`, `admin-live-sync`) | These suites assert on rendered labels and live-update behavior. |
 | Security-relevant auth/session code | `security-static.test.mjs` + manual sign-in matrix | Static invariants (hashing, no demo OTP, migration presence) are codified there. |
@@ -30325,7 +30830,7 @@ Follow the existing split: pure logic → unit tests in the matching `.mjs` suit
 | `admin-live-sync` | A01–A18 (admin console behaviors) |
 | `compliance-workspace` | S01–S03 / H01–H03 (compliance and settings) |
 | `medicine-requests` | C01–C09 (customer requests) |
-| `bandago-pos-crm-integration` | T01–T02 (POS/technical integration) |
+| `bandago-pos-crm-integration`, `bandago-bidirectional-sync` | T01–T02, SYS-08, SYS-11 (POS/technical integration & reconciliation) |
 | `reports-layout` | A-group reporting views |
 | `security-static`, `assistant.test.ts` | cross-cutting (no single journey) |
 
@@ -30340,15 +30845,15 @@ Use the map in reverse when a journey fails during a recording pass: it points a
 
 ---
 
-### File #142: `docs/workflows/inventory-lifecycle.md`
+### File #144: `docs/workflows/inventory-lifecycle.md`
 
 <a id="file-docs-workflows-inventory-lifecycle-md"></a>
 
 - **Relative Path:** `docs/workflows/inventory-lifecycle.md`
 - **Category:** Documentation & Blueprints
 - **Language:** Markdown Documentation
-- **Lines:** 210
-- **Size:** 15.6 KB (15,979 bytes)
+- **Lines:** 220
+- **Size:** 18.7 KB (19,143 bytes)
 
 `````markdown
 # Inventory Lifecycle
@@ -30361,26 +30866,28 @@ This document follows stock from the BandaGo POS (iDempiere) into the web catalo
 
 ## 1. Pipeline overview — goods received to sellable stock
 
-Goods are received and sold in the BandaGo POS (iDempiere). The web platform is a **read-mostly mirror** of POS truth: products, prices and stock flow *in* via sync; the only web-side mutations are order-time reservations (physical deduct + release) and admin catalogue edits.
+Goods are received and sold in the BandaGo POS (iDempiere). The web platform maintains a **bi-directional, policy-governed sync** with POS truth: products, prices and batches flow *in* via sync (protected against stale-POS drift so unreconciled online sales are never overwritten back up), while online sales, refunds/cancellations, and staff stock edits generate idempotent outbound jobs reconciled via Daily Sales Export (default `MANUAL_EXPORT`) or opt-in extension writeback (`AUTO_SYNC`).
 
 ```mermaid
 flowchart TD
-    A["BandaGo POS (iDempiere)<br/>goods received, sales, batches"] --> B{"Trigger"}
+    A["BandaGo POS - iDempiere<br/>goods received, sales, batches"] --> B{"Trigger"}
     B -->|"EXTENSION_STREAM"| C["POST /api/integrations/bandago/sync"]
     B -->|"BACKGROUND_POLL"| C
-    B -->|"CSV_IMPORT"| D["POST /api/admin/csv-import<br/>(PHARMACIST/ADMIN)"]
+    B -->|"CSV_IMPORT"| D["POST /api/integrations/bandago/csv-import<br/>(Bearer or ADMIN/PHARMACIST)"]
     B -->|"MANUAL_RECONCILE"| C
     D --> N
-    C --> E{"Auth: Bearer BANDAGO_SYNC_API_KEY<br/>OR active staff session"}
+    C --> E{"Auth: timing-safe Bearer BANDAGO_SYNC_API_KEY<br/>OR ADMIN/PHARMACIST session"}
     E -- fail --> X1["401 Unauthorized"]
-    E -- pass --> F["InventoryGuard.cleanupExpiredReservations(45)<br/>(legacy virtual reservations)"]
+    E -- pass --> POL{"Tenant match and inboundEnabled?"}
+    POL -- "tenant mismatch" --> X2["403 TENANT_MISMATCH"]
+    POL -- pass --> F["InventoryGuard.cleanupExpiredReservations(45)<br/>(legacy virtual holds + POS job cancel)"]
     F --> G["Parse + normalize items<br/>(BandaGoNormalizer)"]
     G --> N["Normalized item"]
-    N --> H["Per-item upsert tx:<br/>category auto-create (upsert by slug),<br/>product match by externalPosId → slug → name,<br/>price/cost parse, Rx classify OR'd (never downgraded)"]
-    H --> I["processBatches:<br/>aggregate duplicate batchNumbers,<br/>expiry default now+365d,<br/>flag isExpired (expiry ≤ now)"]
-    I --> J["Compute sellable stock:<br/>stockQty = validStock (unexpired batches),<br/>stock = raw physical count"]
-    J --> K["stockStatus recompute:<br/>≤0 OUT_OF_STOCK, ≤lowStockThreshold LOW_STOCK, else IN_STOCK"]
-    K --> L["PosSyncLog telemetry:<br/>SUCCESS / PARTIAL / FAILED"]
+    N --> H["Per-item upsert tx:<br/>category auto-create, match externalPosId -> slug -> name,<br/>price/cost parse, Rx classify OR'd"]
+    H --> I["processBatches + minShelfLifeDays:<br/>aggregate batchNumbers, flag isExpired"]
+    I --> J["computeReconciledStock:<br/>apply unreconciled PosOutboundJob + hold offsets"]
+    J --> K["stockStatus recompute:<br/>OUT_OF_STOCK / LOW_STOCK / IN_STOCK / DISCONTINUED"]
+    K --> L["PosSyncLog (INBOUND) + PosSyncIncident telemetry"]
     L --> M["Catalogue + availability visible to storefront"]
 ```
 
@@ -30388,11 +30895,11 @@ flowchart TD
 
 | Aspect | Behavior |
 | --- | --- |
-| Dual auth | `Authorization: Bearer <BANDAGO_SYNC_API_KEY>` **or** an active staff session. **Known concern:** the browser admin panel sends `NEXT_PUBLIC_POS_SYNC_SECRET` as the Bearer — a client-bundle-exposed credential (see [../security/security-architecture.md](../security/security-architecture.md)). |
+| Dual auth | Timing-safe, fail-closed `Authorization: Bearer <BANDAGO_SYNC_API_KEY>` (`verifyBandagoBearerHeader`) **or** an active `ADMIN`/`PHARMACIST` staff session (`sphere_session` cookie). (The former browser-exposed secret and hardcoded fallback were remediated in `061e923`.) |
 | Chunking | Items are processed in transactions of **50** (`CHUNK_SIZE = 50`). |
-| Per-item fallback | A failing chunk is retried **item-by-item** so one bad record cannot poison a whole chunk; individual failures are collected. |
-| Telemetry | `PosSyncLog` row per run: `trigger`, `status` = `SUCCESS` (no errors) / `PARTIAL` (some failed) / `FAILED` (all failed, or fatal), `itemsReceived/Upserted/Failed`, `details.errors` capped at 50. Readable at `/api/admin/pos-status` (ADMIN/PHARMACIST/STAFF). |
-| Side effect | Every sync invokes `InventoryGuard.cleanupExpiredReservations(45)` — the legacy virtual-reservation janitor (§4.3). |
+| Per-item fallback | A failing chunk is retried **item-by-item** so one bad record cannot poison a whole chunk; individual failures are collected and logged as `INBOUND_ITEM_FAILED` `PosSyncIncident`s. |
+| Telemetry | `PosSyncLog` row per run: `direction` (`INBOUND`/`OUTBOUND`), `trigger`, `status` = `SUCCESS` / `PARTIAL` / `FAILED`, `itemsReceived/Upserted/Failed`, `details` (`reconciledProtectedCount` + errors capped at 50). Readable at `/api/admin/pos-status` (ADMIN/PHARMACIST/STAFF). |
+| Side effect | Every sync invokes `InventoryGuard.cleanupExpiredReservations(45)` — the legacy virtual-reservation janitor (§4.3), which also runs `cancelOrderPosDeduction`. |
 
 ### 1.2 PosSyncLog status semantics
 
@@ -30501,11 +31008,12 @@ Any line that fails the availability predicate returns no row → the whole tran
 
 | Writer | Fields touched |
 | --- | --- |
-| BandaGo sync / CSV import | `stock` (raw POS count), `stockQty` (recomputed `validStock`), `stockStatus`, `inStock`, `nearestExpiryDate`, `ProductBatch` rows, `lastSyncedAt` |
+| BandaGo sync / CSV import | `stock` & `stockQty` (via `computeReconciledStock`), `lastPosStock`, `lastPosSellableStock`, `stockStatus`, `inStock`, `active`, `nearestExpiryDate`, `ProductBatch` rows, `externalWarehouseId`/`Locator`/`Org`/`Client`, `lastSyncedAt` |
 | Order create (bulk SQL) | `stockQty −= qty`, `stock −= qty` (clamped ≥ 0), `in_stock`, `stockStatus` |
-| Cancel / expiry cron / refill rollback | `stockQty += qty`, `stock += qty`, `in_stock`, `stockStatus` recompute |
+| Payment capture / prepare | Enqueues `ONLINE_SALE` `PosOutboundJob` (`enqueueOrderPosDeduction`) |
+| Cancel / expiry cron / refund / reject | `stockQty += qty`, `stock += qty`, `in_stock`, `stockStatus` recompute; `cancelOrderPosDeduction` cancels unsynced POS jobs or queues compensating `REFUND_RESTOCK` |
 | Refill (per-line, conditional) | same decrement set, guarded per line |
-| Admin catalogue edits | price, images, `requiresPrescription`, active/`DISCONTINUED` — not counters |
+| Admin catalogue edits (`PATCH /api/products/[id]`) | price, images, `requiresPrescription`, active/`DISCONTINUED`, `stockQty` (mirrored to `stock` + `inStock`; queues `ADMIN_STOCK_ADJUST` `PosOutboundJob` via `enqueueAdminStockEdit`) |
 
 ### 4.6 Worked example
 
@@ -30517,39 +31025,46 @@ A product syncs from POS with physical `stock = 60` and three batches: A (qty 20
 4. The order is cancelled before payment → cancel transaction restores `stockQty` 40, `stock` 60.
 5. Had the order gone unpaid until the TTL, the reservation cron would have performed step 4 instead (actor `SYSTEM`, `expire:<orderId>` points re-credit).
 
-## 5. Alerts, monitoring, and import
+## 5. Alerts, monitoring, and outbound reconciliation
 
 | Feature | Detail |
 | --- | --- |
 | Back-in-stock alerts | `ProductAlert` (`[productId, userId]` unique): customers register interest on out-of-stock products; when stock returns, a `backInStockTemplate` email is queued (Notification queue → Resend). |
 | Near-expiry monitoring | `hasNearExpiry` (<90 d) + `nearestExpiryDate` surfaced in the admin POS hub for stock rotation decisions. |
-| CSV import | `POST /api/admin/csv-import` (PHARMACIST/ADMIN) parses CSV (multiline quotes, escaped quotes, UTF-8 BOM) through the same normalizer; audited via `CSV_IMPORT`. **Known concern:** hard-coded fallback sync secret in the route. |
-| POS status | `/api/admin/pos-status` reads `PosSyncLog` telemetry for ops dashboards. |
+| BandaGo CSV import | `POST /api/integrations/bandago/csv-import` (Bearer key or ADMIN/PHARMACIST session) parses CSV (multiline quotes, escaped quotes, UTF-8 BOM) through `BandaGoNormalizer`; delegates to `/api/integrations/bandago/sync` (`trigger: CSV_IMPORT`). |
+| Catalogue CSV import | `POST /api/products/bulk` (ADMIN/PHARMACIST) handles storefront catalogue CSV uploads (`≤1,000` rows, audited via `CSV_IMPORT`). |
+| Stagnant-POS drift protection | `computeReconciledStock` subtracts unreconciled `PosOutboundJob` net deltas and unpaid order holds from incoming POS counts (`protectUnreconciledSales`), while still reflecting walk-in sales/restocks and flagging `POSSIBLE_MANUAL_RECONCILE` if POS dropped by ≥ pending online sales. |
+| Outbound reconciliation & Daily Sales Export | Under `MANUAL_EXPORT` (default), `GET /api/admin/pos-sync/sales-export` generates Zero-PHI Daily Sales sheets (`PDF`, formula-safe `CSV`, `JSON`) and `POST /api/admin/pos-sync/reconcile` (`MARK_RECONCILED`) closes jobs (`RECONCILED_MANUAL`); under opt-in `AUTO_SYNC`, the bridge claims jobs (`GET /outbound?claim=1`) and acks (`POST /outbound/ack`). `ADMIN` can reset the cutover anchor via `SET_BASELINE_NOW`. |
+| POS status & Error Console | `/api/admin/pos-status` & `/api/admin/pos-sync/reconcile` expose `PosSyncLog`, `PosBridgeHeartbeat`, outbound variance, and deduplicated `PosSyncIncident`s (`CRITICAL` incidents trigger throttled `POS_SYNC_CRITICAL` staff alerts). |
 
 ## 6. Failure cases and recovery
 
 | Stage | Failure | System behavior | Recovery |
 | --- | --- | --- | --- |
-| Sync auth | Bad/missing Bearer and no staff session | 401 before any write. | Fix credentials; note the client-exposed `NEXT_PUBLIC_POS_SYNC_SECRET` concern. |
-| Sync chunk | One item fails inside a 50-item chunk | Chunk rolls back, then each item retried individually; failures recorded. | Inspect `PosSyncLog.details.errors` (first 50); fix source data; re-sync. |
+| Sync auth | Bad/missing Bearer and no staff session | 401 before any write (timing-safe fail-closed). | Set `BANDAGO_SYNC_API_KEY` or sign in as ADMIN/PHARMACIST via `sphere_session`. |
+| Tenant pin | `payload.tenantUU !== policy.expectedTenantUU` | 403 `TENANT_MISMATCH`, `FAILED` `PosSyncLog`, `CRITICAL` `PosSyncIncident`. | Switch BandaGo clinic tab or update `expectedTenantUU` in Policy. |
+| Sync chunk | One item fails inside a 50-item chunk | Chunk rolls back, then each item retried individually; failures recorded as `INBOUND_ITEM_FAILED`. | Inspect `PosSyncLog.details.errors` (first 50) or Error Console; fix source rows; re-sync. |
 | Sync run | All items fail / fatal error | `PosSyncLog` status `FAILED`, HTTP 500; previous catalogue state untouched. | Fix root cause (schema drift, DB outage) and re-run. |
 | Zero-item packet | Sync called with `items: []` | Nothing to upsert; run completes without mutation (telemetry row still written). | None — benign; verify the POS extension is streaming. |
 | All-invalid items | Every item fails parsing/validation | Status `FAILED` (`errors.length >= rawItems.length`); no partial catalogue. | Correct POS field formats; re-sync. |
 | Bad batch data | Unparseable expiry | Defaults to now + 365 d (never `Invalid Date`) — deliberately conservative. | Fix the source `GuaranteeDate`; next sync replaces batches. |
-| Expired stock | Batches past expiry | Flagged `isExpired`, excluded from `validStock`/`stockQty` — **expired stock is never sellable online**, even if physical count is positive. | Dispose per PPB; POS write-off. |
-| Stock drift | Web/POS counts diverge | Every sync overwrites `stock`/`stockQty` from POS truth; order-time decrements ride on top until the next sync. | Periodic `MANUAL_RECONCILE` sync; monitor `pos-status`. |
-| Reservation leak | Order created but never paid/cancelled | Expiry cron restores stock after TTL (requires `ORDER_RESERVATION_TTL_MINUTES`); cancel restores immediately. | Ensure cron is scheduled externally (see [../operations/scheduled-jobs.md](../operations/scheduled-jobs.md)). |
-| Legacy janitor | Stale virtual reservations | `cleanupExpiredReservations(45)` runs on each sync. | No action; path is legacy. |
+| Expired stock | Batches past expiry (or within `minShelfLifeDays`) | Flagged `isExpired`, excluded from `validStock`/`stockQty` — **expired stock is never sellable online**, even if physical count is positive. | Dispose per PPB; POS write-off. |
+| Stock drift / stagnant POS | Web sales occurred before POS updated | `computeReconciledStock` subtracts unreconciled `PosOutboundJob` deltas and unpaid holds so stale POS snapshots never resurrect sold units; `POSSIBLE_MANUAL_RECONCILE` warns if POS also dropped. | Export Daily Sales (`PDF`/`CSV`), enter in BandaGo, click **Confirm Entered**, or run `SET_BASELINE_NOW` cutover. |
+| Outbound writeback | No BandaGo tab open or permission denied | `RELEASE` returns job to `PENDING` without consuming retries; `NO_POS_TAB` / `POS_PERMISSION_DENIED` logged to Error Console. | Keep an authenticated BandaGo tab open or fall back to Daily Sales Export. |
+| Reservation leak | Order created but never paid/cancelled | Expiry cron restores stock after TTL (requires `ORDER_RESERVATION_TTL_MINUTES`) and calls `cancelOrderPosDeduction`; cancel restores immediately. | Ensure cron is scheduled externally (see [../operations/scheduled-jobs.md](../operations/scheduled-jobs.md)). |
+| Legacy janitor | Stale virtual reservations | `cleanupExpiredReservations(45)` runs on each sync and calls `cancelOrderPosDeduction`. | No action; path is legacy. |
 | CSV import | Malformed rows | Row-level errors reported; same normalization guards as sync. | Fix CSV, re-import. |
 
 ## 7. Data model
 
 | Model | Role |
 | --- | --- |
-| `Product` | `stock` (physical), `stockQty` (FEFO-valid), `virtualReservedStock`, `safetyStockBuffer` (2), `lowStockThreshold` (5), `inStock`, `stockStatus`, `requiresPrescription`, `nearestExpiryDate`, `externalPosId`/`posSource`/`lastSyncedAt` (BandaGo linkage). |
+| `Product` | `stock` (physical), `stockQty` (FEFO-valid), `lastPosStock` / `lastPosSellableStock` (drift-protection baselines), `virtualReservedStock`, `safetyStockBuffer` (2), `lowStockThreshold` (5), `inStock`, `stockStatus`, `requiresPrescription`, `nearestExpiryDate`, `externalPosId`/`posSource`/`lastSyncedAt` + warehouse/client UUs (BandaGo linkage). |
 | `ProductBatch` | POS Lot/Batch rows: `batchNumber`, `quantityOnHand`, `expiryDate` (iDempiere `GuaranteeDate`), `isExpired`, `externalBatchId`; unique `[productId, batchNumber]`, indexed by expiry. |
 | `ProductAlert` | back-in-stock registrations, unique per product+user. |
-| `PosSyncLog` | sync telemetry: trigger, status, counts, capped error details. |
+| `PosSyncLog` | sync telemetry: `direction` (`INBOUND`/`OUTBOUND`), `trigger`, `status`, counts, capped error details. |
+| `PosOutboundJob` | idempotent outbound Website → POS ledger (`ONLINE_SALE`, `ADMIN_STOCK_ADJUST`, `REFUND_RESTOCK`), export batch IDs, and 5-min claim locks. |
+| `PosSyncIncident` | deduplicated Zero-PHI bridge/sync incident console (`CRITICAL`/`ERROR`/`WARNING`) with guided remediations. |
 | `Order` | `inventoryReservedAt` / `inventoryReleasedAt` — the reservation ledger driving release. |
 
 ## Related documentation
@@ -30567,7 +31082,7 @@ A product syncs from POS with physical `stock = 60` and three batches: A (qty 20
 
 ---
 
-### File #143: `docs/workflows/order-lifecycle.md`
+### File #145: `docs/workflows/order-lifecycle.md`
 
 <a id="file-docs-workflows-order-lifecycle-md"></a>
 
@@ -30836,7 +31351,7 @@ Transaction: status → `PREPARING` (version guard), history note, audit `ORDER_
 
 ---
 
-### File #144: `docs/workflows/payment-lifecycle.md`
+### File #146: `docs/workflows/payment-lifecycle.md`
 
 <a id="file-docs-workflows-payment-lifecycle-md"></a>
 
@@ -31070,7 +31585,7 @@ Service bookings use a parallel `ServicePayment` model with the same disciplines
 
 ---
 
-### File #145: `docs/workflows/prescription-lifecycle.md`
+### File #147: `docs/workflows/prescription-lifecycle.md`
 
 <a id="file-docs-workflows-prescription-lifecycle-md"></a>
 
@@ -31316,7 +31831,7 @@ See [../database/data-lifecycle.md](../database/data-lifecycle.md) for retention
 
 ---
 
-### File #146: `docs/workflows/service-bookings.md`
+### File #148: `docs/workflows/service-bookings.md`
 
 <a id="file-docs-workflows-service-bookings-md"></a>
 
@@ -31542,7 +32057,7 @@ Eligible statuses are `PENDING`/`CONFIRMED`/`RESCHEDULED`; a rescheduled booking
 
 ---
 
-### File #147: `eslint.config.mjs`
+### File #149: `eslint.config.mjs`
 
 <a id="file-eslint-config-mjs"></a>
 
@@ -31610,7 +32125,7 @@ export default eslintConfig;
 
 ---
 
-### File #148: `gitignoresfiles/SPHERE_PHARMACY_OWNER_OPERATIONS_MANUAL.md`
+### File #150: `gitignoresfiles/SPHERE_PHARMACY_OWNER_OPERATIONS_MANUAL.md`
 
 <a id="file-gitignoresfiles-sphere_pharmacy_owner_operations_manual-md"></a>
 
@@ -32088,20 +32603,21 @@ Do not repeatedly retry a payment or create duplicate orders while reporting an 
 
 ---
 
-### File #149: `next-env.d.ts`
+### File #151: `next-env.d.ts`
 
 <a id="file-next-env-d-ts"></a>
 
 - **Relative Path:** `next-env.d.ts`
 - **Category:** Project Configuration & Root Tooling
 - **Language:** Next.js Type Declarations
-- **Lines:** 6
-- **Size:** 247 B (247 bytes)
+- **Lines:** 7
+- **Size:** 288 B (288 bytes)
 
 `````typescript
 /// <reference types="next" />
 /// <reference types="next/image-types/global" />
 import "./.next/types/routes.d.ts";
+import "./.next/types/root-params.d.ts";
 
 // NOTE: This file should not be edited
 // see https://nextjs.org/docs/app/api-reference/config/typescript for more information.
@@ -32111,7 +32627,7 @@ import "./.next/types/routes.d.ts";
 
 ---
 
-### File #150: `next.config.ts`
+### File #152: `next.config.ts`
 
 <a id="file-next-config-ts"></a>
 
@@ -32174,15 +32690,15 @@ export default nextConfig;
 
 ---
 
-### File #151: `openapi/sphere-api.yaml`
+### File #153: `openapi/sphere-api.yaml`
 
 <a id="file-openapi-sphere-api-yaml"></a>
 
 - **Relative Path:** `openapi/sphere-api.yaml`
 - **Category:** Documentation & Blueprints
 - **Language:** YAML
-- **Lines:** 2,925
-- **Size:** 119.8 KB (122,649 bytes)
+- **Lines:** 2,928
+- **Size:** 120.3 KB (123,162 bytes)
 
 `````yaml
 openapi: 3.1.0
@@ -32194,8 +32710,9 @@ info:
     serving a community pharmacy in Roysambu, Nairobi, Kenya. Covers catalog and
     products, checkout and orders, M-Pesa Daraja and IntaSend card payments,
     prescription review and refills, clinical service bookings, promotions and
-    Sphere Points loyalty, notifications, staff/admin operations, BandaGo POS/CRM
-    integration, and cron jobs.
+    Sphere Points loyalty, notifications, staff/admin operations, bi-directional
+    BandaGo POS/CRM reconciliation & Daily Sales Export, documentation portal
+    search/assistant APIs, and cron jobs.
 
     Authentication model:
     - Customer and staff sessions use the opaque sphere_session cookie
@@ -32204,8 +32721,8 @@ info:
     - Guests who place orders receive a one-time x-order-access-token header
       token (valid 7 days) for order tracking and payment initiation.
     - Cron endpoints require Authorization Bearer CRON_SECRET.
-    - BandaGo integration accepts Authorization Bearer BANDAGO_SYNC_API_KEY or
-      an ADMIN/PHARMACIST staff session.
+    - BandaGo integration accepts timing-safe fail-closed Authorization Bearer
+      BANDAGO_SYNC_API_KEY or an ADMIN/PHARMACIST staff session (CRM GET adds STAFF).
     - Provider webhooks (M-Pesa, IntaSend, Resend) use their own signature or
       token verification and always re-verify state server-side.
 
@@ -33922,7 +34439,7 @@ paths:
         '403': { $ref: '#/components/responses/Forbidden' }
     post:
       tags: [Admin]
-      summary: Execute reconciliation command (MARK_RECONCILED, RETRY_JOBS, CANCEL_JOBS, RESOLVE_INCIDENT, QUEUE_STOCK_PUSH, SET_BASELINE_NOW)
+      summary: Execute reconciliation command (MARK_RECONCILED, RETRY_JOBS, CANCEL_JOBS, RESOLVE_INCIDENT, RESOLVE_ALL_INCIDENTS, QUEUE_STOCK_PUSH, SET_BASELINE_NOW)
       security: [{ sessionCookie: [] }]
       responses:
         '200': { description: '{ ok, affectedCount? }' }
@@ -33937,6 +34454,8 @@ paths:
       parameters:
         - { name: format, in: query, schema: { type: string, enum: [pdf, csv, json] } }
         - { name: scope, in: query, schema: { type: string, enum: [unreconciled, today, range] } }
+        - { name: from, in: query, schema: { type: string }, description: Start date/ISO timestamp when scope=range }
+        - { name: to, in: query, schema: { type: string }, description: End date/ISO timestamp when scope=range }
         - { name: groupBy, in: query, schema: { type: string, enum: [PRODUCT_SUMMARY, ITEMIZED_ORDERS] } }
         - { name: markExported, in: query, schema: { type: string, enum: ['0', '1'] } }
       responses:
@@ -33988,6 +34507,7 @@ paths:
                   timestamp: { type: string }
                   errors: { type: array, items: { type: string }, maxItems: 20 }
         '401': { description: Invalid POS sync credentials }
+        '403': { description: Tenant mismatch (TENANT_MISMATCH) when payload.tenantUU disagrees with policy.expectedTenantUU }
         '500': { description: Unrecoverable pipeline failure }
   /api/integrations/bandago/csv-import:
     post:
@@ -34066,7 +34586,6 @@ paths:
       security: [{ bandagoBearer: [] }, { sessionCookie: [] }]
       responses:
         '200': { description: '{ ok, policy, pendingOutboundCount }' }
-        '401': { $ref: '#/components/responses/Unauthorized' }
         '401': { $ref: '#/components/responses/Unauthorized' }
         '403': { $ref: '#/components/responses/Forbidden' }
 
@@ -34306,7 +34825,7 @@ components:
     bandagoBearer:
       type: http
       scheme: bearer
-      description: Bearer BANDAGO_SYNC_API_KEY for BandaGo POS sync endpoints (staff session also accepted).
+      description: Timing-safe, fail-closed Bearer BANDAGO_SYNC_API_KEY for BandaGo POS sync endpoints (ADMIN/PHARMACIST staff session also accepted; CRM GET adds STAFF).
   responses:
     BadRequest:
       description: Validation failure
@@ -35116,7 +35635,7 @@ components:
 
 ---
 
-### File #152: `package.json`
+### File #154: `package.json`
 
 <a id="file-package-json"></a>
 
@@ -35249,7 +35768,7 @@ components:
 
 ---
 
-### File #153: `postcss.config.mjs`
+### File #155: `postcss.config.mjs`
 
 <a id="file-postcss-config-mjs"></a>
 
@@ -35271,7 +35790,7 @@ export default config;
 
 ---
 
-### File #154: `prisma/migrations/20260902000000_initial/migration.sql`
+### File #156: `prisma/migrations/20260902000000_initial/migration.sql`
 
 <a id="file-prisma-migrations-20260902000000_initial-migration-sql"></a>
 
@@ -36126,7 +36645,7 @@ ALTER TABLE "ServiceReview" ADD CONSTRAINT "ServiceReview_userId_fkey" FOREIGN K
 
 ---
 
-### File #155: `prisma/migrations/20260903000000_security_hardening/migration.sql`
+### File #157: `prisma/migrations/20260903000000_security_hardening/migration.sql`
 
 <a id="file-prisma-migrations-20260903000000_security_hardening-migration-sql"></a>
 
@@ -36312,7 +36831,7 @@ DELETE FROM "Session" WHERE "staffId" IS NOT NULL;
 
 ---
 
-### File #156: `prisma/migrations/20260905100000_notification_delivery/migration.sql`
+### File #158: `prisma/migrations/20260905100000_notification_delivery/migration.sql`
 
 <a id="file-prisma-migrations-20260905100000_notification_delivery-migration-sql"></a>
 
@@ -36349,7 +36868,7 @@ CREATE INDEX "EmailDeliveryEvent_processed_createdAt_idx" ON "EmailDeliveryEvent
 
 ---
 
-### File #157: `prisma/migrations/20261022000000_medicine_requests/migration.sql`
+### File #159: `prisma/migrations/20261022000000_medicine_requests/migration.sql`
 
 <a id="file-prisma-migrations-20261022000000_medicine_requests-migration-sql"></a>
 
@@ -36382,7 +36901,7 @@ CREATE INDEX "MedicineRequest_status_createdAt_idx" ON "MedicineRequest"("status
 
 ---
 
-### File #158: `prisma/migrations/20261027170000_booking_management_lookup_indexes/migration.sql`
+### File #160: `prisma/migrations/20261027170000_booking_management_lookup_indexes/migration.sql`
 
 <a id="file-prisma-migrations-20261027170000_booking_management_lookup_indexes-migration-sql"></a>
 
@@ -36407,7 +36926,7 @@ CREATE INDEX IF NOT EXISTS "ServiceBooking_assignedStaffId_scheduledStart_idx"
 
 ---
 
-### File #159: `prisma/migrations/20261027183500_promotion_redemption_limits/migration.sql`
+### File #161: `prisma/migrations/20261027183500_promotion_redemption_limits/migration.sql`
 
 <a id="file-prisma-migrations-20261027183500_promotion_redemption_limits-migration-sql"></a>
 
@@ -36431,7 +36950,7 @@ CREATE INDEX IF NOT EXISTS "PromotionRedemption_promotionId_browserHash_idx" ON 
 
 ---
 
-### File #160: `prisma/migrations/20261028000000_order_payment_intent/migration.sql`
+### File #162: `prisma/migrations/20261028000000_order_payment_intent/migration.sql`
 
 <a id="file-prisma-migrations-20261028000000_order_payment_intent-migration-sql"></a>
 
@@ -36452,7 +36971,7 @@ ALTER TABLE "Order" ADD COLUMN "paymentMethod" TEXT;
 
 ---
 
-### File #161: `prisma/migrations/20261028190000_private_promotion_visibility/migration.sql`
+### File #163: `prisma/migrations/20261028190000_private_promotion_visibility/migration.sql`
 
 <a id="file-prisma-migrations-20261028190000_private_promotion_visibility-migration-sql"></a>
 
@@ -36471,7 +36990,7 @@ ALTER TABLE "Promotion" ADD COLUMN "isPublic" BOOLEAN NOT NULL DEFAULT true;
 
 ---
 
-### File #162: `prisma/migrations/20261028194500_admin_live_cursor_indexes/migration.sql`
+### File #164: `prisma/migrations/20261028194500_admin_live_cursor_indexes/migration.sql`
 
 <a id="file-prisma-migrations-20261028194500_admin_live_cursor_indexes-migration-sql"></a>
 
@@ -36494,7 +37013,7 @@ CREATE INDEX IF NOT EXISTS "ServiceBooking_createdAt_id_idx" ON "ServiceBooking"
 
 ---
 
-### File #163: `prisma/migrations/20261104200000_add_bandago_pos_support/migration.sql`
+### File #165: `prisma/migrations/20261104200000_add_bandago_pos_support/migration.sql`
 
 <a id="file-prisma-migrations-20261104200000_add_bandago_pos_support-migration-sql"></a>
 
@@ -36590,7 +37109,7 @@ ALTER TABLE "product_batches" ADD CONSTRAINT "product_batches_product_id_fkey" F
 
 ---
 
-### File #164: `prisma/migrations/20261119120000_add_bandago_bidirectional_sync/migration.sql`
+### File #166: `prisma/migrations/20261119120000_add_bandago_bidirectional_sync/migration.sql`
 
 <a id="file-prisma-migrations-20261119120000_add_bandago_bidirectional_sync-migration-sql"></a>
 
@@ -36720,7 +37239,7 @@ ALTER TABLE "pos_outbound_jobs" ADD CONSTRAINT "pos_outbound_jobs_order_id_fkey"
 
 ---
 
-### File #165: `prisma/migrations/migration_lock.toml`
+### File #167: `prisma/migrations/migration_lock.toml`
 
 <a id="file-prisma-migrations-migration_lock-toml"></a>
 
@@ -36738,7 +37257,7 @@ provider = "postgresql"
 
 ---
 
-### File #166: `prisma/schema.prisma`
+### File #168: `prisma/schema.prisma`
 
 <a id="file-prisma-schema-prisma"></a>
 
@@ -37588,7 +38107,7 @@ model PosSyncIncident {
 
 ---
 
-### File #167: `prisma/seed.ts`
+### File #169: `prisma/seed.ts`
 
 <a id="file-prisma-seed-ts"></a>
 
@@ -37656,7 +38175,7 @@ main()
 
 ---
 
-### File #168: `public/firebase-messaging-sw.js`
+### File #170: `public/firebase-messaging-sw.js`
 
 <a id="file-public-firebase-messaging-sw-js"></a>
 
@@ -37769,7 +38288,7 @@ self.addEventListener("notificationclick", (event) => {
 
 ---
 
-### File #169: `public/logo.svg`
+### File #171: `public/logo.svg`
 
 <a id="file-public-logo-svg"></a>
 
@@ -37815,7 +38334,7 @@ self.addEventListener("notificationclick", (event) => {
 
 ---
 
-### File #170: `public/robots.txt`
+### File #172: `public/robots.txt`
 
 <a id="file-public-robots-txt"></a>
 
@@ -37846,7 +38365,7 @@ Allow: /
 
 ---
 
-### File #171: `reference/archive/PROJECT_README.md`
+### File #173: `reference/archive/PROJECT_README.md`
 
 <a id="file-reference-archive-project_readme-md"></a>
 
@@ -37946,7 +38465,7 @@ Use the Prisma URL for the application datasource, the Postgres/direct URL for P
 
 ---
 
-### File #172: `reference/archive/worklog.md`
+### File #174: `reference/archive/worklog.md`
 
 <a id="file-reference-archive-worklog-md"></a>
 
@@ -38224,7 +38743,7 @@ Stage Summary:
 
 ---
 
-### File #173: `reference/bandago-api-and-integration-architecture.md`
+### File #175: `reference/bandago-api-and-integration-architecture.md`
 
 <a id="file-reference-bandago-api-and-integration-architecture-md"></a>
 
@@ -38961,7 +39480,7 @@ Before activating any production catalog synchronization between BandaGo and Sph
 
 ---
 
-### File #174: `reference/bandago-pos-crm-blueprint.md`
+### File #176: `reference/bandago-pos-crm-blueprint.md`
 
 <a id="file-reference-bandago-pos-crm-blueprint-md"></a>
 
@@ -40050,7 +40569,7 @@ export function PosSyncSection() {
 
 ---
 
-### File #175: `scripts/dev-daemon.sh`
+### File #177: `scripts/dev-daemon.sh`
 
 <a id="file-scripts-dev-daemon-sh"></a>
 
@@ -40079,7 +40598,7 @@ echo "daemon launched"
 
 ---
 
-### File #176: `scripts/generate_codebase_file.py`
+### File #178: `scripts/generate_codebase_file.py`
 
 <a id="file-scripts-generate_codebase_file-py"></a>
 
@@ -40622,7 +41141,7 @@ if __name__ == "__main__":
 
 ---
 
-### File #177: `src/app/[...route]/page.tsx`
+### File #179: `src/app/[...route]/page.tsx`
 
 <a id="file-src-app-----route--page-tsx"></a>
 
@@ -40640,7 +41159,7 @@ export { default } from "../page"
 
 ---
 
-### File #178: `src/app/admin-workspace.css`
+### File #180: `src/app/admin-workspace.css`
 
 <a id="file-src-app-admin-workspace-css"></a>
 
@@ -41080,7 +41599,7 @@ body:has(.admin-experience) .admin-mobile-sidebar { width: 280px; max-width: 85v
 
 ---
 
-### File #179: `src/app/ambient-background.css`
+### File #181: `src/app/ambient-background.css`
 
 <a id="file-src-app-ambient-background-css"></a>
 
@@ -41181,7 +41700,7 @@ header nav button[class~="bg-accent"][class~="text-accent-foreground"]:focus-vis
 
 ---
 
-### File #180: `src/app/api/addresses/[id]/route.ts`
+### File #182: `src/app/api/addresses/[id]/route.ts`
 
 <a id="file-src-app-api-addresses--id--route-ts"></a>
 
@@ -41252,7 +41771,7 @@ export async function DELETE(_request: Request, { params }: Params) {
 
 ---
 
-### File #181: `src/app/api/addresses/route.ts`
+### File #183: `src/app/api/addresses/route.ts`
 
 <a id="file-src-app-api-addresses-route-ts"></a>
 
@@ -41317,7 +41836,7 @@ export async function POST(request: Request) {
 
 ---
 
-### File #182: `src/app/api/admin/audit/route.ts`
+### File #184: `src/app/api/admin/audit/route.ts`
 
 <a id="file-src-app-api-admin-audit-route-ts"></a>
 
@@ -41345,7 +41864,7 @@ export async function GET() {
 
 ---
 
-### File #183: `src/app/api/admin/live-changes/route.ts`
+### File #185: `src/app/api/admin/live-changes/route.ts`
 
 <a id="file-src-app-api-admin-live-changes-route-ts"></a>
 
@@ -41396,7 +41915,7 @@ export async function GET() {
 
 ---
 
-### File #184: `src/app/api/admin/medicine-requests/[id]/photo/route.ts`
+### File #186: `src/app/api/admin/medicine-requests/[id]/photo/route.ts`
 
 <a id="file-src-app-api-admin-medicine-requests--id--photo-route-ts"></a>
 
@@ -41435,7 +41954,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
 
 ---
 
-### File #185: `src/app/api/admin/medicine-requests/route.ts`
+### File #187: `src/app/api/admin/medicine-requests/route.ts`
 
 <a id="file-src-app-api-admin-medicine-requests-route-ts"></a>
 
@@ -41516,7 +42035,7 @@ export async function PATCH(request: Request) {
 
 ---
 
-### File #186: `src/app/api/admin/notification-health/route.ts`
+### File #188: `src/app/api/admin/notification-health/route.ts`
 
 <a id="file-src-app-api-admin-notification-health-route-ts"></a>
 
@@ -41548,7 +42067,7 @@ export async function GET() {
 
 ---
 
-### File #187: `src/app/api/admin/pos-status/route.ts`
+### File #189: `src/app/api/admin/pos-status/route.ts`
 
 <a id="file-src-app-api-admin-pos-status-route-ts"></a>
 
@@ -41725,7 +42244,7 @@ export async function GET() {
 
 ---
 
-### File #188: `src/app/api/admin/pos-sync/policy/route.ts`
+### File #190: `src/app/api/admin/pos-sync/policy/route.ts`
 
 <a id="file-src-app-api-admin-pos-sync-policy-route-ts"></a>
 
@@ -41822,7 +42341,7 @@ export async function PUT(request: NextRequest) {
 
 ---
 
-### File #189: `src/app/api/admin/pos-sync/reconcile/route.ts`
+### File #191: `src/app/api/admin/pos-sync/reconcile/route.ts`
 
 <a id="file-src-app-api-admin-pos-sync-reconcile-route-ts"></a>
 
@@ -42336,7 +42855,7 @@ export async function POST(request: NextRequest) {
 
 ---
 
-### File #190: `src/app/api/admin/pos-sync/sales-export/route.ts`
+### File #192: `src/app/api/admin/pos-sync/sales-export/route.ts`
 
 <a id="file-src-app-api-admin-pos-sync-sales-export-route-ts"></a>
 
@@ -42770,7 +43289,7 @@ export async function GET(request: NextRequest) {
 
 ---
 
-### File #191: `src/app/api/admin/reviews/[id]/route.ts`
+### File #193: `src/app/api/admin/reviews/[id]/route.ts`
 
 <a id="file-src-app-api-admin-reviews--id--route-ts"></a>
 
@@ -42839,7 +43358,7 @@ export async function PATCH(request: Request, { params }: Params) {
 
 ---
 
-### File #192: `src/app/api/admin/reviews/route.ts`
+### File #194: `src/app/api/admin/reviews/route.ts`
 
 <a id="file-src-app-api-admin-reviews-route-ts"></a>
 
@@ -42898,7 +43417,7 @@ export async function GET(request: Request) {
 
 ---
 
-### File #193: `src/app/api/admin/service-analytics/route.ts`
+### File #195: `src/app/api/admin/service-analytics/route.ts`
 
 <a id="file-src-app-api-admin-service-analytics-route-ts"></a>
 
@@ -42932,7 +43451,7 @@ export async function GET(request:Request){
 
 ---
 
-### File #194: `src/app/api/admin/service-bookings/[id]/assign/route.ts`
+### File #196: `src/app/api/admin/service-bookings/[id]/assign/route.ts`
 
 <a id="file-src-app-api-admin-service-bookings--id--assign-route-ts"></a>
 
@@ -42964,7 +43483,7 @@ export async function PATCH(request:Request,ctx:{params:Promise<{id:string}>}){
 
 ---
 
-### File #195: `src/app/api/admin/service-bookings/route.ts`
+### File #197: `src/app/api/admin/service-bookings/route.ts`
 
 <a id="file-src-app-api-admin-service-bookings-route-ts"></a>
 
@@ -43469,7 +43988,7 @@ export async function PATCH(request: Request) {
 
 ---
 
-### File #196: `src/app/api/admin/service-staff/route.ts`
+### File #198: `src/app/api/admin/service-staff/route.ts`
 
 <a id="file-src-app-api-admin-service-staff-route-ts"></a>
 
@@ -43496,7 +44015,7 @@ export async function GET(){
 
 ---
 
-### File #197: `src/app/api/admin/staff/[id]/route.ts`
+### File #199: `src/app/api/admin/staff/[id]/route.ts`
 
 <a id="file-src-app-api-admin-staff--id--route-ts"></a>
 
@@ -43602,7 +44121,7 @@ export async function DELETE(_request: Request, { params }: Params) {
 
 ---
 
-### File #198: `src/app/api/admin/staff/route.ts`
+### File #200: `src/app/api/admin/staff/route.ts`
 
 <a id="file-src-app-api-admin-staff-route-ts"></a>
 
@@ -43666,7 +44185,7 @@ export async function POST(request: Request) {
 
 ---
 
-### File #199: `src/app/api/admin/stats/route.ts`
+### File #201: `src/app/api/admin/stats/route.ts`
 
 <a id="file-src-app-api-admin-stats-route-ts"></a>
 
@@ -43735,7 +44254,7 @@ export async function GET() {
 
 ---
 
-### File #200: `src/app/api/assistant/route.ts`
+### File #202: `src/app/api/assistant/route.ts`
 
 <a id="file-src-app-api-assistant-route-ts"></a>
 
@@ -44023,7 +44542,7 @@ export async function POST(request: Request) {
 
 ---
 
-### File #201: `src/app/api/auth/login/route.ts`
+### File #203: `src/app/api/auth/login/route.ts`
 
 <a id="file-src-app-api-auth-login-route-ts"></a>
 
@@ -44074,7 +44593,7 @@ export async function POST(request: Request) {
 
 ---
 
-### File #202: `src/app/api/auth/logout/route.ts`
+### File #204: `src/app/api/auth/logout/route.ts`
 
 <a id="file-src-app-api-auth-logout-route-ts"></a>
 
@@ -44103,7 +44622,7 @@ export async function POST(request: Request) {
 
 ---
 
-### File #203: `src/app/api/auth/me/route.ts`
+### File #205: `src/app/api/auth/me/route.ts`
 
 <a id="file-src-app-api-auth-me-route-ts"></a>
 
@@ -44129,7 +44648,7 @@ export async function GET() {
 
 ---
 
-### File #204: `src/app/api/auth/otp/request/route.ts`
+### File #206: `src/app/api/auth/otp/request/route.ts`
 
 <a id="file-src-app-api-auth-otp-request-route-ts"></a>
 
@@ -44177,7 +44696,7 @@ export async function POST(request: Request) {
 
 ---
 
-### File #205: `src/app/api/auth/otp/verify/route.ts`
+### File #207: `src/app/api/auth/otp/verify/route.ts`
 
 <a id="file-src-app-api-auth-otp-verify-route-ts"></a>
 
@@ -44244,7 +44763,7 @@ export async function POST(request: Request) {
 
 ---
 
-### File #206: `src/app/api/auth/profile/route.ts`
+### File #208: `src/app/api/auth/profile/route.ts`
 
 <a id="file-src-app-api-auth-profile-route-ts"></a>
 
@@ -44323,7 +44842,7 @@ export async function PATCH(request: Request) {
 
 ---
 
-### File #207: `src/app/api/auth/register/route.ts`
+### File #209: `src/app/api/auth/register/route.ts`
 
 <a id="file-src-app-api-auth-register-route-ts"></a>
 
@@ -44393,7 +44912,7 @@ export async function POST(request: Request) {
 
 ---
 
-### File #208: `src/app/api/auth/staff-login/route.ts`
+### File #210: `src/app/api/auth/staff-login/route.ts`
 
 <a id="file-src-app-api-auth-staff-login-route-ts"></a>
 
@@ -44448,7 +44967,7 @@ export async function POST(request: Request) {
 
 ---
 
-### File #209: `src/app/api/categories/route.ts`
+### File #211: `src/app/api/categories/route.ts`
 
 <a id="file-src-app-api-categories-route-ts"></a>
 
@@ -44477,7 +44996,7 @@ export async function GET() {
 
 ---
 
-### File #210: `src/app/api/cron/chronic-refills/route.ts`
+### File #212: `src/app/api/cron/chronic-refills/route.ts`
 
 <a id="file-src-app-api-cron-chronic-refills-route-ts"></a>
 
@@ -44564,7 +45083,7 @@ export async function GET(request: Request) {
 
 ---
 
-### File #211: `src/app/api/cron/notifications/route.ts`
+### File #213: `src/app/api/cron/notifications/route.ts`
 
 <a id="file-src-app-api-cron-notifications-route-ts"></a>
 
@@ -44589,7 +45108,7 @@ export async function GET(request: Request) {
 
 ---
 
-### File #212: `src/app/api/cron/order-reservations/route.ts`
+### File #214: `src/app/api/cron/order-reservations/route.ts`
 
 <a id="file-src-app-api-cron-order-reservations-route-ts"></a>
 
@@ -44665,7 +45184,7 @@ export async function GET(request: Request) {
 
 ---
 
-### File #213: `src/app/api/cron/prescription-retention/route.ts`
+### File #215: `src/app/api/cron/prescription-retention/route.ts`
 
 <a id="file-src-app-api-cron-prescription-retention-route-ts"></a>
 
@@ -44705,7 +45224,7 @@ export async function GET(request: Request) {
 
 ---
 
-### File #214: `src/app/api/cron/service-booking-reminders/route.ts`
+### File #216: `src/app/api/cron/service-booking-reminders/route.ts`
 
 <a id="file-src-app-api-cron-service-booking-reminders-route-ts"></a>
 
@@ -44772,7 +45291,7 @@ export async function GET(request: Request) {
 
 ---
 
-### File #215: `src/app/api/docs-assistant/route.ts`
+### File #217: `src/app/api/docs-assistant/route.ts`
 
 <a id="file-src-app-api-docs-assistant-route-ts"></a>
 
@@ -44931,7 +45450,7 @@ function hasCredential(text: string): boolean {
 
 ---
 
-### File #216: `src/app/api/docs-index/route.ts`
+### File #218: `src/app/api/docs-index/route.ts`
 
 <a id="file-src-app-api-docs-index-route-ts"></a>
 
@@ -44964,7 +45483,7 @@ export async function GET() {
 
 ---
 
-### File #217: `src/app/api/integrations/bandago/crm/route.ts`
+### File #219: `src/app/api/integrations/bandago/crm/route.ts`
 
 <a id="file-src-app-api-integrations-bandago-crm-route-ts"></a>
 
@@ -45181,7 +45700,7 @@ export async function GET(req: NextRequest) {
 
 ---
 
-### File #218: `src/app/api/integrations/bandago/csv-import/route.ts`
+### File #220: `src/app/api/integrations/bandago/csv-import/route.ts`
 
 <a id="file-src-app-api-integrations-bandago-csv-import-route-ts"></a>
 
@@ -45347,7 +45866,7 @@ export async function POST(req: NextRequest) {
 
 ---
 
-### File #219: `src/app/api/integrations/bandago/outbound/ack/route.ts`
+### File #221: `src/app/api/integrations/bandago/outbound/ack/route.ts`
 
 <a id="file-src-app-api-integrations-bandago-outbound-ack-route-ts"></a>
 
@@ -45591,7 +46110,7 @@ export async function POST(req: NextRequest) {
 
 ---
 
-### File #220: `src/app/api/integrations/bandago/outbound/route.ts`
+### File #222: `src/app/api/integrations/bandago/outbound/route.ts`
 
 <a id="file-src-app-api-integrations-bandago-outbound-route-ts"></a>
 
@@ -45857,7 +46376,7 @@ function serializeOutboundJob(job: {
 
 ---
 
-### File #221: `src/app/api/integrations/bandago/sync/route.ts`
+### File #223: `src/app/api/integrations/bandago/sync/route.ts`
 
 <a id="file-src-app-api-integrations-bandago-sync-route-ts"></a>
 
@@ -46608,7 +47127,7 @@ export async function POST(req: NextRequest) {
 
 ---
 
-### File #222: `src/app/api/integrations/bandago/telemetry/route.ts`
+### File #224: `src/app/api/integrations/bandago/telemetry/route.ts`
 
 <a id="file-src-app-api-integrations-bandago-telemetry-route-ts"></a>
 
@@ -46713,7 +47232,7 @@ export async function POST(req: NextRequest) {
 
 ---
 
-### File #223: `src/app/api/location/reverse-geocode/route.ts`
+### File #225: `src/app/api/location/reverse-geocode/route.ts`
 
 <a id="file-src-app-api-location-reverse-geocode-route-ts"></a>
 
@@ -46788,7 +47307,7 @@ export async function POST(request: Request) {
 
 ---
 
-### File #224: `src/app/api/location/search/route.ts`
+### File #226: `src/app/api/location/search/route.ts`
 
 <a id="file-src-app-api-location-search-route-ts"></a>
 
@@ -46826,7 +47345,7 @@ export async function GET(request: Request) {
 
 ---
 
-### File #225: `src/app/api/medicine-requests/route.ts`
+### File #227: `src/app/api/medicine-requests/route.ts`
 
 <a id="file-src-app-api-medicine-requests-route-ts"></a>
 
@@ -46912,7 +47431,7 @@ export async function POST(request: Request) {
 
 ---
 
-### File #226: `src/app/api/notifications/dispatch-test/route.ts`
+### File #228: `src/app/api/notifications/dispatch-test/route.ts`
 
 <a id="file-src-app-api-notifications-dispatch-test-route-ts"></a>
 
@@ -47038,7 +47557,7 @@ export async function GET() {
 
 ---
 
-### File #227: `src/app/api/notifications/email-webhook/route.ts`
+### File #229: `src/app/api/notifications/email-webhook/route.ts`
 
 <a id="file-src-app-api-notifications-email-webhook-route-ts"></a>
 
@@ -47084,7 +47603,7 @@ export async function POST(request: Request) {
 
 ---
 
-### File #228: `src/app/api/notifications/prefs/route.ts`
+### File #230: `src/app/api/notifications/prefs/route.ts`
 
 <a id="file-src-app-api-notifications-prefs-route-ts"></a>
 
@@ -47143,7 +47662,7 @@ export async function PUT(request: Request) {
 
 ---
 
-### File #229: `src/app/api/notifications/push-token/route.ts`
+### File #231: `src/app/api/notifications/push-token/route.ts`
 
 <a id="file-src-app-api-notifications-push-token-route-ts"></a>
 
@@ -47224,7 +47743,7 @@ export async function DELETE(request: Request) {
 
 ---
 
-### File #230: `src/app/api/notifications/route.ts`
+### File #232: `src/app/api/notifications/route.ts`
 
 <a id="file-src-app-api-notifications-route-ts"></a>
 
@@ -47300,7 +47819,7 @@ export async function PATCH(request: Request) {
 
 ---
 
-### File #231: `src/app/api/orders/[id]/assign/route.ts`
+### File #233: `src/app/api/orders/[id]/assign/route.ts`
 
 <a id="file-src-app-api-orders--id--assign-route-ts"></a>
 
@@ -47404,7 +47923,7 @@ export async function POST(request: Request, { params }: Params) {
 
 ---
 
-### File #232: `src/app/api/orders/[id]/cancel/route.ts`
+### File #234: `src/app/api/orders/[id]/cancel/route.ts`
 
 <a id="file-src-app-api-orders--id--cancel-route-ts"></a>
 
@@ -47583,7 +48102,7 @@ export async function POST(request: Request, { params }: Params) {
 
 ---
 
-### File #233: `src/app/api/orders/[id]/cash-confirm/route.ts`
+### File #235: `src/app/api/orders/[id]/cash-confirm/route.ts`
 
 <a id="file-src-app-api-orders--id--cash-confirm-route-ts"></a>
 
@@ -47671,7 +48190,7 @@ export async function POST(request: Request, { params }: Params) {
 
 ---
 
-### File #234: `src/app/api/orders/[id]/prepare/route.ts`
+### File #236: `src/app/api/orders/[id]/prepare/route.ts`
 
 <a id="file-src-app-api-orders--id--prepare-route-ts"></a>
 
@@ -47760,7 +48279,7 @@ export async function POST(request: Request, { params }: Params) {
 
 ---
 
-### File #235: `src/app/api/orders/[id]/request-payment/route.ts`
+### File #237: `src/app/api/orders/[id]/request-payment/route.ts`
 
 <a id="file-src-app-api-orders--id--request-payment-route-ts"></a>
 
@@ -47832,7 +48351,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
 
 ---
 
-### File #236: `src/app/api/orders/[id]/route.ts`
+### File #238: `src/app/api/orders/[id]/route.ts`
 
 <a id="file-src-app-api-orders--id--route-ts"></a>
 
@@ -47991,7 +48510,7 @@ export async function PATCH(request: Request, { params }: Params) {
 
 ---
 
-### File #237: `src/app/api/orders/loyalty/route.ts`
+### File #239: `src/app/api/orders/loyalty/route.ts`
 
 <a id="file-src-app-api-orders-loyalty-route-ts"></a>
 
@@ -48020,7 +48539,7 @@ export async function GET() {
 
 ---
 
-### File #238: `src/app/api/orders/riders/route.ts`
+### File #240: `src/app/api/orders/riders/route.ts`
 
 <a id="file-src-app-api-orders-riders-route-ts"></a>
 
@@ -48054,7 +48573,7 @@ export async function GET() {
 
 ---
 
-### File #239: `src/app/api/orders/route.ts`
+### File #241: `src/app/api/orders/route.ts`
 
 <a id="file-src-app-api-orders-route-ts"></a>
 
@@ -48321,7 +48840,7 @@ export async function POST(request: NextRequest) {
 
 ---
 
-### File #240: `src/app/api/payments/intasend/initiate/route.ts`
+### File #242: `src/app/api/payments/intasend/initiate/route.ts`
 
 <a id="file-src-app-api-payments-intasend-initiate-route-ts"></a>
 
@@ -48388,7 +48907,7 @@ export async function POST(request: Request) {
 
 ---
 
-### File #241: `src/app/api/payments/intasend/webhook/route.ts`
+### File #243: `src/app/api/payments/intasend/webhook/route.ts`
 
 <a id="file-src-app-api-payments-intasend-webhook-route-ts"></a>
 
@@ -48488,7 +49007,7 @@ export async function POST(request: Request) {
 
 ---
 
-### File #242: `src/app/api/payments/mpesa/callback/route.ts`
+### File #244: `src/app/api/payments/mpesa/callback/route.ts`
 
 <a id="file-src-app-api-payments-mpesa-callback-route-ts"></a>
 
@@ -48585,7 +49104,7 @@ export async function POST(request: Request) {
 
 ---
 
-### File #243: `src/app/api/payments/mpesa/initiate/route.ts`
+### File #245: `src/app/api/payments/mpesa/initiate/route.ts`
 
 <a id="file-src-app-api-payments-mpesa-initiate-route-ts"></a>
 
@@ -48662,7 +49181,7 @@ export async function POST(request: Request) {
 
 ---
 
-### File #244: `src/app/api/payments/mpesa/query/route.ts`
+### File #246: `src/app/api/payments/mpesa/query/route.ts`
 
 <a id="file-src-app-api-payments-mpesa-query-route-ts"></a>
 
@@ -48701,7 +49220,7 @@ export async function GET(request: Request) {
 
 ---
 
-### File #245: `src/app/api/payments/mpesa/service-callback/route.ts`
+### File #247: `src/app/api/payments/mpesa/service-callback/route.ts`
 
 <a id="file-src-app-api-payments-mpesa-service-callback-route-ts"></a>
 
@@ -48783,7 +49302,7 @@ export async function POST(request: Request) {
 
 ---
 
-### File #246: `src/app/api/payments/refund/route.ts`
+### File #248: `src/app/api/payments/refund/route.ts`
 
 <a id="file-src-app-api-payments-refund-route-ts"></a>
 
@@ -48898,7 +49417,7 @@ async function sendRefundNotice(payment: NonNullable<Awaited<ReturnType<typeof d
 
 ---
 
-### File #247: `src/app/api/prescriptions/[id]/refill/route.ts`
+### File #249: `src/app/api/prescriptions/[id]/refill/route.ts`
 
 <a id="file-src-app-api-prescriptions--id--refill-route-ts"></a>
 
@@ -49018,7 +49537,7 @@ export async function POST(request: Request, { params }: Params) {
 
 ---
 
-### File #248: `src/app/api/prescriptions/[id]/route.ts`
+### File #250: `src/app/api/prescriptions/[id]/route.ts`
 
 <a id="file-src-app-api-prescriptions--id--route-ts"></a>
 
@@ -49204,7 +49723,7 @@ export async function PATCH(request: Request, { params }: Params) {
 
 ---
 
-### File #249: `src/app/api/prescriptions/route.ts`
+### File #251: `src/app/api/prescriptions/route.ts`
 
 <a id="file-src-app-api-prescriptions-route-ts"></a>
 
@@ -49404,7 +49923,7 @@ export async function POST(request: Request) {
 
 ---
 
-### File #250: `src/app/api/products/[id]/reviews/route.ts`
+### File #252: `src/app/api/products/[id]/reviews/route.ts`
 
 <a id="file-src-app-api-products--id--reviews-route-ts"></a>
 
@@ -49510,7 +50029,7 @@ export async function POST(request: Request, { params }: Params) {
 
 ---
 
-### File #251: `src/app/api/products/[id]/route.ts`
+### File #253: `src/app/api/products/[id]/route.ts`
 
 <a id="file-src-app-api-products--id--route-ts"></a>
 
@@ -49715,7 +50234,7 @@ export async function DELETE(_request: Request, { params }: Params) {
 
 ---
 
-### File #252: `src/app/api/products/[id]/stock-alert/route.ts`
+### File #254: `src/app/api/products/[id]/stock-alert/route.ts`
 
 <a id="file-src-app-api-products--id--stock-alert-route-ts"></a>
 
@@ -49771,7 +50290,7 @@ export async function POST(_request: Request, { params }: Params) {
 
 ---
 
-### File #253: `src/app/api/products/bulk/route.ts`
+### File #255: `src/app/api/products/bulk/route.ts`
 
 <a id="file-src-app-api-products-bulk-route-ts"></a>
 
@@ -49906,7 +50425,7 @@ function splitCsvLine(line: string): string[] {
 
 ---
 
-### File #254: `src/app/api/products/route.ts`
+### File #256: `src/app/api/products/route.ts`
 
 <a id="file-src-app-api-products-route-ts"></a>
 
@@ -50098,7 +50617,7 @@ export async function POST(request: Request) {
 
 ---
 
-### File #255: `src/app/api/products/stock-alerts/route.ts`
+### File #257: `src/app/api/products/stock-alerts/route.ts`
 
 <a id="file-src-app-api-products-stock-alerts-route-ts"></a>
 
@@ -50152,7 +50671,7 @@ export async function DELETE(request: Request) {
 
 ---
 
-### File #256: `src/app/api/promotions/[id]/route.ts`
+### File #258: `src/app/api/promotions/[id]/route.ts`
 
 <a id="file-src-app-api-promotions--id--route-ts"></a>
 
@@ -50248,7 +50767,7 @@ export async function DELETE(_request: Request, { params }: Params) {
 
 ---
 
-### File #257: `src/app/api/promotions/route.ts`
+### File #259: `src/app/api/promotions/route.ts`
 
 <a id="file-src-app-api-promotions-route-ts"></a>
 
@@ -50349,7 +50868,7 @@ export async function POST(request: Request) {
 
 ---
 
-### File #258: `src/app/api/promotions/validate/route.ts`
+### File #260: `src/app/api/promotions/validate/route.ts`
 
 <a id="file-src-app-api-promotions-validate-route-ts"></a>
 
@@ -50463,7 +50982,7 @@ export async function POST(request: NextRequest) {
 
 ---
 
-### File #259: `src/app/api/route.ts`
+### File #261: `src/app/api/route.ts`
 
 <a id="file-src-app-api-route-ts"></a>
 
@@ -50485,7 +51004,7 @@ export async function GET() {
 
 ---
 
-### File #260: `src/app/api/service-bookings/[id]/pay-at-pharmacy/route.ts`
+### File #262: `src/app/api/service-bookings/[id]/pay-at-pharmacy/route.ts`
 
 <a id="file-src-app-api-service-bookings--id--pay-at-pharmacy-route-ts"></a>
 
@@ -50529,7 +51048,7 @@ export async function POST(_request: Request, ctx: { params: Promise<{ id: strin
 
 ---
 
-### File #261: `src/app/api/service-bookings/[id]/pay/card/route.ts`
+### File #263: `src/app/api/service-bookings/[id]/pay/card/route.ts`
 
 <a id="file-src-app-api-service-bookings--id--pay-card-route-ts"></a>
 
@@ -50586,7 +51105,7 @@ export async function POST(request: Request, ctx: { params: Promise<{ id: string
 
 ---
 
-### File #262: `src/app/api/service-bookings/[id]/pay/mpesa/route.ts`
+### File #264: `src/app/api/service-bookings/[id]/pay/mpesa/route.ts`
 
 <a id="file-src-app-api-service-bookings--id--pay-mpesa-route-ts"></a>
 
@@ -50652,7 +51171,7 @@ export async function POST(request: Request, ctx: { params: Promise<{ id: string
 
 ---
 
-### File #263: `src/app/api/service-bookings/[id]/payment-status/route.ts`
+### File #265: `src/app/api/service-bookings/[id]/payment-status/route.ts`
 
 <a id="file-src-app-api-service-bookings--id--payment-status-route-ts"></a>
 
@@ -50686,7 +51205,7 @@ export async function GET(request: Request, ctx: { params: Promise<{ id: string 
 
 ---
 
-### File #264: `src/app/api/service-bookings/[id]/review/route.ts`
+### File #266: `src/app/api/service-bookings/[id]/review/route.ts`
 
 <a id="file-src-app-api-service-bookings--id--review-route-ts"></a>
 
@@ -50719,7 +51238,7 @@ export async function POST(request:Request,ctx:{params:Promise<{id:string}>}){
 
 ---
 
-### File #265: `src/app/api/service-bookings/mine/route.ts`
+### File #267: `src/app/api/service-bookings/mine/route.ts`
 
 <a id="file-src-app-api-service-bookings-mine-route-ts"></a>
 
@@ -50746,7 +51265,7 @@ export async function GET(){
 
 ---
 
-### File #266: `src/app/api/service-bookings/route.ts`
+### File #268: `src/app/api/service-bookings/route.ts`
 
 <a id="file-src-app-api-service-bookings-route-ts"></a>
 
@@ -50840,7 +51359,7 @@ export async function POST(request:Request){
 
 ---
 
-### File #267: `src/app/api/services/[id]/availability/route.ts`
+### File #269: `src/app/api/services/[id]/availability/route.ts`
 
 <a id="file-src-app-api-services--id--availability-route-ts"></a>
 
@@ -50891,7 +51410,7 @@ export async function PUT(request:Request,ctx:{params:Promise<{id:string}>}){
 
 ---
 
-### File #268: `src/app/api/services/[id]/reviews/route.ts`
+### File #270: `src/app/api/services/[id]/reviews/route.ts`
 
 <a id="file-src-app-api-services--id--reviews-route-ts"></a>
 
@@ -50917,7 +51436,7 @@ export async function GET(_request:Request,ctx:{params:Promise<{id:string}>}){
 
 ---
 
-### File #269: `src/app/api/services/[id]/route.ts`
+### File #271: `src/app/api/services/[id]/route.ts`
 
 <a id="file-src-app-api-services--id--route-ts"></a>
 
@@ -51054,7 +51573,7 @@ export async function DELETE(_request: Request, ctx: { params: Promise<{ id: str
 
 ---
 
-### File #270: `src/app/api/services/[id]/slots/route.ts`
+### File #272: `src/app/api/services/[id]/slots/route.ts`
 
 <a id="file-src-app-api-services--id--slots-route-ts"></a>
 
@@ -51114,7 +51633,7 @@ export async function GET(request:Request,ctx:{params:Promise<{id:string}>}){
 
 ---
 
-### File #271: `src/app/api/services/route.ts`
+### File #273: `src/app/api/services/route.ts`
 
 <a id="file-src-app-api-services-route-ts"></a>
 
@@ -51175,7 +51694,7 @@ export async function POST(request:Request){
 
 ---
 
-### File #272: `src/app/api/settings/delivery-fee/route.ts`
+### File #274: `src/app/api/settings/delivery-fee/route.ts`
 
 <a id="file-src-app-api-settings-delivery-fee-route-ts"></a>
 
@@ -51209,7 +51728,7 @@ export async function GET(request:Request){
 
 ---
 
-### File #273: `src/app/api/settings/route.ts`
+### File #275: `src/app/api/settings/route.ts`
 
 <a id="file-src-app-api-settings-route-ts"></a>
 
@@ -51329,7 +51848,7 @@ export async function PUT(request: Request) {
 
 ---
 
-### File #274: `src/app/api/upload/route.ts`
+### File #276: `src/app/api/upload/route.ts`
 
 <a id="file-src-app-api-upload-route-ts"></a>
 
@@ -51438,7 +51957,7 @@ export async function POST(request: Request) {
 
 ---
 
-### File #275: `src/app/app-experience.css`
+### File #277: `src/app/app-experience.css`
 
 <a id="file-src-app-app-experience-css"></a>
 
@@ -52423,7 +52942,7 @@ main[data-view="admin"] + footer { display: none; }
 
 ---
 
-### File #276: `src/app/docs/[...slug]/page.tsx`
+### File #278: `src/app/docs/[...slug]/page.tsx`
 
 <a id="file-src-app-docs-----slug--page-tsx"></a>
 
@@ -52545,7 +53064,7 @@ const CATEGORY_LABELS: Record<string, string> = {
 
 ---
 
-### File #277: `src/app/docs/api-reference/page.tsx`
+### File #279: `src/app/docs/api-reference/page.tsx`
 
 <a id="file-src-app-docs-api-reference-page-tsx"></a>
 
@@ -52609,7 +53128,7 @@ export default function ApiReferencePage() {
 
 ---
 
-### File #278: `src/app/docs/assistant/page.tsx`
+### File #280: `src/app/docs/assistant/page.tsx`
 
 <a id="file-src-app-docs-assistant-page-tsx"></a>
 
@@ -52675,7 +53194,7 @@ export default async function AssistantPage({ searchParams }: Props) {
 
 ---
 
-### File #279: `src/app/docs/database/page.tsx`
+### File #281: `src/app/docs/database/page.tsx`
 
 <a id="file-src-app-docs-database-page-tsx"></a>
 
@@ -52746,7 +53265,7 @@ export default function DatabasePage() {
 
 ---
 
-### File #280: `src/app/docs/journeys/[...slug]/page.tsx`
+### File #282: `src/app/docs/journeys/[...slug]/page.tsx`
 
 <a id="file-src-app-docs-journeys-----slug--page-tsx"></a>
 
@@ -52939,7 +53458,7 @@ function JourneyMetadata({ doc }: { doc: DocRecord }) {
 
 ---
 
-### File #281: `src/app/docs/journeys/page.tsx`
+### File #283: `src/app/docs/journeys/page.tsx`
 
 <a id="file-src-app-docs-journeys-page-tsx"></a>
 
@@ -53010,7 +53529,7 @@ export default async function JourneysPage({ searchParams }: Props) {
 
 ---
 
-### File #282: `src/app/docs/layout.tsx`
+### File #284: `src/app/docs/layout.tsx`
 
 <a id="file-src-app-docs-layout-tsx"></a>
 
@@ -53045,7 +53564,7 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
 
 ---
 
-### File #283: `src/app/docs/not-found.tsx`
+### File #285: `src/app/docs/not-found.tsx`
 
 <a id="file-src-app-docs-not-found-tsx"></a>
 
@@ -53097,7 +53616,7 @@ export default function DocsNotFound() {
 
 ---
 
-### File #284: `src/app/docs/page.tsx`
+### File #286: `src/app/docs/page.tsx`
 
 <a id="file-src-app-docs-page-tsx"></a>
 
@@ -53379,7 +53898,7 @@ export default function DocsHomePage() {
 
 ---
 
-### File #285: `src/app/globals.css`
+### File #287: `src/app/globals.css`
 
 <a id="file-src-app-globals-css"></a>
 
@@ -53894,7 +54413,7 @@ export default function DocsHomePage() {
 
 ---
 
-### File #286: `src/app/layout.tsx`
+### File #288: `src/app/layout.tsx`
 
 <a id="file-src-app-layout-tsx"></a>
 
@@ -53959,7 +54478,7 @@ export default function RootLayout({
 
 ---
 
-### File #287: `src/app/page.tsx`
+### File #289: `src/app/page.tsx`
 
 <a id="file-src-app-page-tsx"></a>
 
@@ -54067,7 +54586,7 @@ export default function Page() {
 
 ---
 
-### File #288: `src/app/premium-landing.css`
+### File #290: `src/app/premium-landing.css`
 
 <a id="file-src-app-premium-landing-css"></a>
 
@@ -54211,7 +54730,7 @@ export default function Page() {
 
 ---
 
-### File #289: `src/app/reference-home-dark.css`
+### File #291: `src/app/reference-home-dark.css`
 
 <a id="file-src-app-reference-home-dark-css"></a>
 
@@ -54241,7 +54760,7 @@ export default function Page() {
 
 ---
 
-### File #290: `src/app/reference-home.css`
+### File #292: `src/app/reference-home.css`
 
 <a id="file-src-app-reference-home-css"></a>
 
@@ -54506,7 +55025,7 @@ export default function Page() {
 
 ---
 
-### File #291: `src/app/robots.ts`
+### File #293: `src/app/robots.ts`
 
 <a id="file-src-app-robots-ts"></a>
 
@@ -54529,7 +55048,7 @@ export default function robots(): MetadataRoute.Robots {
 
 ---
 
-### File #292: `src/app/services-showcase.css`
+### File #294: `src/app/services-showcase.css`
 
 <a id="file-src-app-services-showcase-css"></a>
 
@@ -54651,7 +55170,7 @@ export default function robots(): MetadataRoute.Robots {
 
 ---
 
-### File #293: `src/app/sitemap.ts`
+### File #295: `src/app/sitemap.ts`
 
 <a id="file-src-app-sitemap-ts"></a>
 
@@ -54687,7 +55206,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
 ---
 
-### File #294: `src/app/sphere-public.css`
+### File #296: `src/app/sphere-public.css`
 
 <a id="file-src-app-sphere-public-css"></a>
 
@@ -55456,7 +55975,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
 ---
 
-### File #295: `src/components/assistant/assistant-actions.tsx`
+### File #297: `src/components/assistant/assistant-actions.tsx`
 
 <a id="file-src-components-assistant-assistant-actions-tsx"></a>
 
@@ -56168,7 +56687,7 @@ function PaymentForm({ onNavigate }: { onNavigate: () => void }) {
 
 ---
 
-### File #296: `src/components/assistant/assistant-widget.tsx`
+### File #298: `src/components/assistant/assistant-widget.tsx`
 
 <a id="file-src-components-assistant-assistant-widget-tsx"></a>
 
@@ -56561,7 +57080,7 @@ export function AssistantWidget() {
 
 ---
 
-### File #297: `src/components/catalog/high-performance-pagination.tsx`
+### File #299: `src/components/catalog/high-performance-pagination.tsx`
 
 <a id="file-src-components-catalog-high-performance-pagination-tsx"></a>
 
@@ -56877,7 +57396,7 @@ export function HighPerformancePagination({
 
 ---
 
-### File #298: `src/components/catalog/luxury-category-ribbon.tsx`
+### File #300: `src/components/catalog/luxury-category-ribbon.tsx`
 
 <a id="file-src-components-catalog-luxury-category-ribbon-tsx"></a>
 
@@ -56979,7 +57498,7 @@ export function LuxuryCategoryRibbon({
 
 ---
 
-### File #299: `src/components/catalog/medicine-request.tsx`
+### File #301: `src/components/catalog/medicine-request.tsx`
 
 <a id="file-src-components-catalog-medicine-request-tsx"></a>
 
@@ -57122,7 +57641,7 @@ function MedicineRequestForm({ initialName, onClose }: { initialName: string; on
 
 ---
 
-### File #300: `src/components/docs/api-explorer.tsx`
+### File #302: `src/components/docs/api-explorer.tsx`
 
 <a id="file-src-components-docs-api-explorer-tsx"></a>
 
@@ -57405,7 +57924,7 @@ export function ApiExplorer({
 
 ---
 
-### File #301: `src/components/docs/code-block.tsx`
+### File #303: `src/components/docs/code-block.tsx`
 
 <a id="file-src-components-docs-code-block-tsx"></a>
 
@@ -57505,7 +58024,7 @@ export function CodeBlock({ code, language }: { code: string; language?: string 
 
 ---
 
-### File #302: `src/components/docs/db-explorer.tsx`
+### File #304: `src/components/docs/db-explorer.tsx`
 
 <a id="file-src-components-docs-db-explorer-tsx"></a>
 
@@ -57725,7 +58244,7 @@ export function DbExplorer({ models, enums }: { models: ModelItem[]; enums: Arra
 
 ---
 
-### File #303: `src/components/docs/doc-furniture.tsx`
+### File #305: `src/components/docs/doc-furniture.tsx`
 
 <a id="file-src-components-docs-doc-furniture-tsx"></a>
 
@@ -57855,7 +58374,7 @@ export function PrevNext({
 
 ---
 
-### File #304: `src/components/docs/docs-assistant.tsx`
+### File #306: `src/components/docs/docs-assistant.tsx`
 
 <a id="file-src-components-docs-docs-assistant-tsx"></a>
 
@@ -58133,7 +58652,7 @@ export function DocsAssistant({ pageContext }: { pageContext?: string }) {
 
 ---
 
-### File #305: `src/components/docs/docs-header.tsx`
+### File #307: `src/components/docs/docs-header.tsx`
 
 <a id="file-src-components-docs-docs-header-tsx"></a>
 
@@ -58227,7 +58746,7 @@ export function DocsHeader({ onOpenNav, onOpenSearch }: { onOpenNav: () => void;
 
 ---
 
-### File #306: `src/components/docs/docs-shell.tsx`
+### File #308: `src/components/docs/docs-shell.tsx`
 
 <a id="file-src-components-docs-docs-shell-tsx"></a>
 
@@ -58354,7 +58873,7 @@ export function DocsShell({
 
 ---
 
-### File #307: `src/components/docs/docs-sidebar.tsx`
+### File #309: `src/components/docs/docs-sidebar.tsx`
 
 <a id="file-src-components-docs-docs-sidebar-tsx"></a>
 
@@ -58462,7 +58981,7 @@ export function DocsSidebar({ groups, currentUrl }: { groups: NavGroup[]; curren
 
 ---
 
-### File #308: `src/components/docs/docs-toc.tsx`
+### File #310: `src/components/docs/docs-toc.tsx`
 
 <a id="file-src-components-docs-docs-toc-tsx"></a>
 
@@ -58563,7 +59082,7 @@ export function DocsToc({ headings }: { headings: DocHeading[] }) {
 
 ---
 
-### File #309: `src/components/docs/docs.css`
+### File #311: `src/components/docs/docs.css`
 
 <a id="file-src-components-docs-docs-css"></a>
 
@@ -59127,7 +59646,7 @@ a.docs-chip:hover {
 
 ---
 
-### File #310: `src/components/docs/journey-directory.tsx`
+### File #312: `src/components/docs/journey-directory.tsx`
 
 <a id="file-src-components-docs-journey-directory-tsx"></a>
 
@@ -59355,7 +59874,7 @@ export function JourneyDirectory({
 
 ---
 
-### File #311: `src/components/docs/markdown.tsx`
+### File #313: `src/components/docs/markdown.tsx`
 
 <a id="file-src-components-docs-markdown-tsx"></a>
 
@@ -59521,7 +60040,7 @@ function Heading({
 
 ---
 
-### File #312: `src/components/docs/mermaid-diagram.tsx`
+### File #314: `src/components/docs/mermaid-diagram.tsx`
 
 <a id="file-src-components-docs-mermaid-diagram-tsx"></a>
 
@@ -59758,7 +60277,7 @@ export function MermaidDiagram({ code, title }: { code: string; title?: string }
 
 ---
 
-### File #313: `src/components/docs/search-palette.tsx`
+### File #315: `src/components/docs/search-palette.tsx`
 
 <a id="file-src-components-docs-search-palette-tsx"></a>
 
@@ -60127,7 +60646,7 @@ export function SearchPalette({ open, onOpenChange }: SearchPaletteProps) {
 
 ---
 
-### File #314: `src/components/home/luxury-categories-showcase.tsx`
+### File #316: `src/components/home/luxury-categories-showcase.tsx`
 
 <a id="file-src-components-home-luxury-categories-showcase-tsx"></a>
 
@@ -60473,7 +60992,7 @@ export function LuxuryCategoriesShowcase({
 
 ---
 
-### File #315: `src/components/home/priority-products-section.tsx`
+### File #317: `src/components/home/priority-products-section.tsx`
 
 <a id="file-src-components-home-priority-products-section-tsx"></a>
 
@@ -60727,7 +61246,7 @@ export function PriorityProductsSection({
 
 ---
 
-### File #316: `src/components/home/reference-home-hero.tsx`
+### File #318: `src/components/home/reference-home-hero.tsx`
 
 <a id="file-src-components-home-reference-home-hero-tsx"></a>
 
@@ -60965,7 +61484,7 @@ export function ReferenceHomeHero({ showHero = true }: { showHero?: boolean }) {
 
 ---
 
-### File #317: `src/components/home/services-showcase.tsx`
+### File #319: `src/components/home/services-showcase.tsx`
 
 <a id="file-src-components-home-services-showcase-tsx"></a>
 
@@ -61064,7 +61583,7 @@ export function ServicesShowcase() {
 
 ---
 
-### File #318: `src/components/home/sphere-landing.module.css`
+### File #320: `src/components/home/sphere-landing.module.css`
 
 <a id="file-src-components-home-sphere-landing-module-css"></a>
 
@@ -62594,7 +63113,7 @@ export function ServicesShowcase() {
 
 ---
 
-### File #319: `src/components/home/sphere-landing.tsx`
+### File #321: `src/components/home/sphere-landing.tsx`
 
 <a id="file-src-components-home-sphere-landing-tsx"></a>
 
@@ -63151,7 +63670,7 @@ export function SphereLanding() {
 
 ---
 
-### File #320: `src/components/layout/customer-hub-nav.tsx`
+### File #322: `src/components/layout/customer-hub-nav.tsx`
 
 <a id="file-src-components-layout-customer-hub-nav-tsx"></a>
 
@@ -63218,7 +63737,7 @@ export function CustomerHubNav() {
 
 ---
 
-### File #321: `src/components/layout/footer.tsx`
+### File #323: `src/components/layout/footer.tsx`
 
 <a id="file-src-components-layout-footer-tsx"></a>
 
@@ -63336,7 +63855,7 @@ export function Footer() {
 
 ---
 
-### File #322: `src/components/layout/header.tsx`
+### File #324: `src/components/layout/header.tsx`
 
 <a id="file-src-components-layout-header-tsx"></a>
 
@@ -63805,7 +64324,7 @@ function CartSheet() {
 
 ---
 
-### File #323: `src/components/layout/mobile-nav.tsx`
+### File #325: `src/components/layout/mobile-nav.tsx`
 
 <a id="file-src-components-layout-mobile-nav-tsx"></a>
 
@@ -63888,7 +64407,7 @@ export function MobileNav() {
 
 ---
 
-### File #324: `src/components/layout/notification-center.tsx`
+### File #326: `src/components/layout/notification-center.tsx`
 
 <a id="file-src-components-layout-notification-center-tsx"></a>
 
@@ -63963,7 +64482,7 @@ function Inbox() {
 
 ---
 
-### File #325: `src/components/layout/sphere-header.tsx`
+### File #327: `src/components/layout/sphere-header.tsx`
 
 <a id="file-src-components-layout-sphere-header-tsx"></a>
 
@@ -64091,7 +64610,7 @@ export function SphereHeader() {
 
 ---
 
-### File #326: `src/components/member/member-intro.tsx`
+### File #328: `src/components/member/member-intro.tsx`
 
 <a id="file-src-components-member-member-intro-tsx"></a>
 
@@ -64234,7 +64753,7 @@ export function MemberIntro({ kind }: { kind: keyof typeof copy }) {
 
 ---
 
-### File #327: `src/components/shared/empty-state.tsx`
+### File #329: `src/components/shared/empty-state.tsx`
 
 <a id="file-src-components-shared-empty-state-tsx"></a>
 
@@ -64323,7 +64842,7 @@ export function LoadingGrid({ count = 8 }: { count?: number }) {
 
 ---
 
-### File #328: `src/components/shared/logo.tsx`
+### File #330: `src/components/shared/logo.tsx`
 
 <a id="file-src-components-shared-logo-tsx"></a>
 
@@ -64369,7 +64888,7 @@ export function LogoFull({ className, dark = false }: { className?: string; dark
 
 ---
 
-### File #329: `src/components/shared/premium-popular-card.tsx`
+### File #331: `src/components/shared/premium-popular-card.tsx`
 
 <a id="file-src-components-shared-premium-popular-card-tsx"></a>
 
@@ -64558,7 +65077,7 @@ export function PremiumPopularCard({ product, rank }: PremiumPopularCardProps) {
 
 ---
 
-### File #330: `src/components/shared/product-card.tsx`
+### File #332: `src/components/shared/product-card.tsx`
 
 <a id="file-src-components-shared-product-card-tsx"></a>
 
@@ -65171,7 +65690,7 @@ export function ProductCardCompact({ product }: ProductCardProps) {
 
 ---
 
-### File #331: `src/components/shared/product-image.tsx`
+### File #333: `src/components/shared/product-image.tsx`
 
 <a id="file-src-components-shared-product-image-tsx"></a>
 
@@ -65226,7 +65745,7 @@ export function ProductImage({ src, alt, className, imgClassName, fallback }: Pr
 
 ---
 
-### File #332: `src/components/shared/status-badges.tsx`
+### File #334: `src/components/shared/status-badges.tsx`
 
 <a id="file-src-components-shared-status-badges-tsx"></a>
 
@@ -65350,7 +65869,7 @@ export { PAYMENT_STATUSES, ORDER_STATUS_LABELS }
 
 ---
 
-### File #333: `src/components/shared/use-current-location-button.tsx`
+### File #335: `src/components/shared/use-current-location-button.tsx`
 
 <a id="file-src-components-shared-use-current-location-button-tsx"></a>
 
@@ -65472,7 +65991,7 @@ export function UseCurrentLocationButton({
 
 ---
 
-### File #334: `src/components/ui/accordion.tsx`
+### File #336: `src/components/ui/accordion.tsx`
 
 <a id="file-src-components-ui-accordion-tsx"></a>
 
@@ -65555,7 +66074,7 @@ export { Accordion, AccordionItem, AccordionTrigger, AccordionContent }
 
 ---
 
-### File #335: `src/components/ui/alert-dialog.tsx`
+### File #337: `src/components/ui/alert-dialog.tsx`
 
 <a id="file-src-components-ui-alert-dialog-tsx"></a>
 
@@ -65729,7 +66248,7 @@ export {
 
 ---
 
-### File #336: `src/components/ui/alert.tsx`
+### File #338: `src/components/ui/alert.tsx`
 
 <a id="file-src-components-ui-alert-tsx"></a>
 
@@ -65812,7 +66331,7 @@ export { Alert, AlertTitle, AlertDescription }
 
 ---
 
-### File #337: `src/components/ui/aspect-ratio.tsx`
+### File #339: `src/components/ui/aspect-ratio.tsx`
 
 <a id="file-src-components-ui-aspect-ratio-tsx"></a>
 
@@ -65840,7 +66359,7 @@ export { AspectRatio }
 
 ---
 
-### File #338: `src/components/ui/avatar.tsx`
+### File #340: `src/components/ui/avatar.tsx`
 
 <a id="file-src-components-ui-avatar-tsx"></a>
 
@@ -65910,7 +66429,7 @@ export { Avatar, AvatarImage, AvatarFallback }
 
 ---
 
-### File #339: `src/components/ui/badge.tsx`
+### File #341: `src/components/ui/badge.tsx`
 
 <a id="file-src-components-ui-badge-tsx"></a>
 
@@ -65973,7 +66492,7 @@ export { Badge, badgeVariants }
 
 ---
 
-### File #340: `src/components/ui/breadcrumb.tsx`
+### File #342: `src/components/ui/breadcrumb.tsx`
 
 <a id="file-src-components-ui-breadcrumb-tsx"></a>
 
@@ -66099,7 +66618,7 @@ export {
 
 ---
 
-### File #341: `src/components/ui/button.tsx`
+### File #343: `src/components/ui/button.tsx`
 
 <a id="file-src-components-ui-button-tsx"></a>
 
@@ -66175,7 +66694,7 @@ export { Button, buttonVariants }
 
 ---
 
-### File #342: `src/components/ui/calendar.tsx`
+### File #344: `src/components/ui/calendar.tsx`
 
 <a id="file-src-components-ui-calendar-tsx"></a>
 
@@ -66405,7 +66924,7 @@ export { Calendar, CalendarDayButton }
 
 ---
 
-### File #343: `src/components/ui/card.tsx`
+### File #345: `src/components/ui/card.tsx`
 
 <a id="file-src-components-ui-card-tsx"></a>
 
@@ -66514,7 +67033,7 @@ export {
 
 ---
 
-### File #344: `src/components/ui/carousel.tsx`
+### File #346: `src/components/ui/carousel.tsx`
 
 <a id="file-src-components-ui-carousel-tsx"></a>
 
@@ -66772,7 +67291,7 @@ export {
 
 ---
 
-### File #345: `src/components/ui/chart.tsx`
+### File #347: `src/components/ui/chart.tsx`
 
 <a id="file-src-components-ui-chart-tsx"></a>
 
@@ -67142,7 +67661,7 @@ export {
 
 ---
 
-### File #346: `src/components/ui/checkbox.tsx`
+### File #348: `src/components/ui/checkbox.tsx`
 
 <a id="file-src-components-ui-checkbox-tsx"></a>
 
@@ -67191,7 +67710,7 @@ export { Checkbox }
 
 ---
 
-### File #347: `src/components/ui/collapsible.tsx`
+### File #349: `src/components/ui/collapsible.tsx`
 
 <a id="file-src-components-ui-collapsible-tsx"></a>
 
@@ -67241,7 +67760,7 @@ export { Collapsible, CollapsibleTrigger, CollapsibleContent }
 
 ---
 
-### File #348: `src/components/ui/command.tsx`
+### File #350: `src/components/ui/command.tsx`
 
 <a id="file-src-components-ui-command-tsx"></a>
 
@@ -67442,7 +67961,7 @@ export {
 
 ---
 
-### File #349: `src/components/ui/context-menu.tsx`
+### File #351: `src/components/ui/context-menu.tsx`
 
 <a id="file-src-components-ui-context-menu-tsx"></a>
 
@@ -67711,7 +68230,7 @@ export {
 
 ---
 
-### File #350: `src/components/ui/dialog.tsx`
+### File #352: `src/components/ui/dialog.tsx`
 
 <a id="file-src-components-ui-dialog-tsx"></a>
 
@@ -67871,7 +68390,7 @@ export {
 
 ---
 
-### File #351: `src/components/ui/drawer.tsx`
+### File #353: `src/components/ui/drawer.tsx`
 
 <a id="file-src-components-ui-drawer-tsx"></a>
 
@@ -68023,7 +68542,7 @@ export {
 
 ---
 
-### File #352: `src/components/ui/dropdown-menu.tsx`
+### File #354: `src/components/ui/dropdown-menu.tsx`
 
 <a id="file-src-components-ui-dropdown-menu-tsx"></a>
 
@@ -68297,7 +68816,7 @@ export {
 
 ---
 
-### File #353: `src/components/ui/form.tsx`
+### File #355: `src/components/ui/form.tsx`
 
 <a id="file-src-components-ui-form-tsx"></a>
 
@@ -68481,7 +69000,7 @@ export {
 
 ---
 
-### File #354: `src/components/ui/hover-card.tsx`
+### File #356: `src/components/ui/hover-card.tsx`
 
 <a id="file-src-components-ui-hover-card-tsx"></a>
 
@@ -68542,7 +69061,7 @@ export { HoverCard, HoverCardTrigger, HoverCardContent }
 
 ---
 
-### File #355: `src/components/ui/input-otp.tsx`
+### File #357: `src/components/ui/input-otp.tsx`
 
 <a id="file-src-components-ui-input-otp-tsx"></a>
 
@@ -68636,7 +69155,7 @@ export { InputOTP, InputOTPGroup, InputOTPSlot, InputOTPSeparator }
 
 ---
 
-### File #356: `src/components/ui/input.tsx`
+### File #358: `src/components/ui/input.tsx`
 
 <a id="file-src-components-ui-input-tsx"></a>
 
@@ -68674,7 +69193,7 @@ export { Input }
 
 ---
 
-### File #357: `src/components/ui/label.tsx`
+### File #359: `src/components/ui/label.tsx`
 
 <a id="file-src-components-ui-label-tsx"></a>
 
@@ -68715,7 +69234,7 @@ export { Label }
 
 ---
 
-### File #358: `src/components/ui/menubar.tsx`
+### File #360: `src/components/ui/menubar.tsx`
 
 <a id="file-src-components-ui-menubar-tsx"></a>
 
@@ -69008,7 +69527,7 @@ export {
 
 ---
 
-### File #359: `src/components/ui/navigation-menu.tsx`
+### File #361: `src/components/ui/navigation-menu.tsx`
 
 <a id="file-src-components-ui-navigation-menu-tsx"></a>
 
@@ -69193,7 +69712,7 @@ export {
 
 ---
 
-### File #360: `src/components/ui/pagination.tsx`
+### File #362: `src/components/ui/pagination.tsx`
 
 <a id="file-src-components-ui-pagination-tsx"></a>
 
@@ -69337,7 +69856,7 @@ export {
 
 ---
 
-### File #361: `src/components/ui/popover.tsx`
+### File #363: `src/components/ui/popover.tsx`
 
 <a id="file-src-components-ui-popover-tsx"></a>
 
@@ -69402,7 +69921,7 @@ export { Popover, PopoverTrigger, PopoverContent, PopoverAnchor }
 
 ---
 
-### File #362: `src/components/ui/progress.tsx`
+### File #364: `src/components/ui/progress.tsx`
 
 <a id="file-src-components-ui-progress-tsx"></a>
 
@@ -69450,7 +69969,7 @@ export { Progress }
 
 ---
 
-### File #363: `src/components/ui/radio-group.tsx`
+### File #365: `src/components/ui/radio-group.tsx`
 
 <a id="file-src-components-ui-radio-group-tsx"></a>
 
@@ -69512,7 +70031,7 @@ export { RadioGroup, RadioGroupItem }
 
 ---
 
-### File #364: `src/components/ui/resizable.tsx`
+### File #366: `src/components/ui/resizable.tsx`
 
 <a id="file-src-components-ui-resizable-tsx"></a>
 
@@ -69585,7 +70104,7 @@ export { ResizablePanelGroup, ResizablePanel, ResizableHandle }
 
 ---
 
-### File #365: `src/components/ui/scroll-area.tsx`
+### File #367: `src/components/ui/scroll-area.tsx`
 
 <a id="file-src-components-ui-scroll-area-tsx"></a>
 
@@ -69660,7 +70179,7 @@ export { ScrollArea, ScrollBar }
 
 ---
 
-### File #366: `src/components/ui/select.tsx`
+### File #368: `src/components/ui/select.tsx`
 
 <a id="file-src-components-ui-select-tsx"></a>
 
@@ -69862,7 +70381,7 @@ export {
 
 ---
 
-### File #367: `src/components/ui/separator.tsx`
+### File #369: `src/components/ui/separator.tsx`
 
 <a id="file-src-components-ui-separator-tsx"></a>
 
@@ -69907,7 +70426,7 @@ export { Separator }
 
 ---
 
-### File #368: `src/components/ui/sheet.tsx`
+### File #370: `src/components/ui/sheet.tsx`
 
 <a id="file-src-components-ui-sheet-tsx"></a>
 
@@ -70063,7 +70582,7 @@ export {
 
 ---
 
-### File #369: `src/components/ui/sidebar.tsx`
+### File #371: `src/components/ui/sidebar.tsx`
 
 <a id="file-src-components-ui-sidebar-tsx"></a>
 
@@ -70806,7 +71325,7 @@ export {
 
 ---
 
-### File #370: `src/components/ui/skeleton.tsx`
+### File #372: `src/components/ui/skeleton.tsx`
 
 <a id="file-src-components-ui-skeleton-tsx"></a>
 
@@ -70836,7 +71355,7 @@ export { Skeleton }
 
 ---
 
-### File #371: `src/components/ui/slider.tsx`
+### File #373: `src/components/ui/slider.tsx`
 
 <a id="file-src-components-ui-slider-tsx"></a>
 
@@ -70916,7 +71435,7 @@ export { Slider }
 
 ---
 
-### File #372: `src/components/ui/sonner.tsx`
+### File #374: `src/components/ui/sonner.tsx`
 
 <a id="file-src-components-ui-sonner-tsx"></a>
 
@@ -70958,7 +71477,7 @@ export { Toaster }
 
 ---
 
-### File #373: `src/components/ui/switch.tsx`
+### File #375: `src/components/ui/switch.tsx`
 
 <a id="file-src-components-ui-switch-tsx"></a>
 
@@ -71006,7 +71525,7 @@ export { Switch }
 
 ---
 
-### File #374: `src/components/ui/table.tsx`
+### File #376: `src/components/ui/table.tsx`
 
 <a id="file-src-components-ui-table-tsx"></a>
 
@@ -71139,7 +71658,7 @@ export {
 
 ---
 
-### File #375: `src/components/ui/tabs.tsx`
+### File #377: `src/components/ui/tabs.tsx`
 
 <a id="file-src-components-ui-tabs-tsx"></a>
 
@@ -71222,7 +71741,7 @@ export { Tabs, TabsList, TabsTrigger, TabsContent }
 
 ---
 
-### File #376: `src/components/ui/textarea.tsx`
+### File #378: `src/components/ui/textarea.tsx`
 
 <a id="file-src-components-ui-textarea-tsx"></a>
 
@@ -71257,7 +71776,7 @@ export { Textarea }
 
 ---
 
-### File #377: `src/components/ui/toast.tsx`
+### File #379: `src/components/ui/toast.tsx`
 
 <a id="file-src-components-ui-toast-tsx"></a>
 
@@ -71403,7 +71922,7 @@ export {
 
 ---
 
-### File #378: `src/components/ui/toaster.tsx`
+### File #380: `src/components/ui/toaster.tsx`
 
 <a id="file-src-components-ui-toaster-tsx"></a>
 
@@ -71455,7 +71974,7 @@ export function Toaster() {
 
 ---
 
-### File #379: `src/components/ui/toggle-group.tsx`
+### File #381: `src/components/ui/toggle-group.tsx`
 
 <a id="file-src-components-ui-toggle-group-tsx"></a>
 
@@ -71545,7 +72064,7 @@ export { ToggleGroup, ToggleGroupItem }
 
 ---
 
-### File #380: `src/components/ui/toggle.tsx`
+### File #382: `src/components/ui/toggle.tsx`
 
 <a id="file-src-components-ui-toggle-tsx"></a>
 
@@ -71609,7 +72128,7 @@ export { Toggle, toggleVariants }
 
 ---
 
-### File #381: `src/components/ui/tooltip.tsx`
+### File #383: `src/components/ui/tooltip.tsx`
 
 <a id="file-src-components-ui-tooltip-tsx"></a>
 
@@ -71687,7 +72206,7 @@ export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider }
 
 ---
 
-### File #382: `src/components/views/account-view.tsx`
+### File #384: `src/components/views/account-view.tsx`
 
 <a id="file-src-components-views-account-view-tsx"></a>
 
@@ -73220,7 +73739,7 @@ export function AccountView() {
 
 ---
 
-### File #383: `src/components/views/admin/admin-access.tsx`
+### File #385: `src/components/views/admin/admin-access.tsx`
 
 <a id="file-src-components-views-admin-admin-access-tsx"></a>
 
@@ -73256,7 +73775,7 @@ export function AdminAccessFrame({ children }: { children: ReactNode }) {
 
 ---
 
-### File #384: `src/components/views/admin/admin-shared.tsx`
+### File #386: `src/components/views/admin/admin-shared.tsx`
 
 <a id="file-src-components-views-admin-admin-shared-tsx"></a>
 
@@ -73536,7 +74055,7 @@ export const CHART_COLORS = ["var(--chart-1)", "var(--chart-2)", "var(--chart-3)
 
 ---
 
-### File #385: `src/components/views/admin/admin-view.tsx`
+### File #387: `src/components/views/admin/admin-view.tsx`
 
 <a id="file-src-components-views-admin-admin-view-tsx"></a>
 
@@ -74102,7 +74621,7 @@ function StaffGate({
 
 ---
 
-### File #386: `src/components/views/admin/sections/catalogue-section.tsx`
+### File #388: `src/components/views/admin/sections/catalogue-section.tsx`
 
 <a id="file-src-components-views-admin-sections-catalogue-section-tsx"></a>
 
@@ -75228,7 +75747,7 @@ function CsvImportDialog({ onClose, onImported }: { onClose: () => void; onImpor
 
 ---
 
-### File #387: `src/components/views/admin/sections/compliance-section.tsx`
+### File #389: `src/components/views/admin/sections/compliance-section.tsx`
 
 <a id="file-src-components-views-admin-sections-compliance-section-tsx"></a>
 
@@ -75608,7 +76127,7 @@ export function ComplianceSection({ refreshKey, onRefresh }: SectionProps) {
 
 ---
 
-### File #388: `src/components/views/admin/sections/dispatch-control-room.tsx`
+### File #390: `src/components/views/admin/sections/dispatch-control-room.tsx`
 
 <a id="file-src-components-views-admin-sections-dispatch-control-room-tsx"></a>
 
@@ -76225,7 +76744,7 @@ export function DispatchControlRoom({ refreshKey, onRefresh, onNavigateSection }
 
 ---
 
-### File #389: `src/components/views/admin/sections/dispatch-section.tsx`
+### File #391: `src/components/views/admin/sections/dispatch-section.tsx`
 
 <a id="file-src-components-views-admin-sections-dispatch-section-tsx"></a>
 
@@ -76967,7 +77486,7 @@ function DispatchCard({
 
 ---
 
-### File #390: `src/components/views/admin/sections/medicine-requests-section.tsx`
+### File #392: `src/components/views/admin/sections/medicine-requests-section.tsx`
 
 <a id="file-src-components-views-admin-sections-medicine-requests-section-tsx"></a>
 
@@ -77108,7 +77627,7 @@ function MedicineRequestRow({ request, onSaved }: { request: MedicineRequestDTO;
 
 ---
 
-### File #391: `src/components/views/admin/sections/orders-section.tsx`
+### File #393: `src/components/views/admin/sections/orders-section.tsx`
 
 <a id="file-src-components-views-admin-sections-orders-section-tsx"></a>
 
@@ -78634,7 +79153,7 @@ function CancelDialog({
 
 ---
 
-### File #392: `src/components/views/admin/sections/overview-section.tsx`
+### File #394: `src/components/views/admin/sections/overview-section.tsx`
 
 <a id="file-src-components-views-admin-sections-overview-section-tsx"></a>
 
@@ -78939,7 +79458,7 @@ export function OverviewSection({ refreshKey, onNavigateSection }: SectionProps)
 
 ---
 
-### File #393: `src/components/views/admin/sections/pos-sync-section.tsx`
+### File #395: `src/components/views/admin/sections/pos-sync-section.tsx`
 
 <a id="file-src-components-views-admin-sections-pos-sync-section-tsx"></a>
 
@@ -80586,7 +81105,7 @@ export function PosSyncSection({ refreshKey, onRefresh }: Partial<SectionProps> 
 
 ---
 
-### File #394: `src/components/views/admin/sections/prescriptions-section.tsx`
+### File #396: `src/components/views/admin/sections/prescriptions-section.tsx`
 
 <a id="file-src-components-views-admin-sections-prescriptions-section-tsx"></a>
 
@@ -81586,7 +82105,7 @@ function ReviewChoice({
 
 ---
 
-### File #395: `src/components/views/admin/sections/promotions-section.tsx`
+### File #397: `src/components/views/admin/sections/promotions-section.tsx`
 
 <a id="file-src-components-views-admin-sections-promotions-section-tsx"></a>
 
@@ -81976,7 +82495,7 @@ function PromotionEditorDialog({mode,promo,onClose,onSaved}:{
 
 ---
 
-### File #396: `src/components/views/admin/sections/reports-section.tsx`
+### File #398: `src/components/views/admin/sections/reports-section.tsx`
 
 <a id="file-src-components-views-admin-sections-reports-section-tsx"></a>
 
@@ -82312,7 +82831,7 @@ export function ReportsSection({ refreshKey }: SectionProps) {
 
 ---
 
-### File #397: `src/components/views/admin/sections/reviews-section.tsx`
+### File #399: `src/components/views/admin/sections/reviews-section.tsx`
 
 <a id="file-src-components-views-admin-sections-reviews-section-tsx"></a>
 
@@ -82614,7 +83133,7 @@ function SectionErrorInline({ message, onRetry }: { message: string; onRetry: ()
 
 ---
 
-### File #398: `src/components/views/admin/sections/service-analytics-section.tsx`
+### File #400: `src/components/views/admin/sections/service-analytics-section.tsx`
 
 <a id="file-src-components-views-admin-sections-service-analytics-section-tsx"></a>
 
@@ -82674,7 +83193,7 @@ export function ServiceAnalyticsSection({ refreshKey }: SectionProps) {
 
 ---
 
-### File #399: `src/components/views/admin/sections/service-bookings-section.tsx`
+### File #401: `src/components/views/admin/sections/service-bookings-section.tsx`
 
 <a id="file-src-components-views-admin-sections-service-bookings-section-tsx"></a>
 
@@ -83143,7 +83662,7 @@ export function ServiceBookingsSection({ refreshKey }: SectionProps) {
 
 ---
 
-### File #400: `src/components/views/admin/sections/services-section.tsx`
+### File #402: `src/components/views/admin/sections/services-section.tsx`
 
 <a id="file-src-components-views-admin-sections-services-section-tsx"></a>
 
@@ -83439,7 +83958,7 @@ export function ServicesSection({refreshKey,onRefresh}:SectionProps){
 
 ---
 
-### File #401: `src/components/views/admin/sections/settings-section.tsx`
+### File #403: `src/components/views/admin/sections/settings-section.tsx`
 
 <a id="file-src-components-views-admin-sections-settings-section-tsx"></a>
 
@@ -84292,7 +84811,7 @@ export function SettingsSection({ refreshKey, onRefresh }: SectionProps) {
 
 ---
 
-### File #402: `src/components/views/admin/sections/staff-section.tsx`
+### File #404: `src/components/views/admin/sections/staff-section.tsx`
 
 <a id="file-src-components-views-admin-sections-staff-section-tsx"></a>
 
@@ -84774,7 +85293,7 @@ function StaffEditorDialog({
 
 ---
 
-### File #403: `src/components/views/auth-view.tsx`
+### File #405: `src/components/views/auth-view.tsx`
 
 <a id="file-src-components-views-auth-view-tsx"></a>
 
@@ -85270,7 +85789,7 @@ export function AuthView() {
 
 ---
 
-### File #404: `src/components/views/cart-view.tsx`
+### File #406: `src/components/views/cart-view.tsx`
 
 <a id="file-src-components-views-cart-view-tsx"></a>
 
@@ -85583,7 +86102,7 @@ export function CartView() {
 
 ---
 
-### File #405: `src/components/views/catalog-view.tsx`
+### File #407: `src/components/views/catalog-view.tsx`
 
 <a id="file-src-components-views-catalog-view-tsx"></a>
 
@@ -86303,7 +86822,7 @@ function FilterChip({ label, onRemove }: { label: string; onRemove: () => void }
 
 ---
 
-### File #406: `src/components/views/checkout-view.tsx`
+### File #408: `src/components/views/checkout-view.tsx`
 
 <a id="file-src-components-views-checkout-view-tsx"></a>
 
@@ -88172,7 +88691,7 @@ function MethodCard({
 
 ---
 
-### File #407: `src/components/views/home-view.tsx`
+### File #409: `src/components/views/home-view.tsx`
 
 <a id="file-src-components-views-home-view-tsx"></a>
 
@@ -88647,7 +89166,7 @@ export function HomeView() {
 
 ---
 
-### File #408: `src/components/views/offers-view.tsx`
+### File #410: `src/components/views/offers-view.tsx`
 
 <a id="file-src-components-views-offers-view-tsx"></a>
 
@@ -88831,7 +89350,7 @@ export function OffersView() {
 
 ---
 
-### File #409: `src/components/views/order-detail-view.tsx`
+### File #411: `src/components/views/order-detail-view.tsx`
 
 <a id="file-src-components-views-order-detail-view-tsx"></a>
 
@@ -89952,7 +90471,7 @@ function PrescriptionFileDialog({ rx, onClose }: { rx: PrescriptionDTO; onClose:
 
 ---
 
-### File #410: `src/components/views/orders-view.tsx`
+### File #412: `src/components/views/orders-view.tsx`
 
 <a id="file-src-components-views-orders-view-tsx"></a>
 
@@ -90365,7 +90884,7 @@ function OrderCard({ order, onOpen }: { order: OrderDTO; onOpen: (orderId: strin
 
 ---
 
-### File #411: `src/components/views/prescriptions-view.tsx`
+### File #413: `src/components/views/prescriptions-view.tsx`
 
 <a id="file-src-components-views-prescriptions-view-tsx"></a>
 
@@ -91136,7 +91655,7 @@ function PrescriptionFileDialog({ rx, onClose }: { rx: PrescriptionDTO; onClose:
 
 ---
 
-### File #412: `src/components/views/product-view.tsx`
+### File #414: `src/components/views/product-view.tsx`
 
 <a id="file-src-components-views-product-view-tsx"></a>
 
@@ -91903,7 +92422,7 @@ function ReviewsForm({
 
 ---
 
-### File #413: `src/components/views/services-view.tsx`
+### File #415: `src/components/views/services-view.tsx`
 
 <a id="file-src-components-views-services-view-tsx"></a>
 
@@ -93761,7 +94280,7 @@ function ServiceReviewDialog({
 
 ---
 
-### File #414: `src/hooks/use-mobile.ts`
+### File #416: `src/hooks/use-mobile.ts`
 
 <a id="file-src-hooks-use-mobile-ts"></a>
 
@@ -93797,7 +94316,7 @@ export function useIsMobile() {
 
 ---
 
-### File #415: `src/hooks/use-toast.ts`
+### File #417: `src/hooks/use-toast.ts`
 
 <a id="file-src-hooks-use-toast-ts"></a>
 
@@ -94008,7 +94527,7 @@ export { useToast, toast }
 
 ---
 
-### File #416: `src/lib/api-client.ts`
+### File #418: `src/lib/api-client.ts`
 
 <a id="file-src-lib-api-client-ts"></a>
 
@@ -94525,7 +95044,7 @@ export const serviceAnalyticsApi = {
 
 ---
 
-### File #417: `src/lib/assistant/contracts.ts`
+### File #419: `src/lib/assistant/contracts.ts`
 
 <a id="file-src-lib-assistant-contracts-ts"></a>
 
@@ -94694,7 +95213,7 @@ export function safeModelReply(text: string): string {
 
 ---
 
-### File #418: `src/lib/assistant/payment-review.ts`
+### File #420: `src/lib/assistant/payment-review.ts`
 
 <a id="file-src-lib-assistant-payment-review-ts"></a>
 
@@ -94745,7 +95264,7 @@ export function reviewAmount(expected: number, actual: unknown): boolean {
 
 ---
 
-### File #419: `src/lib/bandago-normalizer.ts`
+### File #421: `src/lib/bandago-normalizer.ts`
 
 <a id="file-src-lib-bandago-normalizer-ts"></a>
 
@@ -95121,7 +95640,7 @@ export function parseCsv(text: string): string[][] {
 
 ---
 
-### File #420: `src/lib/constants.ts`
+### File #422: `src/lib/constants.ts`
 
 <a id="file-src-lib-constants-ts"></a>
 
@@ -95337,7 +95856,7 @@ export const DELIVERY_DEFAULTS = {
 
 ---
 
-### File #421: `src/lib/crm/bandago-crm.ts`
+### File #423: `src/lib/crm/bandago-crm.ts`
 
 <a id="file-src-lib-crm-bandago-crm-ts"></a>
 
@@ -95517,7 +96036,7 @@ export class BandaGoCrmReconciler {
 
 ---
 
-### File #422: `src/lib/db.ts`
+### File #424: `src/lib/db.ts`
 
 <a id="file-src-lib-db-ts"></a>
 
@@ -95617,7 +96136,7 @@ export const prisma = db
 
 ---
 
-### File #423: `src/lib/docs/assistant.ts`
+### File #425: `src/lib/docs/assistant.ts`
 
 <a id="file-src-lib-docs-assistant-ts"></a>
 
@@ -95777,7 +96296,7 @@ End with a line: "Sources: [n] …" listing the excerpt numbers you used.`
 
 ---
 
-### File #424: `src/lib/docs/content.ts`
+### File #426: `src/lib/docs/content.ts`
 
 <a id="file-src-lib-docs-content-ts"></a>
 
@@ -96144,7 +96663,7 @@ export { CATEGORY_ORDER }
 
 ---
 
-### File #425: `src/lib/docs/frontmatter.ts`
+### File #427: `src/lib/docs/frontmatter.ts`
 
 <a id="file-src-lib-docs-frontmatter-ts"></a>
 
@@ -96307,7 +96826,7 @@ export function parseMetadataTable(body: string): {
 
 ---
 
-### File #426: `src/lib/docs/navigation.ts`
+### File #428: `src/lib/docs/navigation.ts`
 
 <a id="file-src-lib-docs-navigation-ts"></a>
 
@@ -96610,7 +97129,7 @@ export function getJourneyNeighbors(doc: DocRecord): { prev: DocRecord | null; n
 
 ---
 
-### File #427: `src/lib/docs/openapi.ts`
+### File #429: `src/lib/docs/openapi.ts`
 
 <a id="file-src-lib-docs-openapi-ts"></a>
 
@@ -96813,15 +97332,15 @@ export function parseOpenApi(): OpenApiSpec {
 
 ---
 
-### File #428: `src/lib/docs/prisma-schema.ts`
+### File #430: `src/lib/docs/prisma-schema.ts`
 
 <a id="file-src-lib-docs-prisma-schema-ts"></a>
 
 - **Relative Path:** `src/lib/docs/prisma-schema.ts`
 - **Category:** Core Business Logic & Database Clients
 - **Language:** TypeScript
-- **Lines:** 271
-- **Size:** 8.5 KB (8,682 bytes)
+- **Lines:** 273
+- **Size:** 8.5 KB (8,745 bytes)
 
 `````typescript
 import "server-only"
@@ -96894,6 +97413,8 @@ const MODEL_DOMAINS: Record<string, string> = {
   ProductAlert: "Catalogue",
   ProductBatch: "Catalogue",
   PosSyncLog: "Catalogue",
+  PosOutboundJob: "Catalogue",
+  PosSyncIncident: "Catalogue",
   MedicineRequest: "Catalogue",
   Order: "Orders & fulfillment",
   OrderItem: "Orders & fulfillment",
@@ -97101,7 +97622,7 @@ export function erDiagramFor(group: DomainGroup, allModels: PrismaModel[]): stri
 
 ---
 
-### File #429: `src/lib/docs/search.ts`
+### File #431: `src/lib/docs/search.ts`
 
 <a id="file-src-lib-docs-search-ts"></a>
 
@@ -97326,7 +97847,7 @@ export function searchEntries(query: string, limit = 12): Array<{ entry: SearchE
 
 ---
 
-### File #430: `src/lib/docs/utils.ts`
+### File #432: `src/lib/docs/utils.ts`
 
 <a id="file-src-lib-docs-utils-ts"></a>
 
@@ -97414,7 +97935,7 @@ export function extractHeadings(markdown: string): DocHeading[] {
 
 ---
 
-### File #431: `src/lib/dto.ts`
+### File #433: `src/lib/dto.ts`
 
 <a id="file-src-lib-dto-ts"></a>
 
@@ -97708,7 +98229,7 @@ export function toReviewDTO(r: {
 
 ---
 
-### File #432: `src/lib/email/resend.ts`
+### File #434: `src/lib/email/resend.ts`
 
 <a id="file-src-lib-email-resend-ts"></a>
 
@@ -97806,7 +98327,7 @@ export async function sendEmail(opts: SendEmailOptions): Promise<EmailResult> {
 
 ---
 
-### File #433: `src/lib/email/templates.ts`
+### File #435: `src/lib/email/templates.ts`
 
 <a id="file-src-lib-email-templates-ts"></a>
 
@@ -98286,7 +98807,7 @@ export function serviceBookingTemplate(opts: {
 
 ---
 
-### File #434: `src/lib/firebase/admin.ts`
+### File #436: `src/lib/firebase/admin.ts`
 
 <a id="file-src-lib-firebase-admin-ts"></a>
 
@@ -98564,7 +99085,7 @@ export async function sendPushNotification(
 
 ---
 
-### File #435: `src/lib/firebase/client.ts`
+### File #437: `src/lib/firebase/client.ts`
 
 <a id="file-src-lib-firebase-client-ts"></a>
 
@@ -98773,7 +99294,7 @@ export function setupForegroundNotificationListener(onNotification?: (data: unkn
 
 ---
 
-### File #436: `src/lib/format.ts`
+### File #438: `src/lib/format.ts`
 
 <a id="file-src-lib-format-ts"></a>
 
@@ -98854,7 +99375,7 @@ export function shortRef(reference: string): string {
 
 ---
 
-### File #437: `src/lib/hash.ts`
+### File #439: `src/lib/hash.ts`
 
 <a id="file-src-lib-hash-ts"></a>
 
@@ -98959,7 +99480,7 @@ function requiredSecret(name: "OTP_HASH_SECRET" | "TOKEN_HASH_SECRET"): string {
 
 ---
 
-### File #438: `src/lib/image-library.ts`
+### File #440: `src/lib/image-library.ts`
 
 <a id="file-src-lib-image-library-ts"></a>
 
@@ -99056,7 +99577,7 @@ export const PRODUCT_IMAGE_LIBRARY: LibraryImage[] = [
 
 ---
 
-### File #439: `src/lib/image.ts`
+### File #441: `src/lib/image.ts`
 
 <a id="file-src-lib-image-ts"></a>
 
@@ -99097,7 +99618,7 @@ export function sanitizeImageInput(v?: string | null): string {
 
 ---
 
-### File #440: `src/lib/intasend/client.ts`
+### File #442: `src/lib/intasend/client.ts`
 
 <a id="file-src-lib-intasend-client-ts"></a>
 
@@ -99255,7 +99776,7 @@ function parseRefund(value: unknown, fallbackInvoice: string, fallbackAmount: nu
 
 ---
 
-### File #441: `src/lib/inventory-guard.ts`
+### File #443: `src/lib/inventory-guard.ts`
 
 <a id="file-src-lib-inventory-guard-ts"></a>
 
@@ -99590,7 +100111,7 @@ export class InventoryGuard {
 
 ---
 
-### File #442: `src/lib/loyalty.ts`
+### File #444: `src/lib/loyalty.ts`
 
 <a id="file-src-lib-loyalty-ts"></a>
 
@@ -99692,7 +100213,7 @@ export async function loyaltySummary(userId: string): Promise<LoyaltySummaryDTO>
 
 ---
 
-### File #443: `src/lib/medicine-request-dto.ts`
+### File #445: `src/lib/medicine-request-dto.ts`
 
 <a id="file-src-lib-medicine-request-dto-ts"></a>
 
@@ -99724,7 +100245,7 @@ export function toMedicineRequestDTO(row: MedicineRequest): MedicineRequestDTO {
 
 ---
 
-### File #444: `src/lib/medicine-requests.ts`
+### File #446: `src/lib/medicine-requests.ts`
 
 <a id="file-src-lib-medicine-requests-ts"></a>
 
@@ -99801,7 +100322,7 @@ export interface MedicineRequestsResponse {
 
 ---
 
-### File #445: `src/lib/mpesa/daraja.ts`
+### File #447: `src/lib/mpesa/daraja.ts`
 
 <a id="file-src-lib-mpesa-daraja-ts"></a>
 
@@ -100046,7 +100567,7 @@ export async function queryStkPush(checkoutRequestId: string): Promise<StkQueryR
 
 ---
 
-### File #446: `src/lib/notifications/delivery.ts`
+### File #448: `src/lib/notifications/delivery.ts`
 
 <a id="file-src-lib-notifications-delivery-ts"></a>
 
@@ -100153,7 +100674,7 @@ async function reconcileEmailEvents() {
 
 ---
 
-### File #447: `src/lib/notifications/payment.ts`
+### File #449: `src/lib/notifications/payment.ts`
 
 <a id="file-src-lib-notifications-payment-ts"></a>
 
@@ -100194,7 +100715,7 @@ export async function notifyPaymentOutcome(tx: Prisma.TransactionClient, input: 
 
 ---
 
-### File #448: `src/lib/notify.ts`
+### File #450: `src/lib/notify.ts`
 
 <a id="file-src-lib-notify-ts"></a>
 
@@ -100495,7 +101016,7 @@ export async function notifyServiceBooking(opts: {
 
 ---
 
-### File #449: `src/lib/offer-intent.ts`
+### File #451: `src/lib/offer-intent.ts`
 
 <a id="file-src-lib-offer-intent-ts"></a>
 
@@ -100535,7 +101056,7 @@ export function forgetOffer(): void {
 
 ---
 
-### File #450: `src/lib/pdf/daily-sales-pdf.ts`
+### File #452: `src/lib/pdf/daily-sales-pdf.ts`
 
 <a id="file-src-lib-pdf-daily-sales-pdf-ts"></a>
 
@@ -100824,7 +101345,7 @@ export function buildDailySalesPdfBuffer(input: DailySalesPdfInput): Buffer {
 
 ---
 
-### File #451: `src/lib/pos-reconciliation-core.ts`
+### File #453: `src/lib/pos-reconciliation-core.ts`
 
 <a id="file-src-lib-pos-reconciliation-core-ts"></a>
 
@@ -101106,7 +101627,7 @@ export function computeReconciledStock(input: ReconciledStockInput): ReconciledS
 
 ---
 
-### File #452: `src/lib/pos-reconciliation.ts`
+### File #454: `src/lib/pos-reconciliation.ts`
 
 <a id="file-src-lib-pos-reconciliation-ts"></a>
 
@@ -101567,7 +102088,7 @@ export async function recordPosIncident(input: RecordPosIncidentInput): Promise<
 
 ---
 
-### File #453: `src/lib/promotions.ts`
+### File #455: `src/lib/promotions.ts`
 
 <a id="file-src-lib-promotions-ts"></a>
 
@@ -101682,7 +102203,7 @@ export function promotionDiscount(value:unknown):number|null{
 
 ---
 
-### File #454: `src/lib/r2.ts`
+### File #456: `src/lib/r2.ts`
 
 <a id="file-src-lib-r2-ts"></a>
 
@@ -101799,7 +102320,7 @@ export async function objectExistsInR2(key: string): Promise<boolean> { return B
 
 ---
 
-### File #455: `src/lib/security/bandago-auth.ts`
+### File #457: `src/lib/security/bandago-auth.ts`
 
 <a id="file-src-lib-security-bandago-auth-ts"></a>
 
@@ -101861,7 +102382,7 @@ export async function authorizeBandagoRequest(
 
 ---
 
-### File #456: `src/lib/security/bandago-bearer.ts`
+### File #458: `src/lib/security/bandago-bearer.ts`
 
 <a id="file-src-lib-security-bandago-bearer-ts"></a>
 
@@ -101928,7 +102449,7 @@ export function isUsingInsecureDefaultBandagoKey(
 
 ---
 
-### File #457: `src/lib/security/file.ts`
+### File #459: `src/lib/security/file.ts`
 
 <a id="file-src-lib-security-file-ts"></a>
 
@@ -101973,7 +102494,7 @@ export function validateFile(buffer: Uint8Array, declaredMime: string, fileName:
 
 ---
 
-### File #458: `src/lib/security/order-workflow.ts`
+### File #460: `src/lib/security/order-workflow.ts`
 
 <a id="file-src-lib-security-order-workflow-ts"></a>
 
@@ -102010,7 +102531,7 @@ export function canTransitionOrder(from: OrderStatus, to: OrderStatus, role: Rol
 
 ---
 
-### File #459: `src/lib/security/payment-attempt.ts`
+### File #461: `src/lib/security/payment-attempt.ts`
 
 <a id="file-src-lib-security-payment-attempt-ts"></a>
 
@@ -102059,7 +102580,7 @@ export async function reservePaymentAttempt(input: {
 
 ---
 
-### File #460: `src/lib/security/payment.ts`
+### File #462: `src/lib/security/payment.ts`
 
 <a id="file-src-lib-security-payment-ts"></a>
 
@@ -102100,7 +102621,7 @@ export function paymentMatchesExpected(input: { expectedAmount: unknown; actualA
 
 ---
 
-### File #461: `src/lib/security/request.ts`
+### File #463: `src/lib/security/request.ts`
 
 <a id="file-src-lib-security-request-ts"></a>
 
@@ -102171,7 +102692,7 @@ export function escapeHtml(value: string): string {
 
 ---
 
-### File #462: `src/lib/security/service.ts`
+### File #464: `src/lib/security/service.ts`
 
 <a id="file-src-lib-security-service-ts"></a>
 
@@ -102241,7 +102762,7 @@ export function validateServiceFields(body: Record<string, unknown>, partial = f
 
 ---
 
-### File #463: `src/lib/session.ts`
+### File #465: `src/lib/session.ts`
 
 <a id="file-src-lib-session-ts"></a>
 
@@ -102417,7 +102938,7 @@ export async function requireAuth(): Promise<{ session: ResolvedSession; error: 
 
 ---
 
-### File #464: `src/lib/settings.ts`
+### File #466: `src/lib/settings.ts`
 
 <a id="file-src-lib-settings-ts"></a>
 
@@ -102482,7 +103003,7 @@ export async function saveSettingsSection(key:string,value:Record<string,unknown
 
 ---
 
-### File #465: `src/lib/sms.ts`
+### File #467: `src/lib/sms.ts`
 
 <a id="file-src-lib-sms-ts"></a>
 
@@ -102520,7 +103041,7 @@ export async function sendSms(to: string, message: string): Promise<SmsResult> {
 
 ---
 
-### File #466: `src/lib/types.ts`
+### File #468: `src/lib/types.ts`
 
 <a id="file-src-lib-types-ts"></a>
 
@@ -102993,7 +103514,7 @@ export interface ServiceAvailabilityResponse {
 
 ---
 
-### File #467: `src/lib/utils.ts`
+### File #469: `src/lib/utils.ts`
 
 <a id="file-src-lib-utils-ts"></a>
 
@@ -103016,7 +103537,7 @@ export function cn(...inputs: ClassValue[]) {
 
 ---
 
-### File #468: `src/store/use-app-store.ts`
+### File #470: `src/store/use-app-store.ts`
 
 <a id="file-src-store-use-app-store-ts"></a>
 
@@ -103255,7 +103776,7 @@ export const useAppStore = create<AppState>((set, get) => ({
 
 ---
 
-### File #469: `src/store/use-auth-store.ts`
+### File #471: `src/store/use-auth-store.ts`
 
 <a id="file-src-store-use-auth-store-ts"></a>
 
@@ -103312,7 +103833,7 @@ export const useAuthStore = create<AuthState>((set) => ({
 
 ---
 
-### File #470: `src/store/use-cart-store.ts`
+### File #472: `src/store/use-cart-store.ts`
 
 <a id="file-src-store-use-cart-store-ts"></a>
 
@@ -103422,7 +103943,7 @@ export const useCartStore = create<CartState>()(
 
 ---
 
-### File #471: `src/store/use-wish-store.ts`
+### File #473: `src/store/use-wish-store.ts`
 
 <a id="file-src-store-use-wish-store-ts"></a>
 
@@ -103510,7 +104031,7 @@ export const useRecentStore = create<RecentState>()(
 
 ---
 
-### File #472: `tailwind.config.ts`
+### File #474: `tailwind.config.ts`
 
 <a id="file-tailwind-config-ts"></a>
 
@@ -103591,7 +104112,7 @@ export default config;
 
 ---
 
-### File #473: `tests/admin-live-sync.test.mjs`
+### File #475: `tests/admin-live-sync.test.mjs`
 
 <a id="file-tests-admin-live-sync-test-mjs"></a>
 
@@ -103682,7 +104203,7 @@ test("cursor polling reads indexed columns", () => {
 
 ---
 
-### File #474: `tests/assistant.test.ts`
+### File #476: `tests/assistant.test.ts`
 
 <a id="file-tests-assistant-test-ts"></a>
 
@@ -103792,7 +104313,7 @@ describe("assistant route with live-data adapters",()=>{
 
 ---
 
-### File #475: `tests/bandago-bidirectional-sync.test.mjs`
+### File #477: `tests/bandago-bidirectional-sync.test.mjs`
 
 <a id="file-tests-bandago-bidirectional-sync-test-mjs"></a>
 
@@ -104046,7 +104567,7 @@ test('Security & API contracts: H1 remediated, no hardcoded fallback secrets, gu
 
 ---
 
-### File #476: `tests/bandago-pos-crm-integration.test.mjs`
+### File #478: `tests/bandago-pos-crm-integration.test.mjs`
 
 <a id="file-tests-bandago-pos-crm-integration-test-mjs"></a>
 
@@ -104597,7 +105118,7 @@ test('Deep Functional Verification: CSV parser with custom slug and missing imag
 
 ---
 
-### File #477: `tests/checkout-points-contrast.test.mjs`
+### File #479: `tests/checkout-points-contrast.test.mjs`
 
 <a id="file-tests-checkout-points-contrast-test-mjs"></a>
 
@@ -104633,7 +105154,7 @@ test("checkout points redeem panel keeps dark text on a light surface in both th
 
 ---
 
-### File #478: `tests/compliance-workspace.test.mjs`
+### File #480: `tests/compliance-workspace.test.mjs`
 
 <a id="file-tests-compliance-workspace-test-mjs"></a>
 
@@ -104682,7 +105203,7 @@ test("blank compliance notes do not masquerade as saved proof of a licence", () 
 
 ---
 
-### File #479: `tests/dispatch-readiness.test.mjs`
+### File #481: `tests/dispatch-readiness.test.mjs`
 
 <a id="file-tests-dispatch-readiness-test-mjs"></a>
 
@@ -104736,7 +105257,7 @@ test("dispatch controller exposes prepared order handoff without skipping readin
 
 ---
 
-### File #480: `tests/medicine-requests.test.mjs`
+### File #482: `tests/medicine-requests.test.mjs`
 
 <a id="file-tests-medicine-requests-test-mjs"></a>
 
@@ -104879,7 +105400,7 @@ test("medicine requests: guest submission, private photos, staff workflow and va
 
 ---
 
-### File #481: `tests/offer-workflow.test.mjs`
+### File #483: `tests/offer-workflow.test.mjs`
 
 <a id="file-tests-offer-workflow-test-mjs"></a>
 
@@ -104973,7 +105494,7 @@ test("confirmed offers persist with the cart and cannot outlive an invalid baske
 
 ---
 
-### File #482: `tests/order-dispatch-promotion-workflow.test.mjs`
+### File #484: `tests/order-dispatch-promotion-workflow.test.mjs`
 
 <a id="file-tests-order-dispatch-promotion-workflow-test-mjs"></a>
 
@@ -105047,7 +105568,7 @@ test("dispatch handoff is eligible-only and server-searchable, with in-place pha
 
 ---
 
-### File #483: `tests/order-operations-ux.test.mjs`
+### File #485: `tests/order-operations-ux.test.mjs`
 
 <a id="file-tests-order-operations-ux-test-mjs"></a>
 
@@ -105176,7 +105697,7 @@ test("Desktop sidebar collapse is accessible, persistent and does not replace th
 
 ---
 
-### File #484: `tests/promotion-validation-resilience.test.mjs`
+### File #486: `tests/promotion-validation-resilience.test.mjs`
 
 <a id="file-tests-promotion-validation-resilience-test-mjs"></a>
 
@@ -105257,7 +105778,7 @@ test("promotion server failures carry a reference and the network limit remains 
 
 ---
 
-### File #485: `tests/python-runtime-build.sh`
+### File #487: `tests/python-runtime-build.sh`
 
 <a id="file-tests-python-runtime-build-sh"></a>
 
@@ -105338,7 +105859,7 @@ echo "python runtime build tests passed"
 
 ---
 
-### File #486: `tests/python-runtime-container.sh`
+### File #488: `tests/python-runtime-container.sh`
 
 <a id="file-tests-python-runtime-container-sh"></a>
 
@@ -105386,7 +105907,7 @@ docker run --rm \
 
 ---
 
-### File #487: `tests/reports-layout.test.mjs`
+### File #489: `tests/reports-layout.test.mjs`
 
 <a id="file-tests-reports-layout-test-mjs"></a>
 
@@ -105422,7 +105943,7 @@ test("top products table truncates lengthy names and allows horizontal scrolling
 
 ---
 
-### File #488: `tests/security-static.test.mjs`
+### File #490: `tests/security-static.test.mjs`
 
 <a id="file-tests-security-static-test-mjs"></a>
 
@@ -105593,7 +106114,7 @@ test("database client defers missing-URL throw to runtime property access and do
 
 ---
 
-### File #489: `tsconfig.json`
+### File #491: `tsconfig.json`
 
 <a id="file-tsconfig-json"></a>
 

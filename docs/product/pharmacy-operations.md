@@ -101,7 +101,12 @@ An internal record of the premise licence (number and expiry) and the superinten
 - **Demo data** — helpers used when preparing recordings; leave untouched in production.
 
 ### POS Sync hub (Admin, Pharmacist)
-The BandaGo integration control room: metric cards for POS products mapped, active batches (lots), near-expiry flags (<90 days, shown as a Kenya PPB audit alert) and the last live signal ("Awaiting extension" until the external Chrome extension is connected). Below, a stock-sync ledger of every synchronization event, and a manual CSV dropzone for imports. The hub auto-refreshes every 30 seconds. One known hardening item: the browser-side CSV import carries the POS sync key in the page (it is a client-exposed credential) — acceptable for controlled pharmacy use, and tracked with the other security follow-ups in [../security/access-control.md](../security/access-control.md).
+The bi-directional BandaGo integration control room has four tabs:
+
+1. **Overview & Policy** — metric cards (mapped products, active batches, near-expiry <90d audit alerts, extension bridge heartbeat), key-configuration alerts, and **Admin-only** policy controls (`MANUAL_EXPORT` default vs `AUTO_SYNC` with confirmation modal, Stagnant-POS Drift Protection, Expected Tenant UU pin, minimum shelf-life days).
+2. **Sales Export & Reconciliation** — export Zero-PHI Daily Sales sheets (**A4 PDF** with pharmacist sign-off block, formula-safe **CSV**, or **JSON**), click **Confirm Entered in BandaGo POS** to clear reconciled items, retry/cancel outbound jobs, inspect live stock variances (`Queue Push to POS`), or run an Admin baseline cutover (`SET_BASELINE_NOW`).
+3. **Error Console** — deduplicated Zero-PHI bridge/sync incidents (`CRITICAL`, `ERROR`, `WARNING`) with step-by-step remediation instructions and resolve actions.
+4. **Synchronization Audit Trail** — bi-directional (`INBOUND` / `OUTBOUND`) sync history and a manual CSV dropzone authenticated strictly through your signed-in staff session cookie (the former browser-exposed sync secret was removed in `061e923`).
 
 ## Cash handling rules
 

@@ -50,7 +50,7 @@ Guests are not a fifth staff role — they are simply visitors on the public sto
 | --- | --- |
 | What do they do? | Run the business: money, people, settings, reporting and compliance records |
 | Screens they see | All 16 admin sections (see the matrix below) |
-| Key actions | Everything staff and pharmacists can do, plus: record refunds, manage staff accounts and roles, edit pharmacy settings and delivery pricing, view reports and service analytics, delete products, read the full audit log, send test notifications |
+| Key actions | Everything staff and pharmacists can do, plus: record refunds, manage staff accounts and roles, edit pharmacy settings and delivery pricing, configure POS sync policy (`MANUAL_EXPORT` vs `AUTO_SYNC`, drift guard, tenant pin) and reconciliation baseline cutover, view reports and service analytics, delete products, read the full audit log, send test notifications |
 | Actions needing a higher privilege | None within the platform — Admin is the highest role |
 | What they cannot do | See clinical data that lives only in BandaGo (it is never synced); skip pharmacist review for prescription medicines — the workflow applies to everyone |
 | How sessions end | Signing out; 7-day absolute expiry; 12-hour idle timeout; immediate revocation if another admin changes their role, password or active status |
@@ -61,8 +61,8 @@ Guests are not a fifth staff role — they are simply visitors on the public sto
 | --- | --- |
 | What do they do? | Clinical gatekeeping: they are the only role (with Admin) that decides prescriptions |
 | Screens they see | Workspace (overview, orders, dispatch control room), Patient care (prescriptions, medicine requests, service bookings, services), Business (catalogue, reviews), Management (compliance, POS Sync) — 12 of 16 sections |
-| Key actions | Approve / reject / clarify / partially approve prescriptions and set refills and validity; manage medicine requests; create and edit products and import CSVs; moderate reviews; manage service bookings and the service catalogue; view compliance records |
-| Actions needing a higher privilege | Recording refunds (Admin); managing staff and roles (Admin); editing pharmacy settings and delivery fees (Admin); reports and service analytics (Admin); deleting products (Admin) |
+| Key actions | Approve / reject / clarify / partially approve prescriptions and set refills and validity; manage medicine requests; create and edit products and import CSVs; export Daily Sales sheets, confirm manual POS entry, retry/cancel outbound POS jobs, and resolve POS sync incidents; moderate reviews; manage service bookings and the service catalogue; view compliance records |
+| Actions needing a higher privilege | Recording refunds (Admin); managing staff and roles (Admin); editing pharmacy settings and delivery fees (Admin); changing POS sync policy or resetting the reconciliation baseline (Admin); reports and service analytics (Admin); deleting products (Admin) |
 | What they cannot do | Change order status to "refunded"; access staff management or settings |
 | How sessions end | Signing out; 7-day absolute expiry; 12-hour idle timeout; immediate revocation on role, password or active-status change by an admin |
 
@@ -143,6 +143,7 @@ That last row matters: if a staff member leaves the team, an Admin deactivating 
 | Can counter staff approve a prescription? | No — only a Pharmacist or an Admin. |
 | Who can record a refund? | Only an Admin, through the secure refund endpoint (no admin screen calls it yet). |
 | Who can change delivery fees or pharmacy details? | Only an Admin, in Settings. |
+| Who can switch POS Sync between Manual Export and Auto-Sync? | Only an Admin, in POS Sync → Policy (Pharmacists can export Daily Sales sheets, confirm manual entry, and resolve incidents). |
 | Can a pharmacist see the staff roster? | No — staff management is Admin-only. |
 | What happens the moment a role or password changes? | That person's open staff sessions end immediately. |
 | Can a customer see another customer's order? | No — the server checks ownership on every request. |

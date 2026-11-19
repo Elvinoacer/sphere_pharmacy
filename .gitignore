@@ -41,6 +41,7 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 local-*
+!docs/operations/local-development.md
 .claude
 .z-ai-config
 *.log

@@ -57,6 +57,8 @@ Grouped by who may call. Within a group, narrower ownership rules still apply (n
 | Product `DELETE` / discontinue |
 | `POST /api/payments/refund` (order → `REFUNDED` is ADMIN-only from paid/preparing/ready/out-for-delivery/completed states) |
 | `PUT /api/settings` |
+| `PUT /api/admin/pos-sync/policy` (switch `MANUAL_EXPORT` / `AUTO_SYNC`, drift guard, tenant pin) |
+| `POST /api/admin/pos-sync/reconcile` (`SET_BASELINE_NOW` cutover action only) |
 | `GET /api/admin/service-analytics` |
 
 ### PHARMACIST + ADMIN
@@ -66,7 +68,8 @@ Grouped by who may call. Within a group, narrower ownership rules still apply (n
 | `GET /api/prescriptions?scope=queue`, `PATCH /api/prescriptions/[id]` (review) |
 | Product `POST`/`PATCH`/bulk import |
 | Review moderation actions (publish/hide) |
-| `POST /api/integrations/bandago/sync`, `csv-import`, `crm` (the staff-session path of the dual auth) |
+| `POST /api/admin/pos-sync/reconcile` (`MARK_RECONCILED`, `RETRY_JOBS`, `CANCEL_JOBS`, `RESOLVE_INCIDENT`, `RESOLVE_ALL_INCIDENTS`, `QUEUE_STOCK_PUSH`) and `GET /api/admin/pos-sync/sales-export` |
+| `POST /api/integrations/bandago/sync`, `csv-import`, `crm`, `outbound/ack`, `telemetry` and `GET /api/integrations/bandago/outbound` (the staff-session path of the dual auth) |
 
 ### Any staff (ADMIN, PHARMACIST, STAFF)
 
@@ -76,7 +79,7 @@ Grouped by who may call. Within a group, narrower ownership rules still apply (n
 | `POST /api/orders/[id]/assign` (rider assignment) |
 | Orders prepare (`startPreparing`), status transitions per workflow map (STAFF blocked from `REFUNDED`/`REJECTED`) |
 | `GET/PATCH /api/admin/medicine-requests*` (incl. photo streaming) |
-| `GET /api/admin/pos-status`, `GET /api/admin/live-changes` (adds `Vary: Cookie`) |
+| `GET /api/admin/pos-status`, `GET /api/admin/pos-sync/policy`, `GET /api/admin/pos-sync/reconcile`, `GET /api/admin/live-changes` (adds `Vary: Cookie`) |
 | `GET /api/integrations/bandago/crm` (lookup/eligibility) |
 | Service bookings management (`PATCH /api/admin/service-bookings`, assignment, `GET /api/admin/service-staff`) |
 | Services `POST`/`PATCH`, availability `PUT` |
@@ -112,6 +115,7 @@ Grouped by who may call. Within a group, narrower ownership rules still apply (n
 | `POST /api/promotions/validate` | Rate-limited |
 | `GET /api/location/search`, `POST /api/location/reverse-geocode` | Rate-limited |
 | `POST /api/assistant` | Never reads the session — see [ai-access-and-authorized-sessions.md](ai-access-and-authorized-sessions.md) |
+| `GET /api/docs-index`, `POST /api/docs-assistant` | Public documentation portal search & AI Q&A (public corpus only; never reads session) |
 | Payment initiate/status with guest token | Ownership via `x-order-access-token` |
 | Webhooks + cron | Own secret-based auth |
 
@@ -162,6 +166,7 @@ Rate limits are the outermost authorization layer: they cap what any identity �
 | `prescription-refill` | 5 / 24 h per user | Refill abuse |
 | `medicine-request-create` | 10 / 60 min per IP | Anonymous spam + 3 MB photo floods |
 | `assistant` | 40 / 60 min per IP | LLM cost and abuse |
+| `docs-assistant` | 20 / 60 min per IP | Documentation AI abuse and cost protection |
 
 ## Adding a new guarded route (checklist)
 

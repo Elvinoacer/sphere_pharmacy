@@ -87,6 +87,7 @@ Pharmacist-adjacent rights: ADMIN shares the pharmacist's prescription review au
 - **Customers write reviews (C09) → Admin/Pharmacist moderate (A13) → Storefront shows the result (P03):** published reviews shape product ratings; hidden reviews stay visible to their authors with their status.
 - **Admin changes roles or passwords (A15) → Every staff session re-scopes (A01):** session revocation applies the change on the member's next request, and rider availability on the dispatch board (A03) follows active RIDER accounts.
 - **Pharmacists review prescriptions (A04/A05) → Admin monitors via audit (A16) and retention (SYS-06):** prescription decisions and document access are logged; the admin can evidence the whole clinical trail without holding clinical authority exclusively.
+- **Admin governs POS sync policy & baseline (SYS-08/SYS-11):** Admins exclusively toggle `MANUAL_EXPORT` vs `AUTO_SYNC`, stagnant-POS drift protection, `expectedTenantUU`, and cutover baselines in POS Sync while pharmacists and admins share Daily Sales Exports, reconciliation confirmations, and Error Console triage.
 
 ## Related journeys and documents
 

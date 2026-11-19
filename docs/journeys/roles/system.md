@@ -46,13 +46,16 @@ flowchart LR
     end
     subgraph Integrations
         POS[BandaGo POS<br/>extension or CSV] --> SYS08[SYS-08 Inventory<br/>ingestion]
+        SYS08 -. drift offsets .-> SYS11[SYS-11 Outbound<br/>reconciliation]
     end
     subgraph Pipelines
         CHAT[Assistant widget] --> SYS09[SYS-09 Assistant<br/>request lifecycle]
         EVENTS[Business events<br/>notifyCustomer notifyStaff] --> SYS10[SYS-10 Notification<br/>fan-out]
     end
     SYS01 -. payment outcome .-> SYS10
+    SYS01 -. PAID order .-> SYS11
     SYS02 -. payment outcome .-> SYS10
+    SYS02 -. PAID order .-> SYS11
     SYS04 -- reminders queued --> SYS10
     SYS07 -- reminders queued --> SYS10
     SYS10 -- outbox jobs --> SYS05
@@ -71,17 +74,18 @@ flowchart LR
 | SYS-05 | [Notification queue job](../system/cron-notifications.md) | Outbox dispatcher: leases, Resend/FCM delivery, backoff, reconciliation |
 | SYS-06 | [Prescription retention job](../system/cron-prescription-retention.md) | Retention window enforcement, R2-first deletion, shared-key protection |
 | SYS-07 | [Service booking reminders job](../system/cron-service-booking-reminders.md) | 24-hour and 2-hour appointment reminders with stable dedupe keys |
-| SYS-08 | [BandaGo inventory ingestion](../system/bandago-inventory-sync.md) | POS product/stock/batch ingestion, FEFO and PPB rules, PosSyncLog telemetry |
+| SYS-08 | [BandaGo inventory ingestion](../system/bandago-inventory-sync.md) | POS product/stock/batch ingestion, FEFO, drift protection, PosSyncLog telemetry |
 | SYS-09 | [Assistant request lifecycle](../system/assistant-pipeline.md) | Guardrails, deterministic intent, Groq enhancement, action resolution |
 | SYS-10 | [Notification fan-out pipeline](../system/notification-dispatch.md) | Event to in-app row plus email/push outbox jobs, suppression loop |
+| SYS-11 | [BandaGo outbound reconciliation and daily sales export](../system/bandago-outbound-reconciliation.md) | PosOutboundJob ledger, Daily Sales PDF/CSV/JSON export, opt-in Auto-Sync & Error Console |
 
 Scheduling is external for every cron route: the repository contains no scheduler, so the runbook cadences (notifications every minute, reminders at least every 15 minutes, retention and refills daily) are deployment responsibilities, and each job is safe to re-run by hand.
 
 ## Cross-role handoffs
 
-- **Customer pays → System confirms → Staff fulfill:** the M-Pesa and card webhooks (SYS-01/SYS-02) flip orders to `PAID` with loyalty credited; staff pick the order up on the board (A02) and admins dispatch it (A03), while the customer tracks it (O06).
+- **Customer pays → System confirms → Staff fulfill:** the M-Pesa and card webhooks (SYS-01/SYS-02) flip orders to `PAID` with loyalty credited and queue `PosOutboundJob` rows (SYS-11); staff pick the order up on the board (A02) and admins dispatch it (A03), while the customer tracks it (O06).
 - **Customer uploads a prescription → Pharmacist reviews → System retains:** X01 puts the prescription in the pharmacist queue (A04/A05); once soft-deleted, SYS-06 enforces the retention window and removes the private file, with audit evidence surviving in `AuditLog`.
-- **Physical shop ↔ online catalogue:** BandaGo ingestion (SYS-08) keeps products, stock and batch expiry current for customers browsing (P02) and staff managing (A07); reservation expiry (SYS-03) returns abandoned checkout holds to that pool.
+- **Physical shop ↔ online catalogue:** BandaGo ingestion (SYS-08) keeps products, stock and batch expiry current for customers browsing (P02) and staff managing (A07), while outbound reconciliation (SYS-11) protects online sales from stale-POS overwrites and feeds Daily Sales Exports or `AUTO_SYNC` back to BandaGo; reservation expiry (SYS-03) returns abandoned checkout holds to that pool and cancels/compensates outbound jobs.
 - **System outreach reaches customers through one pipeline:** refill and booking reminders (SYS-04/SYS-07) and payment outcomes (SYS-01/SYS-02) all queue through the fan-out (SYS-10) and are delivered by the dispatcher (SYS-05); customers control channels in C06 and admins watch health in A16.
 - **Assistant prepares, humans verify:** the assistant pipeline (SYS-09) only ever returns action cards — customers complete products, bookings and payments in the real flows (H01–H03), and escalated turns hand off to pharmacists and contact channels (P06).
 - **Operators keep the system actor alive:** every cron route depends on an external scheduler and the `CRON_SECRET`; the scheduled-jobs runbook is the contract operators must honour or the queue stalls, holds linger and retention never fires.

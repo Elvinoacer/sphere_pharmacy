@@ -8,26 +8,28 @@ This document follows stock from the BandaGo POS (iDempiere) into the web catalo
 
 ## 1. Pipeline overview — goods received to sellable stock
 
-Goods are received and sold in the BandaGo POS (iDempiere). The web platform is a **read-mostly mirror** of POS truth: products, prices and stock flow *in* via sync; the only web-side mutations are order-time reservations (physical deduct + release) and admin catalogue edits.
+Goods are received and sold in the BandaGo POS (iDempiere). The web platform maintains a **bi-directional, policy-governed sync** with POS truth: products, prices and batches flow *in* via sync (protected against stale-POS drift so unreconciled online sales are never overwritten back up), while online sales, refunds/cancellations, and staff stock edits generate idempotent outbound jobs reconciled via Daily Sales Export (default `MANUAL_EXPORT`) or opt-in extension writeback (`AUTO_SYNC`).
 
 ```mermaid
 flowchart TD
-    A["BandaGo POS (iDempiere)<br/>goods received, sales, batches"] --> B{"Trigger"}
+    A["BandaGo POS - iDempiere<br/>goods received, sales, batches"] --> B{"Trigger"}
     B -->|"EXTENSION_STREAM"| C["POST /api/integrations/bandago/sync"]
     B -->|"BACKGROUND_POLL"| C
-    B -->|"CSV_IMPORT"| D["POST /api/admin/csv-import<br/>(PHARMACIST/ADMIN)"]
+    B -->|"CSV_IMPORT"| D["POST /api/integrations/bandago/csv-import<br/>(Bearer or ADMIN/PHARMACIST)"]
     B -->|"MANUAL_RECONCILE"| C
     D --> N
-    C --> E{"Auth: Bearer BANDAGO_SYNC_API_KEY<br/>OR active staff session"}
+    C --> E{"Auth: timing-safe Bearer BANDAGO_SYNC_API_KEY<br/>OR ADMIN/PHARMACIST session"}
     E -- fail --> X1["401 Unauthorized"]
-    E -- pass --> F["InventoryGuard.cleanupExpiredReservations(45)<br/>(legacy virtual reservations)"]
+    E -- pass --> POL{"Tenant match and inboundEnabled?"}
+    POL -- "tenant mismatch" --> X2["403 TENANT_MISMATCH"]
+    POL -- pass --> F["InventoryGuard.cleanupExpiredReservations(45)<br/>(legacy virtual holds + POS job cancel)"]
     F --> G["Parse + normalize items<br/>(BandaGoNormalizer)"]
     G --> N["Normalized item"]
-    N --> H["Per-item upsert tx:<br/>category auto-create (upsert by slug),<br/>product match by externalPosId → slug → name,<br/>price/cost parse, Rx classify OR'd (never downgraded)"]
-    H --> I["processBatches:<br/>aggregate duplicate batchNumbers,<br/>expiry default now+365d,<br/>flag isExpired (expiry ≤ now)"]
-    I --> J["Compute sellable stock:<br/>stockQty = validStock (unexpired batches),<br/>stock = raw physical count"]
-    J --> K["stockStatus recompute:<br/>≤0 OUT_OF_STOCK, ≤lowStockThreshold LOW_STOCK, else IN_STOCK"]
-    K --> L["PosSyncLog telemetry:<br/>SUCCESS / PARTIAL / FAILED"]
+    N --> H["Per-item upsert tx:<br/>category auto-create, match externalPosId -> slug -> name,<br/>price/cost parse, Rx classify OR'd"]
+    H --> I["processBatches + minShelfLifeDays:<br/>aggregate batchNumbers, flag isExpired"]
+    I --> J["computeReconciledStock:<br/>apply unreconciled PosOutboundJob + hold offsets"]
+    J --> K["stockStatus recompute:<br/>OUT_OF_STOCK / LOW_STOCK / IN_STOCK / DISCONTINUED"]
+    K --> L["PosSyncLog (INBOUND) + PosSyncIncident telemetry"]
     L --> M["Catalogue + availability visible to storefront"]
 ```
 
@@ -35,11 +37,11 @@ flowchart TD
 
 | Aspect | Behavior |
 | --- | --- |
-| Dual auth | `Authorization: Bearer <BANDAGO_SYNC_API_KEY>` **or** an active staff session. **Known concern:** the browser admin panel sends `NEXT_PUBLIC_POS_SYNC_SECRET` as the Bearer — a client-bundle-exposed credential (see [../security/security-architecture.md](../security/security-architecture.md)). |
+| Dual auth | Timing-safe, fail-closed `Authorization: Bearer <BANDAGO_SYNC_API_KEY>` (`verifyBandagoBearerHeader`) **or** an active `ADMIN`/`PHARMACIST` staff session (`sphere_session` cookie). (The former browser-exposed secret and hardcoded fallback were remediated in `061e923`.) |
 | Chunking | Items are processed in transactions of **50** (`CHUNK_SIZE = 50`). |
-| Per-item fallback | A failing chunk is retried **item-by-item** so one bad record cannot poison a whole chunk; individual failures are collected. |
-| Telemetry | `PosSyncLog` row per run: `trigger`, `status` = `SUCCESS` (no errors) / `PARTIAL` (some failed) / `FAILED` (all failed, or fatal), `itemsReceived/Upserted/Failed`, `details.errors` capped at 50. Readable at `/api/admin/pos-status` (ADMIN/PHARMACIST/STAFF). |
-| Side effect | Every sync invokes `InventoryGuard.cleanupExpiredReservations(45)` — the legacy virtual-reservation janitor (§4.3). |
+| Per-item fallback | A failing chunk is retried **item-by-item** so one bad record cannot poison a whole chunk; individual failures are collected and logged as `INBOUND_ITEM_FAILED` `PosSyncIncident`s. |
+| Telemetry | `PosSyncLog` row per run: `direction` (`INBOUND`/`OUTBOUND`), `trigger`, `status` = `SUCCESS` / `PARTIAL` / `FAILED`, `itemsReceived/Upserted/Failed`, `details` (`reconciledProtectedCount` + errors capped at 50). Readable at `/api/admin/pos-status` (ADMIN/PHARMACIST/STAFF). |
+| Side effect | Every sync invokes `InventoryGuard.cleanupExpiredReservations(45)` — the legacy virtual-reservation janitor (§4.3), which also runs `cancelOrderPosDeduction`. |
 
 ### 1.2 PosSyncLog status semantics
 
@@ -148,11 +150,12 @@ Any line that fails the availability predicate returns no row → the whole tran
 
 | Writer | Fields touched |
 | --- | --- |
-| BandaGo sync / CSV import | `stock` (raw POS count), `stockQty` (recomputed `validStock`), `stockStatus`, `inStock`, `nearestExpiryDate`, `ProductBatch` rows, `lastSyncedAt` |
+| BandaGo sync / CSV import | `stock` & `stockQty` (via `computeReconciledStock`), `lastPosStock`, `lastPosSellableStock`, `stockStatus`, `inStock`, `active`, `nearestExpiryDate`, `ProductBatch` rows, `externalWarehouseId`/`Locator`/`Org`/`Client`, `lastSyncedAt` |
 | Order create (bulk SQL) | `stockQty −= qty`, `stock −= qty` (clamped ≥ 0), `in_stock`, `stockStatus` |
-| Cancel / expiry cron / refill rollback | `stockQty += qty`, `stock += qty`, `in_stock`, `stockStatus` recompute |
+| Payment capture / prepare | Enqueues `ONLINE_SALE` `PosOutboundJob` (`enqueueOrderPosDeduction`) |
+| Cancel / expiry cron / refund / reject | `stockQty += qty`, `stock += qty`, `in_stock`, `stockStatus` recompute; `cancelOrderPosDeduction` cancels unsynced POS jobs or queues compensating `REFUND_RESTOCK` |
 | Refill (per-line, conditional) | same decrement set, guarded per line |
-| Admin catalogue edits | price, images, `requiresPrescription`, active/`DISCONTINUED` — not counters |
+| Admin catalogue edits (`PATCH /api/products/[id]`) | price, images, `requiresPrescription`, active/`DISCONTINUED`, `stockQty` (mirrored to `stock` + `inStock`; queues `ADMIN_STOCK_ADJUST` `PosOutboundJob` via `enqueueAdminStockEdit`) |
 
 ### 4.6 Worked example
 
@@ -164,39 +167,46 @@ A product syncs from POS with physical `stock = 60` and three batches: A (qty 20
 4. The order is cancelled before payment → cancel transaction restores `stockQty` 40, `stock` 60.
 5. Had the order gone unpaid until the TTL, the reservation cron would have performed step 4 instead (actor `SYSTEM`, `expire:<orderId>` points re-credit).
 
-## 5. Alerts, monitoring, and import
+## 5. Alerts, monitoring, and outbound reconciliation
 
 | Feature | Detail |
 | --- | --- |
 | Back-in-stock alerts | `ProductAlert` (`[productId, userId]` unique): customers register interest on out-of-stock products; when stock returns, a `backInStockTemplate` email is queued (Notification queue → Resend). |
 | Near-expiry monitoring | `hasNearExpiry` (<90 d) + `nearestExpiryDate` surfaced in the admin POS hub for stock rotation decisions. |
-| CSV import | `POST /api/admin/csv-import` (PHARMACIST/ADMIN) parses CSV (multiline quotes, escaped quotes, UTF-8 BOM) through the same normalizer; audited via `CSV_IMPORT`. **Known concern:** hard-coded fallback sync secret in the route. |
-| POS status | `/api/admin/pos-status` reads `PosSyncLog` telemetry for ops dashboards. |
+| BandaGo CSV import | `POST /api/integrations/bandago/csv-import` (Bearer key or ADMIN/PHARMACIST session) parses CSV (multiline quotes, escaped quotes, UTF-8 BOM) through `BandaGoNormalizer`; delegates to `/api/integrations/bandago/sync` (`trigger: CSV_IMPORT`). |
+| Catalogue CSV import | `POST /api/products/bulk` (ADMIN/PHARMACIST) handles storefront catalogue CSV uploads (`≤1,000` rows, audited via `CSV_IMPORT`). |
+| Stagnant-POS drift protection | `computeReconciledStock` subtracts unreconciled `PosOutboundJob` net deltas and unpaid order holds from incoming POS counts (`protectUnreconciledSales`), while still reflecting walk-in sales/restocks and flagging `POSSIBLE_MANUAL_RECONCILE` if POS dropped by ≥ pending online sales. |
+| Outbound reconciliation & Daily Sales Export | Under `MANUAL_EXPORT` (default), `GET /api/admin/pos-sync/sales-export` generates Zero-PHI Daily Sales sheets (`PDF`, formula-safe `CSV`, `JSON`) and `POST /api/admin/pos-sync/reconcile` (`MARK_RECONCILED`) closes jobs (`RECONCILED_MANUAL`); under opt-in `AUTO_SYNC`, the bridge claims jobs (`GET /outbound?claim=1`) and acks (`POST /outbound/ack`). `ADMIN` can reset the cutover anchor via `SET_BASELINE_NOW`. |
+| POS status & Error Console | `/api/admin/pos-status` & `/api/admin/pos-sync/reconcile` expose `PosSyncLog`, `PosBridgeHeartbeat`, outbound variance, and deduplicated `PosSyncIncident`s (`CRITICAL` incidents trigger throttled `POS_SYNC_CRITICAL` staff alerts). |
 
 ## 6. Failure cases and recovery
 
 | Stage | Failure | System behavior | Recovery |
 | --- | --- | --- | --- |
-| Sync auth | Bad/missing Bearer and no staff session | 401 before any write. | Fix credentials; note the client-exposed `NEXT_PUBLIC_POS_SYNC_SECRET` concern. |
-| Sync chunk | One item fails inside a 50-item chunk | Chunk rolls back, then each item retried individually; failures recorded. | Inspect `PosSyncLog.details.errors` (first 50); fix source data; re-sync. |
+| Sync auth | Bad/missing Bearer and no staff session | 401 before any write (timing-safe fail-closed). | Set `BANDAGO_SYNC_API_KEY` or sign in as ADMIN/PHARMACIST via `sphere_session`. |
+| Tenant pin | `payload.tenantUU !== policy.expectedTenantUU` | 403 `TENANT_MISMATCH`, `FAILED` `PosSyncLog`, `CRITICAL` `PosSyncIncident`. | Switch BandaGo clinic tab or update `expectedTenantUU` in Policy. |
+| Sync chunk | One item fails inside a 50-item chunk | Chunk rolls back, then each item retried individually; failures recorded as `INBOUND_ITEM_FAILED`. | Inspect `PosSyncLog.details.errors` (first 50) or Error Console; fix source rows; re-sync. |
 | Sync run | All items fail / fatal error | `PosSyncLog` status `FAILED`, HTTP 500; previous catalogue state untouched. | Fix root cause (schema drift, DB outage) and re-run. |
 | Zero-item packet | Sync called with `items: []` | Nothing to upsert; run completes without mutation (telemetry row still written). | None — benign; verify the POS extension is streaming. |
 | All-invalid items | Every item fails parsing/validation | Status `FAILED` (`errors.length >= rawItems.length`); no partial catalogue. | Correct POS field formats; re-sync. |
 | Bad batch data | Unparseable expiry | Defaults to now + 365 d (never `Invalid Date`) — deliberately conservative. | Fix the source `GuaranteeDate`; next sync replaces batches. |
-| Expired stock | Batches past expiry | Flagged `isExpired`, excluded from `validStock`/`stockQty` — **expired stock is never sellable online**, even if physical count is positive. | Dispose per PPB; POS write-off. |
-| Stock drift | Web/POS counts diverge | Every sync overwrites `stock`/`stockQty` from POS truth; order-time decrements ride on top until the next sync. | Periodic `MANUAL_RECONCILE` sync; monitor `pos-status`. |
-| Reservation leak | Order created but never paid/cancelled | Expiry cron restores stock after TTL (requires `ORDER_RESERVATION_TTL_MINUTES`); cancel restores immediately. | Ensure cron is scheduled externally (see [../operations/scheduled-jobs.md](../operations/scheduled-jobs.md)). |
-| Legacy janitor | Stale virtual reservations | `cleanupExpiredReservations(45)` runs on each sync. | No action; path is legacy. |
+| Expired stock | Batches past expiry (or within `minShelfLifeDays`) | Flagged `isExpired`, excluded from `validStock`/`stockQty` — **expired stock is never sellable online**, even if physical count is positive. | Dispose per PPB; POS write-off. |
+| Stock drift / stagnant POS | Web sales occurred before POS updated | `computeReconciledStock` subtracts unreconciled `PosOutboundJob` deltas and unpaid holds so stale POS snapshots never resurrect sold units; `POSSIBLE_MANUAL_RECONCILE` warns if POS also dropped. | Export Daily Sales (`PDF`/`CSV`), enter in BandaGo, click **Confirm Entered**, or run `SET_BASELINE_NOW` cutover. |
+| Outbound writeback | No BandaGo tab open or permission denied | `RELEASE` returns job to `PENDING` without consuming retries; `NO_POS_TAB` / `POS_PERMISSION_DENIED` logged to Error Console. | Keep an authenticated BandaGo tab open or fall back to Daily Sales Export. |
+| Reservation leak | Order created but never paid/cancelled | Expiry cron restores stock after TTL (requires `ORDER_RESERVATION_TTL_MINUTES`) and calls `cancelOrderPosDeduction`; cancel restores immediately. | Ensure cron is scheduled externally (see [../operations/scheduled-jobs.md](../operations/scheduled-jobs.md)). |
+| Legacy janitor | Stale virtual reservations | `cleanupExpiredReservations(45)` runs on each sync and calls `cancelOrderPosDeduction`. | No action; path is legacy. |
 | CSV import | Malformed rows | Row-level errors reported; same normalization guards as sync. | Fix CSV, re-import. |
 
 ## 7. Data model
 
 | Model | Role |
 | --- | --- |
-| `Product` | `stock` (physical), `stockQty` (FEFO-valid), `virtualReservedStock`, `safetyStockBuffer` (2), `lowStockThreshold` (5), `inStock`, `stockStatus`, `requiresPrescription`, `nearestExpiryDate`, `externalPosId`/`posSource`/`lastSyncedAt` (BandaGo linkage). |
+| `Product` | `stock` (physical), `stockQty` (FEFO-valid), `lastPosStock` / `lastPosSellableStock` (drift-protection baselines), `virtualReservedStock`, `safetyStockBuffer` (2), `lowStockThreshold` (5), `inStock`, `stockStatus`, `requiresPrescription`, `nearestExpiryDate`, `externalPosId`/`posSource`/`lastSyncedAt` + warehouse/client UUs (BandaGo linkage). |
 | `ProductBatch` | POS Lot/Batch rows: `batchNumber`, `quantityOnHand`, `expiryDate` (iDempiere `GuaranteeDate`), `isExpired`, `externalBatchId`; unique `[productId, batchNumber]`, indexed by expiry. |
 | `ProductAlert` | back-in-stock registrations, unique per product+user. |
-| `PosSyncLog` | sync telemetry: trigger, status, counts, capped error details. |
+| `PosSyncLog` | sync telemetry: `direction` (`INBOUND`/`OUTBOUND`), `trigger`, `status`, counts, capped error details. |
+| `PosOutboundJob` | idempotent outbound Website → POS ledger (`ONLINE_SALE`, `ADMIN_STOCK_ADJUST`, `REFUND_RESTOCK`), export batch IDs, and 5-min claim locks. |
+| `PosSyncIncident` | deduplicated Zero-PHI bridge/sync incident console (`CRITICAL`/`ERROR`/`WARNING`) with guided remediations. |
 | `Order` | `inventoryReservedAt` / `inventoryReleasedAt` — the reservation ledger driving release. |
 
 ## Related documentation

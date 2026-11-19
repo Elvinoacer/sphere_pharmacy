@@ -20,7 +20,7 @@ This document records every Prisma migration in `prisma/migrations/` in chronolo
 
 ## Migration history (chronological)
 
-Ten migrations, year-2026 timestamps. `prisma migrate deploy` applies them in this order.
+Eleven migrations, year-2026 timestamps. `prisma migrate deploy` applies them in this order.
 
 | # | Migration | One-line summary |
 | --- | --- | --- |
@@ -119,7 +119,7 @@ Adds durable bi-directional POS reconciliation, daily sales export batching, and
 - Optionally upserts **one dev ADMIN** — only when **both** `SEED_ADMIN_EMAIL` and `SEED_ADMIN_PASSWORD` are set, with the password ≥14 chars (otherwise it throws). On update it re-hashes the password, keeps `role: "ADMIN"`, `active: true`, increments `authVersion`, and purges that admin's sessions.
 - Creates **no products, demo customers, orders, prescriptions, loyalty balances or clinical history** — ever.
 
-**Correction of `PROJECT_README.md` claims.** The README instructs *"Apply the Prisma schema with `bun run db:push`, then seed it with `bun prisma/seed.ts`"* and lists a demo accounts table (`admin@spherepharmacy.co.ke` / `admin123`, a customer preloaded with 620 points, a rider with an assigned delivery) plus a demo catalogue. None of that data is produced by the seed: those accounts and datasets do not exist unless someone creates them manually, `db:push` is the prototyping path (see the `--accept-data-loss` warning above), and the seed's guards will refuse a bare `bun prisma/seed.ts` run against anything it considers unapproved. Treat the README's demo-account section as aspirational; treat this section as the verified behavior. **Requires live verification** only for what a fresh deployment's operator manually provisions on top of the seed.
+**Correction of `reference/archive/PROJECT_README.md` claims.** The archived README instructs *"Apply the Prisma schema with `bun run db:push`, then seed it with `bun prisma/seed.ts`"* and lists a demo accounts table (`admin@spherepharmacy.co.ke` / `admin123`, a customer preloaded with 620 points, a rider with an assigned delivery) plus a demo catalogue. None of that data is produced by the seed: those accounts and datasets do not exist unless someone creates them manually, `db:push` is the prototyping path (see the `--accept-data-loss` warning above), and the seed's guards will refuse a bare `bun prisma/seed.ts` run against anything it considers unapproved. Treat the archived README's demo-account section as historical; treat this section as the verified behavior. **Requires live verification** only for what a fresh deployment's operator manually provisions on top of the seed.
 
 ## Production safety notes
 

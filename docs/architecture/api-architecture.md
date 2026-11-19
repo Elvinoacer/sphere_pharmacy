@@ -8,7 +8,7 @@ This document explains how the HTTP surface of Sphere Pharmacy is organized: the
 
 ## 1. Surface organization
 
-The API is one Next.js App Router tree: `src/app/api/**/route.ts`, **87 route modules exporting 116 HTTP method handlers**. (The bare `GET /api` stub returning a placeholder greeting is scaffold residue.) Routes are grouped by domain; authorization is a cross-cutting guard applied per handler, and the authoritative route→role matrix lives in [../security/access-control.md](../security/access-control.md).
+The API is one Next.js App Router tree: `src/app/api/**/route.ts`, **95 route modules exporting 126 HTTP method handlers**. (The bare `GET /api` stub returning a placeholder greeting is scaffold residue.) Routes are grouped by domain; authorization is a cross-cutting guard applied per handler, and the authoritative route→role matrix lives in [../security/access-control.md](../security/access-control.md).
 
 | Domain | Route prefix | Scope |
 | --- | --- | --- |
@@ -24,12 +24,12 @@ The API is one Next.js App Router tree: `src/app/api/**/route.ts`, **87 route mo
 | Promotions | `/api/promotions` | List (public = active, `isPublic`, in window, not exhausted), `[id]` admin CRUD, `validate` |
 | Medicine requests | `/api/medicine-requests` | Guest-friendly phone-only requests; staff queue under `/api/admin/medicine-requests` (+ `[id]/photo`) |
 | Notifications | `/api/notifications` | List, `prefs`, `push-token`, `email-webhook` (Resend), `dispatch-test` (ADMIN) |
-| Admin | `/api/admin` | `stats`, `audit`, `staff` (+ `[id]`), `reviews` (+ `[id]`), `medicine-requests`, `service-bookings` (+ `[id]/assign`), `pos-status`, `live-changes`, `notification-health`, `service-analytics`, `service-staff` |
-| Integrations | `/api/integrations/bandago` | `sync` (POS product/batch push), `crm` (GET any staff, POST PHARMACIST+ADMIN), `csv-import`; authenticated with `BANDAGO_SYNC_API_KEY` |
+| Admin | `/api/admin` | `stats`, `audit`, `staff` (+ `[id]`), `reviews` (+ `[id]`), `medicine-requests`, `service-bookings` (+ `[id]/assign`), `pos-status`, `pos-sync/policy`, `pos-sync/reconcile`, `pos-sync/sales-export`, `live-changes`, `notification-health`, `service-analytics`, `service-staff` |
+| Integrations | `/api/integrations/bandago` | `sync` (POS product/batch push + drift protection), `crm` (GET any staff, POST PHARMACIST+ADMIN), `csv-import`, `outbound` (claim jobs), `outbound/ack`, `telemetry`; dual-authenticated with timing-safe fail-closed `BANDAGO_SYNC_API_KEY` or staff session |
 | Location | `/api/location` | `search`, `reverse-geocode` (Nominatim proxies) |
 | Settings | `/api/settings` | GET public profile; PUT ADMIN; `delivery-fee` quote endpoint |
 | Upload | `/api/upload` | Direct + presigned uploads to R2 with folder-based permissions |
-| Assistant | `/api/assistant` | AI chat; deliberately **never reads the session cookie** — public data only |
+| Assistant & Docs | `/api/assistant`, `/api/docs-index`, `/api/docs-assistant` | AI storefront chat & documentation portal search/Q&A; deliberately **never read the session cookie** — public data only |
 | Cron | `/api/cron` | 5 maintenance jobs, `Authorization: Bearer CRON_SECRET` |
 
 ## 2. The guard pattern
@@ -117,6 +117,7 @@ Implemented in `src/lib/security/request.ts` (`enforceRateLimit`), state lives i
 | `refund` | 10 / 60 min | IP + staffId |
 | `notification-test` | 10 / 60 min | IP |
 | `assistant` | 40 / 60 min | IP |
+| `docs-assistant` | 20 / 60 min | IP |
 | `location-search` | 30 / 10 min | IP |
 | `reverse-geocode` | 30 / 10 min | IP |
 
@@ -130,7 +131,9 @@ Implemented in `src/lib/security/request.ts` (`enforceRateLimit`), state lives i
 | `POST /api/auth/login`, `/staff-login`, `/otp/request`, `/otp/verify` | 4,096 B |
 | `POST /api/orders` | 64 KB |
 | `POST /api/payments/refund` | 16 KB |
-| `POST /api/assistant` | 20,000 B |
+| `PUT /api/admin/pos-sync/policy` | 16,384 B |
+| `POST /api/admin/pos-sync/reconcile` | 65,536 B |
+| `POST /api/assistant`, `POST /api/docs-assistant` | 20,000 B |
 | Resend `email-webhook` | 65,536 B |
 | `POST /api/upload` / prescriptions | 10 MB + magic-byte sniffing; prescription direct uploads re-verified via `HeadObject` (1–10MB, owner metadata match) |
 | Medicine-request photos | 3 MB streamed |

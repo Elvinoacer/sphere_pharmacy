@@ -10,10 +10,10 @@ What must be backed up to recover Sphere Pharmacy, with restore procedures, RPO/
 
 | Asset | Contents | Backup mechanism |
 | --- | --- | --- |
-| **PostgreSQL database** | Orders, payments, prescriptions (rows + storage keys), loyalty ledger, users/staff, settings, audit trail, PosSyncLog — 39 models. | Logical dumps (`pg_dump`) **plus** the provider's own snapshots. On Neon, use built-in backups/restore points; if you use pointer/branch workflows, tag the branches you may restore from. |
+| **PostgreSQL database** | Orders, payments, prescriptions (rows + storage keys), loyalty ledger, users/staff, settings, audit trail, PosSyncLog, PosOutboundJob, PosSyncIncident — 41 models. | Logical dumps (`pg_dump`) **plus** the provider's own snapshots. On Neon, use built-in backups/restore points; if you use pointer/branch workflows, tag the branches you may restore from. |
 | **R2 objects** | Private: `prescriptions/{userId}/{uuid}.{ext}` (compliance-relevant), `medicine-requests/{uuid}.{ext}` photos. Public: product/service imagery, avatars, general uploads. | Bucket-level copy to a second bucket/account or an S3-compatible mirror. Do not rely on versioning alone — confirm it is enabled for the private prefixes at minimum. |
 | **Env / secrets vault** | All server-secrets from [environment-variables.md](environment-variables.md): database URLs, `CRON_SECRET`, `MPESA_CALLBACK_TOKEN`, provider keys, the three hash secrets, `BANDAGO_SYNC_API_KEY`. | Encrypted secret store (password manager / KMS / provider vault) with access review. `.env.example` structure + real values held separately. |
-| **Setting table contents** | `pharmacy`, `delivery`, `compliance` JSON blobs — pharmacy identity, delivery zones/fees, internal PPB compliance record. | Covered by the PostgreSQL dump, but note it: it is hand-curated data with no code-level regeneration path. |
+| **Setting table contents** | `pharmacy`, `delivery`, `compliance`, `posSync`, `posBridgeHeartbeat` JSON blobs — pharmacy identity, delivery zones/fees, internal PPB compliance record, POS sync strategy & bridge heartbeat. | Covered by the PostgreSQL dump, but note it: it is hand-curated data with no code-level regeneration path. |
 
 Example nightly logical dump (run from a host with network access to the **direct** (non-pooler) database URL):
 
@@ -78,7 +78,7 @@ Before restoring, decide scope: **app-only rollback** (see [deployment.md](deplo
 ```bash
 # From a logical dump
 pg_restore --clean --if-exists -d "$DATABASE_URL" dumpfile   # or psql for plain SQL dumps
-npx prisma migrate status   # MUST report all 10 migrations applied, none pending
+npx prisma migrate status   # MUST report all 11 migrations applied, none pending
 ```
 
 If `migrate status` reports pending migrations after restore, apply `npx prisma migrate deploy` **before** accepting traffic. If it reports applied-but-missing drift, stop and reconcile deliberately ([database-operations.md](database-operations.md)).
@@ -94,7 +94,7 @@ Restore from the vault into the deployment environment. **Rotation consideration
 - `TOKEN_HASH_SECRET` — rotation breaks HMAC comparability for existing promotion IP/browser hashes and guest-order token hashes. Rotate only with an explicit migration plan; this is why the secret must never rotate casually ([environment-variables.md](environment-variables.md)).
 - `SESSION_SECRET` / `OTP_HASH_SECRET` — rotation invalidates sessions / in-flight OTPs; schedule during a quiet window.
 - Provider keys (`RESEND_API_KEY`, Daraja, IntaSend, R2, FCM, `BANDAGO_SYNC_API_KEY`) — rotate per provider, then update webhook/callback configuration to match.
-- If any credential ever equaled a value shipped in `.env.example` (notably the BandaGo default pair), **treat rotation as mandatory, not optional** — those values are public by construction ([../governance/technical-debt.md](../governance/technical-debt.md) H1).
+- If any credential ever equaled a value shipped in `.env.example` (formerly the BandaGo default pair, now retired in `061e923`), **treat rotation as mandatory, not optional** — those values are public by construction ([../governance/technical-debt.md](../governance/technical-debt.md) H1).
 
 ### 4. Cron and integrations after restore
 

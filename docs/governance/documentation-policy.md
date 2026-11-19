@@ -76,6 +76,6 @@ AI coding agents are expected to:
 - **Flag** (never silently "fix") contradictions between code and docs: when the code wins, correct the doc; when the doc reflects an intended behavior the code lost, raise it as an issue.
 - **Never** widen authorization guards, expose secrets, or route secure data outside authorized sessions to make an AI-assisted feature work — see [security/ai-access-and-authorized-sessions.md](../security/ai-access-and-authorized-sessions.md).
 
-## 7. Future: publishing a documentation portal
+## 7. The in-app documentation portal (`/docs`)
 
-When the documentation matures, build a branded portal (Docusaurus is the leading candidate; MkDocs Material and Mintlify are alternatives) **from these same Markdown files**. The portal is a presentation layer with search and navigation — never a second authoring surface. Versioning should follow releases. Until then, GitHub-rendered Markdown is the interface.
+The repository ships a built-in Next.js App Router documentation portal at **`/docs`** (`src/app/docs/**`, `src/lib/docs/**`, `src/components/docs/**`, shipped in `89b680c`). It renders these exact Markdown files, interactive Mermaid diagrams, the OpenAPI 3.1 contract (`/docs/api-reference`), the Prisma ER explorer (`/docs/database`), the user-journey explorer (`/docs/journeys`), full-text search (⌘K via `/api/docs-index`), and "Ask Sphere Docs" (`/docs/assistant` via `/api/docs-assistant`). The portal is purely a presentation and retrieval layer — **never** author documentation in TSX components or duplicate prose outside `docs/`, `README.md`, `AGENTS.md`, and `openapi/sphere-api.yaml`.

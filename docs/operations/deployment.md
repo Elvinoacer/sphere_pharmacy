@@ -63,7 +63,7 @@ On a real server you will typically terminate TLS upstream or adjust the Caddyfi
 
 | Artifact | Purpose |
 | --- | --- |
-| `next-service-dist/` | The standalone Next.js server (`server.js`) + traced dependencies |
+| `next-service-dist/` | The standalone Next.js server (`server.js`) + traced dependencies (incl. `docs/`, `openapi/`, `prisma/schema.prisma`, `README.md`, `AGENTS.md` via `outputFileTracingIncludes` for `/docs` & `/api/docs-*`) |
 | `next-service-dist/.next/static/` | Client assets (copied in by the build pipeline / `build:standalone`) |
 | `next-service-dist/public/` | Public assets incl. the curated product image library |
 | `Caddyfile` | Reverse proxy config (`:81`, `XTransformPort` route, `:3000` proxy with `X-Forwarded-*`) |
@@ -98,7 +98,7 @@ Run top-to-bottom on first deployment; re-check items 3–5 after any environmen
 
 | # | Item | How |
 | --- | --- | --- |
-| 1 | **Migrations applied** | `npx prisma migrate deploy`, then `npx prisma migrate status` must show all 10 applied, none pending — before accepting traffic |
+| 1 | **Migrations applied** | `npx prisma migrate deploy`, then `npx prisma migrate status` must show all 11 applied, none pending — before accepting traffic |
 | 2 | **Admin bootstrap** | Create the first ADMIN (guarded seed refuses production; controlled manual procedure — one-off script or direct insert with a correctly scrypt-hashed password). **Requires live verification**; no dedicated bootstrap command exists in-repo |
 | 3 | **Provider callbacks** | M-Pesa callback with `?token=` (appended automatically), IntaSend webhook → `/api/payments/intasend/webhook`, Resend → `/api/notifications/email-webhook`; confirm `MPESA_CALLBACK_TOKEN` / `INTASEND_WEBHOOK_SECRET` / `RESEND_WEBHOOK_SECRET` match the dashboards |
 | 4 | **Cron scheduling** | Every-minute notifications + ≥ 15-min reminders + TTL/retention jobs scheduled by the platform — the repo does **not** schedule cron itself ([scheduled-jobs.md](scheduled-jobs.md)) |
@@ -147,5 +147,5 @@ This mirrors CI ([testing-strategy.md](../testing/testing-strategy.md)) plus the
 - [scheduled-jobs.md](scheduled-jobs.md) — the cron scheduling this deployment must provide.
 - [../governance/architecture-decisions.md](../governance/architecture-decisions.md) — ADR-015 records why standalone + Caddy is the chosen pipeline.
 - [../payment-notification-audit.md](../payment-notification-audit.md) — provider configuration the audit found missing locally (`MPESA_CALLBACK_TOKEN`, `CRON_SECRET`, `RESEND_WEBHOOK_SECRET`) — ensure these exist in production.
-- [../governance/technical-debt.md](../governance/technical-debt.md) — deployment-relevant debt (no in-repo scheduler, hard-coded `.zscripts` path, browser-exposed POS secret).
+- [../governance/technical-debt.md](../governance/technical-debt.md) — deployment-relevant debt (no in-repo scheduler, hard-coded `.zscripts` path, payment blockers).
 - [backup-and-restore.md](backup-and-restore.md) — artifact retention and the restore side of rollback.

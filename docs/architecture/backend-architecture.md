@@ -8,12 +8,12 @@ This document describes the server side: the API route layer in `src/app/api`, t
 
 ## 1. Route layer: `src/app/api`
 
-The API tree contains **87 `route.ts` modules exporting 116 HTTP method handlers** (verified count). One module — the bare `src/app/api/route.ts` returning a placeholder `GET /api` greeting — is scaffold residue. Handlers are deliberately thin and follow a common shape:
+The API tree contains **95 `route.ts` modules exporting 126 HTTP method handlers** (verified count). One module — the bare `src/app/api/route.ts` returning a placeholder `GET /api` greeting — is scaffold residue. Handlers are deliberately thin and follow a common shape:
 
 1. `rejectOversizedRequest(request, maxBytes)` — 413 via `Content-Length`.
 2. `enforceRateLimit(request, scope, limit, windowMs, identity?)` — 429 fixed window.
 3. `requireCustomer()` / `requireStaff(roles?)` / `requireAuth()` — 401/403 with an error `Response` to return early.
-4. Field-level validation (hand-rolled; zod is used for assistant intents).
+4. Field-level validation (hand-rolled; zod is used for assistant intents, POS sync policy, and POS reconciliation actions).
 5. Delegation to `src/lib` services and `db` for state changes.
 6. JSON response with `Cache-Control: no-store` (session-scoped data).
 
@@ -39,7 +39,11 @@ The API tree contains **87 `route.ts` modules exporting 116 HTTP method handlers
 | `notifications/delivery.ts` | Durable outbox: `NotificationDelivery` lease, attempts, backoff, dispatch |
 | `notifications/payment.ts` | Payment outcome notifications (in tx) |
 | `crm/bandago-crm.ts` | BandaGo/iDempiere CRM reconciliation (customers, loyalty deltas) |
-| `bandago-normalizer.ts` | POS product/batch normalization, duplicate batch aggregation, expired-flagging, FEFO sellable stock, `nearestExpiryDate`, `<90d` near-expiry |
+| `bandago-normalizer.ts` | POS product/batch normalization, duplicate batch aggregation, expired-flagging, min-shelf-life & FEFO sellable stock, `nearestExpiryDate`, `<90d` near-expiry |
+| `pos-reconciliation.ts` + `pos-reconciliation-core.ts` | Stagnant-POS drift protection (`computeReconciledStock`), `PosSyncPolicy` / `PosBridgeHeartbeat` settings, outbound job enqueue/cancel/restock (`ONLINE_SALE`, `REFUND_RESTOCK`, `ADMIN_STOCK_ADJUST`), deterministic UUIDv4 generation, deduplicated `PosSyncIncident` recording |
+| `pdf/daily-sales-pdf.ts` | Zero-PHI multi-page A4 `%PDF-1.4` Daily Sales Export generator with batch ID and pharmacist sign-off block |
+| `security/bandago-auth.ts` + `security/bandago-bearer.ts` | Dual-mode BandaGo authorization (`authorizeBandagoRequest`), fail-closed constant-time Bearer compare (`verifyBandagoBearerHeader`), and SHA-256 legacy-placeholder detection |
+| `docs/*` | Documentation portal engine: corpus registry (`content.ts`), navigation tree (`navigation.ts`), frontmatter parser (`frontmatter.ts`), OpenAPI parser (`openapi.ts`), Prisma ER parser (`prisma-schema.ts`), lexical search index (`search.ts`), and docs assistant retrieval (`assistant.ts`) |
 | `assistant/contracts.ts`, `assistant/payment-review.ts` | Assistant intent schema (zod), payables review |
 | `sms.ts`, `email/resend.ts`, `email/templates.ts`, `firebase/admin.ts`, `firebase/client.ts` | Africa's Talking SMS, Resend email + templates, FCM push |
 | `hash.ts` | scrypt hashing, `newOpaqueToken`, `tokenHash` (HMAC-SHA256 with `TOKEN_HASH_SECRET`), order reference / pickup code generation, `safeEqualHex`, `requiredSecret` |
@@ -47,12 +51,13 @@ The API tree contains **87 `route.ts` modules exporting 116 HTTP method handlers
 
 ## 3. Database connection: `src/lib/db.ts`
 
-- **URL resolution order:** `DATABASE_URL` → `sphere_pharmacy_PRISMA_DATABASE_URL` → `sphere_pharmacy_DATABASE_URL` → `sphere_pharmacy_POSTGRES_URL`; throws if none is set.
+- **URL resolution order:** `DATABASE_URL` → `sphere_pharmacy_PRISMA_DATABASE_URL` → `sphere_pharmacy_DATABASE_URL` → `sphere_pharmacy_POSTGRES_URL`.
+- **Lazy Proxy deferral:** `src/lib/db.ts` initializes eagerly only when a URL is present; otherwise it exports a `Proxy` whose `get` trap resolves `getClient()` at first runtime property access and throws if no URL is configured. This lets `next build` evaluate static `/docs` modules without a live database.
 - **Neon pooler fix:** if the hostname contains `-pooler.` (PgBouncer), `statement_cache_size=0` is appended unless already present — this prevents PostgreSQL error `0A000` ("cached plan must not change result type") after schema changes on pooled endpoints.
 - **Singleton:** the `PrismaClient` instance is cached on `globalThis` (survives dev hot reload), `log: ["warn","error"]`. Exports `db` and `prisma` (same instance).
 - **Blueprint compatibility:** a `db.productCategory` getter aliases `db.category`.
 
-Schema facts that shape the backend: 39 models, cuid ids (natural string keys for `Setting.key`, `RateLimitBucket.key`, `EmailSuppression.email`, `EmailDeliveryEvent.id`, `ScheduledJobDelivery.key`), `Decimal(12,2)` money, snake_case `@@map` in the BandaGo block, cascade deletes for children while `Order.user`, `Order.prescriptions`, `Product.category`, `Prescription.user/order` deliberately do **not** cascade (orphan-preserving). Details: [../database/](../database/) and `prisma/schema.prisma`.
+Schema facts that shape the backend: 41 models, 5 POS enums, cuid ids (natural string keys for `Setting.key`, `RateLimitBucket.key`, `EmailSuppression.email`, `EmailDeliveryEvent.id`, `ScheduledJobDelivery.key`), `Decimal(12,2)` money, snake_case `@@map` in the BandaGo block, cascade deletes for children while `Order.user`, `Order.prescriptions`, `Product.category`, `Prescription.user/order`, and `PosOutboundJob.order` (`SetNull`) deliberately do **not** cascade (orphan-preserving). Details: [../database/](../database/) and `prisma/schema.prisma`.
 
 ## 4. Contracts: `dto.ts`, `types.ts`, `api-client.ts`
 
@@ -75,6 +80,7 @@ Schema facts that shape the backend: 39 models, cuid ids (natural string keys fo
 | Stock decrement guard | Bulk SQL `UPDATE ... WHERE availability ≥ qty` | Insufficient stock → 409 "<name> does not have enough stock." + rollback |
 | `reservePaymentAttempt` | Before any provider network I/O | One active attempt per order; rejects duplicates/payability violations with 409 |
 | Durable outbox lease | `NotificationDelivery.lockedUntil`/`lockToken` | Cron dispatch is crash-safe; ≤8 attempts with exponential backoff |
+| POS outbound idempotency & lease | `PosOutboundJob.idempotencyKey` (`sale:`/`restock:`/`admin_adj:`), deterministic UUIDv4 `externalInventoryUU`, Serializable claim with 5-min `lockToken` lease | Deduplicates outbound stock events and makes BandaGo `M_Inventory.UU` retries idempotent |
 
 ## 6. Webhook callback verification model
 
@@ -146,7 +152,7 @@ Post-creation, payment capture is always webhook-driven (M-Pesa callback / IntaS
 
 ## 10. Inventory authority
 
-`getAvailableStock = max(0, min(stock, stockQty) − safetyStockBuffer(default 2) − max(0, virtualReservedStock))`, falling back `stock ?? stockQty ?? 0`. The primary order flow physically decrements `stockQty` and `stock` (COALESCE, clamped) and recomputes `in_stock`/`stockStatus` — `stockQty` is the effective authority. Release paths (cancel endpoint, expiry cron) restore stock and set `inventoryReleasedAt` to prevent double-release. Expired batches are excluded from `stockQty` at POS ingestion (Kenya PPB rule), so expired stock can never appear as online availability. The legacy virtual-reservation path (`reserveStockForCheckout`/`releaseReservation`/`commitReservation`) is dormant — only `getAvailableStock` and the 45-minute cleanup are invoked today. FEFO applies at ingestion/sellable-stock computation; batch-level deduction at order time is **Planned or not shipped**. See [../workflows/inventory-lifecycle.md](../workflows/inventory-lifecycle.md).
+`getAvailableStock = max(0, min(stock, stockQty) − safetyStockBuffer(default 2) − max(0, virtualReservedStock))`, falling back `stock ?? stockQty ?? 0`. The primary order flow physically decrements `stockQty` and `stock` (COALESCE, clamped) and recomputes `in_stock`/`stockStatus` — `stockQty` is the effective authority. Release paths (cancel endpoint, expiry cron) restore stock and set `inventoryReleasedAt` to prevent double-release. During inbound BandaGo sync, `computeReconciledStock` subtracts unreconciled `PosOutboundJob` deltas and unpaid order holds from incoming `lastPosStock`/`lastPosSellableStock` snapshots so stagnant POS reads never overwrite online sales back up; staff edits via `PATCH /api/products/[id]` mirror `stock` and `inStock` and queue `ADMIN_STOCK_ADJUST` outbound jobs via `enqueueAdminStockEdit`. Expired batches are excluded from `stockQty` at POS ingestion (Kenya PPB rule), so expired stock can never appear as online availability. The legacy virtual-reservation path (`reserveStockForCheckout`/`releaseReservation`/`commitReservation`) is dormant — only `getAvailableStock` and the 45-minute cleanup are invoked today. FEFO applies at ingestion/sellable-stock computation; batch-level deduction at order time is **Planned or not shipped**. See [../workflows/inventory-lifecycle.md](../workflows/inventory-lifecycle.md).
 
 ## 11. Related documentation
 

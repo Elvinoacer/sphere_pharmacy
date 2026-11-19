@@ -6,17 +6,18 @@ This is the top-level map of Sphere Pharmacy, a full-stack retail pharmacy opera
 | --- | --- | --- |
 | Engineers, AI coding agents | Implemented — verified against code | November 2026 |
 
-## 1. Topology: one route, one client shell, one API tree
+## 1. Topology: SPA shell, `/docs` portal, and API tree
 
-The app is an SPA-on-one-route. There is exactly one page component:
+The storefront, customer account hub, and admin workspace ship as an SPA-on-one-route:
 
-- `src/app/page.tsx` — a `"use client"` root that renders the entire application from Zustand view state (`useAppStore.view`), including the storefront, customer account hub, and the admin workspace.
-- `src/app/[...route]/page.tsx` — a one-line catch-all (`export { default } from "../page"`) so that **every URL renders the same client shell**. Deep links such as `/products/<id>` or `/admin?section=orders` are resolved client-side by `hydrateFromLocation()` on mount and on every `popstate` event.
-- The only other files in `src/app/` are `layout.tsx` (metadata, `ThemeProvider`, sonner `Toaster`), `robots.ts`, `sitemap.ts`, and imported CSS layers. All CSS is imported from `page.tsx` (landing, public, and admin-workspace layers).
+- `src/app/page.tsx` — a `"use client"` root that renders the storefront, customer hub, and admin workspace from Zustand view state (`useAppStore.view`).
+- `src/app/[...route]/page.tsx` — a one-line catch-all (`export { default } from "../page"`) so that **every non-`/docs` URL renders the same client shell**. Deep links such as `/products/<id>` or `/admin?section=orders` are resolved client-side by `hydrateFromLocation()` on mount and on every `popstate` event.
+- **`src/app/docs/**` (dedicated documentation portal)** — Next.js App Router pages (`/docs`, `/docs/[...slug]`, `/docs/journeys`, `/docs/journeys/[...slug]`, `/docs/api-reference`, `/docs/database`, `/docs/assistant`) rendering the canonical Markdown corpus, Mermaid diagrams, OpenAPI contract, and Prisma ER schema interactively (`src/lib/docs/*`, `src/components/docs/*`), linked from `SphereLanding` and `Footer`, included in `src/app/sitemap.ts`, and traced into standalone builds via `outputFileTracingIncludes` in `next.config.ts`.
+- The only other root files in `src/app/` are `layout.tsx` (metadata, `ThemeProvider`, sonner `Toaster`), `robots.ts`, `sitemap.ts`, and imported CSS layers. All application CSS is imported from `page.tsx` (landing, public, and admin-workspace layers), while `/docs` loads `src/components/docs/docs.css`.
 
-All real routing — view selection, URL synchronization, back/forward support — is implemented in the client store, not by the Next.js router. See [frontend-architecture.md](frontend-architecture.md) for the full view-router contract.
+All storefront and admin routing — view selection, URL synchronization, back/forward support — is implemented in the client store, not by the Next.js router. See [frontend-architecture.md](frontend-architecture.md) for the full view-router contract.
 
-The server side is a classic App Router API tree: `src/app/api/**/route.ts` contains **87 route modules exporting 116 HTTP method handlers** (verified count, including one scaffold `GET /api` stub that returns a placeholder greeting). Handlers stay thin; business rules live in `src/lib` services.
+The server side is a classic App Router API tree: `src/app/api/**/route.ts` contains **95 route modules exporting 126 HTTP method handlers** (verified count, including one scaffold `GET /api` stub that returns a placeholder greeting). Handlers stay thin; business rules live in `src/lib` services.
 
 ## 2. Layer map
 
@@ -27,8 +28,8 @@ Every mutation flows through the same five layers, in order. Nothing skips a lay
 | 1 | Zustand views & stores | `src/store/*`, `src/components/views/**` | View state, navigation, client-owned intents (cart lines, promo intent, wishlist, recently viewed) |
 | 2 | Typed API client | `src/lib/api-client.ts` (~500 lines) | The single fetch contract for all frontend code: same-origin relative requests, JSON, `cache: "no-store"` (catalog reads use `"default"`), `ApiError` with server error string, XHR uploads with progress |
 | 3 | Next.js API routes | `src/app/api/**` | Body caps, rate limiting, session/role guards, payload validation, orchestration |
-| 4 | Service layer | `src/lib/*` | Business rules: `session`, `security/*`, `inventory-guard`, `loyalty`, `promotions`, `settings`, `mpesa/daraja`, `intasend/client`, `r2`, `notify`, `notifications/*`, `crm/bandago-crm`, `bandago-normalizer`, `assistant/*` |
-| 5 | Prisma 6 → PostgreSQL | `src/lib/db.ts`, `prisma/schema.prisma` | 39 models, Serializable transactions, unique-constraint idempotency |
+| 4 | Service layer | `src/lib/*` | Business rules: `session`, `security/*` (incl. `bandago-auth`, `bandago-bearer`), `inventory-guard`, `loyalty`, `promotions`, `settings`, `mpesa/daraja`, `intasend/client`, `r2`, `notify`, `notifications/*`, `crm/bandago-crm`, `bandago-normalizer`, `pos-reconciliation*`, `pdf/daily-sales-pdf`, `assistant/*`, `docs/*` |
+| 5 | Prisma 6 → PostgreSQL | `src/lib/db.ts`, `prisma/schema.prisma` | 41 models, 5 POS enums, lazy Proxy client, Serializable transactions, unique-constraint idempotency |
 
 Shared contracts: `src/lib/types.ts` defines every DTO ("the contract between frontend & backend"); `src/lib/dto.ts` converts Prisma rows to those DTOs; `src/lib/constants.ts` enumerates roles, statuses, and pharmacy profile facts. The API client and API routes both import the same types, so drift is a compile error.
 
@@ -43,14 +44,14 @@ flowchart TB
   end
 
   subgraph Server["Next.js server — App Router"]
-    API["/api route handlers<br/>87 modules, 116 handlers"]
+    API["/api route handlers<br/>95 modules, 126 handlers"]
     GUARD["request guards<br/>body caps, rate limits, session/role checks"]
     LIB["src/lib services<br/>business rules + DTO conversion"]
-    PRISMA["Prisma 6 client<br/>src/lib/db.ts singleton"]
+    PRISMA["Prisma 6 client<br/>src/lib/db.ts lazy Proxy singleton"]
   end
 
   subgraph DB["PostgreSQL — Neon"]
-    MODELS["39 models<br/>orders, payments, prescriptions,<br/>loyalty, notifications, POS sync"]
+    MODELS["41 models<br/>orders, payments, prescriptions,<br/>loyalty, notifications, POS sync"]
   end
 
   subgraph Providers["External providers"]
@@ -77,14 +78,14 @@ flowchart TB
   LIB --> RESEND
   LIB --> FCM
   LIB --> R2
-  API -->|"direct fetch, assistant route only"| GROQ
+  API -->|"direct fetch, assistant and docs-assistant routes"| GROQ
   LIB --> AT
-  LIB <-->|"REST + CSV, authenticated"| BANDAGO
+  LIB <-->|"bi-directional REST, telemetry, CSV, PDF export"| BANDAGO
   API --> NOMINATIM
   MODELS -->|"durable outbox rows"| RESEND
 ```
 
-Provider call sites: M-Pesa (`src/lib/mpesa/daraja.ts`), IntaSend (`src/lib/intasend/client.ts`), Resend (`src/lib/email/resend.ts`), FCM (`src/lib/firebase/admin.ts` server + `client.ts` browser), R2 (`src/lib/r2.ts` via `@aws-sdk/client-s3`), Groq (direct fetch inside `src/app/api/assistant/route.ts`), Africa's Talking (`src/lib/sms.ts`), BandaGo POS/iDempiere (`src/lib/crm/bandago-crm.ts`, `src/lib/bandago-normalizer.ts`, `/api/integrations/bandago/*`), Nominatim (`/api/location/*`). Per-domain integration notes live under [../integrations/](../integrations/) (bandago-pos-crm, mpesa-daraja, intasend, cloudflare-r2, firebase, resend, ai-provider).
+Provider call sites: M-Pesa (`src/lib/mpesa/daraja.ts`), IntaSend (`src/lib/intasend/client.ts`), Resend (`src/lib/email/resend.ts`), FCM (`src/lib/firebase/admin.ts` server + `client.ts` browser), R2 (`src/lib/r2.ts` via `@aws-sdk/client-s3`), Groq (direct fetch inside `src/app/api/assistant/route.ts` and `src/app/api/docs-assistant/route.ts`), Africa's Talking (`src/lib/sms.ts`), BandaGo POS/iDempiere (`src/lib/crm/bandago-crm.ts`, `src/lib/bandago-normalizer.ts`, `src/lib/pos-reconciliation.ts`, `src/lib/pdf/daily-sales-pdf.ts`, `/api/integrations/bandago/*`, `/api/admin/pos-sync/*`), Nominatim (`/api/location/*`). Per-domain integration notes live under [../integrations/](../integrations/) (bandago-pos-crm, mpesa-daraja, intasend, cloudflare-r2, firebase, resend, ai-provider).
 
 ## 4. The request lifecycle (8 steps)
 
@@ -118,28 +119,29 @@ These properties are load-bearing. Any change that weakens one of them is a regr
 
 | Concern | Choice | Notes |
 | --- | --- | --- |
-| Framework | Next.js ^16.4.3 (App Router) | One client page + API routes; `build` script runs `prisma generate` first |
-| UI runtime | React ^19 | Client components throughout |
+| Framework | Next.js ^16.4.6 (App Router, `v0.3.0`) | Storefront/admin SPA shell + `/docs` portal App Router pages; `build` runs `prisma generate` first |
+| UI runtime | React ^19 | Client views + `/docs` RSC corpus rendering |
 | Language | TypeScript 5 (strict) | `npm run typecheck` = `tsc --noEmit` |
-| Styling | Tailwind CSS 4 (`@theme inline` oklch tokens) + shadcn/ui | 46 shadcn components; teal/emerald palette; see [frontend-architecture.md](frontend-architecture.md) |
+| Styling | Tailwind CSS 4 (`@theme inline` oklch tokens) + shadcn/ui | 46 shadcn components; teal/emerald palette; `mermaid`/`js-yaml`/`remark-gfm` in `/docs`; see [frontend-architecture.md](frontend-architecture.md) |
 | Client state | Zustand ^5 (+ `persist` middleware) | 4 stores; see [state-management.md](state-management.md) |
-| Database | PostgreSQL (Neon) via Prisma ^6.11 | 39 models, 10 migrations (2026); see `prisma/schema.prisma` |
-| Auth | Hand-rolled DB-backed opaque sessions | httpOnly cookie; no JWT; see [authentication.md](authentication.md) |
+| Database | PostgreSQL (Neon) via Prisma ^6.19.3 | 41 models, 5 POS enums, 11 migrations (2026); lazy Proxy singleton in `src/lib/db.ts` |
+| Auth | Hand-rolled DB-backed opaque sessions | httpOnly cookie; no JWT; timing-safe BandaGo Bearer (`bandago-bearer.ts`); see [authentication.md](authentication.md) |
 | Payments | M-Pesa Daraja STK, IntaSend hosted card checkout, cash | KES only; webhook-driven capture |
 | Object storage | Cloudflare R2 (S3 API + presigner) | Private prescriptions, public product/service imagery |
 | Notifications | In-app + Resend email + Firebase FCM push + Africa's Talking SMS (OTP only) | Durable outbox for email/push |
-| AI | Groq OpenAI-compatible API (model `GROQ_MODEL` or `openai/gpt-oss-20b`) | Deterministic-first with hard fallback; see [../features/ai-assistant.md](../features/ai-assistant.md) |
-| POS/CRM | BandaGo (iDempiere) + external `api_data_transformer` extension | Product/batch sync, CRM reconciliation, CSV fallback |
-| Validation | zod ^4 (assistant intents), hand-rolled field checks elsewhere | — |
-| Testing | `node --test tests/*.test.mjs` + `bun test tests/assistant.test.ts` | Static security tests codify invariants; see [../testing/testing-strategy.md](../testing/testing-strategy.md) |
-| Runtime scripts | `dev` on port 3000, `start:standalone` via bun | `bun.lock` and `package-lock.json` both present |
+| AI | Groq OpenAI-compatible API (model `GROQ_MODEL` or `openai/gpt-oss-20b`) | Storefront deterministic-first assistant + `/docs/assistant` retrieval assistant; see [../features/ai-assistant.md](../features/ai-assistant.md) |
+| POS/CRM | BandaGo (iDempiere) + external `api_data_transformer` extension | Bi-directional product/batch sync, drift protection, Daily Sales Export (PDF/CSV/JSON), optional `AUTO_SYNC` writeback, CRM reconciliation |
+| Validation | zod ^4 (assistant intents, POS policy & reconcile actions), hand-rolled field checks elsewhere | — |
+| Testing | `node --test tests/*.test.mjs` (13 suites) + `bun test tests/assistant.test.ts` | Static security tests codify invariants; see [../testing/testing-strategy.md](../testing/testing-strategy.md) |
+| Runtime scripts | `dev` on port 3000, `start:standalone` via bun, `update:codebase` via python3 | `bun.lock` and `package-lock.json` both present |
 
 ## 7. Subsystem status classification
 
 | Subsystem | Classification | Notes |
 | --- | --- | --- |
 | Storefront, catalogue, orders, prescriptions, loyalty, promotions, notifications, admin workspace, state management | **Implemented** | Verified against code; exercised by static tests |
-| M-Pesa Daraja, IntaSend, BandaGo sync/CRM | **Environment-dependent** + **Requires live verification** | Code paths complete and fail-closed, but end-to-end behavior depends on provider credentials (`MPESA_*`, `INTASEND_*`, `BANDAGO_*`); sandbox values in `.env.example` are examples only |
+| Interactive `/docs` portal (journey explorer, API/DB explorers, ⌘K search, lexical docs assistant) | **Implemented** (`Ask Sphere Docs` LLM synthesis **Environment-dependent**) | Renders canonical Markdown/OpenAPI/Prisma; degrades cleanly to lexical retrieval without `GROQ_API_KEY` |
+| M-Pesa Daraja, IntaSend, BandaGo bi-directional sync/CRM & extension bridge | **Environment-dependent** + **Requires live verification** | Server paths (sync, drift protection, Daily Sales Export, outbound claim/ack, telemetry, policy, reconcile) implemented and fail-closed; live end-to-end depends on provider credentials and the external Chrome extension |
 | Email (Resend), web push (FCM), OTP SMS (Africa's Talking), AI assistant (Groq) | **Environment-dependent** | Degrade gracefully: assistant falls back to deterministic intents; delivery retries via outbox |
 | Cron jobs (notifications dispatch, order-reservation expiry, prescription retention, chronic refills, service-booking reminders) | **Implemented** endpoints; **Requires live verification** for scheduling | All `GET` with `Authorization: Bearer CRON_SECRET`; an external scheduler must call them |
 | Batch-level FEFO deduction at order time | **Planned or not shipped** | FEFO runs at POS ingestion/sellable-stock computation only |

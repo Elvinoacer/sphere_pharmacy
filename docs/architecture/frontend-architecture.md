@@ -8,7 +8,7 @@ This document describes the client side of Sphere Pharmacy: how a single-page ap
 
 ## 1. The SPA shell
 
-`src/app/page.tsx` is a `"use client"` component that renders the whole application. `src/app/[...route]/page.tsx` re-exports it (`export { default } from "../page"`), so **every URL serves the same shell** — there are no other pages in the app (only `robots.ts` and `sitemap.ts` sit alongside). `layout.tsx` provides metadata (title "Sphere Pharmacy — Your community pharmacy on Lumumba Drive, Roysambu", OpenGraph, canonical `/`, robots index/follow), `themeColor #0f766e`, `ThemeProvider` (next-themes), the sonner `Toaster` (bottom-left, richColors, closeButton), and `<html lang="en" suppressHydrationWarning>`.
+`src/app/page.tsx` is a `"use client"` component that renders the storefront, customer hub, and admin workspace. `src/app/[...route]/page.tsx` re-exports it (`export { default } from "../page"`), so every non-documentation URL serves the same SPA shell. Alongside it sits the dedicated App Router **documentation portal** subtree (`src/app/docs/**` — `/docs`, `/docs/[...slug]`, `/docs/journeys`, `/docs/api-reference`, `/docs/database`, `/docs/assistant` — backed by `src/components/docs/*` and `src/components/docs/docs.css`, linked from `SphereLanding` and `Footer`), plus `robots.ts` and `sitemap.ts`. `layout.tsx` provides metadata (title "Sphere Pharmacy — Your community pharmacy on Lumumba Drive, Roysambu", OpenGraph, canonical `/`, robots index/follow), `themeColor #0f766e`, `ThemeProvider` (next-themes), the sonner `Toaster` (bottom-left, richColors, closeButton), and `<html lang="en" suppressHydrationWarning>`.
 
 On mount, `page.tsx` runs three effects:
 
@@ -133,7 +133,7 @@ Supporting components: `components/catalog/` (`high-performance-pagination`, `lu
 | Management | `staff` | ADMIN | Team, roles, access, deactivate (465) |
 | Management | `compliance` | ADMIN / PHARMACIST | PPB licence + superintendent record (363) |
 | Management | `settings` | ADMIN | Pharmacy profile, delivery fees (zone/distance), demo data (836) |
-| Management | `pos-sync` | ADMIN / PHARMACIST | BandaGo hub: telemetry, stock-sync ledger, lot/expiry compliance, manual CSV import (306) |
+| Management | `pos-sync` | ADMIN / PHARMACIST | BandaGo 4-workspace hub: Overview & Policy, Daily Sales Export (PDF/CSV/JSON) & Reconciliation, Error Console (`PosSyncIncident`), Sync Audit Trail & staff-cookie CSV import (~1630) |
 
 `admin-access.tsx` provides the `AdminAccessFrame` used by the staff sign-in tab. Role enforcement is duplicated server-side — the UI hiding is never the security boundary (see [../security/access-control.md](../security/access-control.md)).
 
@@ -146,7 +146,7 @@ Supporting components: `components/catalog/` (`high-performance-pagination`, `lu
 
 46 shadcn/ui components in `src/components/ui/`: accordion, alert, alert-dialog, aspect-ratio, avatar, badge, breadcrumb, button, calendar, carousel, chart, checkbox, collapsible, command, context-menu, dialog, drawer, dropdown-menu, form, hover-card, input, input-otp, label, menubar, navigation-menu, pagination, popover, progress, radio-group, resizable, scroll-area, select, separator, sheet, sidebar, skeleton, slider, sonner, switch, table, tabs, textarea, toast, toaster, toggle, toggle-group, tooltip. Supporting libraries: recharts (admin charts), embla (carousel), vaul (drawer), input-otp, react-markdown (assistant replies), lucide-react (icons).
 
-> **Note:** `toast`/`toaster` plus `src/hooks/use-toast.ts` are a legacy notification system still referenced only by `pos-sync-section.tsx`; everything else uses sonner. Prefer sonner in new code.
+> **Note:** `toast`/`toaster` plus `src/hooks/use-toast.ts` are unused legacy notification code (`pos-sync-section.tsx` migrated to `sonner` in `061e923`). Prefer `sonner` in all code.
 
 ## 8. Loading, error, empty-state, and a11y patterns
 

@@ -42,7 +42,7 @@ Status groups (constants): ACTIVE = the first nine statuses; TERMINAL = REJECTED
 ## 5. Backend implementation
 
 - **`POST /api/orders`** — body ≤64KB; `order-create` 12/15min; 1–50 items; qty 1–99 per line and aggregate; products active, not DISCONTINUED, availability ≥ qty (409 `"<name> does not have enough stock."`). Guest: OTC only (Rx → 401), name ≥2, Kenyan phone, optional email, one-time `guestAccessToken` (opaque 32B base64url; only the HMAC hash is stored; 7-day expiry; client keeps it in sessionStorage `sphere_order_access_<orderId>` and sends `x-order-access-token`). Rx lines require owned, unlinked, non-soft-deleted prescriptions, linked inside the create transaction. Type derivation: `hasRx ? (all Rx ? PRESCRIPTION : MIXED) : (reservation ? RESERVATION : OTC)`. Initial status: `hasRx ? UNDER_REVIEW : (MPESA|CARD) ? AWAITING_PAYMENT : RECEIVED`.
-- **Create transaction (Serializable, maxWait 10s, timeout 30s):** `pg_advisory_xact_lock(hashtext(promotion.id))` + promo re-validation; bulk stock UPDATE (see [inventory-and-stock.md](inventory-and-stock.md)); loyalty debit (`updateMany` gte guard); `Order.create` (reference `SPH-<12hex>`, `inventoryReservedAt=now`, item snapshots, initial history); prescription linking; `PromotionRedemption`; `LoyaltyLedger redeem:<orderId>`; post-transaction notifications.
+- **Create transaction (Serializable, maxWait 10s, timeout 30s):** `pg_advisory_xact_lock(hashtext(promotion.id))` + promo re-validation; bulk stock UPDATE (see [inventory-and-stock.md](inventory-and-stock.md)); loyalty debit (`updateMany` gte guard); `Order.create` (reference `SPH-<12hex>`, `inventoryReservedAt=now`, item snapshots, initial history); prescription linking; `PromotionRedemption`; `LoyaltyLedger redeem:<orderId>`; post-transaction notifications. When payment captures (`mpesa/callback`, `intasend/webhook`, `cash-confirm`) or staff run `prepare`, `enqueueOrderPosDeduction` idempotently queues `PosOutboundJob` (`ONLINE_SALE`) rows for BandaGo reconciliation; cancellations, rejections, refunds, and reservation expiries invoke `cancelOrderPosDeduction`.
 - **Delivery fee** (`src/lib/settings.ts` `computeDeliveryFee`): `freeOver` (pre-discount subtotal, default 3000) → 0; mode `flat` → flatFee; `distance` → haversine bands; else zone match (case-insensitive, fallback last zone, else flatFee). Defaults: mode zone, flat 200, zones below. Quote: `GET /api/settings/delivery-fee?area&lat&lon&subtotal`.
 
   | Zone | Fee (KES) |
@@ -105,7 +105,7 @@ flowchart LR
 ## 9. Integrations
 
 - Payment providers (M-Pesa Daraja, IntaSend) are invoked from order payment endpoints — see [payments-and-refunds.md](payments-and-refunds.md) and [../integrations/mpesa-daraja.md](../integrations/mpesa-daraja.md), [../integrations/intasend.md](../integrations/intasend.md).
-- BandaGo CRM consumes order history for customer mapping and chronic-patient detection: [customer-crm.md](customer-crm.md).
+- BandaGo POS/CRM reconciles online order sales via `PosOutboundJob` (`enqueueOrderPosDeduction` / `cancelOrderPosDeduction`) and consumes order history for customer mapping and chronic-patient detection: [customer-crm.md](customer-crm.md), [../integrations/bandago-pos-crm.md](../integrations/bandago-pos-crm.md).
 
 ## 10. Validation and business rules
 

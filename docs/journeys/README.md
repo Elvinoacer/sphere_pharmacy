@@ -134,6 +134,7 @@ Start with the actor map, then follow the links:
 | SYS-08 | [BandaGo inventory ingestion](system/bandago-inventory-sync.md) | POS sync to catalogue |
 | SYS-09 | [Assistant request lifecycle](system/assistant-pipeline.md) | AI request handling and fallback |
 | SYS-10 | [Notification fan-out pipeline](system/notification-dispatch.md) | Event to in-app/email/push/SMS |
+| SYS-11 | [BandaGo outbound reconciliation and daily sales export](system/bandago-outbound-reconciliation.md) | Website → POS sales export, Auto-Sync writeback, error triage |
 
 ## Conventions
 

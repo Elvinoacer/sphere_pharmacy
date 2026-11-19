@@ -35,6 +35,11 @@ AI coding agents are a first-class audience: [AGENTS.md](../AGENTS.md) at the re
 | [architecture/authentication.md](architecture/authentication.md) | Sessions, login/OTP flows, password hashing, guest tokens |
 | [architecture/state-management.md](architecture/state-management.md) | Zustand stores, persistence, client vs server authority |
 
+### User journeys
+| Document | What it covers |
+| --- | --- |
+| [journeys/README.md](journeys/README.md) | Complete flowchart-first catalogue across Customer, Pharmacist, Staff, Admin, Rider, and System journeys (69 files incl. role maps) |
+
 ### Features (subsystem deep-dives)
 [features/storefront-and-catalogue.md](features/storefront-and-catalogue.md) · [features/inventory-and-stock.md](features/inventory-and-stock.md) · [features/prescriptions.md](features/prescriptions.md) · [features/orders-and-fulfillment.md](features/orders-and-fulfillment.md) · [features/payments-and-refunds.md](features/payments-and-refunds.md) · [features/services-and-bookings.md](features/services-and-bookings.md) · [features/loyalty-and-promotions.md](features/loyalty-and-promotions.md) · [features/notifications.md](features/notifications.md) · [features/medicine-requests.md](features/medicine-requests.md) · [features/customer-crm.md](features/customer-crm.md) · [features/ai-assistant.md](features/ai-assistant.md)
 
@@ -43,22 +48,22 @@ Each follows the same 14-section template: purpose, users, screens, frontend, ba
 ### Database
 | Document | What it covers |
 | --- | --- |
-| [database/schema-overview.md](database/schema-overview.md) | Provider config, 39 models in 9 domains, design decisions (stock authority, loyalty fields, string statuses) |
+| [database/schema-overview.md](database/schema-overview.md) | Provider config, 41 models in 9 domains, design decisions (stock authority, loyalty fields, string statuses) |
 | [database/data-dictionary.md](database/data-dictionary.md) | Every model, every field, relations, indexes |
 | [database/entity-relationship-diagram.md](database/entity-relationship-diagram.md) | Mermaid ER diagrams per domain with relationship walkthroughs |
-| [database/migrations.md](database/migrations.md) | The 10 migrations, apply workflow, seed truth, production safety |
+| [database/migrations.md](database/migrations.md) | The 11 migrations, apply workflow, seed truth, production safety |
 | [database/data-lifecycle.md](database/data-lifecycle.md) | How each data class is born, transitions, and expires |
 
 ### API
 | Document | What it covers |
 | --- | --- |
-| [api/api-reference.md](api/api-reference.md) | All 87 route handlers: auth, rate limits, validation, errors, side effects, idempotency |
-| [../openapi/sphere-api.yaml](../openapi/sphere-api.yaml) | Machine-readable OpenAPI 3.1 contract (86 paths, 61 schemas) |
+| [api/api-reference.md](api/api-reference.md) | All 95 route handlers: auth, rate limits, validation, errors, side effects, idempotency |
+| [../openapi/sphere-api.yaml](../openapi/sphere-api.yaml) | Machine-readable OpenAPI 3.1 contract (94 paths, 125 operations, 61 schemas) |
 
 ### Integrations
 | Document | What it covers |
 | --- | --- |
-| [integrations/bandago-pos-crm.md](integrations/bandago-pos-crm.md) | BandaGo POS/CRM ingestion, normalization, FEFO, CRM matching — incl. security remediation required |
+| [integrations/bandago-pos-crm.md](integrations/bandago-pos-crm.md) | BandaGo bi-directional POS/CRM sync, drift protection, Daily Sales Export, FEFO, CRM matching (H1 remediated) |
 | [integrations/mpesa-daraja.md](integrations/mpesa-daraja.md) | Safaricom Daraja STK Push: OAuth, callbacks, verification |
 | [integrations/intasend.md](integrations/intasend.md) | Hosted card checkout, webhooks, refunds |
 | [integrations/cloudflare-r2.md](integrations/cloudflare-r2.md) | Object storage: public/private model, presigned URLs |
@@ -93,8 +98,8 @@ Each follows the same 14-section template: purpose, users, screens, frontend, ba
 ### Testing & governance
 | Document | What it covers |
 | --- | --- |
-| [testing/testing-strategy.md](testing/testing-strategy.md) | The 12 test suites, the assistant runner distinction, gaps |
-| [governance/architecture-decisions.md](governance/architecture-decisions.md) | 15 ADRs: why the code is the way it is |
+| [testing/testing-strategy.md](testing/testing-strategy.md) | The 13 Node test suites + 1 Bun assistant suite, runner distinction, gaps |
+| [governance/architecture-decisions.md](governance/architecture-decisions.md) | 17 ADRs: why the code is the way it is |
 | [governance/documentation-policy.md](governance/documentation-policy.md) | How documentation must evolve with the code |
 | [governance/technical-debt.md](governance/technical-debt.md) | Prioritized register of known issues |
 | [governance/release-history.md](governance/release-history.md) | Chronological release narrative |

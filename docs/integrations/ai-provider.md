@@ -11,9 +11,9 @@ The Sphere AI assistant is powered by **Groq**'s OpenAI-compatible chat-completi
 ## What it is
 
 - **Provider:** Groq — `POST https://api.groq.com/openai/v1/chat/completions`, an OpenAI-compatible endpoint.
-- **Caller:** `src/app/api/assistant/route.ts` (272 lines) — the only code path that talks to Groq.
+- **Callers:** `src/app/api/assistant/route.ts` (storefront AI companion) and `src/app/api/docs-assistant/route.ts` ("Ask Sphere Docs" at `/docs/assistant`).
 - **Model default:** `GROQ_MODEL` or `openai/gpt-oss-20b`.
-- **Key gating:** the LLM branch runs only when `GROQ_API_KEY` is set; without it the assistant is fully functional in deterministic mode.
+- **Key gating:** the LLM branch runs only when `GROQ_API_KEY` is set; without it the storefront assistant runs in deterministic mode and the docs assistant returns lexical-retrieval excerpts.
 
 ## Configuration
 
@@ -45,6 +45,13 @@ Endpoint-level limits that frame the call:
 | LLM timeout | 15 seconds (`AbortSignal.timeout`) |
 | Completion size | `max_completion_tokens` 650 |
 | Reply display | Truncated to 2000 characters |
+
+### Documentation assistant (`POST /api/docs-assistant`)
+
+The `/docs` portal's "Ask Sphere Docs" route (`src/app/api/docs-assistant/route.ts`, retrieval in `src/lib/docs/assistant.ts`) uses the same Groq provider pattern over **public documentation only** (`docs/**`, `README.md`, `AGENTS.md`, never reading `sphere_session`):
+
+- **Limits:** body ≤ 20,000 B (413), `docs-assistant` rate limit **20 requests / hour / IP** (429), last **6 messages**, last question truncated to **1,200 characters**, **20 s** timeout, `max_completion_tokens: 700`.
+- **Fallback:** scores headings/excerpts lexically across the documentation corpus; if `GROQ_API_KEY` is unset, times out, or fails `hasCredential()`, it answers directly with the top retrieved documentation citations (`provider: "lexical"`).
 
 ## Deterministic-first design
 

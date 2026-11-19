@@ -14,7 +14,7 @@ The platform brings all of it together:
 
 - A **public storefront** customers can browse any time — with or without an account.
 - A **pharmacist-controlled prescription workflow**: uploads are reviewed by a qualified pharmacist before any prescription-only medicine can be paid for or dispatched.
-- **Live stock, prices, batches and expiry dates** flowing in from the BandaGo POS.
+- **Live stock, prices, batches and expiry dates** flowing in from the BandaGo POS — with stagnant-POS drift protection and Daily Sales Export / optional Auto-Sync reconciliation back to the till.
 - **Order and delivery management** with rider dispatch.
 - **Payments** (M-Pesa, cards, cash), **loyalty** (Sphere Points), **promotions**, **clinical service bookings**, **medicine requests** and **notifications** — all in the same system.
 
@@ -99,7 +99,8 @@ Two things to notice in that picture: nothing reaches payment for prescription i
 | Medicine requests | "Find this medicine" requests with optional photo | [../features/medicine-requests.md](../features/medicine-requests.md) |
 | Notifications | In-app inbox, email, push alerts | [../features/notifications.md](../features/notifications.md) |
 | AI assistant | Product-finding and navigation help with strict medical guardrails | [../features/ai-assistant.md](../features/ai-assistant.md) |
-| BandaGo POS sync & CRM | Stock/batch sync from the till, customer profile reconciliation | [../integrations/](../integrations/) |
+| BandaGo POS sync & CRM | Bi-directional stock/batch sync, stagnant-POS drift protection, Daily Sales Export, CRM reconciliation | [../integrations/bandago-pos-crm.md](../integrations/bandago-pos-crm.md) |
+| Interactive documentation portal | `/docs` hub with 69 user journeys, API & DB explorers, ⌘K search, and "Ask Sphere Docs" | [../README.md](../README.md) |
 
 ## System boundaries — what the platform does NOT do today
 

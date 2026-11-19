@@ -226,6 +226,14 @@ It would be technically easy to read the cookie in `/api/assistant` and let the 
 
 If a product need genuinely requires server-side account context, that is a Part 3 decision to be recorded here, not a route edit.
 
+### Companion surface — "Ask Sphere Docs" (`POST /api/docs-assistant`)
+
+The `/docs` portal includes a documentation Q&A assistant (`POST /api/docs-assistant`, UI at `/docs/assistant`) that follows the exact same session-gating invariant by construction:
+
+- **Public documentation corpus only:** retrieves excerpts via heading-aware lexical scoring over `docs/**`, `README.md`, and `AGENTS.md` (`src/lib/docs/assistant.ts`) — never touches `User`, `Order`, `Prescription`, or `Session` tables.
+- **No session read:** never invokes `getSession()` or any auth guard.
+- **Guards and fallback:** enforces a 20,000 B cap, a dedicated `docs-assistant` rate-limit bucket (20 requests/hour/IP), a 6-message window (1,200-char last question), optional Groq synthesis (20 s timeout, 700 max tokens), deterministic lexical fallback when `GROQ_API_KEY` is absent or Groq fails, and `hasCredential()` output screening.
+
 ## Part 2 — AI coding agents working on this repository
 
 AI agents (Claude Code, Codex, Cursor, etc.) develop this codebase. The repository-level rules live in [../../AGENTS.md](../../AGENTS.md); the security-relevant subset is restated here because agents are AI systems with far broader reach than the chat assistant:

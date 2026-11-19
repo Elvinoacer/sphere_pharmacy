@@ -427,10 +427,13 @@ erDiagram
 
 ## Operations
 
-These models keep operational state and telemetry. They have **no foreign keys** — `AuditLog.entity`/`entityId` are plain strings, `PosSyncLog` is standalone, and the settings/rate-limit models are natural-keyed.
+These models keep operational state, POS reconciliation jobs, and telemetry. `PosOutboundJob` carries foreign keys to `Product` (cascade) and `Order` (SetNull), whereas `MedicineRequest`, `AuditLog`, `Setting`, `RateLimitBucket`, `PosSyncLog`, and `PosSyncIncident` have **no foreign keys**.
 
 ```mermaid
 erDiagram
+    PRODUCT ||--o{ POS_OUTBOUND_JOB : queues
+    ORDER |o--o{ POS_OUTBOUND_JOB : triggers
+
     MEDICINE_REQUEST {
         string id PK "cuid"
         string medicineName
@@ -459,10 +462,37 @@ erDiagram
     POS_SYNC_LOG {
         string id PK "cuid"
         string posSource "default BANDAGO"
+        string direction "INBOUND or OUTBOUND"
         string trigger "PosSyncTrigger enum"
         string status "PosSyncStatus enum"
         int itemsUpserted
         datetime startedAt
+    }
+    POS_OUTBOUND_JOB {
+        string id PK "cuid"
+        string idempotencyKey UK "event dedupe key"
+        string eventType "ONLINE_SALE ADMIN_STOCK_ADJUST REFUND_RESTOCK"
+        string status "PosOutboundStatus enum"
+        string productId FK "cascade"
+        string orderId FK "nullable SetNull"
+        int qtyDelta "signed stock delta"
+        string exportBatchId "daily export tag"
+    }
+    POS_SYNC_INCIDENT {
+        string id PK "cuid"
+        string direction "INBOUND or OUTBOUND"
+        string severity "CRITICAL ERROR WARNING"
+        string code "remediation key"
+        int occurrences
+        boolean resolved
+    }
+    PRODUCT {
+        string id PK "cuid"
+        string externalPosId UK
+    }
+    ORDER {
+        string id PK "cuid"
+        string reference UK
     }
 ```
 
@@ -481,6 +511,8 @@ erDiagram
 **Product → ProductBatch.** Each product owns per-lot rows unique on `(productId, batchNumber)` with `expiryDate` from iDempiere. The BandaGo normalizer aggregates lots, flags `isExpired`, and computes sellable `stockQty` excluding expired lots (FEFO, PPB-compliant); `nearestExpiryDate` on the product tracks the earliest live expiry.
 
 **User → PushToken / NotificationDelivery.** A user (or staff member) registers device tokens (`PushToken.token` unique; either `userId` or `staffId`). Enqueueing a notification writes the in-app `Notification` row plus one `NotificationDelivery` job per channel target — `{key}:email` for the recipient and `{key}:push:{tokenId}` per registered device — keyed unique by `dedupeKey`. Dispatch, retries, leases and reconciliation are covered in [data-lifecycle.md](data-lifecycle.md#notifications).
+
+**Product / Order → PosOutboundJob.** Whenever an online order is paid or prepared (`enqueueOrderPosDeduction`) or staff edit `stockQty` (`enqueueAdminStockEdit`), an idempotent `PosOutboundJob` row (`idempotencyKey` unique, deterministic UUIDv4-formatted `externalInventoryUU`) records the signed `qtyDelta` so inbound POS syncs protect unreconciled sales from stale-POS resurrection (`computeReconciledStock`) and either Daily Sales Export or opt-in `AUTO_SYNC` can reconcile BandaGo. Order cancellation/rejection/refund/expiry calls `cancelOrderPosDeduction` to cancel unsynced jobs or queue a compensating `REFUND_RESTOCK` job. Deleting a `Product` cascades its outbound jobs; deleting an `Order` nulls `orderId` (`SetNull`).
 
 ## Reading notes
 

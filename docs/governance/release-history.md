@@ -46,15 +46,32 @@ The same window hardened checkout/promotions: persisted promo codes revalidated 
 
 ## 5 November 2026 — full-codebase snapshot
 
-`FULL_CODEBASE.md` / `SPHERE_PHARMACY_FULL_CODEBASE.md` generated ("Complete Platform Codebase & Architecture", 314 source files, 58,693 lines, 2.52MB) — a point-in-time snapshot for review, not a living document.
+`SPHERE_PHARMACY_FULL_CODEBASE.md` generated ("Complete Platform Codebase & Architecture") — a point-in-time snapshot for review, not a living document (refreshable via `npm run update:codebase`).
 
-## November 2026 — documentation program
+## 18 November 2026 — canonical documentation program (`55eba08`)
 
-A full code audit re-verified the codebase (39 models, 87 routes, 10 migrations, 12+1 test suites) and produced this documentation tree — operations, testing, and governance runbooks grounded in verified fact sheets.
+A full code audit re-verified the codebase (39 models, 87 routes, 10 migrations, 12+1 test suites) and shipped the canonical documentation tree under `docs/`, `AGENTS.md`, `README.md`, and `openapi/sphere-api.yaml` — operations, testing, security, workflows, and governance runbooks grounded in verified fact sheets.
 
-## Recent commit history (verbatim `git log --oneline -60`)
+## 19 November 2026 — interactive `/docs` portal, lazy DB client & v0.3.0 upgrades (`89b680c`)
+
+Shipped the built-in documentation portal at `/docs` (`src/app/docs/**`, `src/lib/docs/**`, `src/components/docs/**`, `sitemap.ts` + footer/landing links): interactive Mermaid diagrams, 68 flowchart-backed user journeys (`docs/journeys/**`), OpenAPI API explorer, Prisma ER database explorer, ⌘K lexical search (`GET /api/docs-index`), and "Ask Sphere Docs" (`POST /api/docs-assistant`). Fixed build-time evaluation by wrapping `PrismaClient` in `src/lib/db.ts` behind a lazy `Proxy` (`getClient()`), added `outputFileTracingIncludes` in `next.config.ts` (pinned by `tests/security-static.test.mjs`), bumped `package.json` to `0.3.0`, and upgraded `next` (`^16.4.6`) and `prisma` / `@prisma/client` (`^6.19.3`).
+
+## 19 November 2026 — BandaGo bi-directional POS sync, drift protection, Daily Sales Export & H1 fix (`061e923`)
+
+Added migration `20261119120000_add_bandago_bidirectional_sync` (`pos_outbound_jobs`, `pos_sync_incidents`, POS baseline/warehouse fields on `Product`, `PosSyncLog.direction`, and 3 new + 1 extended POS enums), stagnant-POS drift protection (`computeReconciledStock`), order/refund/expiry/admin-stock-edit reconciliation hooks (`enqueueOrderPosDeduction`, `cancelOrderPosDeduction`, `enqueueAdminStockEdit`), Zero-PHI Daily Sales Export (`GET /api/admin/pos-sync/sales-export` generating multi-page A4 PDF, formula-safe CSV, or JSON), policy & reconciliation APIs (`/api/admin/pos-sync/policy`, `/api/admin/pos-sync/reconcile`), extension bridge endpoints (`/api/integrations/bandago/outbound`, `/outbound/ack`, `/telemetry`), the 4-workspace `pos-sync-section.tsx` hub (migrated to `sonner`), and `tests/bandago-bidirectional-sync.test.mjs`. **Closed H1** by removing `NEXT_PUBLIC_POS_SYNC_SECRET` and the hardcoded `csv-import` fallback, clearing the `.env.example` placeholder, and enforcing timing-safe fail-closed Bearer verification (`src/lib/security/bandago-bearer.ts`).
+
+## 19 November 2026 — root cleanup, `reference/` archive & `update:codebase` script (`c4629b7`, `6e5aad0`)
+
+Organized historical and blueprint files into `reference/` (`reference/archive/PROJECT_README.md`, `reference/archive/worklog.md`, `reference/bandago-pos-crm-blueprint.md`, `reference/bandago-api-and-integration-architecture.md`, `reference/SPHERE_PHARMACY_OWNER_OPERATIONS_MANUAL.pdf`), deleted the duplicate `FULL_CODEBASE.md` and stray `--full-page` binary, and added `npm run update:codebase` (`scripts/generate_codebase_file.py`).
+
+## Recent commit history (verbatim `git log --oneline -65`)
 
 ```text
+6e5aad0 chore: keep single update:codebase npm script
+c4629b7 chore: organize root files, remove duplicates, and add codebase export npm scripts
+061e923 feat: BandaGo bidirectional POS sync, telemetry, reconciliation & docs
+89b680c feat(docs): ship interactive documentation portal, fix build-time db evaluation and upgrade dependencies
+55eba08 documentation
 77c8689 add the sphere pharmacy changes to it
 ea52096 fix(pos-sync): harden sync transactions, slug collision, image preservation, and expired reservation cleanup
 184c370 preparation with bandaGo
@@ -128,23 +145,26 @@ ed2c5cd feat(checkout): restore and revalidate saved cart promo across reloads
 | 27 Oct 2026 | `20261027170000_booking_management_lookup_indexes`, `20261027183500_promotion_redemption_limits` | Booking lookup indexes; promotion limits |
 | 28 Oct 2026 | `20261028000000_order_payment_intent`, `20261028190000_private_promotion_visibility`, `20261028194500_admin_live_cursor_indexes` | Payment intent, private codes, live admin |
 | 4 Nov 2026 | `…1104200000_add_bandago_pos_support` (+ `ea52096` hardening) | BandaGo POS/CRM integration lands and hardens |
-| 5 Nov 2026 | `FULL_CODEBASE.md` snapshot (314 files / 58,693 lines) | Point-in-time review artifact |
-| Nov 2026 | docs tree (operations/testing/governance) | Code audit → this documentation program |
+| 5 Nov 2026 | `SPHERE_PHARMACY_FULL_CODEBASE.md` snapshot | Point-in-time review artifact (`npm run update:codebase`) |
+| 18 Nov 2026 | `55eba08` documentation | Canonical docs tree + OpenAPI 3.1 contract |
+| 19 Nov 2026 | `89b680c` `/docs` portal + `v0.3.0` | Interactive docs portal, 68 journeys, lazy DB Proxy, Next `^16.4.6` & Prisma `^6.19.3` |
+| 19 Nov 2026 | `…1119120000_add_bandago_bidirectional_sync` (`061e923`) | Bi-directional POS reconciliation, drift protection, Daily Sales Export, H1 fixed |
+| 19 Nov 2026 | `c4629b7`, `6e5aad0` | Root organization into `reference/`, single `update:codebase` script |
 
 ## How this history was reconstructed
 
-Sources, in order of reliability: the ten committed Prisma migrations (dates are in the migration directory names and are the strongest signal); the audit document's own date (5 Sep 2026); the recording program's dates (22 Oct 2026, stated in its files); the worklog (31 Aug 2026 era — historical only); the generated snapshot's stated date (5 Nov 2026); and `git log --oneline` (below) for commit-level sequencing. Where the worklog and migrations disagree, the migrations win. Known source weaknesses: `package.json` version (`0.2.1`) does not track releases; the git history begins mid-project (the pre-October work is represented by the migrations and docs, not individual commits).
+Sources, in order of reliability: the eleven committed Prisma migrations (dates are in the migration directory names and are the strongest signal); the audit document's own date (5 Sep 2026); the recording program's dates (22 Oct 2026, stated in its files); the worklog (31 Aug 2026 era — historical only); the generated snapshot's stated date; and `git log --oneline` (above) for commit-level sequencing. Where the worklog and migrations disagree, the migrations win. Known source weaknesses: earlier pre-`0.3.0` versions (`0.2.1`) did not track releases; the git history begins mid-project (the pre-October work is represented by the migrations and docs, not individual commits).
 
 ## State at time of writing (November 2026)
 
-For orientation of future readers: 39 Prisma models, 87 API routes, 10 migrations, 12 Node test suites + 1 Bun assistant suite, five cron endpoints awaiting an external scheduler, three HIGH debt items (credential exposure, scheduling gap, payment blockers) — full inventory in [../operations/](../operations/) and [technical-debt.md](technical-debt.md). The platform's payment layer is real-provider capable and fail-closed, but **no environment has been certified with live production provider credentials**; treat "production-ready" claims accordingly.
+For orientation of future readers: 41 Prisma models, 95 API routes (126 HTTP method handlers), 11 migrations, 13 Node test suites + 1 Bun assistant suite, five cron endpoints awaiting an external scheduler, two remaining open HIGH debt items (scheduling gap, payment blockers — H1 closed in `061e923`) — full inventory in [../operations/](../operations/) and [technical-debt.md](technical-debt.md). The platform's payment layer is real-provider capable and fail-closed, but **no environment has been certified with live production provider credentials**; treat "production-ready" claims accordingly.
 
 Reading order for someone catching up on this project: this file (how it got here) → [architecture-decisions.md](architecture-decisions.md) (why it is built this way) → [../operations/local-development.md](../operations/local-development.md) (how to run it) → [technical-debt.md](technical-debt.md) (what to fix first).
 
 ## Going forward
 
 - **This file is the release log.** Each meaningful change wave gets a dated section (what shipped, why, migration numbers if any) and an updated [technical-debt.md](technical-debt.md) cross-reference where relevant.
-- **Tag releases** (`git tag -a v0.x.y`) at deployment points and reference the tag in the narrative above; the current `package.json` version (`0.2.1`) does not track releases.
+- **Tag releases** (`git tag -a v0.x.y`) at deployment points and reference the tag in the narrative above (`package.json` is at `0.3.0`).
 - **Release-notes convention:** one dated section per release containing — shipped changes (user-visible first), migrations added, env vars added/changed, deployment/ops actions required (cron, callbacks, secrets), and debt items opened or closed. Anything requiring an operator action must also update the relevant runbook in [../operations/](../operations/).
 - Keep narrative sections short and factual; link to the runbooks that explain operation rather than duplicating them.
 - **Corrections welcome, evidence required:** if a date or attribution above is wrong, fix it with the commit/migration/document that proves the correction — never from memory alone.

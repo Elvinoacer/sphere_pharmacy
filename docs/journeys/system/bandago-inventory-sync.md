@@ -9,29 +9,29 @@ entryPoint: POST /api/integrations/bandago/sync (Chrome extension with Bearer ke
 objective: Keep the online catalogue synchronized with the physical pharmacy — ingest products, prices, stock and batch/expiry data from the BandaGo POS, enforce Kenya PPB FEFO and prescription rules, protect staff-curated product data, and record every run in PosSyncLog telemetry
 startCondition: The api_data_transformer extension pushes a JSON batch (or staff upload a CSV from the admin POS hub) with items carrying at least an externalPosId and a name
 endCondition: Valid items are upserted in chunks of 50 with per-item fallback, the PosSyncLog row records SUCCESS, PARTIAL or FAILED with counts and capped errors, and the caller receives a 200 JSON body with upserted and failed counts
-relatedJourneys: [A07, A09, P02, SYS-03, O02]
+relatedJourneys: [SYS-11, A07, A09, P02, SYS-03, O02]
 relatedDocs:
   - docs/integrations/bandago-pos-crm.md
   - docs/features/inventory-and-stock.md
   - docs/operations/environment-variables.md
 recordingRefs: []
 verified: November 2026
-evidence: Screenshots deliberately deferred — this is a system-to-system flow; verify via PosSyncLog and /api/admin/pos-status.
+evidence: Screenshots deliberately deferred — this is a system-to-system flow; verify via PosSyncLog, PosSyncIncident and /api/admin/pos-status.
 ---
 
 # SYS-08 — BandaGo inventory ingestion
 
-The physical pharmacy runs its counter sales and stock in BandaGo, an iDempiere-based POS. This journey is the server-side receiving end: a browser extension (external to this repo) pushes product, price, stock and batch data to the sync route — or staff upload a CSV, which delegates into the same handler. The route treats every payload as untrusted: it re-parses numbers, classifies prescription requirements under Kenya PPB rules, applies first-expired-first-out (FEFO) batch hygiene so expired stock can never sell online, preserves staff-curated images and Rx flags, and upserts in chunked transactions with per-item isolation so one poisoned item cannot ruin a batch. Every run is audited in `PosSyncLog`. The ingestion code is implemented and testable locally; end-to-end operation depends on the live BandaGo side and its extension — hence environment-dependent.
+The physical pharmacy runs its counter sales and stock in BandaGo, an iDempiere-based POS. This journey is the **inbound** receiving end of the bi-directional sync: a browser extension (external to this repo) pushes product, price, stock and batch data to the sync route — or staff upload a CSV, which delegates into the same handler. The route treats every payload as untrusted: it authenticates fail-closed in constant time, verifies single-tenant pinning (`expectedTenantUU`) and `inboundEnabled`, re-parses numbers, classifies prescription requirements under Kenya PPB rules, applies first-expired-first-out (FEFO) and `minShelfLifeDays` batch hygiene so expired stock can never sell online, protects unreconciled online sales against stagnant-POS resurrection (`computeReconciledStock`), preserves staff-curated images and Rx flags, and upserts in chunked transactions with per-item isolation. Every run is audited in `PosSyncLog` (`direction: INBOUND`) and deduplicated failures/warnings land in `PosSyncIncident`. The ingestion code is implemented and testable locally; end-to-end operation depends on the live BandaGo side and its extension — hence environment-dependent.
 
 | Metadata | Value |
 | --- | --- |
 | Primary actor | System (BandaGo POS → Sphere ingestion routes) |
 | Secondary actors | Pharmacist, Admin (staff-session uploads, CSV imports, telemetry) |
 | Functional area | Inventory and catalogue |
-| Entry point | `POST /api/integrations/bandago/sync` (machine bearer or staff session) |
-| Status | Environment-dependent (requires live provider credentials) — verified against code — routes and normalizer implemented; live flow needs BandaGo, the extension and `BANDAGO_SYNC_API_KEY` |
-| End condition | 200 JSON `{success, upsertedCount, failedCount, durationMs, errors}` — even partial failures answer 200 — with the `PosSyncLog` row finalized as SUCCESS, PARTIAL or FAILED |
-| Related journeys | A07 (staff stock management), A09 (CSV product import), P02 (the catalogue customers browse), SYS-03 (reservation release pre-step), O02 (orders that consume synced stock) |
+| Entry point | `POST /api/integrations/bandago/sync` (timing-safe machine bearer or staff session) |
+| Status | Environment-dependent (requires live provider credentials) — verified against code — routes, drift protection and normalizer implemented; live flow needs BandaGo, the extension and `BANDAGO_SYNC_API_KEY` |
+| End condition | 200 JSON `{success, upsertedCount, failedCount, reconciledProtectedCount, durationMs, policySummary, errors}` — even partial failures answer 200 — with `PosSyncLog` finalized as SUCCESS, PARTIAL or FAILED (or 403 `TENANT_MISMATCH` / paused notice) |
+| Related journeys | SYS-11 (outbound reconciliation & Daily Sales Export), A07 (staff stock management), A09 (CSV product import), P02 (the catalogue customers browse), SYS-03 (reservation release pre-step), O02 (orders that consume synced stock) |
 
 ## Journey map
 
@@ -41,29 +41,39 @@ sequenceDiagram
     participant A as Sync route
     participant G as InventoryGuard
     participant N as BandaGoNormalizer
+    participant R as Drift Reconciler
     participant D as PostgreSQL
-    E->>A: POST items - bearer key or ADMIN/PHARMACIST session
+    E->>A: POST items - timing-safe bearer or ADMIN/PHARMACIST session
     alt Auth fails
         A-->>E: 401 Invalid POS Sync Credentials
     end
+    A->>D: Load PosSyncPolicy
+    alt Tenant mismatch
+        A->>D: Log FAILED PosSyncLog + CRITICAL PosSyncIncident
+        A-->>E: 403 TENANT_MISMATCH
+    else Inbound paused
+        A-->>E: 200 paused true upsertedCount 0
+    end
     A->>G: cleanupExpiredReservations - 45 minutes
     A->>A: Sanitize items - externalPosId and name required
-    A->>D: Create PosSyncLog with raw itemsReceived
+    A->>D: Create PosSyncLog INBOUND with raw itemsReceived
     alt Zero valid items
         A->>D: Finalize log - SUCCESS or FAILED with reason
         A-->>E: 200 with synced 0 and errors
     end
+    A->>R: Fetch unreconciled outbound offsets and unpaid holds
     loop Chunks of 50 items
-        A->>N: Normalize price, stock, batches, Rx flag, slug
+        A->>N: Normalize price, stock, batches, minShelfLifeDays, Rx flag, slug
         N-->>A: FEFO validStock, nearest expiry, Rx classification
+        A->>R: computeReconciledStock - apply signedOffset and baseline
         A->>D: Transaction - resolve category, match product, upsert
         alt Chunk transaction fails
             A->>D: Retry each item in its own transaction
             A->>A: Record per-item error
         end
     end
-    A->>D: Finalize PosSyncLog - SUCCESS, PARTIAL or FAILED
-    A-->>E: 200 JSON - upsertedCount, failedCount, errors
+    A->>D: Record PosSyncIncident warnings and finalize PosSyncLog
+    A-->>E: 200 JSON - upsertedCount, failedCount, reconciledProtectedCount, errors
 ```
 
 ## Journey steps
@@ -73,11 +83,11 @@ sequenceDiagram
 - **Trigger:** The `api_data_transformer` Chrome extension (running in the pharmacist's browser, sniffing BandaGo responses) POSTs a JSON batch, or a staff member triggers an import from the admin POS hub.
 - **Location:** `POST /api/integrations/bandago/sync` — `src/app/api/integrations/bandago/sync/route.ts`.
 - **Destination:** No navigation — a JSON response for the caller.
-- **Purpose:** Allow machine-to-machine pushes and human uploads through one dual-mode gate.
-- **System behaviour:** The route accepts either `Authorization: Bearer <BANDAGO_SYNC_API_KEY>` (plain string comparison) or an active staff session with role `ADMIN` or `PHARMACIST` (via `requireStaff` from `src/lib/session.ts`). Neither passes → 401 "Unauthorized: Invalid POS Sync Credentials".
-- **Outcome:** An authenticated ingestion request.
+- **Purpose:** Allow machine-to-machine pushes and human uploads through one fail-closed, timing-safe dual-mode gate.
+- **System behaviour:** The route accepts either `Authorization: Bearer <BANDAGO_SYNC_API_KEY>` (constant-time `timingSafeEqualStrings`, failing closed when `BANDAGO_SYNC_API_KEY` is unset) or an active staff session with role `ADMIN` or `PHARMACIST` (via `requireStaff` from `src/lib/session.ts`). Neither passes → 401 "Unauthorized: Invalid POS Sync Credentials".
+- **Outcome:** An authenticated ingestion request, followed by loading `PosSyncPolicy` (`expectedTenantUU` pinning → 403 `TENANT_MISMATCH` on mismatch; `inboundEnabled: false` pauses non-manual syncs).
 - **Next step:** Release stale reservations.
-- **Alternative paths:** The CSV route (`src/app/api/integrations/bandago/csv-import/route.ts`) uses the same dual auth and delegates internally to this handler. Known credential-handling defects (browser-exposed `NEXT_PUBLIC_POS_SYNC_SECRET`, a hard-coded fallback secret in the CSV route, example-file defaults) are documented in the integration doc as requiring remediation.
+- **Alternative paths:** The CSV route (`src/app/api/integrations/bandago/csv-import/route.ts`) uses the same timing-safe dual auth (`authorizeBandagoRequest` / `timingSafeEqualStrings`) and delegates internally to this handler. The historical H1 credential issues (browser-exposed `NEXT_PUBLIC_POS_SYNC_SECRET` and hardcoded CSV fallback) were remediated in commit `061e923`.
 
 ### Step 2 — Release expired virtual reservations
 
@@ -123,50 +133,52 @@ sequenceDiagram
 - **Next step:** Upsert with FEFO and PPB rules.
 - **Alternative paths:** The category cache makes repeated slugs cheap; the collision ladder guarantees the upsert's `where: { externalPosId }` is always well-defined.
 
-### Step 6 — Upsert with FEFO and PPB rules
+### Step 6 — Upsert with FEFO, drift protection, and PPB rules
 
 - **Trigger:** A matched item inside the chunk transaction.
-- **Location:** Same route; `BandaGoNormalizer.processBatches`/`classifyRequiresPrescription`; `Product` and `ProductBatch` models.
+- **Location:** Same route; `BandaGoNormalizer.processBatches`/`classifyRequiresPrescription` and `computeReconciledStock` (`src/lib/pos-reconciliation-core.ts`); `Product` and `ProductBatch` models.
 - **Destination:** Product upsert plus batch replacement.
-- **Purpose:** Make expired stock unsellable, keep Rx flags honest, and never overwrite staff-curated data.
-- **System behaviour:** `processBatches` aggregates duplicate batch numbers across warehouse locators (quantities summed, earliest expiry wins; a missing expiry defaults to now + 365 days), flags batches with `expiry <= now` as `isExpired`, and excludes them from `validStock`; `nearestExpiryDate` is the earliest valid expiry and `hasNearExpiry` flags under 90 days. With batches present, `stockQty` = FEFO-valid stock; without batches it is the raw stock, or 0 if the item-level expiry has passed. `classifyRequiresPrescription` returns true for an explicit flag, an Rx/POM/Prescription category or name, or a ~30-item keyword list of prescription-only medicines — and the result is OR'd with the existing flag, so a sync can **raise** but never lower the Rx requirement. Custom local images under `/images/products/*` (other than the generic placeholder) are never overwritten. `inStock`/`stockStatus` are computed from effective stock after subtracting `virtualReservedStock` (`OUT_OF_STOCK` / `LOW_STOCK` at ≤ 5 / `IN_STOCK`). Batch persistence: `stock === 0` deletes all batches; a non-empty `batches[]` replaces them (blank batch numbers filtered); no batches array leaves existing batches untouched.
-- **Outcome:** The catalogue row reflects POS truth under PPB constraints; `lastSyncedAt` is stamped.
-- **Next step:** Continue the chunk loop; finalize.
-- **Alternative paths:** New products are created with `posSource: BANDAGO`, `safetyStockBuffer: 2`, the incoming image or the generic placeholder, and an empty description.
+- **Purpose:** Make expired/short-shelf-life stock unsellable, keep Rx flags honest, protect unreconciled online sales from stagnant-POS resurrection, and never overwrite staff-curated data.
+- **System behaviour:** `processBatches` aggregates duplicate batch numbers across warehouse locators (quantities summed, earliest expiry wins; a missing expiry defaults to now + 365 days), flags batches with `expiry <= now` as `isExpired`, and excludes expired lots and lots inside `policy.minShelfLifeDays` from `validStock`; `nearestExpiryDate` is the earliest valid expiry and `hasNearExpiry` flags under 90 days. Before writing `stock` and `stockQty`, `computeReconciledStock` applies `signedOffset = pendingOutboundNetDelta - unpaidOrderHoldQty` (when `policy.protectUnreconciledSales` is true) and clamps `active: false` / `DISCONTINUED` if the incoming POS item is inactive/discontinued; `lastPosStock` and `lastPosSellableStock` capture the raw POS snapshot, and warehouse/locator/org/client UUs are stored. `classifyRequiresPrescription` returns true for an explicit flag, an Rx/POM/Prescription category or name, or a ~30-item keyword list of prescription-only medicines — OR'd with the existing flag. Custom local images under `/images/products/*` (other than the generic placeholder) are never overwritten. Batch persistence: `stock === 0` deletes all batches; a non-empty `batches[]` replaces them; no batches array leaves existing batches untouched.
+- **Outcome:** The catalogue row reflects reconciled POS truth under PPB constraints; `lastSyncedAt` is stamped.
+- **Next step:** Continue the chunk loop; finalize logs and incidents.
+- **Alternative paths:** If POS stock dropped by at least the pending online sales quantity (`possibleManualReconcileDetected`), a `POSSIBLE_MANUAL_RECONCILE` `PosSyncIncident` warning is recorded so staff can verify whether they already entered the sales manually.
 
 ### Step 7 — Chunk, fall back, finalize and respond
 
 - **Trigger:** All items processed or failed.
 - **Location:** Same route, chunk loop and finalization.
-- **Destination:** `PosSyncLog` finalization and the HTTP response.
-- **Purpose:** Bound transaction size, isolate poison items, and report honestly.
-- **System behaviour:** Items are processed in chunks of 50 inside `prisma.$transaction` (`maxWait` 10 s, `timeout` 30 s). A chunk failure falls back to per-item isolated transactions; individual failures accumulate in `errors[]` (externalPosId, name, message). The log is finalized as `SUCCESS` (no errors), `PARTIAL` (some) or `FAILED` (every item failed), and the response is **200 even for partial failure** — `{success, upsertedCount, failedCount, durationMs, timestamp, errors}` with at most 20 errors inline. A global catch finalizes the log as FAILED and answers 500.
+- **Destination:** `PosSyncLog` finalization, `PosSyncIncident` recording, and the HTTP response.
+- **Purpose:** Bound transaction size, isolate poison items, surface actionable errors, and report honestly.
+- **System behaviour:** Items are processed in chunks of 50 inside `prisma.$transaction` (`maxWait` 10 s, `timeout` 30 s). A chunk failure falls back to per-item isolated transactions; individual failures accumulate in `errors[]` and record deduplicated `INBOUND_ITEM_FAILED` `PosSyncIncident` rows. The log (`direction: INBOUND`) is finalized as `SUCCESS` (no errors), `PARTIAL` (some) or `FAILED` (every item failed), and the response is **200 even for partial failure** — `{success, upsertedCount, failedCount, reconciledProtectedCount, durationMs, timestamp, policySummary, errors}` with at most 20 errors inline. A global catch finalizes the log as FAILED, records a `CRITICAL` incident, and answers 500.
 - **Outcome:** A converged catalogue and an auditable run.
-- **Next step:** Customers see fresh stock (P02); orders reserve against it (O02).
+- **Next step:** Customers see fresh stock (P02); orders reserve against it (O02); outbound reconciliation runs via SYS-11.
 - **Alternative paths:** Automation must read `success`/`failedCount`, not the status code. FEFO applies at ingestion only — batch-level deduction per pick is not implemented (a documented limitation).
 
 ## Decision points
 
 | Decision | Branches | Enforced by/where |
 | --- | --- | --- |
-| Caller authenticated? | Bearer key or ADMIN/PHARMACIST session → run; else → 401 | Dual auth in the sync and CSV routes; `requireStaff` in `src/lib/session.ts` |
+| Caller authenticated? | Timing-safe Bearer key or ADMIN/PHARMACIST session → run; else → 401 | Dual auth in the sync and CSV routes; `timingSafeEqualStrings` / `requireStaff` |
+| Tenant & policy check? | `expectedTenantUU` mismatch → 403 `TENANT_MISMATCH`; `!inboundEnabled` (non-manual) → 200 paused | `PosSyncPolicy` check in sync route |
 | Item valid? | `externalPosId` + name present → ingest; else → errors[] | Sanitization loop in the route |
-| Trigger recognized? | One of the four enum values → use it; else → `EXTENSION_STREAM` | `validTriggers` check |
+| Trigger recognized? | One of the enum values (`CDP_INTERCEPT` → `EXTENSION_STREAM`) → use it; else → `EXTENSION_STREAM` | `validTriggers` check |
 | Product matched? | externalPosId → slug/baseSlug → legacy name (externalPosId null) → link and keep slug; slug/SKU collisions disambiguated with suffixes; no match → create | Matching ladder and collision handling in `processSingleItem` |
-| Batch expired? | `expiry <= now` → `isExpired`, excluded from `validStock`; valid → counted, nearest expiry tracked | `processBatches` in `src/lib/bandago-normalizer.ts` |
+| Batch expired / shelf buffer? | `expiry <= now` → `isExpired`, excluded (along with `minShelfLifeDays` buffer) from `validStock`; valid → counted, nearest expiry tracked | `processBatches` in `src/lib/bandago-normalizer.ts` |
+| Stagnant POS drift? | `protectUnreconciledSales` → apply `pendingOutboundNetDelta - unpaidOrderHoldQty`; flag `POSSIBLE_MANUAL_RECONCILE` when warranted | `computeReconciledStock` in `src/lib/pos-reconciliation-core.ts` |
 | Rx classification? | Flag/category/keyword → true; result OR'd with existing flag (never downgraded) | `classifyRequiresPrescription` |
 | Batch payload shape? | `stock === 0` → delete all; batches present → replace; absent → keep existing | Batch persistence rules in the route |
 | Chunk failure? | Whole-chunk transaction → per-item retry; item error recorded | Chunk loop with fallback |
 
 ## Error and recovery paths
 
-- **Unauthorized (401):** neither bearer key nor staff session passed; verify `BANDAGO_SYNC_API_KEY` and staff role. Rotate the key if it ever ran with the example value (documented credential defects).
+- **Unauthorized (401):** neither timing-safe bearer key nor staff session passed; verify `BANDAGO_SYNC_API_KEY` (fails closed when unset) and staff role. Rotate the key if it ever matched the retired `.env.example` placeholder.
+- **Tenant mismatch (403):** incoming `tenantUU` disagrees with `policy.expectedTenantUU`; switch the BandaGo tab back to Sphere Pharmacy or update Policy.
 - **Invalid items:** rejected individually into `errors[]`; the rest of the batch proceeds — one bad item never crashes the run.
-- **Chunk transaction failure:** the chunk is retried item-by-item in isolated transactions; only the true offenders fail.
+- **Chunk transaction failure:** the chunk is retried item-by-item in isolated transactions; only the true offenders fail and appear in the POS Error Console (`INBOUND_ITEM_FAILED`).
 - **Partial failure (HTTP 200):** callers must inspect `failedCount`/`errors`; the `PosSyncLog` row records `PARTIAL` with capped error details for the admin hub.
-- **Fatal pipeline error (500):** the log is finalized FAILED with a `fatalError` detail; the extension's next push is a fresh, fully idempotent run (externalPosId-keyed upserts converge).
-- **Idempotence:** repeated pushes converge to the same state — upserts by `externalPosId`, not request dedupe.
-- **Security remediation owed:** browser-exposed `NEXT_PUBLIC_POS_SYNC_SECRET`, the CSV route's hard-coded fallback secret, and plain `===` bearer comparisons are documented as requiring remediation; operators must compensate until fixed.
+- **Fatal pipeline error (500):** the log is finalized FAILED with a `fatalError` detail and a `CRITICAL` incident; the extension's next push is a fresh, fully idempotent run (externalPosId-keyed upserts converge).
+- **Idempotence:** repeated pushes converge to the same state — upserts by `externalPosId`, protected by `computeReconciledStock` offsets.
 
 ## Traceability
 
@@ -174,19 +186,21 @@ sequenceDiagram
 | --- | --- |
 | Sync endpoint | `src/app/api/integrations/bandago/sync/route.ts` |
 | CSV import (delegates to sync) | `src/app/api/integrations/bandago/csv-import/route.ts`, `parseCsv` in `src/lib/bandago-normalizer.ts` |
-| Auth | `BANDAGO_SYNC_API_KEY` bearer or `requireStaff(['ADMIN','PHARMACIST'])` in `src/lib/session.ts` |
+| Auth | `verifyBandagoBearerHeader` / `authorizeBandagoRequest` in `src/lib/security/bandago-auth.ts` & `bandago-bearer.ts`, `requireStaff` in `src/lib/session.ts` |
+| Drift protection & policy | `computeReconciledStock`, `getUnreconciledOffsetsByProduct`, `getPosSyncPolicy` in `src/lib/pos-reconciliation*.ts` |
 | Reservation pre-cleanup | `InventoryGuard.cleanupExpiredReservations(45)` in `src/lib/inventory-guard.ts` |
 | Normalization and FEFO | `BandaGoNormalizer` (`parseNumber`, `parseInteger`, `slugify`, `processBatches`) in `src/lib/bandago-normalizer.ts` |
 | Rx classification (PPB) | `BandaGoNormalizer.classifyRequiresPrescription` |
-| Telemetry models | `PosSyncLog`, `ProductBatch`, `Product`, `Category` in `prisma/schema.prisma` |
+| Telemetry models | `PosSyncLog`, `PosSyncIncident`, `PosOutboundJob`, `ProductBatch`, `Product`, `Category` in `prisma/schema.prisma` |
 | Chunking and fallback | Chunk loop (50 items, `maxWait` 10 s, `timeout` 30 s) in the sync route |
 | Admin observability | `GET /api/admin/pos-status`; `src/components/views/admin/sections/pos-sync-section.tsx` |
-| Tests | `tests/bandago-pos-crm-integration.test.mjs` |
+| Tests | `tests/bandago-pos-crm-integration.test.mjs`, `tests/bandago-bidirectional-sync.test.mjs` |
 | Integration doc | `docs/integrations/bandago-pos-crm.md` |
-| API contract | `openapi/sphere-api.yaml` — `POST /integrations/bandago/sync` |
+| API contract | `openapi/sphere-api.yaml` — `POST /api/integrations/bandago/sync` |
 
 ## Related journeys and documents
 
+- **SYS-11** — outbound BandaGo reconciliation, Daily Sales Export, and Auto-Sync writeback
 - **A07** — staff stock and product management over the synced catalogue
 - **A09** — the staff CSV import journey (the human counterpart of machine ingestion)
 - **P02** — the catalogue customers browse, kept fresh by this job

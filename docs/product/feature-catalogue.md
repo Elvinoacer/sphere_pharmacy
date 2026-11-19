@@ -194,12 +194,26 @@ This is the complete inventory of what the Sphere Pharmacy platform does, module
 | Feature | Purpose | Primary users | Where | Backend status | Notes |
 | --- | --- | --- | --- | --- | --- |
 | Sync API | Receive stock, price and batch updates from the POS | Server-side | `/api/integrations/bandago/sync` | **Implemented** | Accepts streamed or CSV-triggered batches; chunked, error-tolerant |
+| Stagnant-POS drift protection | Prevent stale POS snapshots from overwriting online sales back up | Server-side | `/api/integrations/bandago/sync` | **Implemented** | Subtracts unreconciled outbound sales and unpaid order holds during inbound sync |
+| Daily Sales Export & reconciliation | Export Zero-PHI online sales sheets and confirm manual POS entry | Admins, Pharmacists | Admin → POS Sync | **Implemented** | Multi-page A4 PDF (with pharmacist sign-off), formula-safe CSV, JSON; one-click **Confirm Entered in BandaGo POS** |
+| Outbound ledger & opt-in Auto-Sync | Queue online sales/restocks/stock edits and optionally write back to BandaGo | Server-side / Admins (policy) | Admin → POS Sync; `/api/integrations/bandago/outbound*` | **Implemented** | Defaults to safe Manual Export; Admins can opt into `AUTO_SYNC` writeback via open POS tab |
+| Sync policy & tenant pinning | Configure sync direction, drift guard, min shelf life, and tenant UU pin | Admins (edit), Staff (read) | Admin → POS Sync | **Implemented** | Rejects mismatched BandaGo clinic tabs (`TENANT_MISMATCH`); cutover baseline control |
+| Error Console & bridge heartbeat | Triage deduplicated POS/extension errors and watch bridge status | Admins, Pharmacists | Admin → POS Sync | **Implemented** | Guided remediation per error code; critical incidents alert admins/pharmacists |
 | Data normalizer | Clean prices ("KSh 3,400"), names, categories, Rx flags | Server-side | — | **Implemented** | Kenya PPB keyword list classifies prescription items; existing Rx flags are never downgraded |
 | FEFO batch handling | Deduplicate batches, exclude expired stock | Server-side | — | **Implemented** | Sellable stock ignores expired batches (PPB-aligned) |
 | CRM sync | Reconcile customer profiles by phone number | Server-side | `/api/integrations/bandago/crm` | **Implemented** | Links loyalty balances and chronic-patient flags; clinical data is never synced |
 | Chronic refill reminders | Nudge patients ~30 days after an Rx order | Server-side | — | **Environment-dependent** | Implemented as a scheduled job (in-app + email); time-based only |
-| POS Sync hub | Watch sync telemetry and import CSVs | Admins, Pharmacists | Admin → POS Sync | **Implemented** | Products mapped, active batches, near-expiry flags, last sync signal, sync ledger |
-| Browser extension (api_data_transformer) | Capture data from the BandaGo POS screen | Pharmacists | External | **Requires live verification** | A separate Chrome extension, not part of this repository; the hub shows "awaiting extension" until connected |
+| POS Sync hub | 4-workspace hub: Overview & Policy, Export & Reconcile, Error Console, Audit & CSV | Admins, Pharmacists | Admin → POS Sync | **Implemented** | Authenticated via staff cookie; alerts admins if `BANDAGO_SYNC_API_KEY` is missing or retired default |
+| Browser extension (api_data_transformer) | Capture data from the BandaGo POS screen and run optional Auto-Sync writebacks | Pharmacists | External | **Requires live verification** | A separate Chrome extension, not part of this repository; the hub shows live heartbeat once connected |
+
+## Interactive documentation portal (`/docs`)
+
+| Feature | Purpose | Primary users | Where | Backend status | Notes |
+| --- | --- | --- | --- | --- | --- |
+| Documentation & journey explorer | Browse architecture, runbooks, and 69 flowchart-backed user journeys | Everyone, Staff, Engineers | `/docs`, `/docs/journeys` | **Implemented** | Renders canonical Markdown and Mermaid diagrams interactively (zoom/pan/SVG export) |
+| API & Database explorers | Search endpoints and inspect models with generated ER diagrams | Engineers, Agents | `/docs/api-reference`, `/docs/database` | **Implemented** | Generated directly from `openapi/sphere-api.yaml` and `prisma/schema.prisma` |
+| Command palette search (⌘K) | Full-text search across docs, journeys, and endpoints | Everyone | `/docs` header | **Implemented** | Powered by `/api/docs-index` |
+| Ask Sphere Docs assistant | Answer questions grounded in the public docs with citations | Everyone | `/docs/assistant` | **Environment-dependent** | Uses Groq when `GROQ_API_KEY` is set; falls back cleanly to lexical retrieval excerpts; never reads sessions |
 
 ## Related documentation
 

@@ -10,7 +10,7 @@ Symptom → likely cause → fix, organized by area, plus a "where to look" evid
 
 | Symptom | Likely cause | Fix |
 | --- | --- | --- |
-| `db.ts` throws on boot ("none of the database URL variables is set") | No `DATABASE_URL` / `sphere_pharmacy_*` URL variable in the environment | Set one of the four accepted variables ([environment-variables.md](environment-variables.md)); the standalone `start.sh` hard-fails for the same reason. |
+| `db.ts` throws on first DB access ("Database configuration missing...") | No `DATABASE_URL` / `sphere_pharmacy_*` URL variable in the environment | Set one of the four accepted variables ([environment-variables.md](environment-variables.md)); `db.ts` uses a lazy `Proxy` so builds pass, while the standalone `start.sh` hard-fails on boot. |
 | TypeScript errors about `@prisma/client` after install | Prisma client not generated | `npx prisma generate` (or reinstall — `postinstall` runs it). |
 | Standalone deployment boots but health checks time out | `.next/standalone/server.js` missing from the artifact (build produced non-standalone output) | The `.zscripts/build.sh` guard self-heals this at build time; if deploying manually, ensure `STANDALONE=true` build and that `build:standalone` copied `.next/static` + `public/` in. See [deployment.md](deployment.md). |
 | App runs but every page 500s after a schema edit | Prisma client generated from an older schema, or migrations pending | Regenerate client; `npx prisma migrate status`; see Database below. |
@@ -56,10 +56,13 @@ Symptom → likely cause → fix, organized by area, plus a "where to look" evid
 
 | Symptom | Likely cause | Fix |
 | --- | --- | --- |
-| Sync returns 401 "Invalid POS Sync Credentials" | Bearer ≠ `BANDAGO_SYNC_API_KEY`, or the variable is unset (route then never validates bearer) — or staff session lacks ADMIN/PHARMACIST | Set the key in every environment; see the browser-secret caveat in [../governance/technical-debt.md](../governance/technical-debt.md). |
-| Sync reports PARTIAL | Per-item errors (bad rows) — chunk failure fell back to isolated transactions | Read `errors[]` in the response and the `PosSyncLog.details` (capped 50) via `/api/admin/pos-status`. |
+| Sync returns 401 "Invalid POS Sync Credentials" | Bearer ≠ `BANDAGO_SYNC_API_KEY`, variable unset (route fails closed on Bearer auth), or staff session lacks ADMIN/PHARMACIST | Set a strong random `BANDAGO_SYNC_API_KEY` (never the retired placeholder); admin CSV uploads use the `sphere_session` cookie automatically. |
+| Sync returns 403 `TENANT_MISMATCH` | Chrome bridge sent a packet from a different BandaGo clinic (`AD_Client_UU`) than `policy.expectedTenantUU` | Switch BandaGo back to Sphere Pharmacy's clinic tab, or update `expectedTenantUU` in Admin → POS Sync → Policy. |
+| Inbound sync answers `{ paused: true, upsertedCount: 0 }` | `policy.inboundEnabled` is toggled off (only `MANUAL_RECONCILE` runs while paused) | Re-enable inbound sync in Admin → POS Sync → Overview & Policy when ready. |
+| Sync reports PARTIAL | Per-item errors (bad rows) — chunk failure fell back to isolated transactions | Read `errors[]` in the response, `PosSyncLog.details` (capped 50), and the POS Error Console via `/api/admin/pos-status`. |
 | Products not linking | `externalPosId` missing on the incoming item, or slug/SKU collision resolution kicked in | Ensure the extension/CSV maps `uu`/`M_Product_UU`/`id` to `externalPosId`; matching is `externalPosId` first, then slug-based linking for legacy rows. |
-| Stock looks wrong | Expired batches excluded from `stockQty` (PPB rule) or virtual reservations held | Compare `stock` (physical) vs `stockQty` (FEFO-valid) vs effective availability (minus safety buffer 2 and virtual reservations). |
+| Stock looks wrong or `POSSIBLE_MANUAL_RECONCILE` warning | Expired/short-shelf-life batches excluded (`minShelfLifeDays`), stagnant-POS drift offset active (`computeReconciledStock`), or manual POS drop detected | Check Live Stock Variance Inspector (`POS Sync → Sales Export & Reconciliation`), confirm already-entered sales via **Confirm Entered**, or run an Admin `SET_BASELINE_NOW` cutover. |
+| `NO_POS_TAB` / `AUTH_EXPIRED` / `AUTO_SYNC` stalled | No open authenticated `go.bandahealth.org` Chrome tab or BandaGo session expired | Re-authenticate in BandaGo Chrome tab, or download the Daily Sales PDF/CSV from POS Sync and confirm manual entry. |
 
 ## Orders
 
@@ -75,7 +78,7 @@ Symptom → likely cause → fix, organized by area, plus a "where to look" evid
 | Symptom | Likely cause | Fix |
 | --- | --- | --- |
 | Answers feel "canned" / no LLM | `GROQ_API_KEY` unset — deterministic-first mode | Intentional; set the key (and optionally `GROQ_MODEL`) to enable LLM mode. |
-| 429 from assistant | Rate limit 40/min per IP | Expected behavior; retry later. |
+| 429 from assistant | Rate limit 40/hour per IP (`/api/assistant`) or 20/hour per IP (`/api/docs-assistant`) | Expected behavior; retry later. |
 | Private-data questions refused | Session-scoped access by design — the assistant route gets no session cookie | See [../security/ai-access-and-authorized-sessions.md](../security/ai-access-and-authorized-sessions.md). |
 
 ## Admin
@@ -108,7 +111,8 @@ Symptom → likely cause → fix, organized by area, plus a "where to look" evid
 | Source | What it tells you |
 | --- | --- |
 | `AuditLog` (`GET /api/admin/audit`, ADMIN) | Staff/admin actions: settings, staff changes, order transitions, refunds, Rx decisions, POS CSV imports. |
-| `PosSyncLog` (`GET /api/admin/pos-status`) | BandaGo sync runs: trigger, status, item counts, duration, error details. |
+| `PosSyncLog` (`GET /api/admin/pos-status`) | BandaGo sync runs (`direction`: INBOUND/OUTBOUND): trigger, status, item counts, duration, error details. |
+| `PosOutboundJob` & `PosSyncIncident` (`GET /api/admin/pos-sync/reconcile`) | Outbound deductions/restocks awaiting export or `AUTO_SYNC` writeback, stock variance offsets, and deduplicated Zero-PHI bridge incidents. |
 | `NotificationDelivery` via `/api/admin/notification-health` | Queue depth, oldest pending, failed/bounced jobs, config flags. |
 | `dev.log` / `server.log` | Dev (`npm run dev` tees to `dev.log`) and standalone server output. |
 | Provider dashboards | M-Pesa portal (STK results, B2C refunds), IntaSend (invoices/chargebacks), Resend (deliveries/bounces), FCM console, Cloudflare R2 (objects). |

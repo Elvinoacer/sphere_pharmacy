@@ -10,7 +10,7 @@ Operational procedures for the Sphere Pharmacy PostgreSQL database: connection r
 
 `src/lib/db.ts`:
 
-- Resolves the connection URL in this order: `DATABASE_URL` → `sphere_pharmacy_PRISMA_DATABASE_URL` → `sphere_pharmacy_DATABASE_URL` → `sphere_pharmacy_POSTGRES_URL`, and **throws** when none is set.
+- Resolves the connection URL in this order: `DATABASE_URL` → `sphere_pharmacy_PRISMA_DATABASE_URL` → `sphere_pharmacy_DATABASE_URL` → `sphere_pharmacy_POSTGRES_URL`, using a lazy `Proxy` so build-time imports without a DB URL do not fail, and **throws on the first runtime query** when none is set.
 - Maintains a **singleton client** on `globalThis` (prevents connection exhaustion from hot-reload in dev).
 - Detects pooled Neon URLs (hostname contains `-pooler.`) and appends `statement_cache_size=0` unless already present — this prevents the PgBouncer stale-prepared-plan error (`0A000`) after schema changes.
 - Logs at `["warn", "error"]` only.
@@ -25,7 +25,7 @@ Practical rules: use the pooled URL for the app, the direct (non-pooler) URL for
 - **Status check:** `npx prisma migrate status`.
 - `migration_lock.toml` pins the provider to `postgresql` — do not change it.
 
-The ten committed migrations (chronological, 2026 timestamps):
+The eleven committed migrations (chronological, 2026 timestamps):
 
 | # | Migration | One-liner |
 | --- | --- | --- |
@@ -39,6 +39,7 @@ The ten committed migrations (chronological, 2026 timestamps):
 | 8 | `20261028190000_private_promotion_visibility` | `isPublic` gating for share-only promotion codes. |
 | 9 | `20261028194500_admin_live_cursor_indexes` | Cursor-pair indexes (`updatedAt,id` / `createdAt,id`) for low-cost admin live updates. |
 | 10 | `20261104200000_add_bandago_pos_support` | POS/CRM tables and columns: `externalPosId`, `ProductBatch`, `PosSyncLog`, CRM user fields. |
+| 11 | `20261119120000_add_bandago_bidirectional_sync` | Bi-directional POS reconciliation & telemetry: `pos_outbound_jobs`, `pos_sync_incidents`, POS drift baseline columns, `PosSyncDirection` & outbound enums. |
 
 ## `db:push` — development only
 
@@ -53,7 +54,7 @@ The ten committed migrations (chronological, 2026 timestamps):
 A schema change in this codebase touches **four** places, not one:
 
 1. **Migration** — `prisma/schema.prisma` + a named migration via `prisma migrate dev`.
-2. **Constants** — most statuses are **strings validated in code, not Prisma enums** (`src/lib/constants.ts`, workflow guards). The only schema-level enums are the BandaGo `PosSyncTrigger`/`PosSyncStatus` pair (see [../governance/architecture-decisions.md](../governance/architecture-decisions.md) ADR-004). Add new status values to the canonical lists first.
+2. **Constants** — most statuses are **strings validated in code, not Prisma enums** (`src/lib/constants.ts`, workflow guards). The only schema-level enums are the five BandaGo POS enums (`PosSyncStatus`, `PosSyncTrigger`, `PosSyncDirection`, `PosOutboundStatus`, `PosOutboundEventType`) (see [../governance/architecture-decisions.md](../governance/architecture-decisions.md) ADR-004). Add new status values to the canonical lists first.
 3. **DTO layer** — `src/lib/dto.ts` serializes to API shapes (`moneyNumber`, ISO dates, status casts). New columns need explicit DTO mapping; note `toPrescriptionDTO` hardcodes `fileUrl: null` / `storageKey: null` so storage keys never leak.
 4. **API contract** — update [../api/api-reference.md](../api/api-reference.md) and `openapi/sphere-api.yaml`, and extend the relevant test suite (`tests/*.test.mjs`).
 
@@ -79,7 +80,7 @@ Worked example — adding a nullable `preferredContact` column to `User`:
 
 Useful targets for ad-hoc checks (run with the Prisma console or SQL client; scope reads narrowly):
 
-- **PosSyncLog** (`pos_sync_logs`) — BandaGo sync health: `status` (SUCCESS/PARTIAL/FAILED), `itemsReceived/Upserted/Failed`, `durationMs`, `details` (errors capped at 50). Surfaced in-app via `GET /api/admin/pos-status`.
+- **PosSyncLog / PosOutboundJob / PosSyncIncident** (`pos_sync_logs`, `pos_outbound_jobs`, `pos_sync_incidents`) — BandaGo bi-directional sync health: `direction`, `status` (SUCCESS/PARTIAL/FAILED), `itemsReceived/Upserted/Failed`, `durationMs`, pending/exported/failed outbound jobs, and open Zero-PHI incidents. Surfaced in-app via `GET /api/admin/pos-status` and `GET /api/admin/pos-sync/reconcile`.
 - **NotificationDelivery** — dispatcher health: group by `status` (PENDING/PROCESSING/SENT/FAILED/…), `oldestPendingAt`, `attempts`, `lastError`. Surfaced via `GET /api/admin/notification-health` (ADMIN) — prefer the endpoint; it leaks no message bodies.
 - **RateLimitBucket** — `windowEnds` index exists for sweeping stale fixed-window buckets; if the table grows unbounded, sweep rows with `windowEnds < now()` during a quiet window.
 - **AuditLog** — the admin audit trail (`GET /api/admin/audit`, latest 200).
@@ -93,9 +94,13 @@ SELECT status, channel, count(*), min(available_at) AS oldest
 FROM "NotificationDelivery" GROUP BY status, channel ORDER BY status;
 
 -- BandaGo sync outcomes, last 7 days
-SELECT status, count(*), avg("durationMs") AS avg_ms
-FROM pos_sync_logs WHERE "startedAt" > now() - interval '7 days'
-GROUP BY status;
+SELECT direction, status, count(*), avg("duration_ms") AS avg_ms
+FROM pos_sync_logs WHERE "started_at" > now() - interval '7 days'
+GROUP BY direction, status;
+
+-- Open POS outbound reconciliation jobs and unresolved incidents
+SELECT status, count(*) FROM pos_outbound_jobs GROUP BY status ORDER BY status;
+SELECT severity, code, count(*) FROM pos_sync_incidents WHERE resolved = false GROUP BY severity, code;
 
 -- Stale rate-limit buckets eligible for a sweep
 SELECT count(*) FROM "RateLimitBucket" WHERE "windowEnds" < now();

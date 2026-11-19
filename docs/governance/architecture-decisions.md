@@ -14,7 +14,7 @@ Lightweight ADRs (Context / Decision / Consequences) for the major architectural
 
 **Context.** The storefront (catalog, product pages, cart, checkout, account, and admin panels) lives in one Next.js App Router page at `/`; the original sandbox build targeted a single-page app and the team wanted instant view switching and persistent client state (cart, auth, theme) without route-level server round-trips.
 
-**Decision.** Implement the UI as a single route whose views are swapped by a Zustand-driven view router; persist cart/auth state in `localStorage`/`sessionStorage` keys (`sphere-cart`, etc.). Next.js pages/routes are reserved for API handlers and static assets.
+**Decision.** Implement the UI as a single route whose views are swapped by a Zustand-driven view router; persist cart/auth state in `localStorage`/`sessionStorage` keys (`sphere-cart`, etc.). Next.js App Router page routes outside the SPA catch-all are reserved for the dedicated `/docs` documentation portal (ADR-016), API handlers, and static assets.
 
 **Consequences.** (+) Fast, app-like UX; simple mental model; state survives reloads. (−) No per-view URLs or SSR SEO for deep content; the browser bundle carries all views; deep links depend on hash/`?promo=` conventions. The AI assistant similarly sits on one public route (ADR-010).
 
@@ -46,7 +46,7 @@ Lightweight ADRs (Context / Decision / Consequences) for the major architectural
 
 **Decision.** Statuses are plain `String` columns; the canonical sets live in code (`src/lib/constants.ts`, workflow guards like `STAFF_TRANSITIONS`), with legacy values deliberately still queried where history demands.
 
-**Consequences.** (+) Cheap evolution; legacy data readable; transitions enforceable in typed maps. (−) No database-level constraint against typos; constants must be kept in sync with DTO/API docs. Exception: BandaGo `PosSyncTrigger`/`PosSyncStatus` **are** Prisma enums (ingestion-side stability). Legacy `'DELIVERED'` handling is tracked debt.
+**Consequences.** (+) Cheap evolution; legacy data readable; transitions enforceable in typed maps. (−) No database-level constraint against typos; constants must be kept in sync with DTO/API docs. Exception: BandaGo POS sync enums (`PosSyncStatus`, `PosSyncTrigger`, `PosSyncDirection`, `PosOutboundStatus`, `PosOutboundEventType`) **are** Prisma enums (ingestion/reconciliation stability). Legacy `'DELIVERED'` handling is tracked debt.
 
 ## ADR-005 — Physical stock deduct-and-restore reservations with optimistic version guards
 
@@ -124,9 +124,9 @@ Lightweight ADRs (Context / Decision / Consequences) for the major architectural
 
 **Context.** BandaGo (iDempiere-based POS at go.bandahealth.org) exposes no integration API; the pharmacy needs inventory, batches (Lot/GuaranteeDate), prices, and CRM data mirrored into Sphere.
 
-**Decision.** Sphere implements only the **server-side receiving end**: `/api/integrations/bandago/sync`, `csv-import`, and `crm` with a normalizer, PPB classification, FEFO batch logic, InventoryGuard interplay, PosSyncLog telemetry, and admin hub. The browser-side transformer (Chrome MV3 extension `api_data_transformer`) is deliberately **external** to this repo.
+**Decision.** Sphere implements the **server-side bi-directional integration** (`/api/integrations/bandago/sync`, `csv-import`, `crm`, `outbound`, `outbound/ack`, `telemetry`, plus `/api/admin/pos-sync/{policy,reconcile,sales-export}` and `/api/admin/pos-status`) with a normalizer, PPB classification, FEFO batch logic, stagnant-POS drift protection, `PosOutboundJob` & `PosSyncIncident` ledgers, and the 4-workspace admin hub. The browser-side transformer (Chrome MV3 extension `api_data_transformer`) remains deliberately **external** to this repo.
 
-**Consequences.** (+) Clean trust boundary (bearer-key or staff session), all hardening server-side; Day-1 CSV path exists. (−) The extension is unversioned here; the browser-borne CSV secret is a HIGH debt item; sync normalizes/never downgrades Rx flags (PPB). Blueprint: [../integrations/bandago-pos-crm.md](../integrations/bandago-pos-crm.md).
+**Consequences.** (+) Clean trust boundary (timing-safe fail-closed bearer key or `ADMIN`/`PHARMACIST` staff session — the former H1 browser-borne CSV secret was remediated in `061e923`), all hardening server-side; Manual-First Daily Sales Export and opt-in `AUTO_SYNC` both supported. (−) The extension is unversioned here; `AUTO_SYNC` writeback requires an open BandaGo tab; sync normalizes/never downgrades Rx flags (PPB). Blueprint: [../integrations/bandago-pos-crm.md](../integrations/bandago-pos-crm.md).
 
 ## ADR-013 — Private R2 + presigned 30–300s URLs + access logging for prescriptions
 
@@ -157,3 +157,23 @@ Lightweight ADRs (Context / Decision / Consequences) for the major architectural
 **Decision.** Build with `STANDALONE=true` (Next.js `output: "standalone"`), package `.next/standalone` + `static` + `public` + `Caddyfile` + `start.sh` via `.zscripts/build.sh` (with a self-healing guard that re-injects the standalone output if missing), and run `start.sh` where **Caddy is PID 1** proxying to the Next server (`bun next-service-dist/server.js`, port 3000), hard-failing without the `sphere_pharmacy_*` database URLs.
 
 **Consequences.** (+) Single-artifact deploys, no bundled database, graceful shutdown owned by Caddy. (−) `.zscripts` hard-codes the sandbox path `/home/z/my-project` (templates to adjust); Vercel remains a documented alternative requiring its own cron setup. Full runbook: [../operations/deployment.md](../operations/deployment.md).
+
+## ADR-016 — In-app `/docs` portal over canonical Markdown, OpenAPI & Prisma schema (with lazy DB Proxy)
+
+**Status:** Accepted (`89b680c`)
+
+**Context.** Storing technical docs only as raw Markdown files makes operational onboarding, API contract exploration, schema visualization, and cross-document search harder for staff and engineers; yet maintaining a separate CMS/Docusaurus copy creates guaranteed drift. Meanwhile, `src/lib/db.ts` previously threw at module import time when `DATABASE_URL` was unset, breaking build-time static analysis/prerendering.
+
+**Decision.** Render the repository's canonical `docs/` Markdown files, 69 user journeys, `openapi/sphere-api.yaml`, and `prisma/schema.prisma` directly via a dedicated Next.js App Router subtree (`/docs`, `/docs/journeys`, `/docs/api-reference`, `/docs/database`, `/docs/assistant`) with client-side Mermaid rendering, ⌘K lexical search (`/api/docs-index`), and a session-free documentation assistant (`/api/docs-assistant`, Groq optional with lexical fallback). Wrap `PrismaClient` in `src/lib/db.ts` behind a lazy `Proxy` (`getClient()`) so missing-DB-URL checks happen on first runtime query rather than module import, and trace doc assets into standalone builds via `outputFileTracingIncludes` in `next.config.ts` without root-wide tracing (`src/lib/docs/content.ts`).
+
+**Consequences.** (+) Markdown remains the single source of truth; zero drift between code, OpenAPI, schema, and portal; builds pass without a live database. (−) New docs must keep valid frontmatter and Mermaid v12 syntax; `content.ts` path restrictions are enforced by static tests (`tests/security-static.test.mjs`).
+
+## ADR-017 — Bi-directional BandaGo POS reconciliation: Manual-First Daily Sales Export, opt-in Auto-Sync, and Stagnant-POS Drift Protection
+
+**Status:** Accepted (`061e923`)
+
+**Context.** Online sales decrement Sphere stock immediately, while BandaGo POS sits at counter level without continuous real-time writeback. Naive inbound POS syncs overwrote online stock back up to stagnant POS counts ("stock resurrection"), and forcing automated writebacks into a live iDempiere POS without explicit operator consent risked double-deducting or failing when no POS browser tab was open. Additionally, the legacy browser-borne CSV secret (H1) needed elimination.
+
+**Decision.** Add an idempotent outbound ledger (`PosOutboundJob` queued on payment capture, order prepare, and `PATCH /api/products/[id]` stock edits; reversed/compensated via `cancelOrderPosDeduction`), stagnant-POS drift protection (`computeReconciledStock` subtracting unreconciled outbound deltas and unpaid holds from inbound POS snapshots), single-tenant pinning (`expectedTenantUU`), and a policy-controlled (`MANUAL_EXPORT` default vs opt-in `AUTO_SYNC` writeback) 4-workspace POS Hub with Zero-PHI Daily Sales Export (A4 PDF, formula-safe CSV, JSON) and deduplicated `PosSyncIncident` triage. Eliminate H1 by moving admin UI calls strictly to the `sphere_session` cookie and enforcing timing-safe fail-closed `verifyBandagoBearerHeader` on machine endpoints.
+
+**Consequences.** (+) Eliminates stock resurrection on stale POS syncs, provides a complete Zero-PHI paper/CSV reconciliation trail even without the Chrome extension open, and closes H1 credential exposure. (−) `AUTO_SYNC` requires an authenticated `go.bandahealth.org` Chrome tab; manual operators must click **Confirm Entered in BandaGo POS** (or set a baseline cutover) so stagnant-POS offsets do not remain open indefinitely.

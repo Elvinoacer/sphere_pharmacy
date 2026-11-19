@@ -73,7 +73,7 @@ flowchart LR
 | A02 | [Process an order to pickup](../staff/process-order-to-pickup.md) | Order queue, availability confirmation, payment, packing, cash at handover |
 | A06 | [Manage medicine requests](../staff/manage-medicine-requests.md) | Request queue, private photo view, callback, status and notes |
 | A07 | [Update products and stock](../staff/update-products-stock.md) | Product edits, pricing, stock statuses, thresholds, the write-role boundary |
-| A09 | [Import products from CSV](../staff/import-products-csv.md) | Template, paste/upload, SKU upsert, per-row errors, the BandaGo caveat |
+| A09 | [Import products from CSV](../staff/import-products-csv.md) | Template, paste/upload, SKU upsert, per-row errors, BandaGo POS CSV counterpart |
 | A10 | [Publish a service and set booking hours](../staff/publish-service-booking-hours.md) | Service editor, images, weekly availability windows, slot generation |
 | A11 | [Run the appointment workflow](../staff/run-appointment-workflow.md) | Bookings board, confirm, check-in, visit, completion, no-show |
 | A12 | [Reschedule and cancel appointments](../staff/reschedule-cancel-appointments.md) | Slot re-validation, cancellation, notification, the paid-booking refund gap |

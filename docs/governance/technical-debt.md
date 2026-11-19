@@ -10,29 +10,27 @@ Prioritized register of known debt and defects, verified against the November 20
 
 | Tier | Count | Meaning |
 | --- | --- | --- |
-| HIGH | 3 | Blocks production trust; security exposure or payment certification failure |
-| MEDIUM | 5 | Hygiene, dead weight, and false documentation — misleads maintainers, inflates risk surface |
+| HIGH | 2 Open (1 Closed) | Blocks production trust; security exposure or payment certification failure (`H1` fixed in `061e923`) |
+| MEDIUM | 5 | Hygiene, dead weight, and historical documentation — misleads maintainers, inflates risk surface |
 | LOW | 9 | Hardening and polish; fix opportunistically when touching the area |
 
 ## HIGH — fix before production trust
 
 | # | What | Where | Impact | Recommended action | Status |
 | --- | --- | --- | --- | --- | --- |
-| H1 | Browser-exposed POS sync secret + hard-coded fallback + shared default (detail below) | `pos-sync-section.tsx`, `api/integrations/bandago/csv-import/route.ts`, `.env.example` | Credential exposure to any browser; fail-closed defeated | Remove browser secret, remove fallback, rotate reused credentials | **Fixed** (browser secret & hardcoded fallback removed; admin UI uses staff cookie; rotate deployed secrets before go-live) |
+| H1 | Browser-exposed POS sync secret + hard-coded fallback + shared default (detail below) | `pos-sync-section.tsx`, `api/integrations/bandago/csv-import/route.ts`, `.env.example` | Formerly exposed credential to any browser and defeated fail-closed auth | Browser secret, fallback, and placeholder removed; rotate any deployed secrets that ever matched the retired default | **Closed** (`Fixed in 061e923` — see Closed section) |
 | H2 | No in-repo cron scheduler; scheduling is external and undocumented per environment | `/api/cron/*`, deployment layer | Silent operational failure across five jobs | Checklist enforcement + ship a scheduler reference | Open |
 | H3 | Payment-audit release blockers (six items) | payments/service-payment paths | Production payments uncertifiable | Implement per audit, preserving ADR-007/008/009 invariants | Open |
 
-### H1 — BandaGo credential exposure (detail)
+### H1 — BandaGo credential exposure (remediated in `061e923`)
 
-Three compounding problems:
+Three compounding problems existed prior to commit `061e923`:
 
-1. **Browser-borne credential.** The admin "BandaGo POS Integration Hub" CSV dropzone sends `Authorization: Bearer ${process.env.NEXT_PUBLIC_POS_SYNC_SECRET}` from the browser, so the value is embedded in the public client bundle and extractable by any visitor — then honored by the sync/CRM endpoints as a server credential.
-2. **Hard-coded fallback.** `csv-import/route.ts` (line 122) falls back to a hard-coded secret literal when `BANDAGO_SYNC_API_KEY` is unset, so internal bearer auth passes even in an unconfigured environment — defeating the fail-closed expectation elsewhere in the codebase. (The literal is deliberately not reproduced in docs.)
-3. **Shipped default, shared value.** `.env.example` sets `BANDAGO_SYNC_API_KEY` and `NEXT_PUBLIC_POS_SYNC_SECRET` to the **same** default value, encouraging copy-paste reuse across environments and making the "secret" public by construction.
+1. **Browser-borne credential.** The admin "BandaGo POS Integration Hub" CSV dropzone formerly sent `Authorization: Bearer ${process.env.NEXT_PUBLIC_POS_SYNC_SECRET}` from the browser, embedding it in the public client bundle.
+2. **Hard-coded fallback.** `csv-import/route.ts` formerly fell back to a hard-coded secret literal when `BANDAGO_SYNC_API_KEY` was unset.
+3. **Shipped default, shared value.** `.env.example` formerly set both keys to the same example default value.
 
-**Impact:** unauthorized catalog/stock writes, CRM profile manipulation, and POS telemetry pollution; any environment that kept the shipped default is effectively open.
-
-**Remediation order:** (a) make the CSV upload rely on the already-implemented staff-session auth path and delete the `NEXT_PUBLIC_POS_SYNC_SECRET` usage; (b) delete the hard-coded fallback so an unset key fails closed like every other integration; (c) set distinct strong `BANDAGO_SYNC_API_KEY` values per environment; (d) **rotate every credential that ever equaled the shipped default**; (e) update [../operations/environment-variables.md](../operations/environment-variables.md) and the admin UI copy. See also the security callout there.
+**Resolution (`061e923`):** `NEXT_PUBLIC_POS_SYNC_SECRET` was removed from `.env.example` and `pos-sync-section.tsx` (the admin hub now authenticates strictly via the `sphere_session` cookie); the hard-coded fallback and `.env.example` literal were deleted; machine Bearer auth (`verifyBandagoBearerHeader` / `authorizeBandagoRequest`) fails closed with constant-time comparison; and `isUsingInsecureDefaultBandagoKey()` flags any environment still configured with the retired placeholder. Verified by `tests/bandago-bidirectional-sync.test.mjs`. Operational action remaining per environment: **rotate any deployed credential that ever equaled the retired default**.
 
 ### H2 — Scheduling is someone else's job (detail)
 
@@ -59,15 +57,15 @@ From [../payment-notification-audit.md](../payment-notification-audit.md) (5 Sep
 | --- | --- | --- | --- | --- | --- |
 | M1 | Dual lockfiles (`bun.lock` + `package-lock.json`) and mixed bun/npm scripts | repo root, `package.json`, `.zscripts/*` | Installs are not reproducible across environments; CI (npm) and deployment (bun) can drift apart | Pick one package manager per environment (CI is npm today); delete the unused lockfile; align scripts and docs | Open |
 | M2 | Unused declared dependencies: `z-ai-web-dev-sdk`, `next-auth`, `@tanstack/react-query`, `@tanstack/react-table`, `next-intl`, `@mdxeditor/editor` — none used in `src/` | `package.json` | Bigger install/attack surface, audit noise, false capability signals (e.g. next-auth implies a second auth system) | Verify per package, then remove; re-run `npm audit` + build | Open |
-| M3 | Dead code: `ScheduledJobDelivery` table (zero references — the active queue is `NotificationDelivery`); `awardPointsForOrder`/`reversePointsForOrder` (callbacks write the ledger inline); legacy `InventoryGuard` virtual-reservation path (only `getAvailableStock` + `cleanupExpiredReservations(45)` are still invoked, by BandaGo sync); unused home view + home components; unused layout header | `prisma/schema.prisma`, `src/lib/loyalty.ts`, `src/lib/inventory-guard.ts`, view/layout components | Maintainers edit the wrong implementation; schema carries a phantom table; the reservation story is ambiguous next to ADR-005 | Remove dead exports/components; drop the table via a dedicated migration once historical queries are confirmed unnecessary | Open |
-| M4 | Documentation drift: README demo accounts/orders (the seed creates none — 7 categories + optional admin only); "payments (simulated for demo)" while the code is real-provider-capable and fail-closed; broken `upload/requirements.md` PRD reference; `worklog.md` describes only the SQLite/simulated era; README credits `z-ai-web-dev-sdk` for an assistant that uses Groq; README predates BandaGo entirely | `PROJECT_README.md`, `worklog.md` | New staff try demo logins that don't exist; readers underestimate payment integration maturity; POS integration invisible | Rewrite the README against the current docs tree; mark the worklog historical; treat this register + [release-history.md](release-history.md) as authoritative | Open |
+| M3 | Dead code: `ScheduledJobDelivery` table (zero references — the active queue is `NotificationDelivery`); `awardPointsForOrder`/`reversePointsForOrder` (callbacks write the ledger inline); legacy `InventoryGuard` virtual-reservation path (only `getAvailableStock` + `cleanupExpiredReservations(45)` are still invoked, by BandaGo sync); unused `src/hooks/use-toast.ts` + `src/components/ui/toaster.tsx` (now zero app callers after `pos-sync-section.tsx` migrated to `sonner`); unused home view + home components; unused layout header | `prisma/schema.prisma`, `src/lib/loyalty.ts`, `src/lib/inventory-guard.ts`, `src/hooks/use-toast.ts`, view/layout components | Maintainers edit the wrong implementation; schema carries a phantom table; the reservation story is ambiguous next to ADR-005 | Remove dead exports/components; drop the table via a dedicated migration once historical queries are confirmed unnecessary | Open |
+| M4 | Historical archive docs carry demo-era claims (demo accounts `admin123`, SQLite, "simulated payments", `z-ai-web-dev-sdk`, broken `upload/requirements.md` reference); root `README.md` was rewritten against the docs tree (`55eba08`), and the files moved to `reference/archive/` (`c4629b7`), while the archived copies remain historical | `reference/archive/PROJECT_README.md`, `reference/archive/worklog.md` | Readers opening archived files directly can mistake demo-era claims for live behavior | Keep archived banner clear; treat the `docs/` tree + [release-history.md](release-history.md) as authoritative | Partial (root `README.md` rewritten; archive relocated to `reference/archive/`) |
 | M5 | Customer cancel toast promises automatic refunds; the server blocks cancelling captured payments (SUCCESS → 409) and refunds are ADMIN-only and partly manual (M-Pesa portal B2C) | cancel flow UI vs `api/orders/[id]/cancel` + `api/payments/refund` | Customers expect instant money-back that requires staff action → complaints, support load, trust damage | Reword the toast to set the real expectation (refund handled by staff); optionally add a refund-request intent endpoint feeding H3-remediation work | Open |
 
 ## LOW — hardening and polish
 
 | # | What | Where | Impact | Recommended action | Status |
 | --- | --- | --- | --- | --- | --- |
-| L1 | Non-constant-time Bearer comparison (`===`) in cron routes and BandaGo routes | cron + bandago route handlers | Theoretical timing side-channel | Route all bearer checks through one `timingSafeEqual` helper | **Partial** (all BandaGo routes fixed via `verifyBandagoBearerHeader`; 4 cron routes still use plain compare) |
+| L1 | Non-constant-time Bearer comparison (`===`) in 4 of 5 cron routes (BandaGo routes fixed) | `src/app/api/cron/*` (excl. `notifications`) | Theoretical timing side-channel | Route all cron bearer checks through `authorizedJob()` / `timingSafeEqual` | **Partial** (`061e923` fixed all BandaGo routes via `verifyBandagoBearerHeader`; 4 cron routes still use plain compare) |
 | L2 | Chronic-refills queries legacy `'DELIVERED'` order status alongside `COMPLETED_DELIVERY`/`COMPLETED_PICKUP` | `src/lib/crm/bandago-crm.ts` | Legacy rows skew eligibility; semantic ambiguity | Keep for history, but normalize legacy values at the constants layer (ADR-004) | Open |
 | L3 | `GET /api/prescriptions` header comment says "GET /api/orders" (copy-paste artifact) | `api/prescriptions/route.ts` | Minor reader confusion | Fix the comment | Open |
 | L4 | `Payment.cardLast4` declared but never populated by any code path | `prisma/schema.prisma` | Dead column; misleading schema | Populate from IntaSend webhook data or drop via migration | Open |
@@ -140,12 +138,15 @@ Order matters when remediating — several items unlock or constrain others:
 
 | # | What | Fixed in | Verification |
 | --- | --- | --- | --- |
-| — | — | — | — |
+| H1 | Browser-exposed `NEXT_PUBLIC_POS_SYNC_SECRET` + hard-coded `csv-import` fallback + shared `.env.example` default | `061e923` | `tests/bandago-bidirectional-sync.test.mjs` asserts removal of `NEXT_PUBLIC_POS_SYNC_SECRET`, absence of the legacy placeholder, fail-closed `verifyBandagoBearerHeader`, and `isUsingInsecureDefaultBandagoKey()`; admin UI uses `sphere_session` cookie. (Rotate any previously deployed credentials.) |
 
 ## Activity log
 
 | Date | Item | Change |
 | --- | --- | --- |
 | Nov 2026 | — | Register created from the full code audit (17 items: 3 HIGH, 5 MEDIUM, 9 LOW) |
+| 19 Nov 2026 | — | `89b680c`: shipped interactive `/docs` portal, lazy DB Proxy, and v0.3.0 dependency upgrades |
+| 19 Nov 2026 | H1, L1 | `061e923`: H1 closed (removed browser POS secret, hardcoded fallback, and `.env.example` default; added fail-closed `verifyBandagoBearerHeader`); L1 partially closed (all BandaGo routes now timing-safe; 4 cron routes remain) |
+| 19 Nov 2026 | M3, M4 | `061e923`, `c4629b7`, `6e5aad0`: `pos-sync-section.tsx` migrated to `sonner` (leaving `use-toast.ts` unused in M3); legacy `PROJECT_README.md` & `worklog.md` archived under `reference/archive/` (M4 partial); docs synced across repository |
 
 *(Append one row per status change — picked up, fixed, verified — so the register doubles as its own audit trail.)*
