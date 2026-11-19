@@ -158,6 +158,7 @@ export function DocsShell({
             <Link href="/docs/journeys" className="hover:text-foreground">Journeys</Link>
             <Link href="/docs/api-reference" className="hover:text-foreground">API</Link>
             <Link href="/docs/database" className="hover:text-foreground">Database</Link>
+            <a href="/api/docs-export/pdf" download className="hover:text-foreground">Export full PDF</a>
             <Link href="/admin" className="hover:text-foreground">Staff workspace</Link>
             <Link href="/" className="hover:text-foreground">Storefront</Link>
             <span className="inline-flex items-center gap-1" aria-hidden>

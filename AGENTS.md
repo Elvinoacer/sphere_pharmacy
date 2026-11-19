@@ -57,10 +57,10 @@ If your change falls into any of these categories, update the matching documenta
 | --- | --- |
 | `src/app/page.tsx` + `src/app/[...route]/page.tsx` | The SPA storefront/admin shell (Zustand view router); `src/app/docs/` + `src/lib/docs/` serve the interactive `/docs` portal over canonical Markdown, OpenAPI, and Prisma |
 | `src/store/` | `use-app-store` (views/URLs), `use-auth-store`, `use-cart-store`, `use-wish-store` |
-| `src/app/api/` | 95 route handlers (126 HTTP method handlers) — every mutation goes through these |
+| `src/app/api/` | 96 route handlers (127 HTTP method handlers) — every mutation goes through these |
 | `src/lib/session.ts` | Sessions and the role guard helpers |
 | `src/lib/security/` | Rate limits, file validation, payment integrity, order workflow, BandaGo timing-safe auth (`bandago-auth.ts`, `bandago-bearer.ts`) |
-| `src/lib/pos-reconciliation*.ts` + `src/lib/pdf/daily-sales-pdf.ts` | BandaGo stagnant-POS drift protection, outbound reconciliation ledger, Daily Sales PDF generator |
+| `src/lib/pos-reconciliation*.ts` + `src/lib/pdf/` | BandaGo stagnant-POS drift protection, outbound reconciliation ledger, Daily Sales PDF generator (`daily-sales-pdf.ts`), and full documentation PDF generator (`full-docs-pdf.ts`) |
 | `src/lib/constants.ts` | Canonical status lists, roles, loyalty rules, delivery defaults |
 | `prisma/schema.prisma` | 41 models, 5 POS enums, 11 migrations; stock-field authority explained in [docs/database/schema-overview.md](docs/database/schema-overview.md) |
 | `src/lib/assistant/` + `src/app/api/assistant/route.ts` | The storefront AI assistant (Groq, deterministic-first, session-gated, live public `pharmacy`/`delivery` settings + customer-safe navigation); companion `src/app/api/docs-assistant/route.ts` ("Ask Sphere Docs", staff-gated via `requireStaff`, docs/OpenAPI/Prisma corpus only) |

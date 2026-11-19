@@ -91,7 +91,7 @@ Grouped by who may call. Within a group, narrower ownership rules still apply (n
 | `POST /api/orders/[id]/request-payment` | Riders restricted to their assigned orders |
 | `POST /api/orders/[id]/cash-confirm` | Riders: cash-on-delivery, own `OUT_FOR_DELIVERY` orders |
 | `PATCH /api/orders/[id]` | Riders: per-order restricted, two transitions only (below) |
-| `/docs/**`, `GET /api/docs-index`, `POST /api/docs-assistant` | Staff-only documentation portal, search index & "Ask Sphere Docs" AI assistant (`requireStaff` / server `getSession` staff gate) |
+| `/docs/**`, `GET /api/docs-index`, `POST /api/docs-assistant`, `GET /api/docs-export/pdf` | Staff-only documentation portal, search index, "Ask Sphere Docs" AI assistant & full documentation PDF export (`requireStaff` / server `getSession` staff gate) |
 
 ### RIDER only
 

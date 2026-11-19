@@ -2,10 +2,10 @@
 
 > **Comprehensive Single-File Source Code Repository**  
 > **Platform:** Sphere Pharmacy (Lumumba Drive, Roysambu, Nairobi, Kenya)  
-> **Generated:** 2026-11-20 00:00:01  
-> **Total Source Code Files:** 492 files  
-> **Total Lines of Source Code:** 96,876 lines  
-> **Total Uncompressed Size:** 5.39 MB  
+> **Generated:** 2026-11-20 00:12:40  
+> **Total Source Code Files:** 494 files  
+> **Total Lines of Source Code:** 97,918 lines  
+> **Total Uncompressed Size:** 5.43 MB  
 
 ---
 
@@ -439,6 +439,9 @@ This single file encapsulates the complete source code, architectural structure,
 │   │   │   │       └── route.ts
 │   │   │   ├── docs-assistant
 │   │   │   │   └── route.ts
+│   │   │   ├── docs-export
+│   │   │   │   └── pdf
+│   │   │   │       └── route.ts
 │   │   │   ├── docs-index
 │   │   │   │   └── route.ts
 │   │   │   ├── integrations
@@ -770,7 +773,8 @@ This single file encapsulates the complete source code, architectural structure,
 │   │   ├── notify.ts
 │   │   ├── offer-intent.ts
 │   │   ├── pdf
-│   │   │   └── daily-sales-pdf.ts
+│   │   │   ├── daily-sales-pdf.ts
+│   │   │   └── full-docs-pdf.ts
 │   │   ├── pos-reconciliation-core.ts
 │   │   ├── pos-reconciliation.ts
 │   │   ├── promotions.ts
@@ -876,7 +880,7 @@ This single file encapsulates the complete source code, architectural structure,
 | [src/app/docs/journeys/page.tsx](#file-src-app-docs-journeys-page-tsx) | TypeScript React | 54 | 2.2 KB |
 | [src/app/docs/layout.tsx](#file-src-app-docs-layout-tsx) | TypeScript React | 71 | 3.0 KB |
 | [src/app/docs/not-found.tsx](#file-src-app-docs-not-found-tsx) | TypeScript React | 35 | 1.8 KB |
-| [src/app/docs/page.tsx](#file-src-app-docs-page-tsx) | TypeScript React | 265 | 15.3 KB |
+| [src/app/docs/page.tsx](#file-src-app-docs-page-tsx) | TypeScript React | 273 | 15.8 KB |
 | [src/app/globals.css](#file-src-app-globals-css) | CSS | 498 | 15.6 KB |
 | [src/app/layout.tsx](#file-src-app-layout-tsx) | TypeScript React | 48 | 1.8 KB |
 | [src/app/page.tsx](#file-src-app-page-tsx) | TypeScript React | 91 | 5.3 KB |
@@ -888,7 +892,7 @@ This single file encapsulates the complete source code, architectural structure,
 | [src/app/sitemap.ts](#file-src-app-sitemap-ts) | TypeScript | 12 | 438 B |
 | [src/app/sphere-public.css](#file-src-app-sphere-public-css) | CSS | 752 | 27.2 KB |
 
-### Backend API Routes (Next.js App Router) (95 files)
+### Backend API Routes (Next.js App Router) (96 files)
 
 | Relative Path | Language | Lines | Size |
 | :--- | :--- | :---: | :---: |
@@ -928,6 +932,7 @@ This single file encapsulates the complete source code, architectural structure,
 | [src/app/api/cron/prescription-retention/route.ts](#file-src-app-api-cron-prescription-retention-route-ts) | TypeScript | 23 | 1.3 KB |
 | [src/app/api/cron/service-booking-reminders/route.ts](#file-src-app-api-cron-service-booking-reminders-route-ts) | TypeScript | 50 | 2.2 KB |
 | [src/app/api/docs-assistant/route.ts](#file-src-app-api-docs-assistant-route-ts) | TypeScript | 170 | 5.5 KB |
+| [src/app/api/docs-export/pdf/route.ts](#file-src-app-api-docs-export-pdf-route-ts) | TypeScript | 31 | 1.2 KB |
 | [src/app/api/docs-index/route.ts](#file-src-app-api-docs-index-route-ts) | TypeScript | 19 | 535 B |
 | [src/app/api/integrations/bandago/crm/route.ts](#file-src-app-api-integrations-bandago-crm-route-ts) | TypeScript | 200 | 6.6 KB |
 | [src/app/api/integrations/bandago/csv-import/route.ts](#file-src-app-api-integrations-bandago-csv-import-route-ts) | TypeScript | 149 | 5.6 KB |
@@ -1011,7 +1016,7 @@ This single file encapsulates the complete source code, architectural structure,
 | :--- | :--- | :---: | :---: |
 | [src/components/views/admin/admin-access.tsx](#file-src-components-views-admin-admin-access-tsx) | TypeScript React | 19 | 785 B |
 | [src/components/views/admin/admin-shared.tsx](#file-src-components-views-admin-admin-shared-tsx) | TypeScript React | 263 | 8.6 KB |
-| [src/components/views/admin/admin-view.tsx](#file-src-components-views-admin-admin-view-tsx) | TypeScript React | 563 | 28.0 KB |
+| [src/components/views/admin/admin-view.tsx](#file-src-components-views-admin-admin-view-tsx) | TypeScript React | 566 | 28.4 KB |
 | [src/components/views/admin/sections/catalogue-section.tsx](#file-src-components-views-admin-sections-catalogue-section-tsx) | TypeScript React | 1,109 | 49.7 KB |
 | [src/components/views/admin/sections/compliance-section.tsx](#file-src-components-views-admin-sections-compliance-section-tsx) | TypeScript React | 363 | 23.2 KB |
 | [src/components/views/admin/sections/dispatch-control-room.tsx](#file-src-components-views-admin-sections-dispatch-control-room-tsx) | TypeScript React | 600 | 38.1 KB |
@@ -1044,8 +1049,8 @@ This single file encapsulates the complete source code, architectural structure,
 | [src/components/docs/db-explorer.tsx](#file-src-components-docs-db-explorer-tsx) | TypeScript React | 203 | 9.8 KB |
 | [src/components/docs/doc-furniture.tsx](#file-src-components-docs-doc-furniture-tsx) | TypeScript React | 113 | 4.1 KB |
 | [src/components/docs/docs-assistant.tsx](#file-src-components-docs-docs-assistant-tsx) | TypeScript React | 280 | 11.9 KB |
-| [src/components/docs/docs-header.tsx](#file-src-components-docs-docs-header-tsx) | TypeScript React | 106 | 4.5 KB |
-| [src/components/docs/docs-shell.tsx](#file-src-components-docs-docs-shell-tsx) | TypeScript React | 171 | 6.9 KB |
+| [src/components/docs/docs-header.tsx](#file-src-components-docs-docs-header-tsx) | TypeScript React | 118 | 5.0 KB |
+| [src/components/docs/docs-shell.tsx](#file-src-components-docs-docs-shell-tsx) | TypeScript React | 172 | 7.0 KB |
 | [src/components/docs/docs-sidebar.tsx](#file-src-components-docs-docs-sidebar-tsx) | TypeScript React | 91 | 3.4 KB |
 | [src/components/docs/docs-toc.tsx](#file-src-components-docs-docs-toc-tsx) | TypeScript React | 84 | 3.2 KB |
 | [src/components/docs/docs.css](#file-src-components-docs-docs-css) | CSS | 561 | 12.1 KB |
@@ -1127,7 +1132,7 @@ This single file encapsulates the complete source code, architectural structure,
 | [src/components/ui/toggle.tsx](#file-src-components-ui-toggle-tsx) | TypeScript React | 47 | 1.5 KB |
 | [src/components/ui/tooltip.tsx](#file-src-components-ui-tooltip-tsx) | TypeScript React | 61 | 1.8 KB |
 
-### Core Business Logic & Database Clients (29 files)
+### Core Business Logic & Database Clients (30 files)
 
 | Relative Path | Language | Lines | Size |
 | :--- | :--- | :---: | :---: |
@@ -1154,6 +1159,7 @@ This single file encapsulates the complete source code, architectural structure,
 | [src/lib/notify.ts](#file-src-lib-notify-ts) | TypeScript | 284 | 10.2 KB |
 | [src/lib/offer-intent.ts](#file-src-lib-offer-intent-ts) | TypeScript | 23 | 839 B |
 | [src/lib/pdf/daily-sales-pdf.ts](#file-src-lib-pdf-daily-sales-pdf-ts) | TypeScript | 272 | 9.8 KB |
+| [src/lib/pdf/full-docs-pdf.ts](#file-src-lib-pdf-full-docs-pdf-ts) | TypeScript | 955 | 32.2 KB |
 | [src/lib/promotions.ts](#file-src-lib-promotions-ts) | TypeScript | 98 | 4.5 KB |
 | [src/lib/r2.ts](#file-src-lib-r2-ts) | TypeScript | 100 | 5.1 KB |
 | [src/lib/session.ts](#file-src-lib-session-ts) | TypeScript | 159 | 5.9 KB |
@@ -1231,7 +1237,7 @@ This single file encapsulates the complete source code, architectural structure,
 | Relative Path | Language | Lines | Size |
 | :--- | :--- | :---: | :---: |
 | [tests/admin-live-sync.test.mjs](#file-tests-admin-live-sync-test-mjs) | JavaScript (ESM) | 74 | 4.1 KB |
-| [tests/assistant.test.ts](#file-tests-assistant-test-ts) | TypeScript | 133 | 8.0 KB |
+| [tests/assistant.test.ts](#file-tests-assistant-test-ts) | TypeScript | 146 | 8.7 KB |
 | [tests/bandago-bidirectional-sync.test.mjs](#file-tests-bandago-bidirectional-sync-test-mjs) | JavaScript (ESM) | 237 | 9.4 KB |
 | [tests/bandago-pos-crm-integration.test.mjs](#file-tests-bandago-pos-crm-integration-test-mjs) | JavaScript (ESM) | 534 | 27.7 KB |
 | [tests/checkout-points-contrast.test.mjs](#file-tests-checkout-points-contrast-test-mjs) | JavaScript (ESM) | 19 | 1018 B |
@@ -1245,7 +1251,7 @@ This single file encapsulates the complete source code, architectural structure,
 | [tests/python-runtime-build.sh](#file-tests-python-runtime-build-sh) | Shell Script | 64 | 1.8 KB |
 | [tests/python-runtime-container.sh](#file-tests-python-runtime-container-sh) | Shell Script | 31 | 837 B |
 | [tests/reports-layout.test.mjs](#file-tests-reports-layout-test-mjs) | JavaScript (ESM) | 19 | 976 B |
-| [tests/security-static.test.mjs](#file-tests-security-static-test-mjs) | JavaScript (ESM) | 178 | 8.1 KB |
+| [tests/security-static.test.mjs](#file-tests-security-static-test-mjs) | JavaScript (ESM) | 184 | 8.4 KB |
 
 ### Dev, Build & Service Scripts (9 files)
 
@@ -1273,11 +1279,11 @@ This single file encapsulates the complete source code, architectural structure,
 
 | Relative Path | Language | Lines | Size |
 | :--- | :--- | :---: | :---: |
-| [AGENTS.md](#file-agents-md) | Markdown Documentation | 69 | 8.2 KB |
+| [AGENTS.md](#file-agents-md) | Markdown Documentation | 69 | 8.3 KB |
 | [CLAUDE.md](#file-claude-md) | Markdown Documentation | 1 | 11 B |
 | [README.md](#file-readme-md) | Markdown Documentation | 88 | 7.9 KB |
 | [docs/README.md](#file-docs-readme-md) | Markdown Documentation | 128 | 12.0 KB |
-| [docs/api/api-reference.md](#file-docs-api-api-reference-md) | Markdown Documentation | 530 | 62.5 KB |
+| [docs/api/api-reference.md](#file-docs-api-api-reference-md) | Markdown Documentation | 532 | 63.1 KB |
 | [docs/architecture/api-architecture.md](#file-docs-architecture-api-architecture-md) | Markdown Documentation | 171 | 14.3 KB |
 | [docs/architecture/authentication.md](#file-docs-architecture-authentication-md) | Markdown Documentation | 167 | 11.8 KB |
 | [docs/architecture/backend-architecture.md](#file-docs-architecture-backend-architecture-md) | Markdown Documentation | 162 | 18.7 KB |
@@ -1410,7 +1416,7 @@ This single file encapsulates the complete source code, architectural structure,
 | [docs/workflows/prescription-lifecycle.md](#file-docs-workflows-prescription-lifecycle-md) | Markdown Documentation | 229 | 15.3 KB |
 | [docs/workflows/service-bookings.md](#file-docs-workflows-service-bookings-md) | Markdown Documentation | 209 | 15.9 KB |
 | [gitignoresfiles/SPHERE_PHARMACY_OWNER_OPERATIONS_MANUAL.md](#file-gitignoresfiles-sphere_pharmacy_owner_operations_manual-md) | Markdown Documentation | 461 | 15.9 KB |
-| [openapi/sphere-api.yaml](#file-openapi-sphere-api-yaml) | YAML | 2,934 | 120.6 KB |
+| [openapi/sphere-api.yaml](#file-openapi-sphere-api-yaml) | YAML | 2,945 | 121.1 KB |
 | [reference/archive/PROJECT_README.md](#file-reference-archive-project_readme-md) | Markdown Documentation | 83 | 8.3 KB |
 | [reference/archive/worklog.md](#file-reference-archive-worklog-md) | Markdown Documentation | 261 | 47.8 KB |
 | [reference/bandago-api-and-integration-architecture.md](#file-reference-bandago-api-and-integration-architecture-md) | Markdown Documentation | 720 | 431.5 KB |
@@ -1432,13 +1438,13 @@ This single file encapsulates the complete source code, architectural structure,
 | 8 | [.zscripts/mini-services-start.sh](#file--zscripts-mini-services-start-sh) | Dev, Build & Service Scripts | 123 | 3.2 KB |
 | 9 | [.zscripts/python-runtime-build.sh](#file--zscripts-python-runtime-build-sh) | Dev, Build & Service Scripts | 120 | 4.1 KB |
 | 10 | [.zscripts/start.sh](#file--zscripts-start-sh) | Dev, Build & Service Scripts | 137 | 4.1 KB |
-| 11 | [AGENTS.md](#file-agents-md) | Documentation & Blueprints | 69 | 8.2 KB |
+| 11 | [AGENTS.md](#file-agents-md) | Documentation & Blueprints | 69 | 8.3 KB |
 | 12 | [CLAUDE.md](#file-claude-md) | Documentation & Blueprints | 1 | 11 B |
 | 13 | [Caddyfile](#file-caddyfile) | Project Configuration & Root Tooling | 23 | 493 B |
 | 14 | [README.md](#file-readme-md) | Documentation & Blueprints | 88 | 7.9 KB |
 | 15 | [components.json](#file-components-json) | Project Configuration & Root Tooling | 21 | 430 B |
 | 16 | [docs/README.md](#file-docs-readme-md) | Documentation & Blueprints | 128 | 12.0 KB |
-| 17 | [docs/api/api-reference.md](#file-docs-api-api-reference-md) | Documentation & Blueprints | 530 | 62.5 KB |
+| 17 | [docs/api/api-reference.md](#file-docs-api-api-reference-md) | Documentation & Blueprints | 532 | 63.1 KB |
 | 18 | [docs/architecture/api-architecture.md](#file-docs-architecture-api-architecture-md) | Documentation & Blueprints | 171 | 14.3 KB |
 | 19 | [docs/architecture/authentication.md](#file-docs-architecture-authentication-md) | Documentation & Blueprints | 167 | 11.8 KB |
 | 20 | [docs/architecture/backend-architecture.md](#file-docs-architecture-backend-architecture-md) | Documentation & Blueprints | 162 | 18.7 KB |
@@ -1574,7 +1580,7 @@ This single file encapsulates the complete source code, architectural structure,
 | 150 | [gitignoresfiles/SPHERE_PHARMACY_OWNER_OPERATIONS_MANUAL.md](#file-gitignoresfiles-sphere_pharmacy_owner_operations_manual-md) | Documentation & Blueprints | 461 | 15.9 KB |
 | 151 | [next-env.d.ts](#file-next-env-d-ts) | Project Configuration & Root Tooling | 7 | 288 B |
 | 152 | [next.config.ts](#file-next-config-ts) | Project Configuration & Root Tooling | 46 | 1.9 KB |
-| 153 | [openapi/sphere-api.yaml](#file-openapi-sphere-api-yaml) | Documentation & Blueprints | 2,934 | 120.6 KB |
+| 153 | [openapi/sphere-api.yaml](#file-openapi-sphere-api-yaml) | Documentation & Blueprints | 2,945 | 121.1 KB |
 | 154 | [package.json](#file-package-json) | Project Configuration & Root Tooling | 116 | 3.9 KB |
 | 155 | [postcss.config.mjs](#file-postcss-config-mjs) | Project Configuration & Root Tooling | 5 | 81 B |
 | 156 | [prisma/migrations/20260902000000_initial/migration.sql](#file-prisma-migrations-20260902000000_initial-migration-sql) | Database Schema, Migrations & Seeds (Prisma ORM) | 838 | 27.1 KB |
@@ -1639,281 +1645,283 @@ This single file encapsulates the complete source code, architectural structure,
 | 215 | [src/app/api/cron/prescription-retention/route.ts](#file-src-app-api-cron-prescription-retention-route-ts) | Backend API Routes (Next.js App Router) | 23 | 1.3 KB |
 | 216 | [src/app/api/cron/service-booking-reminders/route.ts](#file-src-app-api-cron-service-booking-reminders-route-ts) | Backend API Routes (Next.js App Router) | 50 | 2.2 KB |
 | 217 | [src/app/api/docs-assistant/route.ts](#file-src-app-api-docs-assistant-route-ts) | Backend API Routes (Next.js App Router) | 170 | 5.5 KB |
-| 218 | [src/app/api/docs-index/route.ts](#file-src-app-api-docs-index-route-ts) | Backend API Routes (Next.js App Router) | 19 | 535 B |
-| 219 | [src/app/api/integrations/bandago/crm/route.ts](#file-src-app-api-integrations-bandago-crm-route-ts) | Backend API Routes (Next.js App Router) | 200 | 6.6 KB |
-| 220 | [src/app/api/integrations/bandago/csv-import/route.ts](#file-src-app-api-integrations-bandago-csv-import-route-ts) | Backend API Routes (Next.js App Router) | 149 | 5.6 KB |
-| 221 | [src/app/api/integrations/bandago/outbound/ack/route.ts](#file-src-app-api-integrations-bandago-outbound-ack-route-ts) | Backend API Routes (Next.js App Router) | 227 | 7.6 KB |
-| 222 | [src/app/api/integrations/bandago/outbound/route.ts](#file-src-app-api-integrations-bandago-outbound-route-ts) | Backend API Routes (Next.js App Router) | 249 | 7.2 KB |
-| 223 | [src/app/api/integrations/bandago/sync/route.ts](#file-src-app-api-integrations-bandago-sync-route-ts) | Backend API Routes (Next.js App Router) | 734 | 26.2 KB |
-| 224 | [src/app/api/integrations/bandago/telemetry/route.ts](#file-src-app-api-integrations-bandago-telemetry-route-ts) | Backend API Routes (Next.js App Router) | 88 | 4.0 KB |
-| 225 | [src/app/api/location/reverse-geocode/route.ts](#file-src-app-api-location-reverse-geocode-route-ts) | Backend API Routes (Next.js App Router) | 58 | 2.2 KB |
-| 226 | [src/app/api/location/search/route.ts](#file-src-app-api-location-search-route-ts) | Backend API Routes (Next.js App Router) | 21 | 1.2 KB |
-| 227 | [src/app/api/medicine-requests/route.ts](#file-src-app-api-medicine-requests-route-ts) | Backend API Routes (Next.js App Router) | 69 | 3.0 KB |
-| 228 | [src/app/api/notifications/dispatch-test/route.ts](#file-src-app-api-notifications-dispatch-test-route-ts) | Backend API Routes (Next.js App Router) | 109 | 5.2 KB |
-| 229 | [src/app/api/notifications/email-webhook/route.ts](#file-src-app-api-notifications-email-webhook-route-ts) | Backend API Routes (Next.js App Router) | 29 | 2.0 KB |
-| 230 | [src/app/api/notifications/prefs/route.ts](#file-src-app-api-notifications-prefs-route-ts) | Backend API Routes (Next.js App Router) | 42 | 1.9 KB |
-| 231 | [src/app/api/notifications/push-token/route.ts](#file-src-app-api-notifications-push-token-route-ts) | Backend API Routes (Next.js App Router) | 64 | 2.2 KB |
-| 232 | [src/app/api/notifications/route.ts](#file-src-app-api-notifications-route-ts) | Backend API Routes (Next.js App Router) | 59 | 1.6 KB |
-| 233 | [src/app/api/orders/[id]/assign/route.ts](#file-src-app-api-orders--id--assign-route-ts) | Backend API Routes (Next.js App Router) | 87 | 4.3 KB |
-| 234 | [src/app/api/orders/[id]/cancel/route.ts](#file-src-app-api-orders--id--cancel-route-ts) | Backend API Routes (Next.js App Router) | 162 | 8.6 KB |
-| 235 | [src/app/api/orders/[id]/cash-confirm/route.ts](#file-src-app-api-orders--id--cash-confirm-route-ts) | Backend API Routes (Next.js App Router) | 71 | 4.6 KB |
-| 236 | [src/app/api/orders/[id]/prepare/route.ts](#file-src-app-api-orders--id--prepare-route-ts) | Backend API Routes (Next.js App Router) | 72 | 4.3 KB |
-| 237 | [src/app/api/orders/[id]/request-payment/route.ts](#file-src-app-api-orders--id--request-payment-route-ts) | Backend API Routes (Next.js App Router) | 55 | 5.1 KB |
-| 238 | [src/app/api/orders/[id]/route.ts](#file-src-app-api-orders--id--route-ts) | Backend API Routes (Next.js App Router) | 142 | 8.1 KB |
-| 239 | [src/app/api/orders/loyalty/route.ts](#file-src-app-api-orders-loyalty-route-ts) | Backend API Routes (Next.js App Router) | 12 | 488 B |
-| 240 | [src/app/api/orders/riders/route.ts](#file-src-app-api-orders-riders-route-ts) | Backend API Routes (Next.js App Router) | 17 | 661 B |
-| 241 | [src/app/api/orders/route.ts](#file-src-app-api-orders-route-ts) | Backend API Routes (Next.js App Router) | 250 | 20.4 KB |
-| 242 | [src/app/api/payments/intasend/initiate/route.ts](#file-src-app-api-payments-intasend-initiate-route-ts) | Backend API Routes (Next.js App Router) | 50 | 4.3 KB |
-| 243 | [src/app/api/payments/intasend/webhook/route.ts](#file-src-app-api-payments-intasend-webhook-route-ts) | Backend API Routes (Next.js App Router) | 83 | 7.1 KB |
-| 244 | [src/app/api/payments/mpesa/callback/route.ts](#file-src-app-api-payments-mpesa-callback-route-ts) | Backend API Routes (Next.js App Router) | 80 | 5.7 KB |
-| 245 | [src/app/api/payments/mpesa/initiate/route.ts](#file-src-app-api-payments-mpesa-initiate-route-ts) | Backend API Routes (Next.js App Router) | 60 | 4.7 KB |
-| 246 | [src/app/api/payments/mpesa/query/route.ts](#file-src-app-api-payments-mpesa-query-route-ts) | Backend API Routes (Next.js App Router) | 22 | 1.9 KB |
-| 247 | [src/app/api/payments/mpesa/service-callback/route.ts](#file-src-app-api-payments-mpesa-service-callback-route-ts) | Backend API Routes (Next.js App Router) | 65 | 4.5 KB |
-| 248 | [src/app/api/payments/refund/route.ts](#file-src-app-api-payments-refund-route-ts) | Backend API Routes (Next.js App Router) | 98 | 7.7 KB |
-| 249 | [src/app/api/prescriptions/[id]/refill/route.ts](#file-src-app-api-prescriptions--id--refill-route-ts) | Backend API Routes (Next.js App Router) | 103 | 6.6 KB |
-| 250 | [src/app/api/prescriptions/[id]/route.ts](#file-src-app-api-prescriptions--id--route-ts) | Backend API Routes (Next.js App Router) | 169 | 8.5 KB |
-| 251 | [src/app/api/prescriptions/route.ts](#file-src-app-api-prescriptions-route-ts) | Backend API Routes (Next.js App Router) | 183 | 8.8 KB |
-| 252 | [src/app/api/products/[id]/reviews/route.ts](#file-src-app-api-products--id--reviews-route-ts) | Backend API Routes (Next.js App Router) | 89 | 3.8 KB |
-| 253 | [src/app/api/products/[id]/route.ts](#file-src-app-api-products--id--route-ts) | Backend API Routes (Next.js App Router) | 188 | 9.8 KB |
-| 254 | [src/app/api/products/[id]/stock-alert/route.ts](#file-src-app-api-products--id--stock-alert-route-ts) | Backend API Routes (Next.js App Router) | 39 | 1.5 KB |
-| 255 | [src/app/api/products/bulk/route.ts](#file-src-app-api-products-bulk-route-ts) | Backend API Routes (Next.js App Router) | 118 | 5.6 KB |
-| 256 | [src/app/api/products/route.ts](#file-src-app-api-products-route-ts) | Backend API Routes (Next.js App Router) | 175 | 9.2 KB |
-| 257 | [src/app/api/products/stock-alerts/route.ts](#file-src-app-api-products-stock-alerts-route-ts) | Backend API Routes (Next.js App Router) | 37 | 1.4 KB |
-| 258 | [src/app/api/promotions/[id]/route.ts](#file-src-app-api-promotions--id--route-ts) | Backend API Routes (Next.js App Router) | 79 | 5.5 KB |
-| 259 | [src/app/api/promotions/route.ts](#file-src-app-api-promotions-route-ts) | Backend API Routes (Next.js App Router) | 84 | 4.5 KB |
-| 260 | [src/app/api/promotions/validate/route.ts](#file-src-app-api-promotions-validate-route-ts) | Backend API Routes (Next.js App Router) | 97 | 6.3 KB |
-| 261 | [src/app/api/route.ts](#file-src-app-api-route-ts) | Backend API Routes (Next.js App Router) | 5 | 134 B |
-| 262 | [src/app/api/service-bookings/[id]/pay-at-pharmacy/route.ts](#file-src-app-api-service-bookings--id--pay-at-pharmacy-route-ts) | Backend API Routes (Next.js App Router) | 27 | 2.5 KB |
-| 263 | [src/app/api/service-bookings/[id]/pay/card/route.ts](#file-src-app-api-service-bookings--id--pay-card-route-ts) | Backend API Routes (Next.js App Router) | 40 | 3.7 KB |
-| 264 | [src/app/api/service-bookings/[id]/pay/mpesa/route.ts](#file-src-app-api-service-bookings--id--pay-mpesa-route-ts) | Backend API Routes (Next.js App Router) | 49 | 4.3 KB |
-| 265 | [src/app/api/service-bookings/[id]/payment-status/route.ts](#file-src-app-api-service-bookings--id--payment-status-route-ts) | Backend API Routes (Next.js App Router) | 17 | 1.2 KB |
-| 266 | [src/app/api/service-bookings/[id]/review/route.ts](#file-src-app-api-service-bookings--id--review-route-ts) | Backend API Routes (Next.js App Router) | 16 | 1.3 KB |
-| 267 | [src/app/api/service-bookings/mine/route.ts](#file-src-app-api-service-bookings-mine-route-ts) | Backend API Routes (Next.js App Router) | 10 | 1.0 KB |
-| 268 | [src/app/api/service-bookings/route.ts](#file-src-app-api-service-bookings-route-ts) | Backend API Routes (Next.js App Router) | 77 | 6.0 KB |
-| 269 | [src/app/api/services/[id]/availability/route.ts](#file-src-app-api-services--id--availability-route-ts) | Backend API Routes (Next.js App Router) | 34 | 2.5 KB |
-| 270 | [src/app/api/services/[id]/reviews/route.ts](#file-src-app-api-services--id--reviews-route-ts) | Backend API Routes (Next.js App Router) | 9 | 691 B |
-| 271 | [src/app/api/services/[id]/route.ts](#file-src-app-api-services--id--route-ts) | Backend API Routes (Next.js App Router) | 120 | 3.3 KB |
-| 272 | [src/app/api/services/[id]/slots/route.ts](#file-src-app-api-services--id--slots-route-ts) | Backend API Routes (Next.js App Router) | 43 | 2.4 KB |
-| 273 | [src/app/api/services/route.ts](#file-src-app-api-services-route-ts) | Backend API Routes (Next.js App Router) | 44 | 2.3 KB |
-| 274 | [src/app/api/settings/delivery-fee/route.ts](#file-src-app-api-settings-delivery-fee-route-ts) | Backend API Routes (Next.js App Router) | 17 | 1.0 KB |
-| 275 | [src/app/api/settings/route.ts](#file-src-app-api-settings-route-ts) | Backend API Routes (Next.js App Router) | 103 | 7.9 KB |
-| 276 | [src/app/api/upload/route.ts](#file-src-app-api-upload-route-ts) | Backend API Routes (Next.js App Router) | 92 | 5.6 KB |
-| 277 | [src/app/app-experience.css](#file-src-app-app-experience-css) | Frontend Pages & Global Styles (Next.js App Router) | 968 | 24.3 KB |
-| 278 | [src/app/docs/[...slug]/page.tsx](#file-src-app-docs-----slug--page-tsx) | Frontend Pages & Global Styles (Next.js App Router) | 99 | 3.5 KB |
-| 279 | [src/app/docs/api-reference/page.tsx](#file-src-app-docs-api-reference-page-tsx) | Frontend Pages & Global Styles (Next.js App Router) | 47 | 2.5 KB |
-| 280 | [src/app/docs/assistant/page.tsx](#file-src-app-docs-assistant-page-tsx) | Frontend Pages & Global Styles (Next.js App Router) | 49 | 2.4 KB |
-| 281 | [src/app/docs/database/page.tsx](#file-src-app-docs-database-page-tsx) | Frontend Pages & Global Styles (Next.js App Router) | 54 | 2.9 KB |
-| 282 | [src/app/docs/journeys/[...slug]/page.tsx](#file-src-app-docs-journeys-----slug--page-tsx) | Frontend Pages & Global Styles (Next.js App Router) | 170 | 6.9 KB |
-| 283 | [src/app/docs/journeys/page.tsx](#file-src-app-docs-journeys-page-tsx) | Frontend Pages & Global Styles (Next.js App Router) | 54 | 2.2 KB |
-| 284 | [src/app/docs/layout.tsx](#file-src-app-docs-layout-tsx) | Frontend Pages & Global Styles (Next.js App Router) | 71 | 3.0 KB |
-| 285 | [src/app/docs/not-found.tsx](#file-src-app-docs-not-found-tsx) | Frontend Pages & Global Styles (Next.js App Router) | 35 | 1.8 KB |
-| 286 | [src/app/docs/page.tsx](#file-src-app-docs-page-tsx) | Frontend Pages & Global Styles (Next.js App Router) | 265 | 15.3 KB |
-| 287 | [src/app/globals.css](#file-src-app-globals-css) | Frontend Pages & Global Styles (Next.js App Router) | 498 | 15.6 KB |
-| 288 | [src/app/layout.tsx](#file-src-app-layout-tsx) | Frontend Pages & Global Styles (Next.js App Router) | 48 | 1.8 KB |
-| 289 | [src/app/page.tsx](#file-src-app-page-tsx) | Frontend Pages & Global Styles (Next.js App Router) | 91 | 5.3 KB |
-| 290 | [src/app/premium-landing.css](#file-src-app-premium-landing-css) | Frontend Pages & Global Styles (Next.js App Router) | 127 | 9.0 KB |
-| 291 | [src/app/reference-home-dark.css](#file-src-app-reference-home-dark-css) | Frontend Pages & Global Styles (Next.js App Router) | 13 | 875 B |
-| 292 | [src/app/reference-home.css](#file-src-app-reference-home-css) | Frontend Pages & Global Styles (Next.js App Router) | 248 | 16.3 KB |
-| 293 | [src/app/robots.ts](#file-src-app-robots-ts) | Frontend Pages & Global Styles (Next.js App Router) | 6 | 305 B |
-| 294 | [src/app/services-showcase.css](#file-src-app-services-showcase-css) | Frontend Pages & Global Styles (Next.js App Router) | 105 | 7.7 KB |
-| 295 | [src/app/sitemap.ts](#file-src-app-sitemap-ts) | Frontend Pages & Global Styles (Next.js App Router) | 12 | 438 B |
-| 296 | [src/app/sphere-public.css](#file-src-app-sphere-public-css) | Frontend Pages & Global Styles (Next.js App Router) | 752 | 27.2 KB |
-| 297 | [src/components/assistant/assistant-actions.tsx](#file-src-components-assistant-assistant-actions-tsx) | Shared Layout & Domain Components | 695 | 20.1 KB |
-| 298 | [src/components/assistant/assistant-widget.tsx](#file-src-components-assistant-assistant-widget-tsx) | Shared Layout & Domain Components | 378 | 14.7 KB |
-| 299 | [src/components/catalog/high-performance-pagination.tsx](#file-src-components-catalog-high-performance-pagination-tsx) | Shared Layout & Domain Components | 299 | 10.1 KB |
-| 300 | [src/components/catalog/luxury-category-ribbon.tsx](#file-src-components-catalog-luxury-category-ribbon-tsx) | Shared Layout & Domain Components | 85 | 2.9 KB |
-| 301 | [src/components/catalog/medicine-request.tsx](#file-src-components-catalog-medicine-request-tsx) | Shared Layout & Domain Components | 126 | 6.5 KB |
-| 302 | [src/components/docs/api-explorer.tsx](#file-src-components-docs-api-explorer-tsx) | Shared Layout & Domain Components | 266 | 13.5 KB |
-| 303 | [src/components/docs/code-block.tsx](#file-src-components-docs-code-block-tsx) | Shared Layout & Domain Components | 83 | 3.5 KB |
-| 304 | [src/components/docs/db-explorer.tsx](#file-src-components-docs-db-explorer-tsx) | Shared Layout & Domain Components | 203 | 9.8 KB |
-| 305 | [src/components/docs/doc-furniture.tsx](#file-src-components-docs-doc-furniture-tsx) | Shared Layout & Domain Components | 113 | 4.1 KB |
-| 306 | [src/components/docs/docs-assistant.tsx](#file-src-components-docs-docs-assistant-tsx) | Shared Layout & Domain Components | 280 | 11.9 KB |
-| 307 | [src/components/docs/docs-header.tsx](#file-src-components-docs-docs-header-tsx) | Shared Layout & Domain Components | 106 | 4.5 KB |
-| 308 | [src/components/docs/docs-shell.tsx](#file-src-components-docs-docs-shell-tsx) | Shared Layout & Domain Components | 171 | 6.9 KB |
-| 309 | [src/components/docs/docs-sidebar.tsx](#file-src-components-docs-docs-sidebar-tsx) | Shared Layout & Domain Components | 91 | 3.4 KB |
-| 310 | [src/components/docs/docs-toc.tsx](#file-src-components-docs-docs-toc-tsx) | Shared Layout & Domain Components | 84 | 3.2 KB |
-| 311 | [src/components/docs/docs.css](#file-src-components-docs-docs-css) | Shared Layout & Domain Components | 561 | 12.1 KB |
-| 312 | [src/components/docs/journey-directory.tsx](#file-src-components-docs-journey-directory-tsx) | Shared Layout & Domain Components | 211 | 9.4 KB |
-| 313 | [src/components/docs/markdown.tsx](#file-src-components-docs-markdown-tsx) | Shared Layout & Domain Components | 149 | 5.7 KB |
-| 314 | [src/components/docs/mermaid-diagram.tsx](#file-src-components-docs-mermaid-diagram-tsx) | Shared Layout & Domain Components | 220 | 8.9 KB |
-| 315 | [src/components/docs/search-palette.tsx](#file-src-components-docs-search-palette-tsx) | Shared Layout & Domain Components | 352 | 14.1 KB |
-| 316 | [src/components/home/luxury-categories-showcase.tsx](#file-src-components-home-luxury-categories-showcase-tsx) | Shared Layout & Domain Components | 329 | 12.7 KB |
-| 317 | [src/components/home/priority-products-section.tsx](#file-src-components-home-priority-products-section-tsx) | Shared Layout & Domain Components | 237 | 8.7 KB |
-| 318 | [src/components/home/reference-home-hero.tsx](#file-src-components-home-reference-home-hero-tsx) | Shared Layout & Domain Components | 221 | 10.3 KB |
-| 319 | [src/components/home/services-showcase.tsx](#file-src-components-home-services-showcase-tsx) | Shared Layout & Domain Components | 82 | 4.8 KB |
-| 320 | [src/components/home/sphere-landing.module.css](#file-src-components-home-sphere-landing-module-css) | Shared Layout & Domain Components | 1,513 | 27.9 KB |
-| 321 | [src/components/home/sphere-landing.tsx](#file-src-components-home-sphere-landing-tsx) | Shared Layout & Domain Components | 537 | 18.2 KB |
-| 322 | [src/components/layout/customer-hub-nav.tsx](#file-src-components-layout-customer-hub-nav-tsx) | Shared Layout & Domain Components | 50 | 2.4 KB |
-| 323 | [src/components/layout/footer.tsx](#file-src-components-layout-footer-tsx) | Shared Layout & Domain Components | 98 | 5.3 KB |
-| 324 | [src/components/layout/header.tsx](#file-src-components-layout-header-tsx) | Shared Layout & Domain Components | 452 | 19.8 KB |
-| 325 | [src/components/layout/mobile-nav.tsx](#file-src-components-layout-mobile-nav-tsx) | Shared Layout & Domain Components | 66 | 2.9 KB |
-| 326 | [src/components/layout/notification-center.tsx](#file-src-components-layout-notification-center-tsx) | Shared Layout & Domain Components | 58 | 3.7 KB |
-| 327 | [src/components/layout/sphere-header.tsx](#file-src-components-layout-sphere-header-tsx) | Shared Layout & Domain Components | 111 | 3.5 KB |
-| 328 | [src/components/member/member-intro.tsx](#file-src-components-member-member-intro-tsx) | Shared Layout & Domain Components | 126 | 3.8 KB |
-| 329 | [src/components/shared/empty-state.tsx](#file-src-components-shared-empty-state-tsx) | Shared Layout & Domain Components | 72 | 2.3 KB |
-| 330 | [src/components/shared/logo.tsx](#file-src-components-shared-logo-tsx) | Shared Layout & Domain Components | 29 | 1.3 KB |
-| 331 | [src/components/shared/premium-popular-card.tsx](#file-src-components-shared-premium-popular-card-tsx) | Shared Layout & Domain Components | 172 | 8.9 KB |
-| 332 | [src/components/shared/product-card.tsx](#file-src-components-shared-product-card-tsx) | Shared Layout & Domain Components | 596 | 25.3 KB |
-| 333 | [src/components/shared/product-image.tsx](#file-src-components-shared-product-image-tsx) | Shared Layout & Domain Components | 38 | 1.2 KB |
-| 334 | [src/components/shared/status-badges.tsx](#file-src-components-shared-status-badges-tsx) | Shared Layout & Domain Components | 107 | 6.1 KB |
-| 335 | [src/components/shared/use-current-location-button.tsx](#file-src-components-shared-use-current-location-button-tsx) | Shared Layout & Domain Components | 105 | 3.6 KB |
-| 336 | [src/components/ui/accordion.tsx](#file-src-components-ui-accordion-tsx) | UI Primitives (shadcn/ui & Radix UI) | 66 | 2.0 KB |
-| 337 | [src/components/ui/alert-dialog.tsx](#file-src-components-ui-alert-dialog-tsx) | UI Primitives (shadcn/ui & Radix UI) | 157 | 3.8 KB |
-| 338 | [src/components/ui/alert.tsx](#file-src-components-ui-alert-tsx) | UI Primitives (shadcn/ui & Radix UI) | 66 | 1.6 KB |
-| 339 | [src/components/ui/aspect-ratio.tsx](#file-src-components-ui-aspect-ratio-tsx) | UI Primitives (shadcn/ui & Radix UI) | 11 | 280 B |
-| 340 | [src/components/ui/avatar.tsx](#file-src-components-ui-avatar-tsx) | UI Primitives (shadcn/ui & Radix UI) | 53 | 1.1 KB |
-| 341 | [src/components/ui/badge.tsx](#file-src-components-ui-badge-tsx) | UI Primitives (shadcn/ui & Radix UI) | 46 | 1.6 KB |
-| 342 | [src/components/ui/breadcrumb.tsx](#file-src-components-ui-breadcrumb-tsx) | UI Primitives (shadcn/ui & Radix UI) | 109 | 2.3 KB |
-| 343 | [src/components/ui/button.tsx](#file-src-components-ui-button-tsx) | UI Primitives (shadcn/ui & Radix UI) | 59 | 2.1 KB |
-| 344 | [src/components/ui/calendar.tsx](#file-src-components-ui-calendar-tsx) | UI Primitives (shadcn/ui & Radix UI) | 213 | 7.5 KB |
-| 345 | [src/components/ui/card.tsx](#file-src-components-ui-card-tsx) | UI Primitives (shadcn/ui & Radix UI) | 92 | 1.9 KB |
-| 346 | [src/components/ui/carousel.tsx](#file-src-components-ui-carousel-tsx) | UI Primitives (shadcn/ui & Radix UI) | 241 | 5.4 KB |
-| 347 | [src/components/ui/chart.tsx](#file-src-components-ui-chart-tsx) | UI Primitives (shadcn/ui & Radix UI) | 353 | 9.6 KB |
-| 348 | [src/components/ui/checkbox.tsx](#file-src-components-ui-checkbox-tsx) | UI Primitives (shadcn/ui & Radix UI) | 32 | 1.2 KB |
-| 349 | [src/components/ui/collapsible.tsx](#file-src-components-ui-collapsible-tsx) | UI Primitives (shadcn/ui & Radix UI) | 33 | 800 B |
-| 350 | [src/components/ui/command.tsx](#file-src-components-ui-command-tsx) | UI Primitives (shadcn/ui & Radix UI) | 184 | 4.7 KB |
-| 351 | [src/components/ui/context-menu.tsx](#file-src-components-ui-context-menu-tsx) | UI Primitives (shadcn/ui & Radix UI) | 252 | 8.0 KB |
-| 352 | [src/components/ui/dialog.tsx](#file-src-components-ui-dialog-tsx) | UI Primitives (shadcn/ui & Radix UI) | 143 | 3.9 KB |
-| 353 | [src/components/ui/drawer.tsx](#file-src-components-ui-drawer-tsx) | UI Primitives (shadcn/ui & Radix UI) | 135 | 4.2 KB |
-| 354 | [src/components/ui/dropdown-menu.tsx](#file-src-components-ui-dropdown-menu-tsx) | UI Primitives (shadcn/ui & Radix UI) | 257 | 8.1 KB |
-| 355 | [src/components/ui/form.tsx](#file-src-components-ui-form-tsx) | UI Primitives (shadcn/ui & Radix UI) | 167 | 3.7 KB |
-| 356 | [src/components/ui/hover-card.tsx](#file-src-components-ui-hover-card-tsx) | UI Primitives (shadcn/ui & Radix UI) | 44 | 1.5 KB |
-| 357 | [src/components/ui/input-otp.tsx](#file-src-components-ui-input-otp-tsx) | UI Primitives (shadcn/ui & Radix UI) | 77 | 2.2 KB |
-| 358 | [src/components/ui/input.tsx](#file-src-components-ui-input-tsx) | UI Primitives (shadcn/ui & Radix UI) | 21 | 967 B |
-| 359 | [src/components/ui/label.tsx](#file-src-components-ui-label-tsx) | UI Primitives (shadcn/ui & Radix UI) | 24 | 611 B |
-| 360 | [src/components/ui/menubar.tsx](#file-src-components-ui-menubar-tsx) | UI Primitives (shadcn/ui & Radix UI) | 276 | 8.2 KB |
-| 361 | [src/components/ui/navigation-menu.tsx](#file-src-components-ui-navigation-menu-tsx) | UI Primitives (shadcn/ui & Radix UI) | 168 | 6.5 KB |
-| 362 | [src/components/ui/pagination.tsx](#file-src-components-ui-pagination-tsx) | UI Primitives (shadcn/ui & Radix UI) | 127 | 2.6 KB |
-| 363 | [src/components/ui/popover.tsx](#file-src-components-ui-popover-tsx) | UI Primitives (shadcn/ui & Radix UI) | 48 | 1.6 KB |
-| 364 | [src/components/ui/progress.tsx](#file-src-components-ui-progress-tsx) | UI Primitives (shadcn/ui & Radix UI) | 31 | 740 B |
-| 365 | [src/components/ui/radio-group.tsx](#file-src-components-ui-radio-group-tsx) | UI Primitives (shadcn/ui & Radix UI) | 45 | 1.4 KB |
-| 366 | [src/components/ui/resizable.tsx](#file-src-components-ui-resizable-tsx) | UI Primitives (shadcn/ui & Radix UI) | 56 | 2.0 KB |
-| 367 | [src/components/ui/scroll-area.tsx](#file-src-components-ui-scroll-area-tsx) | UI Primitives (shadcn/ui & Radix UI) | 58 | 1.6 KB |
-| 368 | [src/components/ui/select.tsx](#file-src-components-ui-select-tsx) | UI Primitives (shadcn/ui & Radix UI) | 185 | 6.1 KB |
-| 369 | [src/components/ui/separator.tsx](#file-src-components-ui-separator-tsx) | UI Primitives (shadcn/ui & Radix UI) | 28 | 699 B |
-| 370 | [src/components/ui/sheet.tsx](#file-src-components-ui-sheet-tsx) | UI Primitives (shadcn/ui & Radix UI) | 139 | 4.0 KB |
-| 371 | [src/components/ui/sidebar.tsx](#file-src-components-ui-sidebar-tsx) | UI Primitives (shadcn/ui & Radix UI) | 726 | 21.1 KB |
-| 372 | [src/components/ui/skeleton.tsx](#file-src-components-ui-skeleton-tsx) | UI Primitives (shadcn/ui & Radix UI) | 13 | 276 B |
-| 373 | [src/components/ui/slider.tsx](#file-src-components-ui-slider-tsx) | UI Primitives (shadcn/ui & Radix UI) | 63 | 2.0 KB |
-| 374 | [src/components/ui/sonner.tsx](#file-src-components-ui-sonner-tsx) | UI Primitives (shadcn/ui & Radix UI) | 25 | 564 B |
-| 375 | [src/components/ui/switch.tsx](#file-src-components-ui-switch-tsx) | UI Primitives (shadcn/ui & Radix UI) | 31 | 1.1 KB |
-| 376 | [src/components/ui/table.tsx](#file-src-components-ui-table-tsx) | UI Primitives (shadcn/ui & Radix UI) | 116 | 2.4 KB |
-| 377 | [src/components/ui/tabs.tsx](#file-src-components-ui-tabs-tsx) | UI Primitives (shadcn/ui & Radix UI) | 66 | 1.9 KB |
-| 378 | [src/components/ui/textarea.tsx](#file-src-components-ui-textarea-tsx) | UI Primitives (shadcn/ui & Radix UI) | 18 | 759 B |
-| 379 | [src/components/ui/toast.tsx](#file-src-components-ui-toast-tsx) | UI Primitives (shadcn/ui & Radix UI) | 129 | 4.7 KB |
-| 380 | [src/components/ui/toaster.tsx](#file-src-components-ui-toaster-tsx) | UI Primitives (shadcn/ui & Radix UI) | 35 | 785 B |
-| 381 | [src/components/ui/toggle-group.tsx](#file-src-components-ui-toggle-group-tsx) | UI Primitives (shadcn/ui & Radix UI) | 73 | 1.9 KB |
-| 382 | [src/components/ui/toggle.tsx](#file-src-components-ui-toggle-tsx) | UI Primitives (shadcn/ui & Radix UI) | 47 | 1.5 KB |
-| 383 | [src/components/ui/tooltip.tsx](#file-src-components-ui-tooltip-tsx) | UI Primitives (shadcn/ui & Radix UI) | 61 | 1.8 KB |
-| 384 | [src/components/views/account-view.tsx](#file-src-components-views-account-view-tsx) | Storefront Views & Customer Flows | 1,516 | 61.3 KB |
-| 385 | [src/components/views/admin/admin-access.tsx](#file-src-components-views-admin-admin-access-tsx) | Admin Workspace & Staff Control Room | 19 | 785 B |
-| 386 | [src/components/views/admin/admin-shared.tsx](#file-src-components-views-admin-admin-shared-tsx) | Admin Workspace & Staff Control Room | 263 | 8.6 KB |
-| 387 | [src/components/views/admin/admin-view.tsx](#file-src-components-views-admin-admin-view-tsx) | Admin Workspace & Staff Control Room | 563 | 28.0 KB |
-| 388 | [src/components/views/admin/sections/catalogue-section.tsx](#file-src-components-views-admin-sections-catalogue-section-tsx) | Admin Workspace & Staff Control Room | 1,109 | 49.7 KB |
-| 389 | [src/components/views/admin/sections/compliance-section.tsx](#file-src-components-views-admin-sections-compliance-section-tsx) | Admin Workspace & Staff Control Room | 363 | 23.2 KB |
-| 390 | [src/components/views/admin/sections/dispatch-control-room.tsx](#file-src-components-views-admin-sections-dispatch-control-room-tsx) | Admin Workspace & Staff Control Room | 600 | 38.1 KB |
-| 391 | [src/components/views/admin/sections/dispatch-section.tsx](#file-src-components-views-admin-sections-dispatch-section-tsx) | Admin Workspace & Staff Control Room | 725 | 29.7 KB |
-| 392 | [src/components/views/admin/sections/medicine-requests-section.tsx](#file-src-components-views-admin-sections-medicine-requests-section-tsx) | Admin Workspace & Staff Control Room | 124 | 7.4 KB |
-| 393 | [src/components/views/admin/sections/orders-section.tsx](#file-src-components-views-admin-sections-orders-section-tsx) | Admin Workspace & Staff Control Room | 1,509 | 80.1 KB |
-| 394 | [src/components/views/admin/sections/overview-section.tsx](#file-src-components-views-admin-sections-overview-section-tsx) | Admin Workspace & Staff Control Room | 288 | 17.4 KB |
-| 395 | [src/components/views/admin/sections/pos-sync-section.tsx](#file-src-components-views-admin-sections-pos-sync-section-tsx) | Admin Workspace & Staff Control Room | 1,630 | 67.0 KB |
-| 396 | [src/components/views/admin/sections/prescriptions-section.tsx](#file-src-components-views-admin-sections-prescriptions-section-tsx) | Admin Workspace & Staff Control Room | 983 | 45.5 KB |
-| 397 | [src/components/views/admin/sections/promotions-section.tsx](#file-src-components-views-admin-sections-promotions-section-tsx) | Admin Workspace & Staff Control Room | 373 | 27.1 KB |
-| 398 | [src/components/views/admin/sections/reports-section.tsx](#file-src-components-views-admin-sections-reports-section-tsx) | Admin Workspace & Staff Control Room | 319 | 14.6 KB |
-| 399 | [src/components/views/admin/sections/reviews-section.tsx](#file-src-components-views-admin-sections-reviews-section-tsx) | Admin Workspace & Staff Control Room | 285 | 9.9 KB |
-| 400 | [src/components/views/admin/sections/service-analytics-section.tsx](#file-src-components-views-admin-sections-service-analytics-section-tsx) | Admin Workspace & Staff Control Room | 43 | 3.9 KB |
-| 401 | [src/components/views/admin/sections/service-bookings-section.tsx](#file-src-components-views-admin-sections-service-bookings-section-tsx) | Admin Workspace & Staff Control Room | 452 | 34.4 KB |
-| 402 | [src/components/views/admin/sections/services-section.tsx](#file-src-components-views-admin-sections-services-section-tsx) | Admin Workspace & Staff Control Room | 279 | 33.9 KB |
-| 403 | [src/components/views/admin/sections/settings-section.tsx](#file-src-components-views-admin-sections-settings-section-tsx) | Admin Workspace & Staff Control Room | 836 | 38.2 KB |
-| 404 | [src/components/views/admin/sections/staff-section.tsx](#file-src-components-views-admin-sections-staff-section-tsx) | Admin Workspace & Staff Control Room | 465 | 19.5 KB |
-| 405 | [src/components/views/auth-view.tsx](#file-src-components-views-auth-view-tsx) | Storefront Views & Customer Flows | 479 | 22.2 KB |
-| 406 | [src/components/views/cart-view.tsx](#file-src-components-views-cart-view-tsx) | Storefront Views & Customer Flows | 296 | 15.8 KB |
-| 407 | [src/components/views/catalog-view.tsx](#file-src-components-views-catalog-view-tsx) | Storefront Views & Customer Flows | 703 | 28.9 KB |
-| 408 | [src/components/views/checkout-view.tsx](#file-src-components-views-checkout-view-tsx) | Storefront Views & Customer Flows | 1,852 | 93.6 KB |
-| 409 | [src/components/views/home-view.tsx](#file-src-components-views-home-view-tsx) | Storefront Views & Customer Flows | 458 | 22.2 KB |
-| 410 | [src/components/views/offers-view.tsx](#file-src-components-views-offers-view-tsx) | Storefront Views & Customer Flows | 167 | 9.0 KB |
-| 411 | [src/components/views/order-detail-view.tsx](#file-src-components-views-order-detail-view-tsx) | Storefront Views & Customer Flows | 1,104 | 42.1 KB |
-| 412 | [src/components/views/orders-view.tsx](#file-src-components-views-orders-view-tsx) | Storefront Views & Customer Flows | 396 | 13.7 KB |
-| 413 | [src/components/views/prescriptions-view.tsx](#file-src-components-views-prescriptions-view-tsx) | Storefront Views & Customer Flows | 754 | 27.3 KB |
-| 414 | [src/components/views/product-view.tsx](#file-src-components-views-product-view-tsx) | Storefront Views & Customer Flows | 750 | 30.8 KB |
-| 415 | [src/components/views/services-view.tsx](#file-src-components-views-services-view-tsx) | Storefront Views & Customer Flows | 1,841 | 75.4 KB |
-| 416 | [src/hooks/use-mobile.ts](#file-src-hooks-use-mobile-ts) | Custom React Hooks | 19 | 565 B |
-| 417 | [src/hooks/use-toast.ts](#file-src-hooks-use-toast-ts) | Custom React Hooks | 194 | 3.8 KB |
-| 418 | [src/lib/api-client.ts](#file-src-lib-api-client-ts) | Core Business Logic & Database Clients | 500 | 23.6 KB |
-| 419 | [src/lib/assistant/contracts.ts](#file-src-lib-assistant-contracts-ts) | AI Medication Assistant | 161 | 6.7 KB |
-| 420 | [src/lib/assistant/payment-review.ts](#file-src-lib-assistant-payment-review-ts) | AI Medication Assistant | 34 | 991 B |
-| 421 | [src/lib/assistant/public-knowledge.ts](#file-src-lib-assistant-public-knowledge-ts) | AI Medication Assistant | 340 | 15.5 KB |
-| 422 | [src/lib/bandago-normalizer.ts](#file-src-lib-bandago-normalizer-ts) | Bandago POS & CRM Integration | 359 | 10.4 KB |
-| 423 | [src/lib/constants.ts](#file-src-lib-constants-ts) | Core Business Logic & Database Clients | 199 | 7.6 KB |
-| 424 | [src/lib/crm/bandago-crm.ts](#file-src-lib-crm-bandago-crm-ts) | Bandago POS & CRM Integration | 163 | 5.2 KB |
-| 425 | [src/lib/db.ts](#file-src-lib-db-ts) | Core Business Logic & Database Clients | 83 | 2.4 KB |
-| 426 | [src/lib/docs/assistant.ts](#file-src-lib-docs-assistant-ts) | Core Business Logic & Database Clients | 478 | 17.0 KB |
-| 427 | [src/lib/docs/content.ts](#file-src-lib-docs-content-ts) | Core Business Logic & Database Clients | 350 | 11.1 KB |
-| 428 | [src/lib/docs/frontmatter.ts](#file-src-lib-docs-frontmatter-ts) | Core Business Logic & Database Clients | 146 | 4.7 KB |
-| 429 | [src/lib/docs/navigation.ts](#file-src-lib-docs-navigation-ts) | Core Business Logic & Database Clients | 286 | 8.4 KB |
-| 430 | [src/lib/docs/openapi.ts](#file-src-lib-docs-openapi-ts) | Core Business Logic & Database Clients | 186 | 6.6 KB |
-| 431 | [src/lib/docs/prisma-schema.ts](#file-src-lib-docs-prisma-schema-ts) | Core Business Logic & Database Clients | 273 | 8.5 KB |
-| 432 | [src/lib/docs/search.ts](#file-src-lib-docs-search-ts) | Core Business Logic & Database Clients | 208 | 6.7 KB |
-| 433 | [src/lib/docs/utils.ts](#file-src-lib-docs-utils-ts) | Core Business Logic & Database Clients | 71 | 2.0 KB |
-| 434 | [src/lib/dto.ts](#file-src-lib-dto-ts) | Core Business Logic & Database Clients | 277 | 11.2 KB |
-| 435 | [src/lib/email/resend.ts](#file-src-lib-email-resend-ts) | Notifications, Push Messaging & Communications | 81 | 2.6 KB |
-| 436 | [src/lib/email/templates.ts](#file-src-lib-email-templates-ts) | Notifications, Push Messaging & Communications | 463 | 20.6 KB |
-| 437 | [src/lib/firebase/admin.ts](#file-src-lib-firebase-admin-ts) | Notifications, Push Messaging & Communications | 261 | 7.4 KB |
-| 438 | [src/lib/firebase/client.ts](#file-src-lib-firebase-client-ts) | Notifications, Push Messaging & Communications | 192 | 6.4 KB |
-| 439 | [src/lib/format.ts](#file-src-lib-format-ts) | Core Business Logic & Database Clients | 64 | 1.9 KB |
-| 440 | [src/lib/hash.ts](#file-src-lib-hash-ts) | Core Business Logic & Database Clients | 88 | 3.3 KB |
-| 441 | [src/lib/image-library.ts](#file-src-lib-image-library-ts) | Core Business Logic & Database Clients | 80 | 3.4 KB |
-| 442 | [src/lib/image.ts](#file-src-lib-image-ts) | Core Business Logic & Database Clients | 24 | 1.0 KB |
-| 443 | [src/lib/intasend/client.ts](#file-src-lib-intasend-client-ts) | Payment Gateways (M-Pesa Daraja & IntaSend) | 141 | 7.3 KB |
-| 444 | [src/lib/inventory-guard.ts](#file-src-lib-inventory-guard-ts) | Core Business Logic & Database Clients | 318 | 10.4 KB |
-| 445 | [src/lib/loyalty.ts](#file-src-lib-loyalty-ts) | Core Business Logic & Database Clients | 85 | 4.5 KB |
-| 446 | [src/lib/medicine-request-dto.ts](#file-src-lib-medicine-request-dto-ts) | Core Business Logic & Database Clients | 15 | 571 B |
-| 447 | [src/lib/medicine-requests.ts](#file-src-lib-medicine-requests-ts) | Core Business Logic & Database Clients | 60 | 2.1 KB |
-| 448 | [src/lib/mpesa/daraja.ts](#file-src-lib-mpesa-daraja-ts) | Payment Gateways (M-Pesa Daraja & IntaSend) | 228 | 7.4 KB |
-| 449 | [src/lib/notifications/delivery.ts](#file-src-lib-notifications-delivery-ts) | Notifications, Push Messaging & Communications | 90 | 5.7 KB |
-| 450 | [src/lib/notifications/payment.ts](#file-src-lib-notifications-payment-ts) | Notifications, Push Messaging & Communications | 24 | 1.6 KB |
-| 451 | [src/lib/notify.ts](#file-src-lib-notify-ts) | Core Business Logic & Database Clients | 284 | 10.2 KB |
-| 452 | [src/lib/offer-intent.ts](#file-src-lib-offer-intent-ts) | Core Business Logic & Database Clients | 23 | 839 B |
-| 453 | [src/lib/pdf/daily-sales-pdf.ts](#file-src-lib-pdf-daily-sales-pdf-ts) | Core Business Logic & Database Clients | 272 | 9.8 KB |
-| 454 | [src/lib/pos-reconciliation-core.ts](#file-src-lib-pos-reconciliation-core-ts) | Bandago POS & CRM Integration | 265 | 10.3 KB |
-| 455 | [src/lib/pos-reconciliation.ts](#file-src-lib-pos-reconciliation-ts) | Bandago POS & CRM Integration | 444 | 13.4 KB |
-| 456 | [src/lib/promotions.ts](#file-src-lib-promotions-ts) | Core Business Logic & Database Clients | 98 | 4.5 KB |
-| 457 | [src/lib/r2.ts](#file-src-lib-r2-ts) | Core Business Logic & Database Clients | 100 | 5.1 KB |
-| 458 | [src/lib/security/bandago-auth.ts](#file-src-lib-security-bandago-auth-ts) | Security, Rate Limiting & Validation Guards | 45 | 1.3 KB |
-| 459 | [src/lib/security/bandago-bearer.ts](#file-src-lib-security-bandago-bearer-ts) | Security, Rate Limiting & Validation Guards | 50 | 1.8 KB |
-| 460 | [src/lib/security/file.ts](#file-src-lib-security-file-ts) | Security, Rate Limiting & Validation Guards | 28 | 1.8 KB |
-| 461 | [src/lib/security/order-workflow.ts](#file-src-lib-security-order-workflow-ts) | Security, Rate Limiting & Validation Guards | 20 | 1.2 KB |
-| 462 | [src/lib/security/payment-attempt.ts](#file-src-lib-security-payment-attempt-ts) | Security, Rate Limiting & Validation Guards | 32 | 2.6 KB |
-| 463 | [src/lib/security/payment.ts](#file-src-lib-security-payment-ts) | Security, Rate Limiting & Validation Guards | 24 | 1.3 KB |
-| 464 | [src/lib/security/request.ts](#file-src-lib-security-request-ts) | Security, Rate Limiting & Validation Guards | 54 | 2.6 KB |
-| 465 | [src/lib/security/service.ts](#file-src-lib-security-service-ts) | Security, Rate Limiting & Validation Guards | 53 | 2.7 KB |
-| 466 | [src/lib/session.ts](#file-src-lib-session-ts) | Core Business Logic & Database Clients | 159 | 5.9 KB |
-| 467 | [src/lib/settings.ts](#file-src-lib-settings-ts) | Core Business Logic & Database Clients | 48 | 2.5 KB |
-| 468 | [src/lib/sms.ts](#file-src-lib-sms-ts) | Notifications, Push Messaging & Communications | 21 | 1.5 KB |
-| 469 | [src/lib/types.ts](#file-src-lib-types-ts) | Core Business Logic & Database Clients | 456 | 9.6 KB |
-| 470 | [src/lib/utils.ts](#file-src-lib-utils-ts) | Core Business Logic & Database Clients | 6 | 166 B |
-| 471 | [src/store/use-app-store.ts](#file-src-store-use-app-store-ts) | Client State Stores (Zustand) | 222 | 7.9 KB |
-| 472 | [src/store/use-auth-store.ts](#file-src-store-use-auth-store-ts) | Client State Stores (Zustand) | 40 | 1.3 KB |
-| 473 | [src/store/use-cart-store.ts](#file-src-store-use-cart-store-ts) | Client State Stores (Zustand) | 93 | 3.4 KB |
-| 474 | [src/store/use-wish-store.ts](#file-src-store-use-wish-store-ts) | Client State Stores (Zustand) | 71 | 2.0 KB |
-| 475 | [tailwind.config.ts](#file-tailwind-config-ts) | Project Configuration & Root Tooling | 64 | 1.7 KB |
-| 476 | [tests/admin-live-sync.test.mjs](#file-tests-admin-live-sync-test-mjs) | Automated Test Suites & Verification | 74 | 4.1 KB |
-| 477 | [tests/assistant.test.ts](#file-tests-assistant-test-ts) | Automated Test Suites & Verification | 133 | 8.0 KB |
-| 478 | [tests/bandago-bidirectional-sync.test.mjs](#file-tests-bandago-bidirectional-sync-test-mjs) | Automated Test Suites & Verification | 237 | 9.4 KB |
-| 479 | [tests/bandago-pos-crm-integration.test.mjs](#file-tests-bandago-pos-crm-integration-test-mjs) | Automated Test Suites & Verification | 534 | 27.7 KB |
-| 480 | [tests/checkout-points-contrast.test.mjs](#file-tests-checkout-points-contrast-test-mjs) | Automated Test Suites & Verification | 19 | 1018 B |
-| 481 | [tests/compliance-workspace.test.mjs](#file-tests-compliance-workspace-test-mjs) | Automated Test Suites & Verification | 32 | 1.4 KB |
-| 482 | [tests/dispatch-readiness.test.mjs](#file-tests-dispatch-readiness-test-mjs) | Automated Test Suites & Verification | 37 | 2.0 KB |
-| 483 | [tests/medicine-requests.test.mjs](#file-tests-medicine-requests-test-mjs) | Automated Test Suites & Verification | 126 | 7.9 KB |
-| 484 | [tests/offer-workflow.test.mjs](#file-tests-offer-workflow-test-mjs) | Automated Test Suites & Verification | 77 | 4.4 KB |
-| 485 | [tests/order-dispatch-promotion-workflow.test.mjs](#file-tests-order-dispatch-promotion-workflow-test-mjs) | Automated Test Suites & Verification | 57 | 3.0 KB |
-| 486 | [tests/order-operations-ux.test.mjs](#file-tests-order-operations-ux-test-mjs) | Automated Test Suites & Verification | 112 | 6.3 KB |
-| 487 | [tests/promotion-validation-resilience.test.mjs](#file-tests-promotion-validation-resilience-test-mjs) | Automated Test Suites & Verification | 64 | 3.1 KB |
-| 488 | [tests/python-runtime-build.sh](#file-tests-python-runtime-build-sh) | Automated Test Suites & Verification | 64 | 1.8 KB |
-| 489 | [tests/python-runtime-container.sh](#file-tests-python-runtime-container-sh) | Automated Test Suites & Verification | 31 | 837 B |
-| 490 | [tests/reports-layout.test.mjs](#file-tests-reports-layout-test-mjs) | Automated Test Suites & Verification | 19 | 976 B |
-| 491 | [tests/security-static.test.mjs](#file-tests-security-static-test-mjs) | Automated Test Suites & Verification | 178 | 8.1 KB |
-| 492 | [tsconfig.json](#file-tsconfig-json) | Project Configuration & Root Tooling | 42 | 730 B |
+| 218 | [src/app/api/docs-export/pdf/route.ts](#file-src-app-api-docs-export-pdf-route-ts) | Backend API Routes (Next.js App Router) | 31 | 1.2 KB |
+| 219 | [src/app/api/docs-index/route.ts](#file-src-app-api-docs-index-route-ts) | Backend API Routes (Next.js App Router) | 19 | 535 B |
+| 220 | [src/app/api/integrations/bandago/crm/route.ts](#file-src-app-api-integrations-bandago-crm-route-ts) | Backend API Routes (Next.js App Router) | 200 | 6.6 KB |
+| 221 | [src/app/api/integrations/bandago/csv-import/route.ts](#file-src-app-api-integrations-bandago-csv-import-route-ts) | Backend API Routes (Next.js App Router) | 149 | 5.6 KB |
+| 222 | [src/app/api/integrations/bandago/outbound/ack/route.ts](#file-src-app-api-integrations-bandago-outbound-ack-route-ts) | Backend API Routes (Next.js App Router) | 227 | 7.6 KB |
+| 223 | [src/app/api/integrations/bandago/outbound/route.ts](#file-src-app-api-integrations-bandago-outbound-route-ts) | Backend API Routes (Next.js App Router) | 249 | 7.2 KB |
+| 224 | [src/app/api/integrations/bandago/sync/route.ts](#file-src-app-api-integrations-bandago-sync-route-ts) | Backend API Routes (Next.js App Router) | 734 | 26.2 KB |
+| 225 | [src/app/api/integrations/bandago/telemetry/route.ts](#file-src-app-api-integrations-bandago-telemetry-route-ts) | Backend API Routes (Next.js App Router) | 88 | 4.0 KB |
+| 226 | [src/app/api/location/reverse-geocode/route.ts](#file-src-app-api-location-reverse-geocode-route-ts) | Backend API Routes (Next.js App Router) | 58 | 2.2 KB |
+| 227 | [src/app/api/location/search/route.ts](#file-src-app-api-location-search-route-ts) | Backend API Routes (Next.js App Router) | 21 | 1.2 KB |
+| 228 | [src/app/api/medicine-requests/route.ts](#file-src-app-api-medicine-requests-route-ts) | Backend API Routes (Next.js App Router) | 69 | 3.0 KB |
+| 229 | [src/app/api/notifications/dispatch-test/route.ts](#file-src-app-api-notifications-dispatch-test-route-ts) | Backend API Routes (Next.js App Router) | 109 | 5.2 KB |
+| 230 | [src/app/api/notifications/email-webhook/route.ts](#file-src-app-api-notifications-email-webhook-route-ts) | Backend API Routes (Next.js App Router) | 29 | 2.0 KB |
+| 231 | [src/app/api/notifications/prefs/route.ts](#file-src-app-api-notifications-prefs-route-ts) | Backend API Routes (Next.js App Router) | 42 | 1.9 KB |
+| 232 | [src/app/api/notifications/push-token/route.ts](#file-src-app-api-notifications-push-token-route-ts) | Backend API Routes (Next.js App Router) | 64 | 2.2 KB |
+| 233 | [src/app/api/notifications/route.ts](#file-src-app-api-notifications-route-ts) | Backend API Routes (Next.js App Router) | 59 | 1.6 KB |
+| 234 | [src/app/api/orders/[id]/assign/route.ts](#file-src-app-api-orders--id--assign-route-ts) | Backend API Routes (Next.js App Router) | 87 | 4.3 KB |
+| 235 | [src/app/api/orders/[id]/cancel/route.ts](#file-src-app-api-orders--id--cancel-route-ts) | Backend API Routes (Next.js App Router) | 162 | 8.6 KB |
+| 236 | [src/app/api/orders/[id]/cash-confirm/route.ts](#file-src-app-api-orders--id--cash-confirm-route-ts) | Backend API Routes (Next.js App Router) | 71 | 4.6 KB |
+| 237 | [src/app/api/orders/[id]/prepare/route.ts](#file-src-app-api-orders--id--prepare-route-ts) | Backend API Routes (Next.js App Router) | 72 | 4.3 KB |
+| 238 | [src/app/api/orders/[id]/request-payment/route.ts](#file-src-app-api-orders--id--request-payment-route-ts) | Backend API Routes (Next.js App Router) | 55 | 5.1 KB |
+| 239 | [src/app/api/orders/[id]/route.ts](#file-src-app-api-orders--id--route-ts) | Backend API Routes (Next.js App Router) | 142 | 8.1 KB |
+| 240 | [src/app/api/orders/loyalty/route.ts](#file-src-app-api-orders-loyalty-route-ts) | Backend API Routes (Next.js App Router) | 12 | 488 B |
+| 241 | [src/app/api/orders/riders/route.ts](#file-src-app-api-orders-riders-route-ts) | Backend API Routes (Next.js App Router) | 17 | 661 B |
+| 242 | [src/app/api/orders/route.ts](#file-src-app-api-orders-route-ts) | Backend API Routes (Next.js App Router) | 250 | 20.4 KB |
+| 243 | [src/app/api/payments/intasend/initiate/route.ts](#file-src-app-api-payments-intasend-initiate-route-ts) | Backend API Routes (Next.js App Router) | 50 | 4.3 KB |
+| 244 | [src/app/api/payments/intasend/webhook/route.ts](#file-src-app-api-payments-intasend-webhook-route-ts) | Backend API Routes (Next.js App Router) | 83 | 7.1 KB |
+| 245 | [src/app/api/payments/mpesa/callback/route.ts](#file-src-app-api-payments-mpesa-callback-route-ts) | Backend API Routes (Next.js App Router) | 80 | 5.7 KB |
+| 246 | [src/app/api/payments/mpesa/initiate/route.ts](#file-src-app-api-payments-mpesa-initiate-route-ts) | Backend API Routes (Next.js App Router) | 60 | 4.7 KB |
+| 247 | [src/app/api/payments/mpesa/query/route.ts](#file-src-app-api-payments-mpesa-query-route-ts) | Backend API Routes (Next.js App Router) | 22 | 1.9 KB |
+| 248 | [src/app/api/payments/mpesa/service-callback/route.ts](#file-src-app-api-payments-mpesa-service-callback-route-ts) | Backend API Routes (Next.js App Router) | 65 | 4.5 KB |
+| 249 | [src/app/api/payments/refund/route.ts](#file-src-app-api-payments-refund-route-ts) | Backend API Routes (Next.js App Router) | 98 | 7.7 KB |
+| 250 | [src/app/api/prescriptions/[id]/refill/route.ts](#file-src-app-api-prescriptions--id--refill-route-ts) | Backend API Routes (Next.js App Router) | 103 | 6.6 KB |
+| 251 | [src/app/api/prescriptions/[id]/route.ts](#file-src-app-api-prescriptions--id--route-ts) | Backend API Routes (Next.js App Router) | 169 | 8.5 KB |
+| 252 | [src/app/api/prescriptions/route.ts](#file-src-app-api-prescriptions-route-ts) | Backend API Routes (Next.js App Router) | 183 | 8.8 KB |
+| 253 | [src/app/api/products/[id]/reviews/route.ts](#file-src-app-api-products--id--reviews-route-ts) | Backend API Routes (Next.js App Router) | 89 | 3.8 KB |
+| 254 | [src/app/api/products/[id]/route.ts](#file-src-app-api-products--id--route-ts) | Backend API Routes (Next.js App Router) | 188 | 9.8 KB |
+| 255 | [src/app/api/products/[id]/stock-alert/route.ts](#file-src-app-api-products--id--stock-alert-route-ts) | Backend API Routes (Next.js App Router) | 39 | 1.5 KB |
+| 256 | [src/app/api/products/bulk/route.ts](#file-src-app-api-products-bulk-route-ts) | Backend API Routes (Next.js App Router) | 118 | 5.6 KB |
+| 257 | [src/app/api/products/route.ts](#file-src-app-api-products-route-ts) | Backend API Routes (Next.js App Router) | 175 | 9.2 KB |
+| 258 | [src/app/api/products/stock-alerts/route.ts](#file-src-app-api-products-stock-alerts-route-ts) | Backend API Routes (Next.js App Router) | 37 | 1.4 KB |
+| 259 | [src/app/api/promotions/[id]/route.ts](#file-src-app-api-promotions--id--route-ts) | Backend API Routes (Next.js App Router) | 79 | 5.5 KB |
+| 260 | [src/app/api/promotions/route.ts](#file-src-app-api-promotions-route-ts) | Backend API Routes (Next.js App Router) | 84 | 4.5 KB |
+| 261 | [src/app/api/promotions/validate/route.ts](#file-src-app-api-promotions-validate-route-ts) | Backend API Routes (Next.js App Router) | 97 | 6.3 KB |
+| 262 | [src/app/api/route.ts](#file-src-app-api-route-ts) | Backend API Routes (Next.js App Router) | 5 | 134 B |
+| 263 | [src/app/api/service-bookings/[id]/pay-at-pharmacy/route.ts](#file-src-app-api-service-bookings--id--pay-at-pharmacy-route-ts) | Backend API Routes (Next.js App Router) | 27 | 2.5 KB |
+| 264 | [src/app/api/service-bookings/[id]/pay/card/route.ts](#file-src-app-api-service-bookings--id--pay-card-route-ts) | Backend API Routes (Next.js App Router) | 40 | 3.7 KB |
+| 265 | [src/app/api/service-bookings/[id]/pay/mpesa/route.ts](#file-src-app-api-service-bookings--id--pay-mpesa-route-ts) | Backend API Routes (Next.js App Router) | 49 | 4.3 KB |
+| 266 | [src/app/api/service-bookings/[id]/payment-status/route.ts](#file-src-app-api-service-bookings--id--payment-status-route-ts) | Backend API Routes (Next.js App Router) | 17 | 1.2 KB |
+| 267 | [src/app/api/service-bookings/[id]/review/route.ts](#file-src-app-api-service-bookings--id--review-route-ts) | Backend API Routes (Next.js App Router) | 16 | 1.3 KB |
+| 268 | [src/app/api/service-bookings/mine/route.ts](#file-src-app-api-service-bookings-mine-route-ts) | Backend API Routes (Next.js App Router) | 10 | 1.0 KB |
+| 269 | [src/app/api/service-bookings/route.ts](#file-src-app-api-service-bookings-route-ts) | Backend API Routes (Next.js App Router) | 77 | 6.0 KB |
+| 270 | [src/app/api/services/[id]/availability/route.ts](#file-src-app-api-services--id--availability-route-ts) | Backend API Routes (Next.js App Router) | 34 | 2.5 KB |
+| 271 | [src/app/api/services/[id]/reviews/route.ts](#file-src-app-api-services--id--reviews-route-ts) | Backend API Routes (Next.js App Router) | 9 | 691 B |
+| 272 | [src/app/api/services/[id]/route.ts](#file-src-app-api-services--id--route-ts) | Backend API Routes (Next.js App Router) | 120 | 3.3 KB |
+| 273 | [src/app/api/services/[id]/slots/route.ts](#file-src-app-api-services--id--slots-route-ts) | Backend API Routes (Next.js App Router) | 43 | 2.4 KB |
+| 274 | [src/app/api/services/route.ts](#file-src-app-api-services-route-ts) | Backend API Routes (Next.js App Router) | 44 | 2.3 KB |
+| 275 | [src/app/api/settings/delivery-fee/route.ts](#file-src-app-api-settings-delivery-fee-route-ts) | Backend API Routes (Next.js App Router) | 17 | 1.0 KB |
+| 276 | [src/app/api/settings/route.ts](#file-src-app-api-settings-route-ts) | Backend API Routes (Next.js App Router) | 103 | 7.9 KB |
+| 277 | [src/app/api/upload/route.ts](#file-src-app-api-upload-route-ts) | Backend API Routes (Next.js App Router) | 92 | 5.6 KB |
+| 278 | [src/app/app-experience.css](#file-src-app-app-experience-css) | Frontend Pages & Global Styles (Next.js App Router) | 968 | 24.3 KB |
+| 279 | [src/app/docs/[...slug]/page.tsx](#file-src-app-docs-----slug--page-tsx) | Frontend Pages & Global Styles (Next.js App Router) | 99 | 3.5 KB |
+| 280 | [src/app/docs/api-reference/page.tsx](#file-src-app-docs-api-reference-page-tsx) | Frontend Pages & Global Styles (Next.js App Router) | 47 | 2.5 KB |
+| 281 | [src/app/docs/assistant/page.tsx](#file-src-app-docs-assistant-page-tsx) | Frontend Pages & Global Styles (Next.js App Router) | 49 | 2.4 KB |
+| 282 | [src/app/docs/database/page.tsx](#file-src-app-docs-database-page-tsx) | Frontend Pages & Global Styles (Next.js App Router) | 54 | 2.9 KB |
+| 283 | [src/app/docs/journeys/[...slug]/page.tsx](#file-src-app-docs-journeys-----slug--page-tsx) | Frontend Pages & Global Styles (Next.js App Router) | 170 | 6.9 KB |
+| 284 | [src/app/docs/journeys/page.tsx](#file-src-app-docs-journeys-page-tsx) | Frontend Pages & Global Styles (Next.js App Router) | 54 | 2.2 KB |
+| 285 | [src/app/docs/layout.tsx](#file-src-app-docs-layout-tsx) | Frontend Pages & Global Styles (Next.js App Router) | 71 | 3.0 KB |
+| 286 | [src/app/docs/not-found.tsx](#file-src-app-docs-not-found-tsx) | Frontend Pages & Global Styles (Next.js App Router) | 35 | 1.8 KB |
+| 287 | [src/app/docs/page.tsx](#file-src-app-docs-page-tsx) | Frontend Pages & Global Styles (Next.js App Router) | 273 | 15.8 KB |
+| 288 | [src/app/globals.css](#file-src-app-globals-css) | Frontend Pages & Global Styles (Next.js App Router) | 498 | 15.6 KB |
+| 289 | [src/app/layout.tsx](#file-src-app-layout-tsx) | Frontend Pages & Global Styles (Next.js App Router) | 48 | 1.8 KB |
+| 290 | [src/app/page.tsx](#file-src-app-page-tsx) | Frontend Pages & Global Styles (Next.js App Router) | 91 | 5.3 KB |
+| 291 | [src/app/premium-landing.css](#file-src-app-premium-landing-css) | Frontend Pages & Global Styles (Next.js App Router) | 127 | 9.0 KB |
+| 292 | [src/app/reference-home-dark.css](#file-src-app-reference-home-dark-css) | Frontend Pages & Global Styles (Next.js App Router) | 13 | 875 B |
+| 293 | [src/app/reference-home.css](#file-src-app-reference-home-css) | Frontend Pages & Global Styles (Next.js App Router) | 248 | 16.3 KB |
+| 294 | [src/app/robots.ts](#file-src-app-robots-ts) | Frontend Pages & Global Styles (Next.js App Router) | 6 | 305 B |
+| 295 | [src/app/services-showcase.css](#file-src-app-services-showcase-css) | Frontend Pages & Global Styles (Next.js App Router) | 105 | 7.7 KB |
+| 296 | [src/app/sitemap.ts](#file-src-app-sitemap-ts) | Frontend Pages & Global Styles (Next.js App Router) | 12 | 438 B |
+| 297 | [src/app/sphere-public.css](#file-src-app-sphere-public-css) | Frontend Pages & Global Styles (Next.js App Router) | 752 | 27.2 KB |
+| 298 | [src/components/assistant/assistant-actions.tsx](#file-src-components-assistant-assistant-actions-tsx) | Shared Layout & Domain Components | 695 | 20.1 KB |
+| 299 | [src/components/assistant/assistant-widget.tsx](#file-src-components-assistant-assistant-widget-tsx) | Shared Layout & Domain Components | 378 | 14.7 KB |
+| 300 | [src/components/catalog/high-performance-pagination.tsx](#file-src-components-catalog-high-performance-pagination-tsx) | Shared Layout & Domain Components | 299 | 10.1 KB |
+| 301 | [src/components/catalog/luxury-category-ribbon.tsx](#file-src-components-catalog-luxury-category-ribbon-tsx) | Shared Layout & Domain Components | 85 | 2.9 KB |
+| 302 | [src/components/catalog/medicine-request.tsx](#file-src-components-catalog-medicine-request-tsx) | Shared Layout & Domain Components | 126 | 6.5 KB |
+| 303 | [src/components/docs/api-explorer.tsx](#file-src-components-docs-api-explorer-tsx) | Shared Layout & Domain Components | 266 | 13.5 KB |
+| 304 | [src/components/docs/code-block.tsx](#file-src-components-docs-code-block-tsx) | Shared Layout & Domain Components | 83 | 3.5 KB |
+| 305 | [src/components/docs/db-explorer.tsx](#file-src-components-docs-db-explorer-tsx) | Shared Layout & Domain Components | 203 | 9.8 KB |
+| 306 | [src/components/docs/doc-furniture.tsx](#file-src-components-docs-doc-furniture-tsx) | Shared Layout & Domain Components | 113 | 4.1 KB |
+| 307 | [src/components/docs/docs-assistant.tsx](#file-src-components-docs-docs-assistant-tsx) | Shared Layout & Domain Components | 280 | 11.9 KB |
+| 308 | [src/components/docs/docs-header.tsx](#file-src-components-docs-docs-header-tsx) | Shared Layout & Domain Components | 118 | 5.0 KB |
+| 309 | [src/components/docs/docs-shell.tsx](#file-src-components-docs-docs-shell-tsx) | Shared Layout & Domain Components | 172 | 7.0 KB |
+| 310 | [src/components/docs/docs-sidebar.tsx](#file-src-components-docs-docs-sidebar-tsx) | Shared Layout & Domain Components | 91 | 3.4 KB |
+| 311 | [src/components/docs/docs-toc.tsx](#file-src-components-docs-docs-toc-tsx) | Shared Layout & Domain Components | 84 | 3.2 KB |
+| 312 | [src/components/docs/docs.css](#file-src-components-docs-docs-css) | Shared Layout & Domain Components | 561 | 12.1 KB |
+| 313 | [src/components/docs/journey-directory.tsx](#file-src-components-docs-journey-directory-tsx) | Shared Layout & Domain Components | 211 | 9.4 KB |
+| 314 | [src/components/docs/markdown.tsx](#file-src-components-docs-markdown-tsx) | Shared Layout & Domain Components | 149 | 5.7 KB |
+| 315 | [src/components/docs/mermaid-diagram.tsx](#file-src-components-docs-mermaid-diagram-tsx) | Shared Layout & Domain Components | 220 | 8.9 KB |
+| 316 | [src/components/docs/search-palette.tsx](#file-src-components-docs-search-palette-tsx) | Shared Layout & Domain Components | 352 | 14.1 KB |
+| 317 | [src/components/home/luxury-categories-showcase.tsx](#file-src-components-home-luxury-categories-showcase-tsx) | Shared Layout & Domain Components | 329 | 12.7 KB |
+| 318 | [src/components/home/priority-products-section.tsx](#file-src-components-home-priority-products-section-tsx) | Shared Layout & Domain Components | 237 | 8.7 KB |
+| 319 | [src/components/home/reference-home-hero.tsx](#file-src-components-home-reference-home-hero-tsx) | Shared Layout & Domain Components | 221 | 10.3 KB |
+| 320 | [src/components/home/services-showcase.tsx](#file-src-components-home-services-showcase-tsx) | Shared Layout & Domain Components | 82 | 4.8 KB |
+| 321 | [src/components/home/sphere-landing.module.css](#file-src-components-home-sphere-landing-module-css) | Shared Layout & Domain Components | 1,513 | 27.9 KB |
+| 322 | [src/components/home/sphere-landing.tsx](#file-src-components-home-sphere-landing-tsx) | Shared Layout & Domain Components | 537 | 18.2 KB |
+| 323 | [src/components/layout/customer-hub-nav.tsx](#file-src-components-layout-customer-hub-nav-tsx) | Shared Layout & Domain Components | 50 | 2.4 KB |
+| 324 | [src/components/layout/footer.tsx](#file-src-components-layout-footer-tsx) | Shared Layout & Domain Components | 98 | 5.3 KB |
+| 325 | [src/components/layout/header.tsx](#file-src-components-layout-header-tsx) | Shared Layout & Domain Components | 452 | 19.8 KB |
+| 326 | [src/components/layout/mobile-nav.tsx](#file-src-components-layout-mobile-nav-tsx) | Shared Layout & Domain Components | 66 | 2.9 KB |
+| 327 | [src/components/layout/notification-center.tsx](#file-src-components-layout-notification-center-tsx) | Shared Layout & Domain Components | 58 | 3.7 KB |
+| 328 | [src/components/layout/sphere-header.tsx](#file-src-components-layout-sphere-header-tsx) | Shared Layout & Domain Components | 111 | 3.5 KB |
+| 329 | [src/components/member/member-intro.tsx](#file-src-components-member-member-intro-tsx) | Shared Layout & Domain Components | 126 | 3.8 KB |
+| 330 | [src/components/shared/empty-state.tsx](#file-src-components-shared-empty-state-tsx) | Shared Layout & Domain Components | 72 | 2.3 KB |
+| 331 | [src/components/shared/logo.tsx](#file-src-components-shared-logo-tsx) | Shared Layout & Domain Components | 29 | 1.3 KB |
+| 332 | [src/components/shared/premium-popular-card.tsx](#file-src-components-shared-premium-popular-card-tsx) | Shared Layout & Domain Components | 172 | 8.9 KB |
+| 333 | [src/components/shared/product-card.tsx](#file-src-components-shared-product-card-tsx) | Shared Layout & Domain Components | 596 | 25.3 KB |
+| 334 | [src/components/shared/product-image.tsx](#file-src-components-shared-product-image-tsx) | Shared Layout & Domain Components | 38 | 1.2 KB |
+| 335 | [src/components/shared/status-badges.tsx](#file-src-components-shared-status-badges-tsx) | Shared Layout & Domain Components | 107 | 6.1 KB |
+| 336 | [src/components/shared/use-current-location-button.tsx](#file-src-components-shared-use-current-location-button-tsx) | Shared Layout & Domain Components | 105 | 3.6 KB |
+| 337 | [src/components/ui/accordion.tsx](#file-src-components-ui-accordion-tsx) | UI Primitives (shadcn/ui & Radix UI) | 66 | 2.0 KB |
+| 338 | [src/components/ui/alert-dialog.tsx](#file-src-components-ui-alert-dialog-tsx) | UI Primitives (shadcn/ui & Radix UI) | 157 | 3.8 KB |
+| 339 | [src/components/ui/alert.tsx](#file-src-components-ui-alert-tsx) | UI Primitives (shadcn/ui & Radix UI) | 66 | 1.6 KB |
+| 340 | [src/components/ui/aspect-ratio.tsx](#file-src-components-ui-aspect-ratio-tsx) | UI Primitives (shadcn/ui & Radix UI) | 11 | 280 B |
+| 341 | [src/components/ui/avatar.tsx](#file-src-components-ui-avatar-tsx) | UI Primitives (shadcn/ui & Radix UI) | 53 | 1.1 KB |
+| 342 | [src/components/ui/badge.tsx](#file-src-components-ui-badge-tsx) | UI Primitives (shadcn/ui & Radix UI) | 46 | 1.6 KB |
+| 343 | [src/components/ui/breadcrumb.tsx](#file-src-components-ui-breadcrumb-tsx) | UI Primitives (shadcn/ui & Radix UI) | 109 | 2.3 KB |
+| 344 | [src/components/ui/button.tsx](#file-src-components-ui-button-tsx) | UI Primitives (shadcn/ui & Radix UI) | 59 | 2.1 KB |
+| 345 | [src/components/ui/calendar.tsx](#file-src-components-ui-calendar-tsx) | UI Primitives (shadcn/ui & Radix UI) | 213 | 7.5 KB |
+| 346 | [src/components/ui/card.tsx](#file-src-components-ui-card-tsx) | UI Primitives (shadcn/ui & Radix UI) | 92 | 1.9 KB |
+| 347 | [src/components/ui/carousel.tsx](#file-src-components-ui-carousel-tsx) | UI Primitives (shadcn/ui & Radix UI) | 241 | 5.4 KB |
+| 348 | [src/components/ui/chart.tsx](#file-src-components-ui-chart-tsx) | UI Primitives (shadcn/ui & Radix UI) | 353 | 9.6 KB |
+| 349 | [src/components/ui/checkbox.tsx](#file-src-components-ui-checkbox-tsx) | UI Primitives (shadcn/ui & Radix UI) | 32 | 1.2 KB |
+| 350 | [src/components/ui/collapsible.tsx](#file-src-components-ui-collapsible-tsx) | UI Primitives (shadcn/ui & Radix UI) | 33 | 800 B |
+| 351 | [src/components/ui/command.tsx](#file-src-components-ui-command-tsx) | UI Primitives (shadcn/ui & Radix UI) | 184 | 4.7 KB |
+| 352 | [src/components/ui/context-menu.tsx](#file-src-components-ui-context-menu-tsx) | UI Primitives (shadcn/ui & Radix UI) | 252 | 8.0 KB |
+| 353 | [src/components/ui/dialog.tsx](#file-src-components-ui-dialog-tsx) | UI Primitives (shadcn/ui & Radix UI) | 143 | 3.9 KB |
+| 354 | [src/components/ui/drawer.tsx](#file-src-components-ui-drawer-tsx) | UI Primitives (shadcn/ui & Radix UI) | 135 | 4.2 KB |
+| 355 | [src/components/ui/dropdown-menu.tsx](#file-src-components-ui-dropdown-menu-tsx) | UI Primitives (shadcn/ui & Radix UI) | 257 | 8.1 KB |
+| 356 | [src/components/ui/form.tsx](#file-src-components-ui-form-tsx) | UI Primitives (shadcn/ui & Radix UI) | 167 | 3.7 KB |
+| 357 | [src/components/ui/hover-card.tsx](#file-src-components-ui-hover-card-tsx) | UI Primitives (shadcn/ui & Radix UI) | 44 | 1.5 KB |
+| 358 | [src/components/ui/input-otp.tsx](#file-src-components-ui-input-otp-tsx) | UI Primitives (shadcn/ui & Radix UI) | 77 | 2.2 KB |
+| 359 | [src/components/ui/input.tsx](#file-src-components-ui-input-tsx) | UI Primitives (shadcn/ui & Radix UI) | 21 | 967 B |
+| 360 | [src/components/ui/label.tsx](#file-src-components-ui-label-tsx) | UI Primitives (shadcn/ui & Radix UI) | 24 | 611 B |
+| 361 | [src/components/ui/menubar.tsx](#file-src-components-ui-menubar-tsx) | UI Primitives (shadcn/ui & Radix UI) | 276 | 8.2 KB |
+| 362 | [src/components/ui/navigation-menu.tsx](#file-src-components-ui-navigation-menu-tsx) | UI Primitives (shadcn/ui & Radix UI) | 168 | 6.5 KB |
+| 363 | [src/components/ui/pagination.tsx](#file-src-components-ui-pagination-tsx) | UI Primitives (shadcn/ui & Radix UI) | 127 | 2.6 KB |
+| 364 | [src/components/ui/popover.tsx](#file-src-components-ui-popover-tsx) | UI Primitives (shadcn/ui & Radix UI) | 48 | 1.6 KB |
+| 365 | [src/components/ui/progress.tsx](#file-src-components-ui-progress-tsx) | UI Primitives (shadcn/ui & Radix UI) | 31 | 740 B |
+| 366 | [src/components/ui/radio-group.tsx](#file-src-components-ui-radio-group-tsx) | UI Primitives (shadcn/ui & Radix UI) | 45 | 1.4 KB |
+| 367 | [src/components/ui/resizable.tsx](#file-src-components-ui-resizable-tsx) | UI Primitives (shadcn/ui & Radix UI) | 56 | 2.0 KB |
+| 368 | [src/components/ui/scroll-area.tsx](#file-src-components-ui-scroll-area-tsx) | UI Primitives (shadcn/ui & Radix UI) | 58 | 1.6 KB |
+| 369 | [src/components/ui/select.tsx](#file-src-components-ui-select-tsx) | UI Primitives (shadcn/ui & Radix UI) | 185 | 6.1 KB |
+| 370 | [src/components/ui/separator.tsx](#file-src-components-ui-separator-tsx) | UI Primitives (shadcn/ui & Radix UI) | 28 | 699 B |
+| 371 | [src/components/ui/sheet.tsx](#file-src-components-ui-sheet-tsx) | UI Primitives (shadcn/ui & Radix UI) | 139 | 4.0 KB |
+| 372 | [src/components/ui/sidebar.tsx](#file-src-components-ui-sidebar-tsx) | UI Primitives (shadcn/ui & Radix UI) | 726 | 21.1 KB |
+| 373 | [src/components/ui/skeleton.tsx](#file-src-components-ui-skeleton-tsx) | UI Primitives (shadcn/ui & Radix UI) | 13 | 276 B |
+| 374 | [src/components/ui/slider.tsx](#file-src-components-ui-slider-tsx) | UI Primitives (shadcn/ui & Radix UI) | 63 | 2.0 KB |
+| 375 | [src/components/ui/sonner.tsx](#file-src-components-ui-sonner-tsx) | UI Primitives (shadcn/ui & Radix UI) | 25 | 564 B |
+| 376 | [src/components/ui/switch.tsx](#file-src-components-ui-switch-tsx) | UI Primitives (shadcn/ui & Radix UI) | 31 | 1.1 KB |
+| 377 | [src/components/ui/table.tsx](#file-src-components-ui-table-tsx) | UI Primitives (shadcn/ui & Radix UI) | 116 | 2.4 KB |
+| 378 | [src/components/ui/tabs.tsx](#file-src-components-ui-tabs-tsx) | UI Primitives (shadcn/ui & Radix UI) | 66 | 1.9 KB |
+| 379 | [src/components/ui/textarea.tsx](#file-src-components-ui-textarea-tsx) | UI Primitives (shadcn/ui & Radix UI) | 18 | 759 B |
+| 380 | [src/components/ui/toast.tsx](#file-src-components-ui-toast-tsx) | UI Primitives (shadcn/ui & Radix UI) | 129 | 4.7 KB |
+| 381 | [src/components/ui/toaster.tsx](#file-src-components-ui-toaster-tsx) | UI Primitives (shadcn/ui & Radix UI) | 35 | 785 B |
+| 382 | [src/components/ui/toggle-group.tsx](#file-src-components-ui-toggle-group-tsx) | UI Primitives (shadcn/ui & Radix UI) | 73 | 1.9 KB |
+| 383 | [src/components/ui/toggle.tsx](#file-src-components-ui-toggle-tsx) | UI Primitives (shadcn/ui & Radix UI) | 47 | 1.5 KB |
+| 384 | [src/components/ui/tooltip.tsx](#file-src-components-ui-tooltip-tsx) | UI Primitives (shadcn/ui & Radix UI) | 61 | 1.8 KB |
+| 385 | [src/components/views/account-view.tsx](#file-src-components-views-account-view-tsx) | Storefront Views & Customer Flows | 1,516 | 61.3 KB |
+| 386 | [src/components/views/admin/admin-access.tsx](#file-src-components-views-admin-admin-access-tsx) | Admin Workspace & Staff Control Room | 19 | 785 B |
+| 387 | [src/components/views/admin/admin-shared.tsx](#file-src-components-views-admin-admin-shared-tsx) | Admin Workspace & Staff Control Room | 263 | 8.6 KB |
+| 388 | [src/components/views/admin/admin-view.tsx](#file-src-components-views-admin-admin-view-tsx) | Admin Workspace & Staff Control Room | 566 | 28.4 KB |
+| 389 | [src/components/views/admin/sections/catalogue-section.tsx](#file-src-components-views-admin-sections-catalogue-section-tsx) | Admin Workspace & Staff Control Room | 1,109 | 49.7 KB |
+| 390 | [src/components/views/admin/sections/compliance-section.tsx](#file-src-components-views-admin-sections-compliance-section-tsx) | Admin Workspace & Staff Control Room | 363 | 23.2 KB |
+| 391 | [src/components/views/admin/sections/dispatch-control-room.tsx](#file-src-components-views-admin-sections-dispatch-control-room-tsx) | Admin Workspace & Staff Control Room | 600 | 38.1 KB |
+| 392 | [src/components/views/admin/sections/dispatch-section.tsx](#file-src-components-views-admin-sections-dispatch-section-tsx) | Admin Workspace & Staff Control Room | 725 | 29.7 KB |
+| 393 | [src/components/views/admin/sections/medicine-requests-section.tsx](#file-src-components-views-admin-sections-medicine-requests-section-tsx) | Admin Workspace & Staff Control Room | 124 | 7.4 KB |
+| 394 | [src/components/views/admin/sections/orders-section.tsx](#file-src-components-views-admin-sections-orders-section-tsx) | Admin Workspace & Staff Control Room | 1,509 | 80.1 KB |
+| 395 | [src/components/views/admin/sections/overview-section.tsx](#file-src-components-views-admin-sections-overview-section-tsx) | Admin Workspace & Staff Control Room | 288 | 17.4 KB |
+| 396 | [src/components/views/admin/sections/pos-sync-section.tsx](#file-src-components-views-admin-sections-pos-sync-section-tsx) | Admin Workspace & Staff Control Room | 1,630 | 67.0 KB |
+| 397 | [src/components/views/admin/sections/prescriptions-section.tsx](#file-src-components-views-admin-sections-prescriptions-section-tsx) | Admin Workspace & Staff Control Room | 983 | 45.5 KB |
+| 398 | [src/components/views/admin/sections/promotions-section.tsx](#file-src-components-views-admin-sections-promotions-section-tsx) | Admin Workspace & Staff Control Room | 373 | 27.1 KB |
+| 399 | [src/components/views/admin/sections/reports-section.tsx](#file-src-components-views-admin-sections-reports-section-tsx) | Admin Workspace & Staff Control Room | 319 | 14.6 KB |
+| 400 | [src/components/views/admin/sections/reviews-section.tsx](#file-src-components-views-admin-sections-reviews-section-tsx) | Admin Workspace & Staff Control Room | 285 | 9.9 KB |
+| 401 | [src/components/views/admin/sections/service-analytics-section.tsx](#file-src-components-views-admin-sections-service-analytics-section-tsx) | Admin Workspace & Staff Control Room | 43 | 3.9 KB |
+| 402 | [src/components/views/admin/sections/service-bookings-section.tsx](#file-src-components-views-admin-sections-service-bookings-section-tsx) | Admin Workspace & Staff Control Room | 452 | 34.4 KB |
+| 403 | [src/components/views/admin/sections/services-section.tsx](#file-src-components-views-admin-sections-services-section-tsx) | Admin Workspace & Staff Control Room | 279 | 33.9 KB |
+| 404 | [src/components/views/admin/sections/settings-section.tsx](#file-src-components-views-admin-sections-settings-section-tsx) | Admin Workspace & Staff Control Room | 836 | 38.2 KB |
+| 405 | [src/components/views/admin/sections/staff-section.tsx](#file-src-components-views-admin-sections-staff-section-tsx) | Admin Workspace & Staff Control Room | 465 | 19.5 KB |
+| 406 | [src/components/views/auth-view.tsx](#file-src-components-views-auth-view-tsx) | Storefront Views & Customer Flows | 479 | 22.2 KB |
+| 407 | [src/components/views/cart-view.tsx](#file-src-components-views-cart-view-tsx) | Storefront Views & Customer Flows | 296 | 15.8 KB |
+| 408 | [src/components/views/catalog-view.tsx](#file-src-components-views-catalog-view-tsx) | Storefront Views & Customer Flows | 703 | 28.9 KB |
+| 409 | [src/components/views/checkout-view.tsx](#file-src-components-views-checkout-view-tsx) | Storefront Views & Customer Flows | 1,852 | 93.6 KB |
+| 410 | [src/components/views/home-view.tsx](#file-src-components-views-home-view-tsx) | Storefront Views & Customer Flows | 458 | 22.2 KB |
+| 411 | [src/components/views/offers-view.tsx](#file-src-components-views-offers-view-tsx) | Storefront Views & Customer Flows | 167 | 9.0 KB |
+| 412 | [src/components/views/order-detail-view.tsx](#file-src-components-views-order-detail-view-tsx) | Storefront Views & Customer Flows | 1,104 | 42.1 KB |
+| 413 | [src/components/views/orders-view.tsx](#file-src-components-views-orders-view-tsx) | Storefront Views & Customer Flows | 396 | 13.7 KB |
+| 414 | [src/components/views/prescriptions-view.tsx](#file-src-components-views-prescriptions-view-tsx) | Storefront Views & Customer Flows | 754 | 27.3 KB |
+| 415 | [src/components/views/product-view.tsx](#file-src-components-views-product-view-tsx) | Storefront Views & Customer Flows | 750 | 30.8 KB |
+| 416 | [src/components/views/services-view.tsx](#file-src-components-views-services-view-tsx) | Storefront Views & Customer Flows | 1,841 | 75.4 KB |
+| 417 | [src/hooks/use-mobile.ts](#file-src-hooks-use-mobile-ts) | Custom React Hooks | 19 | 565 B |
+| 418 | [src/hooks/use-toast.ts](#file-src-hooks-use-toast-ts) | Custom React Hooks | 194 | 3.8 KB |
+| 419 | [src/lib/api-client.ts](#file-src-lib-api-client-ts) | Core Business Logic & Database Clients | 500 | 23.6 KB |
+| 420 | [src/lib/assistant/contracts.ts](#file-src-lib-assistant-contracts-ts) | AI Medication Assistant | 161 | 6.7 KB |
+| 421 | [src/lib/assistant/payment-review.ts](#file-src-lib-assistant-payment-review-ts) | AI Medication Assistant | 34 | 991 B |
+| 422 | [src/lib/assistant/public-knowledge.ts](#file-src-lib-assistant-public-knowledge-ts) | AI Medication Assistant | 340 | 15.5 KB |
+| 423 | [src/lib/bandago-normalizer.ts](#file-src-lib-bandago-normalizer-ts) | Bandago POS & CRM Integration | 359 | 10.4 KB |
+| 424 | [src/lib/constants.ts](#file-src-lib-constants-ts) | Core Business Logic & Database Clients | 199 | 7.6 KB |
+| 425 | [src/lib/crm/bandago-crm.ts](#file-src-lib-crm-bandago-crm-ts) | Bandago POS & CRM Integration | 163 | 5.2 KB |
+| 426 | [src/lib/db.ts](#file-src-lib-db-ts) | Core Business Logic & Database Clients | 83 | 2.4 KB |
+| 427 | [src/lib/docs/assistant.ts](#file-src-lib-docs-assistant-ts) | Core Business Logic & Database Clients | 478 | 17.0 KB |
+| 428 | [src/lib/docs/content.ts](#file-src-lib-docs-content-ts) | Core Business Logic & Database Clients | 350 | 11.1 KB |
+| 429 | [src/lib/docs/frontmatter.ts](#file-src-lib-docs-frontmatter-ts) | Core Business Logic & Database Clients | 146 | 4.7 KB |
+| 430 | [src/lib/docs/navigation.ts](#file-src-lib-docs-navigation-ts) | Core Business Logic & Database Clients | 286 | 8.4 KB |
+| 431 | [src/lib/docs/openapi.ts](#file-src-lib-docs-openapi-ts) | Core Business Logic & Database Clients | 186 | 6.6 KB |
+| 432 | [src/lib/docs/prisma-schema.ts](#file-src-lib-docs-prisma-schema-ts) | Core Business Logic & Database Clients | 273 | 8.5 KB |
+| 433 | [src/lib/docs/search.ts](#file-src-lib-docs-search-ts) | Core Business Logic & Database Clients | 208 | 6.7 KB |
+| 434 | [src/lib/docs/utils.ts](#file-src-lib-docs-utils-ts) | Core Business Logic & Database Clients | 71 | 2.0 KB |
+| 435 | [src/lib/dto.ts](#file-src-lib-dto-ts) | Core Business Logic & Database Clients | 277 | 11.2 KB |
+| 436 | [src/lib/email/resend.ts](#file-src-lib-email-resend-ts) | Notifications, Push Messaging & Communications | 81 | 2.6 KB |
+| 437 | [src/lib/email/templates.ts](#file-src-lib-email-templates-ts) | Notifications, Push Messaging & Communications | 463 | 20.6 KB |
+| 438 | [src/lib/firebase/admin.ts](#file-src-lib-firebase-admin-ts) | Notifications, Push Messaging & Communications | 261 | 7.4 KB |
+| 439 | [src/lib/firebase/client.ts](#file-src-lib-firebase-client-ts) | Notifications, Push Messaging & Communications | 192 | 6.4 KB |
+| 440 | [src/lib/format.ts](#file-src-lib-format-ts) | Core Business Logic & Database Clients | 64 | 1.9 KB |
+| 441 | [src/lib/hash.ts](#file-src-lib-hash-ts) | Core Business Logic & Database Clients | 88 | 3.3 KB |
+| 442 | [src/lib/image-library.ts](#file-src-lib-image-library-ts) | Core Business Logic & Database Clients | 80 | 3.4 KB |
+| 443 | [src/lib/image.ts](#file-src-lib-image-ts) | Core Business Logic & Database Clients | 24 | 1.0 KB |
+| 444 | [src/lib/intasend/client.ts](#file-src-lib-intasend-client-ts) | Payment Gateways (M-Pesa Daraja & IntaSend) | 141 | 7.3 KB |
+| 445 | [src/lib/inventory-guard.ts](#file-src-lib-inventory-guard-ts) | Core Business Logic & Database Clients | 318 | 10.4 KB |
+| 446 | [src/lib/loyalty.ts](#file-src-lib-loyalty-ts) | Core Business Logic & Database Clients | 85 | 4.5 KB |
+| 447 | [src/lib/medicine-request-dto.ts](#file-src-lib-medicine-request-dto-ts) | Core Business Logic & Database Clients | 15 | 571 B |
+| 448 | [src/lib/medicine-requests.ts](#file-src-lib-medicine-requests-ts) | Core Business Logic & Database Clients | 60 | 2.1 KB |
+| 449 | [src/lib/mpesa/daraja.ts](#file-src-lib-mpesa-daraja-ts) | Payment Gateways (M-Pesa Daraja & IntaSend) | 228 | 7.4 KB |
+| 450 | [src/lib/notifications/delivery.ts](#file-src-lib-notifications-delivery-ts) | Notifications, Push Messaging & Communications | 90 | 5.7 KB |
+| 451 | [src/lib/notifications/payment.ts](#file-src-lib-notifications-payment-ts) | Notifications, Push Messaging & Communications | 24 | 1.6 KB |
+| 452 | [src/lib/notify.ts](#file-src-lib-notify-ts) | Core Business Logic & Database Clients | 284 | 10.2 KB |
+| 453 | [src/lib/offer-intent.ts](#file-src-lib-offer-intent-ts) | Core Business Logic & Database Clients | 23 | 839 B |
+| 454 | [src/lib/pdf/daily-sales-pdf.ts](#file-src-lib-pdf-daily-sales-pdf-ts) | Core Business Logic & Database Clients | 272 | 9.8 KB |
+| 455 | [src/lib/pdf/full-docs-pdf.ts](#file-src-lib-pdf-full-docs-pdf-ts) | Core Business Logic & Database Clients | 955 | 32.2 KB |
+| 456 | [src/lib/pos-reconciliation-core.ts](#file-src-lib-pos-reconciliation-core-ts) | Bandago POS & CRM Integration | 265 | 10.3 KB |
+| 457 | [src/lib/pos-reconciliation.ts](#file-src-lib-pos-reconciliation-ts) | Bandago POS & CRM Integration | 444 | 13.4 KB |
+| 458 | [src/lib/promotions.ts](#file-src-lib-promotions-ts) | Core Business Logic & Database Clients | 98 | 4.5 KB |
+| 459 | [src/lib/r2.ts](#file-src-lib-r2-ts) | Core Business Logic & Database Clients | 100 | 5.1 KB |
+| 460 | [src/lib/security/bandago-auth.ts](#file-src-lib-security-bandago-auth-ts) | Security, Rate Limiting & Validation Guards | 45 | 1.3 KB |
+| 461 | [src/lib/security/bandago-bearer.ts](#file-src-lib-security-bandago-bearer-ts) | Security, Rate Limiting & Validation Guards | 50 | 1.8 KB |
+| 462 | [src/lib/security/file.ts](#file-src-lib-security-file-ts) | Security, Rate Limiting & Validation Guards | 28 | 1.8 KB |
+| 463 | [src/lib/security/order-workflow.ts](#file-src-lib-security-order-workflow-ts) | Security, Rate Limiting & Validation Guards | 20 | 1.2 KB |
+| 464 | [src/lib/security/payment-attempt.ts](#file-src-lib-security-payment-attempt-ts) | Security, Rate Limiting & Validation Guards | 32 | 2.6 KB |
+| 465 | [src/lib/security/payment.ts](#file-src-lib-security-payment-ts) | Security, Rate Limiting & Validation Guards | 24 | 1.3 KB |
+| 466 | [src/lib/security/request.ts](#file-src-lib-security-request-ts) | Security, Rate Limiting & Validation Guards | 54 | 2.6 KB |
+| 467 | [src/lib/security/service.ts](#file-src-lib-security-service-ts) | Security, Rate Limiting & Validation Guards | 53 | 2.7 KB |
+| 468 | [src/lib/session.ts](#file-src-lib-session-ts) | Core Business Logic & Database Clients | 159 | 5.9 KB |
+| 469 | [src/lib/settings.ts](#file-src-lib-settings-ts) | Core Business Logic & Database Clients | 48 | 2.5 KB |
+| 470 | [src/lib/sms.ts](#file-src-lib-sms-ts) | Notifications, Push Messaging & Communications | 21 | 1.5 KB |
+| 471 | [src/lib/types.ts](#file-src-lib-types-ts) | Core Business Logic & Database Clients | 456 | 9.6 KB |
+| 472 | [src/lib/utils.ts](#file-src-lib-utils-ts) | Core Business Logic & Database Clients | 6 | 166 B |
+| 473 | [src/store/use-app-store.ts](#file-src-store-use-app-store-ts) | Client State Stores (Zustand) | 222 | 7.9 KB |
+| 474 | [src/store/use-auth-store.ts](#file-src-store-use-auth-store-ts) | Client State Stores (Zustand) | 40 | 1.3 KB |
+| 475 | [src/store/use-cart-store.ts](#file-src-store-use-cart-store-ts) | Client State Stores (Zustand) | 93 | 3.4 KB |
+| 476 | [src/store/use-wish-store.ts](#file-src-store-use-wish-store-ts) | Client State Stores (Zustand) | 71 | 2.0 KB |
+| 477 | [tailwind.config.ts](#file-tailwind-config-ts) | Project Configuration & Root Tooling | 64 | 1.7 KB |
+| 478 | [tests/admin-live-sync.test.mjs](#file-tests-admin-live-sync-test-mjs) | Automated Test Suites & Verification | 74 | 4.1 KB |
+| 479 | [tests/assistant.test.ts](#file-tests-assistant-test-ts) | Automated Test Suites & Verification | 146 | 8.7 KB |
+| 480 | [tests/bandago-bidirectional-sync.test.mjs](#file-tests-bandago-bidirectional-sync-test-mjs) | Automated Test Suites & Verification | 237 | 9.4 KB |
+| 481 | [tests/bandago-pos-crm-integration.test.mjs](#file-tests-bandago-pos-crm-integration-test-mjs) | Automated Test Suites & Verification | 534 | 27.7 KB |
+| 482 | [tests/checkout-points-contrast.test.mjs](#file-tests-checkout-points-contrast-test-mjs) | Automated Test Suites & Verification | 19 | 1018 B |
+| 483 | [tests/compliance-workspace.test.mjs](#file-tests-compliance-workspace-test-mjs) | Automated Test Suites & Verification | 32 | 1.4 KB |
+| 484 | [tests/dispatch-readiness.test.mjs](#file-tests-dispatch-readiness-test-mjs) | Automated Test Suites & Verification | 37 | 2.0 KB |
+| 485 | [tests/medicine-requests.test.mjs](#file-tests-medicine-requests-test-mjs) | Automated Test Suites & Verification | 126 | 7.9 KB |
+| 486 | [tests/offer-workflow.test.mjs](#file-tests-offer-workflow-test-mjs) | Automated Test Suites & Verification | 77 | 4.4 KB |
+| 487 | [tests/order-dispatch-promotion-workflow.test.mjs](#file-tests-order-dispatch-promotion-workflow-test-mjs) | Automated Test Suites & Verification | 57 | 3.0 KB |
+| 488 | [tests/order-operations-ux.test.mjs](#file-tests-order-operations-ux-test-mjs) | Automated Test Suites & Verification | 112 | 6.3 KB |
+| 489 | [tests/promotion-validation-resilience.test.mjs](#file-tests-promotion-validation-resilience-test-mjs) | Automated Test Suites & Verification | 64 | 3.1 KB |
+| 490 | [tests/python-runtime-build.sh](#file-tests-python-runtime-build-sh) | Automated Test Suites & Verification | 64 | 1.8 KB |
+| 491 | [tests/python-runtime-container.sh](#file-tests-python-runtime-container-sh) | Automated Test Suites & Verification | 31 | 837 B |
+| 492 | [tests/reports-layout.test.mjs](#file-tests-reports-layout-test-mjs) | Automated Test Suites & Verification | 19 | 976 B |
+| 493 | [tests/security-static.test.mjs](#file-tests-security-static-test-mjs) | Automated Test Suites & Verification | 184 | 8.4 KB |
+| 494 | [tsconfig.json](#file-tsconfig-json) | Project Configuration & Root Tooling | 42 | 730 B |
 
 ---
 
@@ -3133,7 +3141,7 @@ exec caddy run --config Caddyfile --adapter caddyfile
 - **Category:** Documentation & Blueprints
 - **Language:** Markdown Documentation
 - **Lines:** 69
-- **Size:** 8.2 KB (8,433 bytes)
+- **Size:** 8.3 KB (8,497 bytes)
 
 `````markdown
 <!-- BEGIN:nextjs-agent-rules -->
@@ -3195,10 +3203,10 @@ If your change falls into any of these categories, update the matching documenta
 | --- | --- |
 | `src/app/page.tsx` + `src/app/[...route]/page.tsx` | The SPA storefront/admin shell (Zustand view router); `src/app/docs/` + `src/lib/docs/` serve the interactive `/docs` portal over canonical Markdown, OpenAPI, and Prisma |
 | `src/store/` | `use-app-store` (views/URLs), `use-auth-store`, `use-cart-store`, `use-wish-store` |
-| `src/app/api/` | 95 route handlers (126 HTTP method handlers) — every mutation goes through these |
+| `src/app/api/` | 96 route handlers (127 HTTP method handlers) — every mutation goes through these |
 | `src/lib/session.ts` | Sessions and the role guard helpers |
 | `src/lib/security/` | Rate limits, file validation, payment integrity, order workflow, BandaGo timing-safe auth (`bandago-auth.ts`, `bandago-bearer.ts`) |
-| `src/lib/pos-reconciliation*.ts` + `src/lib/pdf/daily-sales-pdf.ts` | BandaGo stagnant-POS drift protection, outbound reconciliation ledger, Daily Sales PDF generator |
+| `src/lib/pos-reconciliation*.ts` + `src/lib/pdf/` | BandaGo stagnant-POS drift protection, outbound reconciliation ledger, Daily Sales PDF generator (`daily-sales-pdf.ts`), and full documentation PDF generator (`full-docs-pdf.ts`) |
 | `src/lib/constants.ts` | Canonical status lists, roles, loyalty rules, delivery defaults |
 | `prisma/schema.prisma` | 41 models, 5 POS enums, 11 migrations; stock-field authority explained in [docs/database/schema-overview.md](docs/database/schema-overview.md) |
 | `src/lib/assistant/` + `src/app/api/assistant/route.ts` | The storefront AI assistant (Groq, deterministic-first, session-gated, live public `pharmacy`/`delivery` settings + customer-safe navigation); companion `src/app/api/docs-assistant/route.ts` ("Ask Sphere Docs", staff-gated via `requireStaff`, docs/OpenAPI/Prisma corpus only) |
@@ -3564,8 +3572,8 @@ Documentation changes are committed alongside the code changes they describe —
 - **Relative Path:** `docs/api/api-reference.md`
 - **Category:** Documentation & Blueprints
 - **Language:** Markdown Documentation
-- **Lines:** 530
-- **Size:** 62.5 KB (63,954 bytes)
+- **Lines:** 532
+- **Size:** 63.1 KB (64,643 bytes)
 
 `````markdown
 # API Reference — Sphere Pharmacy
@@ -4011,13 +4019,15 @@ OpenStreetMap Nominatim proxy (no Google). **Environment-dependent** on the publ
 
 **POST /api/upload** — Any signed-in session; 20/15 min/principal. Folders and permissions: `prescriptions` (customer-only), `avatars` (any session), `products`/`services` (ADMIN/PHARMACIST), `general` (ADMIN/STAFF). Direct multipart upload: MIME allowlist jpeg/png/webp/gif/heic-heif/pdf, ≤10 MB, magic-byte sniffing, extension/MIME match; keys `{folder}/{ownerId}/{uuid}.{ext}`; metadata `ownerid`/`originalname`/`category`; `safeName` ≤80. `action: "presign"` (presigned PUT, prescriptions folder only): body `{ folder: "prescriptions", fileName, fileType, fileSize (1–10 MB) }` → signed URL valid 30–300 s. Output includes the storage key / public URL as applicable.
 
-### 3.18 Assistant & Documentation Portal — `/api/assistant`, `/api/docs-index`, `/api/docs-assistant`
+### 3.18 Assistant & Documentation Portal — `/api/assistant`, `/api/docs-index`, `/api/docs-assistant`, `/api/docs-export/pdf`
 
 **POST /api/assistant** — Public (no session is ever read); 40/h/IP; ≤20 KB. Body `{ messages: [{ role: "user"|"assistant", content }] }` (last 8 kept, final user message truncated to 1,800 chars). Pipeline: credential patterns → safety triage (emergency/medical-suitability escalation) → live public settings (`pharmacy` and `delivery` from `Setting` — never `compliance`) + customer-safe documentation/navigation matcher (`src/lib/assistant/public-knowledge.ts`, which answers opening hours, location, contact details, delivery fees/zones, payment methods, prescription upload rules, Sphere Points loyalty, guest order tracking, and store navigation while refusing internal staff/admin `/docs` topics) → deterministic intent → optional Groq LLM (`GROQ_API_KEY`/`GROQ_MODEL`, 12 s timeout, 900 max tokens; skipped for direct-request patterns and provider outages) → output hardening (zod intent, no credentials, no false success claims). Output `{ reply, actions[], escalated }` where actions are client-side navigation/search/product/book/pay cards. The route can only query PUBLIC catalog/service/public-setting data; account and payment actions are executed client-side through authenticated endpoints. **Environment-dependent** (degrades deterministically without `GROQ_API_KEY`).
 
 **GET /api/docs-index** — Staff (`requireStaff`: ADMIN, PHARMACIST, STAFF, RIDER; `Cache-Control: private, no-store`). Returns `{ v: 1, generatedAt, entries[] }` containing the lexical search index over the documentation corpus (`docs/**`, `README.md`, `AGENTS.md`) and OpenAPI endpoints for the staff-only documentation portal command palette (⌘K).
 
 **POST /api/docs-assistant** — Staff (`requireStaff`: ADMIN, PHARMACIST, STAFF, RIDER; `Cache-Control: private, no-store`); 40/h/IP (`docs-assistant` bucket); ≤24 KB. Body `{ messages: [{ role: "user"|"assistant", content }], pageContext?: string }` (last 6 kept, final question truncated to 1,200 chars). Retrieves top structure-preserving documentation excerpts across `docs/**`, `openapi/sphere-api.yaml`, and `prisma/schema.prisma`, and either synthesizes a cited Markdown answer via Groq (`GROQ_API_KEY`/`GROQ_MODEL`, 8 s timeout, 1,200 max tokens) or produces an instant (<30 ms) deterministic structured answer (`synthesizeDocsAnswer`) with inline `[1]`, `[2]` citations when no key is configured or the provider is unavailable. Output `{ reply, citations[], synthesized }`.
+
+**GET /api/docs-export/pdf** — Staff (`requireStaff`: ADMIN, PHARMACIST, STAFF, RIDER; `Cache-Control: private, no-store`). Compiles and downloads the complete Sphere Pharmacy Documentation Handbook (`buildFullDocumentationPdf` in `src/lib/pdf/full-docs-pdf.ts`) as a single bookmarked multi-page A4 `%PDF-1.4` binary (`Content-Type: application/pdf`) covering all 129 Markdown documents across all 12 parts, all 72 user journeys & 7 role maps, Appendix A (all OpenAPI 3.1 endpoints), and Appendix B (all 41 Prisma models & 5 enums). Returns diagnostic headers `X-Docs-Total-Pages`, `X-Docs-Total-Documents`, `X-Docs-Total-Endpoints`, and `X-Docs-Total-Models`.
 
 ### 3.19 Cron — `/api/cron/*`
 
@@ -29319,7 +29329,7 @@ Core scenes are marked with an asterisk. Each take should show the entry point, 
 - **Category:** Documentation & Blueprints
 - **Language:** Markdown Documentation
 - **Lines:** 187
-- **Size:** 13.8 KB (14,095 bytes)
+- **Size:** 13.8 KB (14,154 bytes)
 
 `````markdown
 # Access Control
@@ -29415,7 +29425,7 @@ Grouped by who may call. Within a group, narrower ownership rules still apply (n
 | `POST /api/orders/[id]/request-payment` | Riders restricted to their assigned orders |
 | `POST /api/orders/[id]/cash-confirm` | Riders: cash-on-delivery, own `OUT_FOR_DELIVERY` orders |
 | `PATCH /api/orders/[id]` | Riders: per-order restricted, two transitions only (below) |
-| `/docs/**`, `GET /api/docs-index`, `POST /api/docs-assistant` | Staff-only documentation portal, search index & "Ask Sphere Docs" AI assistant (`requireStaff` / server `getSession` staff gate) |
+| `/docs/**`, `GET /api/docs-index`, `POST /api/docs-assistant`, `GET /api/docs-export/pdf` | Staff-only documentation portal, search index, "Ask Sphere Docs" AI assistant & full documentation PDF export (`requireStaff` / server `getSession` staff gate) |
 
 ### RIDER only
 
@@ -32701,8 +32711,8 @@ export default nextConfig;
 - **Relative Path:** `openapi/sphere-api.yaml`
 - **Category:** Documentation & Blueprints
 - **Language:** YAML
-- **Lines:** 2,934
-- **Size:** 120.6 KB (123,542 bytes)
+- **Lines:** 2,945
+- **Size:** 121.1 KB (123,999 bytes)
 
 `````yaml
 openapi: 3.1.0
@@ -34771,6 +34781,17 @@ paths:
         '403': { $ref: '#/components/responses/Forbidden' }
         '413': { $ref: '#/components/responses/PayloadTooLarge' }
         '429': { $ref: '#/components/responses/RateLimited' }
+
+  /api/docs-export/pdf:
+    get:
+      tags: [Assistant]
+      summary: Export complete documentation corpus (all docs, journeys, OpenAPI endpoints, and Prisma models) as a bookmarked A4 PDF
+      security: [{ sessionCookie: [] }]
+      responses:
+        '200':
+          description: Downloadable A4 PDF handbook (application/pdf)
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
 
   /api/cron/notifications:
     get:
@@ -45505,7 +45526,55 @@ function hasCredential(text: string): boolean {
 
 ---
 
-### File #218: `src/app/api/docs-index/route.ts`
+### File #218: `src/app/api/docs-export/pdf/route.ts`
+
+<a id="file-src-app-api-docs-export-pdf-route-ts"></a>
+
+- **Relative Path:** `src/app/api/docs-export/pdf/route.ts`
+- **Category:** Backend API Routes (Next.js App Router)
+- **Language:** TypeScript
+- **Lines:** 31
+- **Size:** 1.2 KB (1,204 bytes)
+
+`````typescript
+import { NextResponse } from "next/server"
+import { requireStaff } from "@/lib/session"
+import { buildFullDocumentationPdf } from "@/lib/pdf/full-docs-pdf"
+
+/**
+ * Staff-only endpoint that compiles and downloads the complete Sphere Pharmacy
+ * documentation corpus (all 129 Markdown documents, all 72 user journeys & 7 role maps,
+ * all 126 OpenAPI 3.1 endpoints, and all 41 Prisma models & 5 enums) as a single
+ * bookmarked A4 PDF file.
+ */
+export async function GET() {
+  const { error } = await requireStaff()
+  if (error) return error
+
+  const result = buildFullDocumentationPdf()
+  const dateStamp = new Date().toISOString().slice(0, 10)
+  const filename = `sphere-pharmacy-full-documentation-${dateStamp}.pdf`
+
+  return new NextResponse(new Uint8Array(result.buffer), {
+    status: 200,
+    headers: {
+      "Content-Type": "application/pdf",
+      "Content-Disposition": `attachment; filename="${filename}"`,
+      "Cache-Control": "private, no-store",
+      "X-Docs-Total-Pages": String(result.pageCount),
+      "X-Docs-Total-Documents": String(result.docCount),
+      "X-Docs-Total-Endpoints": String(result.endpointCount),
+      "X-Docs-Total-Models": String(result.modelCount),
+    },
+  })
+}
+`````
+
+[↑ Back to Master Index](#4-master-alphabetical-file-index) | [↑ Back to Categorized Index](#3-categorized-source-code-index)
+
+---
+
+### File #219: `src/app/api/docs-index/route.ts`
 
 <a id="file-src-app-api-docs-index-route-ts"></a>
 
@@ -45541,7 +45610,7 @@ export async function GET() {
 
 ---
 
-### File #219: `src/app/api/integrations/bandago/crm/route.ts`
+### File #220: `src/app/api/integrations/bandago/crm/route.ts`
 
 <a id="file-src-app-api-integrations-bandago-crm-route-ts"></a>
 
@@ -45758,7 +45827,7 @@ export async function GET(req: NextRequest) {
 
 ---
 
-### File #220: `src/app/api/integrations/bandago/csv-import/route.ts`
+### File #221: `src/app/api/integrations/bandago/csv-import/route.ts`
 
 <a id="file-src-app-api-integrations-bandago-csv-import-route-ts"></a>
 
@@ -45924,7 +45993,7 @@ export async function POST(req: NextRequest) {
 
 ---
 
-### File #221: `src/app/api/integrations/bandago/outbound/ack/route.ts`
+### File #222: `src/app/api/integrations/bandago/outbound/ack/route.ts`
 
 <a id="file-src-app-api-integrations-bandago-outbound-ack-route-ts"></a>
 
@@ -46168,7 +46237,7 @@ export async function POST(req: NextRequest) {
 
 ---
 
-### File #222: `src/app/api/integrations/bandago/outbound/route.ts`
+### File #223: `src/app/api/integrations/bandago/outbound/route.ts`
 
 <a id="file-src-app-api-integrations-bandago-outbound-route-ts"></a>
 
@@ -46434,7 +46503,7 @@ function serializeOutboundJob(job: {
 
 ---
 
-### File #223: `src/app/api/integrations/bandago/sync/route.ts`
+### File #224: `src/app/api/integrations/bandago/sync/route.ts`
 
 <a id="file-src-app-api-integrations-bandago-sync-route-ts"></a>
 
@@ -47185,7 +47254,7 @@ export async function POST(req: NextRequest) {
 
 ---
 
-### File #224: `src/app/api/integrations/bandago/telemetry/route.ts`
+### File #225: `src/app/api/integrations/bandago/telemetry/route.ts`
 
 <a id="file-src-app-api-integrations-bandago-telemetry-route-ts"></a>
 
@@ -47290,7 +47359,7 @@ export async function POST(req: NextRequest) {
 
 ---
 
-### File #225: `src/app/api/location/reverse-geocode/route.ts`
+### File #226: `src/app/api/location/reverse-geocode/route.ts`
 
 <a id="file-src-app-api-location-reverse-geocode-route-ts"></a>
 
@@ -47365,7 +47434,7 @@ export async function POST(request: Request) {
 
 ---
 
-### File #226: `src/app/api/location/search/route.ts`
+### File #227: `src/app/api/location/search/route.ts`
 
 <a id="file-src-app-api-location-search-route-ts"></a>
 
@@ -47403,7 +47472,7 @@ export async function GET(request: Request) {
 
 ---
 
-### File #227: `src/app/api/medicine-requests/route.ts`
+### File #228: `src/app/api/medicine-requests/route.ts`
 
 <a id="file-src-app-api-medicine-requests-route-ts"></a>
 
@@ -47489,7 +47558,7 @@ export async function POST(request: Request) {
 
 ---
 
-### File #228: `src/app/api/notifications/dispatch-test/route.ts`
+### File #229: `src/app/api/notifications/dispatch-test/route.ts`
 
 <a id="file-src-app-api-notifications-dispatch-test-route-ts"></a>
 
@@ -47615,7 +47684,7 @@ export async function GET() {
 
 ---
 
-### File #229: `src/app/api/notifications/email-webhook/route.ts`
+### File #230: `src/app/api/notifications/email-webhook/route.ts`
 
 <a id="file-src-app-api-notifications-email-webhook-route-ts"></a>
 
@@ -47661,7 +47730,7 @@ export async function POST(request: Request) {
 
 ---
 
-### File #230: `src/app/api/notifications/prefs/route.ts`
+### File #231: `src/app/api/notifications/prefs/route.ts`
 
 <a id="file-src-app-api-notifications-prefs-route-ts"></a>
 
@@ -47720,7 +47789,7 @@ export async function PUT(request: Request) {
 
 ---
 
-### File #231: `src/app/api/notifications/push-token/route.ts`
+### File #232: `src/app/api/notifications/push-token/route.ts`
 
 <a id="file-src-app-api-notifications-push-token-route-ts"></a>
 
@@ -47801,7 +47870,7 @@ export async function DELETE(request: Request) {
 
 ---
 
-### File #232: `src/app/api/notifications/route.ts`
+### File #233: `src/app/api/notifications/route.ts`
 
 <a id="file-src-app-api-notifications-route-ts"></a>
 
@@ -47877,7 +47946,7 @@ export async function PATCH(request: Request) {
 
 ---
 
-### File #233: `src/app/api/orders/[id]/assign/route.ts`
+### File #234: `src/app/api/orders/[id]/assign/route.ts`
 
 <a id="file-src-app-api-orders--id--assign-route-ts"></a>
 
@@ -47981,7 +48050,7 @@ export async function POST(request: Request, { params }: Params) {
 
 ---
 
-### File #234: `src/app/api/orders/[id]/cancel/route.ts`
+### File #235: `src/app/api/orders/[id]/cancel/route.ts`
 
 <a id="file-src-app-api-orders--id--cancel-route-ts"></a>
 
@@ -48160,7 +48229,7 @@ export async function POST(request: Request, { params }: Params) {
 
 ---
 
-### File #235: `src/app/api/orders/[id]/cash-confirm/route.ts`
+### File #236: `src/app/api/orders/[id]/cash-confirm/route.ts`
 
 <a id="file-src-app-api-orders--id--cash-confirm-route-ts"></a>
 
@@ -48248,7 +48317,7 @@ export async function POST(request: Request, { params }: Params) {
 
 ---
 
-### File #236: `src/app/api/orders/[id]/prepare/route.ts`
+### File #237: `src/app/api/orders/[id]/prepare/route.ts`
 
 <a id="file-src-app-api-orders--id--prepare-route-ts"></a>
 
@@ -48337,7 +48406,7 @@ export async function POST(request: Request, { params }: Params) {
 
 ---
 
-### File #237: `src/app/api/orders/[id]/request-payment/route.ts`
+### File #238: `src/app/api/orders/[id]/request-payment/route.ts`
 
 <a id="file-src-app-api-orders--id--request-payment-route-ts"></a>
 
@@ -48409,7 +48478,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
 
 ---
 
-### File #238: `src/app/api/orders/[id]/route.ts`
+### File #239: `src/app/api/orders/[id]/route.ts`
 
 <a id="file-src-app-api-orders--id--route-ts"></a>
 
@@ -48568,7 +48637,7 @@ export async function PATCH(request: Request, { params }: Params) {
 
 ---
 
-### File #239: `src/app/api/orders/loyalty/route.ts`
+### File #240: `src/app/api/orders/loyalty/route.ts`
 
 <a id="file-src-app-api-orders-loyalty-route-ts"></a>
 
@@ -48597,7 +48666,7 @@ export async function GET() {
 
 ---
 
-### File #240: `src/app/api/orders/riders/route.ts`
+### File #241: `src/app/api/orders/riders/route.ts`
 
 <a id="file-src-app-api-orders-riders-route-ts"></a>
 
@@ -48631,7 +48700,7 @@ export async function GET() {
 
 ---
 
-### File #241: `src/app/api/orders/route.ts`
+### File #242: `src/app/api/orders/route.ts`
 
 <a id="file-src-app-api-orders-route-ts"></a>
 
@@ -48898,7 +48967,7 @@ export async function POST(request: NextRequest) {
 
 ---
 
-### File #242: `src/app/api/payments/intasend/initiate/route.ts`
+### File #243: `src/app/api/payments/intasend/initiate/route.ts`
 
 <a id="file-src-app-api-payments-intasend-initiate-route-ts"></a>
 
@@ -48965,7 +49034,7 @@ export async function POST(request: Request) {
 
 ---
 
-### File #243: `src/app/api/payments/intasend/webhook/route.ts`
+### File #244: `src/app/api/payments/intasend/webhook/route.ts`
 
 <a id="file-src-app-api-payments-intasend-webhook-route-ts"></a>
 
@@ -49065,7 +49134,7 @@ export async function POST(request: Request) {
 
 ---
 
-### File #244: `src/app/api/payments/mpesa/callback/route.ts`
+### File #245: `src/app/api/payments/mpesa/callback/route.ts`
 
 <a id="file-src-app-api-payments-mpesa-callback-route-ts"></a>
 
@@ -49162,7 +49231,7 @@ export async function POST(request: Request) {
 
 ---
 
-### File #245: `src/app/api/payments/mpesa/initiate/route.ts`
+### File #246: `src/app/api/payments/mpesa/initiate/route.ts`
 
 <a id="file-src-app-api-payments-mpesa-initiate-route-ts"></a>
 
@@ -49239,7 +49308,7 @@ export async function POST(request: Request) {
 
 ---
 
-### File #246: `src/app/api/payments/mpesa/query/route.ts`
+### File #247: `src/app/api/payments/mpesa/query/route.ts`
 
 <a id="file-src-app-api-payments-mpesa-query-route-ts"></a>
 
@@ -49278,7 +49347,7 @@ export async function GET(request: Request) {
 
 ---
 
-### File #247: `src/app/api/payments/mpesa/service-callback/route.ts`
+### File #248: `src/app/api/payments/mpesa/service-callback/route.ts`
 
 <a id="file-src-app-api-payments-mpesa-service-callback-route-ts"></a>
 
@@ -49360,7 +49429,7 @@ export async function POST(request: Request) {
 
 ---
 
-### File #248: `src/app/api/payments/refund/route.ts`
+### File #249: `src/app/api/payments/refund/route.ts`
 
 <a id="file-src-app-api-payments-refund-route-ts"></a>
 
@@ -49475,7 +49544,7 @@ async function sendRefundNotice(payment: NonNullable<Awaited<ReturnType<typeof d
 
 ---
 
-### File #249: `src/app/api/prescriptions/[id]/refill/route.ts`
+### File #250: `src/app/api/prescriptions/[id]/refill/route.ts`
 
 <a id="file-src-app-api-prescriptions--id--refill-route-ts"></a>
 
@@ -49595,7 +49664,7 @@ export async function POST(request: Request, { params }: Params) {
 
 ---
 
-### File #250: `src/app/api/prescriptions/[id]/route.ts`
+### File #251: `src/app/api/prescriptions/[id]/route.ts`
 
 <a id="file-src-app-api-prescriptions--id--route-ts"></a>
 
@@ -49781,7 +49850,7 @@ export async function PATCH(request: Request, { params }: Params) {
 
 ---
 
-### File #251: `src/app/api/prescriptions/route.ts`
+### File #252: `src/app/api/prescriptions/route.ts`
 
 <a id="file-src-app-api-prescriptions-route-ts"></a>
 
@@ -49981,7 +50050,7 @@ export async function POST(request: Request) {
 
 ---
 
-### File #252: `src/app/api/products/[id]/reviews/route.ts`
+### File #253: `src/app/api/products/[id]/reviews/route.ts`
 
 <a id="file-src-app-api-products--id--reviews-route-ts"></a>
 
@@ -50087,7 +50156,7 @@ export async function POST(request: Request, { params }: Params) {
 
 ---
 
-### File #253: `src/app/api/products/[id]/route.ts`
+### File #254: `src/app/api/products/[id]/route.ts`
 
 <a id="file-src-app-api-products--id--route-ts"></a>
 
@@ -50292,7 +50361,7 @@ export async function DELETE(_request: Request, { params }: Params) {
 
 ---
 
-### File #254: `src/app/api/products/[id]/stock-alert/route.ts`
+### File #255: `src/app/api/products/[id]/stock-alert/route.ts`
 
 <a id="file-src-app-api-products--id--stock-alert-route-ts"></a>
 
@@ -50348,7 +50417,7 @@ export async function POST(_request: Request, { params }: Params) {
 
 ---
 
-### File #255: `src/app/api/products/bulk/route.ts`
+### File #256: `src/app/api/products/bulk/route.ts`
 
 <a id="file-src-app-api-products-bulk-route-ts"></a>
 
@@ -50483,7 +50552,7 @@ function splitCsvLine(line: string): string[] {
 
 ---
 
-### File #256: `src/app/api/products/route.ts`
+### File #257: `src/app/api/products/route.ts`
 
 <a id="file-src-app-api-products-route-ts"></a>
 
@@ -50675,7 +50744,7 @@ export async function POST(request: Request) {
 
 ---
 
-### File #257: `src/app/api/products/stock-alerts/route.ts`
+### File #258: `src/app/api/products/stock-alerts/route.ts`
 
 <a id="file-src-app-api-products-stock-alerts-route-ts"></a>
 
@@ -50729,7 +50798,7 @@ export async function DELETE(request: Request) {
 
 ---
 
-### File #258: `src/app/api/promotions/[id]/route.ts`
+### File #259: `src/app/api/promotions/[id]/route.ts`
 
 <a id="file-src-app-api-promotions--id--route-ts"></a>
 
@@ -50825,7 +50894,7 @@ export async function DELETE(_request: Request, { params }: Params) {
 
 ---
 
-### File #259: `src/app/api/promotions/route.ts`
+### File #260: `src/app/api/promotions/route.ts`
 
 <a id="file-src-app-api-promotions-route-ts"></a>
 
@@ -50926,7 +50995,7 @@ export async function POST(request: Request) {
 
 ---
 
-### File #260: `src/app/api/promotions/validate/route.ts`
+### File #261: `src/app/api/promotions/validate/route.ts`
 
 <a id="file-src-app-api-promotions-validate-route-ts"></a>
 
@@ -51040,7 +51109,7 @@ export async function POST(request: NextRequest) {
 
 ---
 
-### File #261: `src/app/api/route.ts`
+### File #262: `src/app/api/route.ts`
 
 <a id="file-src-app-api-route-ts"></a>
 
@@ -51062,7 +51131,7 @@ export async function GET() {
 
 ---
 
-### File #262: `src/app/api/service-bookings/[id]/pay-at-pharmacy/route.ts`
+### File #263: `src/app/api/service-bookings/[id]/pay-at-pharmacy/route.ts`
 
 <a id="file-src-app-api-service-bookings--id--pay-at-pharmacy-route-ts"></a>
 
@@ -51106,7 +51175,7 @@ export async function POST(_request: Request, ctx: { params: Promise<{ id: strin
 
 ---
 
-### File #263: `src/app/api/service-bookings/[id]/pay/card/route.ts`
+### File #264: `src/app/api/service-bookings/[id]/pay/card/route.ts`
 
 <a id="file-src-app-api-service-bookings--id--pay-card-route-ts"></a>
 
@@ -51163,7 +51232,7 @@ export async function POST(request: Request, ctx: { params: Promise<{ id: string
 
 ---
 
-### File #264: `src/app/api/service-bookings/[id]/pay/mpesa/route.ts`
+### File #265: `src/app/api/service-bookings/[id]/pay/mpesa/route.ts`
 
 <a id="file-src-app-api-service-bookings--id--pay-mpesa-route-ts"></a>
 
@@ -51229,7 +51298,7 @@ export async function POST(request: Request, ctx: { params: Promise<{ id: string
 
 ---
 
-### File #265: `src/app/api/service-bookings/[id]/payment-status/route.ts`
+### File #266: `src/app/api/service-bookings/[id]/payment-status/route.ts`
 
 <a id="file-src-app-api-service-bookings--id--payment-status-route-ts"></a>
 
@@ -51263,7 +51332,7 @@ export async function GET(request: Request, ctx: { params: Promise<{ id: string 
 
 ---
 
-### File #266: `src/app/api/service-bookings/[id]/review/route.ts`
+### File #267: `src/app/api/service-bookings/[id]/review/route.ts`
 
 <a id="file-src-app-api-service-bookings--id--review-route-ts"></a>
 
@@ -51296,7 +51365,7 @@ export async function POST(request:Request,ctx:{params:Promise<{id:string}>}){
 
 ---
 
-### File #267: `src/app/api/service-bookings/mine/route.ts`
+### File #268: `src/app/api/service-bookings/mine/route.ts`
 
 <a id="file-src-app-api-service-bookings-mine-route-ts"></a>
 
@@ -51323,7 +51392,7 @@ export async function GET(){
 
 ---
 
-### File #268: `src/app/api/service-bookings/route.ts`
+### File #269: `src/app/api/service-bookings/route.ts`
 
 <a id="file-src-app-api-service-bookings-route-ts"></a>
 
@@ -51417,7 +51486,7 @@ export async function POST(request:Request){
 
 ---
 
-### File #269: `src/app/api/services/[id]/availability/route.ts`
+### File #270: `src/app/api/services/[id]/availability/route.ts`
 
 <a id="file-src-app-api-services--id--availability-route-ts"></a>
 
@@ -51468,7 +51537,7 @@ export async function PUT(request:Request,ctx:{params:Promise<{id:string}>}){
 
 ---
 
-### File #270: `src/app/api/services/[id]/reviews/route.ts`
+### File #271: `src/app/api/services/[id]/reviews/route.ts`
 
 <a id="file-src-app-api-services--id--reviews-route-ts"></a>
 
@@ -51494,7 +51563,7 @@ export async function GET(_request:Request,ctx:{params:Promise<{id:string}>}){
 
 ---
 
-### File #271: `src/app/api/services/[id]/route.ts`
+### File #272: `src/app/api/services/[id]/route.ts`
 
 <a id="file-src-app-api-services--id--route-ts"></a>
 
@@ -51631,7 +51700,7 @@ export async function DELETE(_request: Request, ctx: { params: Promise<{ id: str
 
 ---
 
-### File #272: `src/app/api/services/[id]/slots/route.ts`
+### File #273: `src/app/api/services/[id]/slots/route.ts`
 
 <a id="file-src-app-api-services--id--slots-route-ts"></a>
 
@@ -51691,7 +51760,7 @@ export async function GET(request:Request,ctx:{params:Promise<{id:string}>}){
 
 ---
 
-### File #273: `src/app/api/services/route.ts`
+### File #274: `src/app/api/services/route.ts`
 
 <a id="file-src-app-api-services-route-ts"></a>
 
@@ -51752,7 +51821,7 @@ export async function POST(request:Request){
 
 ---
 
-### File #274: `src/app/api/settings/delivery-fee/route.ts`
+### File #275: `src/app/api/settings/delivery-fee/route.ts`
 
 <a id="file-src-app-api-settings-delivery-fee-route-ts"></a>
 
@@ -51786,7 +51855,7 @@ export async function GET(request:Request){
 
 ---
 
-### File #275: `src/app/api/settings/route.ts`
+### File #276: `src/app/api/settings/route.ts`
 
 <a id="file-src-app-api-settings-route-ts"></a>
 
@@ -51906,7 +51975,7 @@ export async function PUT(request: Request) {
 
 ---
 
-### File #276: `src/app/api/upload/route.ts`
+### File #277: `src/app/api/upload/route.ts`
 
 <a id="file-src-app-api-upload-route-ts"></a>
 
@@ -52015,7 +52084,7 @@ export async function POST(request: Request) {
 
 ---
 
-### File #277: `src/app/app-experience.css`
+### File #278: `src/app/app-experience.css`
 
 <a id="file-src-app-app-experience-css"></a>
 
@@ -53000,7 +53069,7 @@ main[data-view="admin"] + footer { display: none; }
 
 ---
 
-### File #278: `src/app/docs/[...slug]/page.tsx`
+### File #279: `src/app/docs/[...slug]/page.tsx`
 
 <a id="file-src-app-docs-----slug--page-tsx"></a>
 
@@ -53116,7 +53185,7 @@ const CATEGORY_LABELS: Record<string, string> = {
 
 ---
 
-### File #279: `src/app/docs/api-reference/page.tsx`
+### File #280: `src/app/docs/api-reference/page.tsx`
 
 <a id="file-src-app-docs-api-reference-page-tsx"></a>
 
@@ -53180,7 +53249,7 @@ export default function ApiReferencePage() {
 
 ---
 
-### File #280: `src/app/docs/assistant/page.tsx`
+### File #281: `src/app/docs/assistant/page.tsx`
 
 <a id="file-src-app-docs-assistant-page-tsx"></a>
 
@@ -53246,7 +53315,7 @@ export default async function AssistantPage({ searchParams }: Props) {
 
 ---
 
-### File #281: `src/app/docs/database/page.tsx`
+### File #282: `src/app/docs/database/page.tsx`
 
 <a id="file-src-app-docs-database-page-tsx"></a>
 
@@ -53317,7 +53386,7 @@ export default function DatabasePage() {
 
 ---
 
-### File #282: `src/app/docs/journeys/[...slug]/page.tsx`
+### File #283: `src/app/docs/journeys/[...slug]/page.tsx`
 
 <a id="file-src-app-docs-journeys-----slug--page-tsx"></a>
 
@@ -53504,7 +53573,7 @@ function JourneyMetadata({ doc }: { doc: DocRecord }) {
 
 ---
 
-### File #283: `src/app/docs/journeys/page.tsx`
+### File #284: `src/app/docs/journeys/page.tsx`
 
 <a id="file-src-app-docs-journeys-page-tsx"></a>
 
@@ -53575,7 +53644,7 @@ export default async function JourneysPage({ searchParams }: Props) {
 
 ---
 
-### File #284: `src/app/docs/layout.tsx`
+### File #285: `src/app/docs/layout.tsx`
 
 <a id="file-src-app-docs-layout-tsx"></a>
 
@@ -53663,7 +53732,7 @@ export default async function DocsLayout({ children }: { children: React.ReactNo
 
 ---
 
-### File #285: `src/app/docs/not-found.tsx`
+### File #286: `src/app/docs/not-found.tsx`
 
 <a id="file-src-app-docs-not-found-tsx"></a>
 
@@ -53715,21 +53784,21 @@ export default function DocsNotFound() {
 
 ---
 
-### File #286: `src/app/docs/page.tsx`
+### File #287: `src/app/docs/page.tsx`
 
 <a id="file-src-app-docs-page-tsx"></a>
 
 - **Relative Path:** `src/app/docs/page.tsx`
 - **Category:** Frontend Pages & Global Styles (Next.js App Router)
 - **Language:** TypeScript React
-- **Lines:** 265
-- **Size:** 15.3 KB (15,692 bytes)
+- **Lines:** 273
+- **Size:** 15.8 KB (16,146 bytes)
 
 `````tsx
 import type { Metadata } from "next"
 import Link from "next/link"
 import {
-  ArrowRight, BookOpen, Boxes, Braces, ClipboardCheck, Database, GitBranch, Layers,
+  ArrowRight, BookOpen, Boxes, Braces, ClipboardCheck, Database, Download, GitBranch, Layers,
   MessageCircleQuestion, Plug, Route, Server, ShieldCheck, Store, Wrench, type LucideIcon,
 } from "lucide-react"
 import { getCorpus, getCorpusStats } from "@/lib/docs/content"
@@ -53837,6 +53906,14 @@ export default function DocsHomePage() {
             <MessageCircleQuestion className="h-4 w-4 text-primary" aria-hidden />
             Ask Sphere Docs
           </Link>
+          <a
+            href="/api/docs-export/pdf"
+            download
+            className="inline-flex h-11 items-center gap-2 rounded-full border border-border bg-card px-6 text-sm font-semibold text-foreground transition-colors hover:border-ring focus-visible:outline-2 focus-visible:outline-ring"
+          >
+            <Download className="h-4 w-4 text-primary" aria-hidden />
+            Export full PDF (everything)
+          </a>
           <span className="text-xs text-muted-foreground">
             Press <kbd className="rounded border border-border bg-muted px-1.5 py-0.5 font-mono text-[0.625rem] font-semibold">⌘K</kbd> to search everything
           </span>
@@ -53997,7 +54074,7 @@ export default function DocsHomePage() {
 
 ---
 
-### File #287: `src/app/globals.css`
+### File #288: `src/app/globals.css`
 
 <a id="file-src-app-globals-css"></a>
 
@@ -54512,7 +54589,7 @@ export default function DocsHomePage() {
 
 ---
 
-### File #288: `src/app/layout.tsx`
+### File #289: `src/app/layout.tsx`
 
 <a id="file-src-app-layout-tsx"></a>
 
@@ -54577,7 +54654,7 @@ export default function RootLayout({
 
 ---
 
-### File #289: `src/app/page.tsx`
+### File #290: `src/app/page.tsx`
 
 <a id="file-src-app-page-tsx"></a>
 
@@ -54685,7 +54762,7 @@ export default function Page() {
 
 ---
 
-### File #290: `src/app/premium-landing.css`
+### File #291: `src/app/premium-landing.css`
 
 <a id="file-src-app-premium-landing-css"></a>
 
@@ -54829,7 +54906,7 @@ export default function Page() {
 
 ---
 
-### File #291: `src/app/reference-home-dark.css`
+### File #292: `src/app/reference-home-dark.css`
 
 <a id="file-src-app-reference-home-dark-css"></a>
 
@@ -54859,7 +54936,7 @@ export default function Page() {
 
 ---
 
-### File #292: `src/app/reference-home.css`
+### File #293: `src/app/reference-home.css`
 
 <a id="file-src-app-reference-home-css"></a>
 
@@ -55124,7 +55201,7 @@ export default function Page() {
 
 ---
 
-### File #293: `src/app/robots.ts`
+### File #294: `src/app/robots.ts`
 
 <a id="file-src-app-robots-ts"></a>
 
@@ -55147,7 +55224,7 @@ export default function robots(): MetadataRoute.Robots {
 
 ---
 
-### File #294: `src/app/services-showcase.css`
+### File #295: `src/app/services-showcase.css`
 
 <a id="file-src-app-services-showcase-css"></a>
 
@@ -55269,7 +55346,7 @@ export default function robots(): MetadataRoute.Robots {
 
 ---
 
-### File #295: `src/app/sitemap.ts`
+### File #296: `src/app/sitemap.ts`
 
 <a id="file-src-app-sitemap-ts"></a>
 
@@ -55298,7 +55375,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
 ---
 
-### File #296: `src/app/sphere-public.css`
+### File #297: `src/app/sphere-public.css`
 
 <a id="file-src-app-sphere-public-css"></a>
 
@@ -56067,7 +56144,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
 ---
 
-### File #297: `src/components/assistant/assistant-actions.tsx`
+### File #298: `src/components/assistant/assistant-actions.tsx`
 
 <a id="file-src-components-assistant-assistant-actions-tsx"></a>
 
@@ -56779,7 +56856,7 @@ function PaymentForm({ onNavigate }: { onNavigate: () => void }) {
 
 ---
 
-### File #298: `src/components/assistant/assistant-widget.tsx`
+### File #299: `src/components/assistant/assistant-widget.tsx`
 
 <a id="file-src-components-assistant-assistant-widget-tsx"></a>
 
@@ -57174,7 +57251,7 @@ export function AssistantWidget() {
 
 ---
 
-### File #299: `src/components/catalog/high-performance-pagination.tsx`
+### File #300: `src/components/catalog/high-performance-pagination.tsx`
 
 <a id="file-src-components-catalog-high-performance-pagination-tsx"></a>
 
@@ -57490,7 +57567,7 @@ export function HighPerformancePagination({
 
 ---
 
-### File #300: `src/components/catalog/luxury-category-ribbon.tsx`
+### File #301: `src/components/catalog/luxury-category-ribbon.tsx`
 
 <a id="file-src-components-catalog-luxury-category-ribbon-tsx"></a>
 
@@ -57592,7 +57669,7 @@ export function LuxuryCategoryRibbon({
 
 ---
 
-### File #301: `src/components/catalog/medicine-request.tsx`
+### File #302: `src/components/catalog/medicine-request.tsx`
 
 <a id="file-src-components-catalog-medicine-request-tsx"></a>
 
@@ -57735,7 +57812,7 @@ function MedicineRequestForm({ initialName, onClose }: { initialName: string; on
 
 ---
 
-### File #302: `src/components/docs/api-explorer.tsx`
+### File #303: `src/components/docs/api-explorer.tsx`
 
 <a id="file-src-components-docs-api-explorer-tsx"></a>
 
@@ -58018,7 +58095,7 @@ export function ApiExplorer({
 
 ---
 
-### File #303: `src/components/docs/code-block.tsx`
+### File #304: `src/components/docs/code-block.tsx`
 
 <a id="file-src-components-docs-code-block-tsx"></a>
 
@@ -58118,7 +58195,7 @@ export function CodeBlock({ code, language }: { code: string; language?: string 
 
 ---
 
-### File #304: `src/components/docs/db-explorer.tsx`
+### File #305: `src/components/docs/db-explorer.tsx`
 
 <a id="file-src-components-docs-db-explorer-tsx"></a>
 
@@ -58338,7 +58415,7 @@ export function DbExplorer({ models, enums }: { models: ModelItem[]; enums: Arra
 
 ---
 
-### File #305: `src/components/docs/doc-furniture.tsx`
+### File #306: `src/components/docs/doc-furniture.tsx`
 
 <a id="file-src-components-docs-doc-furniture-tsx"></a>
 
@@ -58468,7 +58545,7 @@ export function PrevNext({
 
 ---
 
-### File #306: `src/components/docs/docs-assistant.tsx`
+### File #307: `src/components/docs/docs-assistant.tsx`
 
 <a id="file-src-components-docs-docs-assistant-tsx"></a>
 
@@ -58765,15 +58842,15 @@ export function DocsAssistant({ pageContext }: { pageContext?: string }) {
 
 ---
 
-### File #307: `src/components/docs/docs-header.tsx`
+### File #308: `src/components/docs/docs-header.tsx`
 
 <a id="file-src-components-docs-docs-header-tsx"></a>
 
 - **Relative Path:** `src/components/docs/docs-header.tsx`
 - **Category:** Shared Layout & Domain Components
 - **Language:** TypeScript React
-- **Lines:** 106
-- **Size:** 4.5 KB (4,561 bytes)
+- **Lines:** 118
+- **Size:** 5.0 KB (5,163 bytes)
 
 `````tsx
 "use client"
@@ -58781,7 +58858,7 @@ export function DocsAssistant({ pageContext }: { pageContext?: string }) {
 import Link from "next/link"
 import { useTheme } from "next-themes"
 import { useEffect, useState } from "react"
-import { LayoutDashboard, Menu, MessageCircleQuestion, Moon, PanelLeftClose, PanelLeftOpen, Search, Sun } from "lucide-react"
+import { Download, LayoutDashboard, Menu, MessageCircleQuestion, Moon, PanelLeftClose, PanelLeftOpen, Search, Sun } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 export function DocsHeader({
@@ -58864,6 +58941,18 @@ export function DocsHeader({
             {mounted && resolvedTheme === "dark" ? <Sun className="h-5 w-5" aria-hidden /> : <Moon className="h-5 w-5" aria-hidden />}
           </Button>
 
+          <Button asChild variant="outline" size="sm" className="hidden gap-1.5 sm:inline-flex">
+            <a href="/api/docs-export/pdf" download>
+              <Download className="h-4 w-4" aria-hidden />
+              <span>Export PDF</span>
+            </a>
+          </Button>
+          <Button asChild variant="ghost" size="icon" className="sm:hidden" aria-label="Export full documentation PDF" title="Export full documentation PDF">
+            <a href="/api/docs-export/pdf" download>
+              <Download className="h-4 w-4" aria-hidden />
+            </a>
+          </Button>
+
           <Button asChild variant="outline" size="sm" className="hidden gap-1.5 md:inline-flex">
             <Link href="/docs/assistant">
               <MessageCircleQuestion className="h-4 w-4" aria-hidden />
@@ -58888,15 +58977,15 @@ export function DocsHeader({
 
 ---
 
-### File #308: `src/components/docs/docs-shell.tsx`
+### File #309: `src/components/docs/docs-shell.tsx`
 
 <a id="file-src-components-docs-docs-shell-tsx"></a>
 
 - **Relative Path:** `src/components/docs/docs-shell.tsx`
 - **Category:** Shared Layout & Domain Components
 - **Language:** TypeScript React
-- **Lines:** 171
-- **Size:** 6.9 KB (7,057 bytes)
+- **Lines:** 172
+- **Size:** 7.0 KB (7,163 bytes)
 
 `````tsx
 "use client"
@@ -59059,6 +59148,7 @@ export function DocsShell({
             <Link href="/docs/journeys" className="hover:text-foreground">Journeys</Link>
             <Link href="/docs/api-reference" className="hover:text-foreground">API</Link>
             <Link href="/docs/database" className="hover:text-foreground">Database</Link>
+            <a href="/api/docs-export/pdf" download className="hover:text-foreground">Export full PDF</a>
             <Link href="/admin" className="hover:text-foreground">Staff workspace</Link>
             <Link href="/" className="hover:text-foreground">Storefront</Link>
             <span className="inline-flex items-center gap-1" aria-hidden>
@@ -59076,7 +59166,7 @@ export function DocsShell({
 
 ---
 
-### File #309: `src/components/docs/docs-sidebar.tsx`
+### File #310: `src/components/docs/docs-sidebar.tsx`
 
 <a id="file-src-components-docs-docs-sidebar-tsx"></a>
 
@@ -59184,7 +59274,7 @@ export function DocsSidebar({ groups, currentUrl }: { groups: NavGroup[]; curren
 
 ---
 
-### File #310: `src/components/docs/docs-toc.tsx`
+### File #311: `src/components/docs/docs-toc.tsx`
 
 <a id="file-src-components-docs-docs-toc-tsx"></a>
 
@@ -59285,7 +59375,7 @@ export function DocsToc({ headings }: { headings: DocHeading[] }) {
 
 ---
 
-### File #311: `src/components/docs/docs.css`
+### File #312: `src/components/docs/docs.css`
 
 <a id="file-src-components-docs-docs-css"></a>
 
@@ -59863,7 +59953,7 @@ a.docs-chip:hover {
 
 ---
 
-### File #312: `src/components/docs/journey-directory.tsx`
+### File #313: `src/components/docs/journey-directory.tsx`
 
 <a id="file-src-components-docs-journey-directory-tsx"></a>
 
@@ -60091,7 +60181,7 @@ export function JourneyDirectory({
 
 ---
 
-### File #313: `src/components/docs/markdown.tsx`
+### File #314: `src/components/docs/markdown.tsx`
 
 <a id="file-src-components-docs-markdown-tsx"></a>
 
@@ -60257,7 +60347,7 @@ function Heading({
 
 ---
 
-### File #314: `src/components/docs/mermaid-diagram.tsx`
+### File #315: `src/components/docs/mermaid-diagram.tsx`
 
 <a id="file-src-components-docs-mermaid-diagram-tsx"></a>
 
@@ -60494,7 +60584,7 @@ export function MermaidDiagram({ code, title }: { code: string; title?: string }
 
 ---
 
-### File #315: `src/components/docs/search-palette.tsx`
+### File #316: `src/components/docs/search-palette.tsx`
 
 <a id="file-src-components-docs-search-palette-tsx"></a>
 
@@ -60863,7 +60953,7 @@ export function SearchPalette({ open, onOpenChange }: SearchPaletteProps) {
 
 ---
 
-### File #316: `src/components/home/luxury-categories-showcase.tsx`
+### File #317: `src/components/home/luxury-categories-showcase.tsx`
 
 <a id="file-src-components-home-luxury-categories-showcase-tsx"></a>
 
@@ -61209,7 +61299,7 @@ export function LuxuryCategoriesShowcase({
 
 ---
 
-### File #317: `src/components/home/priority-products-section.tsx`
+### File #318: `src/components/home/priority-products-section.tsx`
 
 <a id="file-src-components-home-priority-products-section-tsx"></a>
 
@@ -61463,7 +61553,7 @@ export function PriorityProductsSection({
 
 ---
 
-### File #318: `src/components/home/reference-home-hero.tsx`
+### File #319: `src/components/home/reference-home-hero.tsx`
 
 <a id="file-src-components-home-reference-home-hero-tsx"></a>
 
@@ -61701,7 +61791,7 @@ export function ReferenceHomeHero({ showHero = true }: { showHero?: boolean }) {
 
 ---
 
-### File #319: `src/components/home/services-showcase.tsx`
+### File #320: `src/components/home/services-showcase.tsx`
 
 <a id="file-src-components-home-services-showcase-tsx"></a>
 
@@ -61800,7 +61890,7 @@ export function ServicesShowcase() {
 
 ---
 
-### File #320: `src/components/home/sphere-landing.module.css`
+### File #321: `src/components/home/sphere-landing.module.css`
 
 <a id="file-src-components-home-sphere-landing-module-css"></a>
 
@@ -63330,7 +63420,7 @@ export function ServicesShowcase() {
 
 ---
 
-### File #321: `src/components/home/sphere-landing.tsx`
+### File #322: `src/components/home/sphere-landing.tsx`
 
 <a id="file-src-components-home-sphere-landing-tsx"></a>
 
@@ -63884,7 +63974,7 @@ export function SphereLanding() {
 
 ---
 
-### File #322: `src/components/layout/customer-hub-nav.tsx`
+### File #323: `src/components/layout/customer-hub-nav.tsx`
 
 <a id="file-src-components-layout-customer-hub-nav-tsx"></a>
 
@@ -63951,7 +64041,7 @@ export function CustomerHubNav() {
 
 ---
 
-### File #323: `src/components/layout/footer.tsx`
+### File #324: `src/components/layout/footer.tsx`
 
 <a id="file-src-components-layout-footer-tsx"></a>
 
@@ -64066,7 +64156,7 @@ export function Footer() {
 
 ---
 
-### File #324: `src/components/layout/header.tsx`
+### File #325: `src/components/layout/header.tsx`
 
 <a id="file-src-components-layout-header-tsx"></a>
 
@@ -64535,7 +64625,7 @@ function CartSheet() {
 
 ---
 
-### File #325: `src/components/layout/mobile-nav.tsx`
+### File #326: `src/components/layout/mobile-nav.tsx`
 
 <a id="file-src-components-layout-mobile-nav-tsx"></a>
 
@@ -64618,7 +64708,7 @@ export function MobileNav() {
 
 ---
 
-### File #326: `src/components/layout/notification-center.tsx`
+### File #327: `src/components/layout/notification-center.tsx`
 
 <a id="file-src-components-layout-notification-center-tsx"></a>
 
@@ -64693,7 +64783,7 @@ function Inbox() {
 
 ---
 
-### File #327: `src/components/layout/sphere-header.tsx`
+### File #328: `src/components/layout/sphere-header.tsx`
 
 <a id="file-src-components-layout-sphere-header-tsx"></a>
 
@@ -64821,7 +64911,7 @@ export function SphereHeader() {
 
 ---
 
-### File #328: `src/components/member/member-intro.tsx`
+### File #329: `src/components/member/member-intro.tsx`
 
 <a id="file-src-components-member-member-intro-tsx"></a>
 
@@ -64964,7 +65054,7 @@ export function MemberIntro({ kind }: { kind: keyof typeof copy }) {
 
 ---
 
-### File #329: `src/components/shared/empty-state.tsx`
+### File #330: `src/components/shared/empty-state.tsx`
 
 <a id="file-src-components-shared-empty-state-tsx"></a>
 
@@ -65053,7 +65143,7 @@ export function LoadingGrid({ count = 8 }: { count?: number }) {
 
 ---
 
-### File #330: `src/components/shared/logo.tsx`
+### File #331: `src/components/shared/logo.tsx`
 
 <a id="file-src-components-shared-logo-tsx"></a>
 
@@ -65099,7 +65189,7 @@ export function LogoFull({ className, dark = false }: { className?: string; dark
 
 ---
 
-### File #331: `src/components/shared/premium-popular-card.tsx`
+### File #332: `src/components/shared/premium-popular-card.tsx`
 
 <a id="file-src-components-shared-premium-popular-card-tsx"></a>
 
@@ -65288,7 +65378,7 @@ export function PremiumPopularCard({ product, rank }: PremiumPopularCardProps) {
 
 ---
 
-### File #332: `src/components/shared/product-card.tsx`
+### File #333: `src/components/shared/product-card.tsx`
 
 <a id="file-src-components-shared-product-card-tsx"></a>
 
@@ -65901,7 +65991,7 @@ export function ProductCardCompact({ product }: ProductCardProps) {
 
 ---
 
-### File #333: `src/components/shared/product-image.tsx`
+### File #334: `src/components/shared/product-image.tsx`
 
 <a id="file-src-components-shared-product-image-tsx"></a>
 
@@ -65956,7 +66046,7 @@ export function ProductImage({ src, alt, className, imgClassName, fallback }: Pr
 
 ---
 
-### File #334: `src/components/shared/status-badges.tsx`
+### File #335: `src/components/shared/status-badges.tsx`
 
 <a id="file-src-components-shared-status-badges-tsx"></a>
 
@@ -66080,7 +66170,7 @@ export { PAYMENT_STATUSES, ORDER_STATUS_LABELS }
 
 ---
 
-### File #335: `src/components/shared/use-current-location-button.tsx`
+### File #336: `src/components/shared/use-current-location-button.tsx`
 
 <a id="file-src-components-shared-use-current-location-button-tsx"></a>
 
@@ -66202,7 +66292,7 @@ export function UseCurrentLocationButton({
 
 ---
 
-### File #336: `src/components/ui/accordion.tsx`
+### File #337: `src/components/ui/accordion.tsx`
 
 <a id="file-src-components-ui-accordion-tsx"></a>
 
@@ -66285,7 +66375,7 @@ export { Accordion, AccordionItem, AccordionTrigger, AccordionContent }
 
 ---
 
-### File #337: `src/components/ui/alert-dialog.tsx`
+### File #338: `src/components/ui/alert-dialog.tsx`
 
 <a id="file-src-components-ui-alert-dialog-tsx"></a>
 
@@ -66459,7 +66549,7 @@ export {
 
 ---
 
-### File #338: `src/components/ui/alert.tsx`
+### File #339: `src/components/ui/alert.tsx`
 
 <a id="file-src-components-ui-alert-tsx"></a>
 
@@ -66542,7 +66632,7 @@ export { Alert, AlertTitle, AlertDescription }
 
 ---
 
-### File #339: `src/components/ui/aspect-ratio.tsx`
+### File #340: `src/components/ui/aspect-ratio.tsx`
 
 <a id="file-src-components-ui-aspect-ratio-tsx"></a>
 
@@ -66570,7 +66660,7 @@ export { AspectRatio }
 
 ---
 
-### File #340: `src/components/ui/avatar.tsx`
+### File #341: `src/components/ui/avatar.tsx`
 
 <a id="file-src-components-ui-avatar-tsx"></a>
 
@@ -66640,7 +66730,7 @@ export { Avatar, AvatarImage, AvatarFallback }
 
 ---
 
-### File #341: `src/components/ui/badge.tsx`
+### File #342: `src/components/ui/badge.tsx`
 
 <a id="file-src-components-ui-badge-tsx"></a>
 
@@ -66703,7 +66793,7 @@ export { Badge, badgeVariants }
 
 ---
 
-### File #342: `src/components/ui/breadcrumb.tsx`
+### File #343: `src/components/ui/breadcrumb.tsx`
 
 <a id="file-src-components-ui-breadcrumb-tsx"></a>
 
@@ -66829,7 +66919,7 @@ export {
 
 ---
 
-### File #343: `src/components/ui/button.tsx`
+### File #344: `src/components/ui/button.tsx`
 
 <a id="file-src-components-ui-button-tsx"></a>
 
@@ -66905,7 +66995,7 @@ export { Button, buttonVariants }
 
 ---
 
-### File #344: `src/components/ui/calendar.tsx`
+### File #345: `src/components/ui/calendar.tsx`
 
 <a id="file-src-components-ui-calendar-tsx"></a>
 
@@ -67135,7 +67225,7 @@ export { Calendar, CalendarDayButton }
 
 ---
 
-### File #345: `src/components/ui/card.tsx`
+### File #346: `src/components/ui/card.tsx`
 
 <a id="file-src-components-ui-card-tsx"></a>
 
@@ -67244,7 +67334,7 @@ export {
 
 ---
 
-### File #346: `src/components/ui/carousel.tsx`
+### File #347: `src/components/ui/carousel.tsx`
 
 <a id="file-src-components-ui-carousel-tsx"></a>
 
@@ -67502,7 +67592,7 @@ export {
 
 ---
 
-### File #347: `src/components/ui/chart.tsx`
+### File #348: `src/components/ui/chart.tsx`
 
 <a id="file-src-components-ui-chart-tsx"></a>
 
@@ -67872,7 +67962,7 @@ export {
 
 ---
 
-### File #348: `src/components/ui/checkbox.tsx`
+### File #349: `src/components/ui/checkbox.tsx`
 
 <a id="file-src-components-ui-checkbox-tsx"></a>
 
@@ -67921,7 +68011,7 @@ export { Checkbox }
 
 ---
 
-### File #349: `src/components/ui/collapsible.tsx`
+### File #350: `src/components/ui/collapsible.tsx`
 
 <a id="file-src-components-ui-collapsible-tsx"></a>
 
@@ -67971,7 +68061,7 @@ export { Collapsible, CollapsibleTrigger, CollapsibleContent }
 
 ---
 
-### File #350: `src/components/ui/command.tsx`
+### File #351: `src/components/ui/command.tsx`
 
 <a id="file-src-components-ui-command-tsx"></a>
 
@@ -68172,7 +68262,7 @@ export {
 
 ---
 
-### File #351: `src/components/ui/context-menu.tsx`
+### File #352: `src/components/ui/context-menu.tsx`
 
 <a id="file-src-components-ui-context-menu-tsx"></a>
 
@@ -68441,7 +68531,7 @@ export {
 
 ---
 
-### File #352: `src/components/ui/dialog.tsx`
+### File #353: `src/components/ui/dialog.tsx`
 
 <a id="file-src-components-ui-dialog-tsx"></a>
 
@@ -68601,7 +68691,7 @@ export {
 
 ---
 
-### File #353: `src/components/ui/drawer.tsx`
+### File #354: `src/components/ui/drawer.tsx`
 
 <a id="file-src-components-ui-drawer-tsx"></a>
 
@@ -68753,7 +68843,7 @@ export {
 
 ---
 
-### File #354: `src/components/ui/dropdown-menu.tsx`
+### File #355: `src/components/ui/dropdown-menu.tsx`
 
 <a id="file-src-components-ui-dropdown-menu-tsx"></a>
 
@@ -69027,7 +69117,7 @@ export {
 
 ---
 
-### File #355: `src/components/ui/form.tsx`
+### File #356: `src/components/ui/form.tsx`
 
 <a id="file-src-components-ui-form-tsx"></a>
 
@@ -69211,7 +69301,7 @@ export {
 
 ---
 
-### File #356: `src/components/ui/hover-card.tsx`
+### File #357: `src/components/ui/hover-card.tsx`
 
 <a id="file-src-components-ui-hover-card-tsx"></a>
 
@@ -69272,7 +69362,7 @@ export { HoverCard, HoverCardTrigger, HoverCardContent }
 
 ---
 
-### File #357: `src/components/ui/input-otp.tsx`
+### File #358: `src/components/ui/input-otp.tsx`
 
 <a id="file-src-components-ui-input-otp-tsx"></a>
 
@@ -69366,7 +69456,7 @@ export { InputOTP, InputOTPGroup, InputOTPSlot, InputOTPSeparator }
 
 ---
 
-### File #358: `src/components/ui/input.tsx`
+### File #359: `src/components/ui/input.tsx`
 
 <a id="file-src-components-ui-input-tsx"></a>
 
@@ -69404,7 +69494,7 @@ export { Input }
 
 ---
 
-### File #359: `src/components/ui/label.tsx`
+### File #360: `src/components/ui/label.tsx`
 
 <a id="file-src-components-ui-label-tsx"></a>
 
@@ -69445,7 +69535,7 @@ export { Label }
 
 ---
 
-### File #360: `src/components/ui/menubar.tsx`
+### File #361: `src/components/ui/menubar.tsx`
 
 <a id="file-src-components-ui-menubar-tsx"></a>
 
@@ -69738,7 +69828,7 @@ export {
 
 ---
 
-### File #361: `src/components/ui/navigation-menu.tsx`
+### File #362: `src/components/ui/navigation-menu.tsx`
 
 <a id="file-src-components-ui-navigation-menu-tsx"></a>
 
@@ -69923,7 +70013,7 @@ export {
 
 ---
 
-### File #362: `src/components/ui/pagination.tsx`
+### File #363: `src/components/ui/pagination.tsx`
 
 <a id="file-src-components-ui-pagination-tsx"></a>
 
@@ -70067,7 +70157,7 @@ export {
 
 ---
 
-### File #363: `src/components/ui/popover.tsx`
+### File #364: `src/components/ui/popover.tsx`
 
 <a id="file-src-components-ui-popover-tsx"></a>
 
@@ -70132,7 +70222,7 @@ export { Popover, PopoverTrigger, PopoverContent, PopoverAnchor }
 
 ---
 
-### File #364: `src/components/ui/progress.tsx`
+### File #365: `src/components/ui/progress.tsx`
 
 <a id="file-src-components-ui-progress-tsx"></a>
 
@@ -70180,7 +70270,7 @@ export { Progress }
 
 ---
 
-### File #365: `src/components/ui/radio-group.tsx`
+### File #366: `src/components/ui/radio-group.tsx`
 
 <a id="file-src-components-ui-radio-group-tsx"></a>
 
@@ -70242,7 +70332,7 @@ export { RadioGroup, RadioGroupItem }
 
 ---
 
-### File #366: `src/components/ui/resizable.tsx`
+### File #367: `src/components/ui/resizable.tsx`
 
 <a id="file-src-components-ui-resizable-tsx"></a>
 
@@ -70315,7 +70405,7 @@ export { ResizablePanelGroup, ResizablePanel, ResizableHandle }
 
 ---
 
-### File #367: `src/components/ui/scroll-area.tsx`
+### File #368: `src/components/ui/scroll-area.tsx`
 
 <a id="file-src-components-ui-scroll-area-tsx"></a>
 
@@ -70390,7 +70480,7 @@ export { ScrollArea, ScrollBar }
 
 ---
 
-### File #368: `src/components/ui/select.tsx`
+### File #369: `src/components/ui/select.tsx`
 
 <a id="file-src-components-ui-select-tsx"></a>
 
@@ -70592,7 +70682,7 @@ export {
 
 ---
 
-### File #369: `src/components/ui/separator.tsx`
+### File #370: `src/components/ui/separator.tsx`
 
 <a id="file-src-components-ui-separator-tsx"></a>
 
@@ -70637,7 +70727,7 @@ export { Separator }
 
 ---
 
-### File #370: `src/components/ui/sheet.tsx`
+### File #371: `src/components/ui/sheet.tsx`
 
 <a id="file-src-components-ui-sheet-tsx"></a>
 
@@ -70793,7 +70883,7 @@ export {
 
 ---
 
-### File #371: `src/components/ui/sidebar.tsx`
+### File #372: `src/components/ui/sidebar.tsx`
 
 <a id="file-src-components-ui-sidebar-tsx"></a>
 
@@ -71536,7 +71626,7 @@ export {
 
 ---
 
-### File #372: `src/components/ui/skeleton.tsx`
+### File #373: `src/components/ui/skeleton.tsx`
 
 <a id="file-src-components-ui-skeleton-tsx"></a>
 
@@ -71566,7 +71656,7 @@ export { Skeleton }
 
 ---
 
-### File #373: `src/components/ui/slider.tsx`
+### File #374: `src/components/ui/slider.tsx`
 
 <a id="file-src-components-ui-slider-tsx"></a>
 
@@ -71646,7 +71736,7 @@ export { Slider }
 
 ---
 
-### File #374: `src/components/ui/sonner.tsx`
+### File #375: `src/components/ui/sonner.tsx`
 
 <a id="file-src-components-ui-sonner-tsx"></a>
 
@@ -71688,7 +71778,7 @@ export { Toaster }
 
 ---
 
-### File #375: `src/components/ui/switch.tsx`
+### File #376: `src/components/ui/switch.tsx`
 
 <a id="file-src-components-ui-switch-tsx"></a>
 
@@ -71736,7 +71826,7 @@ export { Switch }
 
 ---
 
-### File #376: `src/components/ui/table.tsx`
+### File #377: `src/components/ui/table.tsx`
 
 <a id="file-src-components-ui-table-tsx"></a>
 
@@ -71869,7 +71959,7 @@ export {
 
 ---
 
-### File #377: `src/components/ui/tabs.tsx`
+### File #378: `src/components/ui/tabs.tsx`
 
 <a id="file-src-components-ui-tabs-tsx"></a>
 
@@ -71952,7 +72042,7 @@ export { Tabs, TabsList, TabsTrigger, TabsContent }
 
 ---
 
-### File #378: `src/components/ui/textarea.tsx`
+### File #379: `src/components/ui/textarea.tsx`
 
 <a id="file-src-components-ui-textarea-tsx"></a>
 
@@ -71987,7 +72077,7 @@ export { Textarea }
 
 ---
 
-### File #379: `src/components/ui/toast.tsx`
+### File #380: `src/components/ui/toast.tsx`
 
 <a id="file-src-components-ui-toast-tsx"></a>
 
@@ -72133,7 +72223,7 @@ export {
 
 ---
 
-### File #380: `src/components/ui/toaster.tsx`
+### File #381: `src/components/ui/toaster.tsx`
 
 <a id="file-src-components-ui-toaster-tsx"></a>
 
@@ -72185,7 +72275,7 @@ export function Toaster() {
 
 ---
 
-### File #381: `src/components/ui/toggle-group.tsx`
+### File #382: `src/components/ui/toggle-group.tsx`
 
 <a id="file-src-components-ui-toggle-group-tsx"></a>
 
@@ -72275,7 +72365,7 @@ export { ToggleGroup, ToggleGroupItem }
 
 ---
 
-### File #382: `src/components/ui/toggle.tsx`
+### File #383: `src/components/ui/toggle.tsx`
 
 <a id="file-src-components-ui-toggle-tsx"></a>
 
@@ -72339,7 +72429,7 @@ export { Toggle, toggleVariants }
 
 ---
 
-### File #383: `src/components/ui/tooltip.tsx`
+### File #384: `src/components/ui/tooltip.tsx`
 
 <a id="file-src-components-ui-tooltip-tsx"></a>
 
@@ -72417,7 +72507,7 @@ export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider }
 
 ---
 
-### File #384: `src/components/views/account-view.tsx`
+### File #385: `src/components/views/account-view.tsx`
 
 <a id="file-src-components-views-account-view-tsx"></a>
 
@@ -73950,7 +74040,7 @@ export function AccountView() {
 
 ---
 
-### File #385: `src/components/views/admin/admin-access.tsx`
+### File #386: `src/components/views/admin/admin-access.tsx`
 
 <a id="file-src-components-views-admin-admin-access-tsx"></a>
 
@@ -73986,7 +74076,7 @@ export function AdminAccessFrame({ children }: { children: ReactNode }) {
 
 ---
 
-### File #386: `src/components/views/admin/admin-shared.tsx`
+### File #387: `src/components/views/admin/admin-shared.tsx`
 
 <a id="file-src-components-views-admin-admin-shared-tsx"></a>
 
@@ -74266,15 +74356,15 @@ export const CHART_COLORS = ["var(--chart-1)", "var(--chart-2)", "var(--chart-3)
 
 ---
 
-### File #387: `src/components/views/admin/admin-view.tsx`
+### File #388: `src/components/views/admin/admin-view.tsx`
 
 <a id="file-src-components-views-admin-admin-view-tsx"></a>
 
 - **Relative Path:** `src/components/views/admin/admin-view.tsx`
 - **Category:** Admin Workspace & Staff Control Room
 - **Language:** TypeScript React
-- **Lines:** 563
-- **Size:** 28.0 KB (28,699 bytes)
+- **Lines:** 566
+- **Size:** 28.4 KB (29,084 bytes)
 
 `````tsx
 "use client"
@@ -74753,6 +74843,9 @@ export function AdminView() {
                 <CommandItem value="Ask Sphere Docs AI Documentation Assistant" onSelect={() => { setSearchOpen(false); router.push("/docs/assistant") }}>
                   <MessageSquareText className="h-4 w-4" /><span className="flex-1">Ask Sphere Docs (AI)</span><ArrowUpRight className="h-3.5 w-3.5" />
                 </CommandItem>
+                <CommandItem value="Export Full Documentation PDF Handbook Everything" onSelect={() => { setSearchOpen(false); window.open("/api/docs-export/pdf", "_blank", "noopener,noreferrer") }}>
+                  <BookOpen className="h-4 w-4" /><span className="flex-1">Export full documentation (PDF)</span><ArrowUpRight className="h-3.5 w-3.5" />
+                </CommandItem>
               </CommandGroup>
             </CommandList>
             <div className="admin-command-hint"><span>↑ ↓ to browse</span><span>↵ to open</span><span>esc to close</span></div>
@@ -74846,7 +74939,7 @@ function StaffGate({
 
 ---
 
-### File #388: `src/components/views/admin/sections/catalogue-section.tsx`
+### File #389: `src/components/views/admin/sections/catalogue-section.tsx`
 
 <a id="file-src-components-views-admin-sections-catalogue-section-tsx"></a>
 
@@ -75972,7 +76065,7 @@ function CsvImportDialog({ onClose, onImported }: { onClose: () => void; onImpor
 
 ---
 
-### File #389: `src/components/views/admin/sections/compliance-section.tsx`
+### File #390: `src/components/views/admin/sections/compliance-section.tsx`
 
 <a id="file-src-components-views-admin-sections-compliance-section-tsx"></a>
 
@@ -76352,7 +76445,7 @@ export function ComplianceSection({ refreshKey, onRefresh }: SectionProps) {
 
 ---
 
-### File #390: `src/components/views/admin/sections/dispatch-control-room.tsx`
+### File #391: `src/components/views/admin/sections/dispatch-control-room.tsx`
 
 <a id="file-src-components-views-admin-sections-dispatch-control-room-tsx"></a>
 
@@ -76969,7 +77062,7 @@ export function DispatchControlRoom({ refreshKey, onRefresh, onNavigateSection }
 
 ---
 
-### File #391: `src/components/views/admin/sections/dispatch-section.tsx`
+### File #392: `src/components/views/admin/sections/dispatch-section.tsx`
 
 <a id="file-src-components-views-admin-sections-dispatch-section-tsx"></a>
 
@@ -77711,7 +77804,7 @@ function DispatchCard({
 
 ---
 
-### File #392: `src/components/views/admin/sections/medicine-requests-section.tsx`
+### File #393: `src/components/views/admin/sections/medicine-requests-section.tsx`
 
 <a id="file-src-components-views-admin-sections-medicine-requests-section-tsx"></a>
 
@@ -77852,7 +77945,7 @@ function MedicineRequestRow({ request, onSaved }: { request: MedicineRequestDTO;
 
 ---
 
-### File #393: `src/components/views/admin/sections/orders-section.tsx`
+### File #394: `src/components/views/admin/sections/orders-section.tsx`
 
 <a id="file-src-components-views-admin-sections-orders-section-tsx"></a>
 
@@ -79378,7 +79471,7 @@ function CancelDialog({
 
 ---
 
-### File #394: `src/components/views/admin/sections/overview-section.tsx`
+### File #395: `src/components/views/admin/sections/overview-section.tsx`
 
 <a id="file-src-components-views-admin-sections-overview-section-tsx"></a>
 
@@ -79683,7 +79776,7 @@ export function OverviewSection({ refreshKey, onNavigateSection }: SectionProps)
 
 ---
 
-### File #395: `src/components/views/admin/sections/pos-sync-section.tsx`
+### File #396: `src/components/views/admin/sections/pos-sync-section.tsx`
 
 <a id="file-src-components-views-admin-sections-pos-sync-section-tsx"></a>
 
@@ -81330,7 +81423,7 @@ export function PosSyncSection({ refreshKey, onRefresh }: Partial<SectionProps> 
 
 ---
 
-### File #396: `src/components/views/admin/sections/prescriptions-section.tsx`
+### File #397: `src/components/views/admin/sections/prescriptions-section.tsx`
 
 <a id="file-src-components-views-admin-sections-prescriptions-section-tsx"></a>
 
@@ -82330,7 +82423,7 @@ function ReviewChoice({
 
 ---
 
-### File #397: `src/components/views/admin/sections/promotions-section.tsx`
+### File #398: `src/components/views/admin/sections/promotions-section.tsx`
 
 <a id="file-src-components-views-admin-sections-promotions-section-tsx"></a>
 
@@ -82720,7 +82813,7 @@ function PromotionEditorDialog({mode,promo,onClose,onSaved}:{
 
 ---
 
-### File #398: `src/components/views/admin/sections/reports-section.tsx`
+### File #399: `src/components/views/admin/sections/reports-section.tsx`
 
 <a id="file-src-components-views-admin-sections-reports-section-tsx"></a>
 
@@ -83056,7 +83149,7 @@ export function ReportsSection({ refreshKey }: SectionProps) {
 
 ---
 
-### File #399: `src/components/views/admin/sections/reviews-section.tsx`
+### File #400: `src/components/views/admin/sections/reviews-section.tsx`
 
 <a id="file-src-components-views-admin-sections-reviews-section-tsx"></a>
 
@@ -83358,7 +83451,7 @@ function SectionErrorInline({ message, onRetry }: { message: string; onRetry: ()
 
 ---
 
-### File #400: `src/components/views/admin/sections/service-analytics-section.tsx`
+### File #401: `src/components/views/admin/sections/service-analytics-section.tsx`
 
 <a id="file-src-components-views-admin-sections-service-analytics-section-tsx"></a>
 
@@ -83418,7 +83511,7 @@ export function ServiceAnalyticsSection({ refreshKey }: SectionProps) {
 
 ---
 
-### File #401: `src/components/views/admin/sections/service-bookings-section.tsx`
+### File #402: `src/components/views/admin/sections/service-bookings-section.tsx`
 
 <a id="file-src-components-views-admin-sections-service-bookings-section-tsx"></a>
 
@@ -83887,7 +83980,7 @@ export function ServiceBookingsSection({ refreshKey }: SectionProps) {
 
 ---
 
-### File #402: `src/components/views/admin/sections/services-section.tsx`
+### File #403: `src/components/views/admin/sections/services-section.tsx`
 
 <a id="file-src-components-views-admin-sections-services-section-tsx"></a>
 
@@ -84183,7 +84276,7 @@ export function ServicesSection({refreshKey,onRefresh}:SectionProps){
 
 ---
 
-### File #403: `src/components/views/admin/sections/settings-section.tsx`
+### File #404: `src/components/views/admin/sections/settings-section.tsx`
 
 <a id="file-src-components-views-admin-sections-settings-section-tsx"></a>
 
@@ -85036,7 +85129,7 @@ export function SettingsSection({ refreshKey, onRefresh }: SectionProps) {
 
 ---
 
-### File #404: `src/components/views/admin/sections/staff-section.tsx`
+### File #405: `src/components/views/admin/sections/staff-section.tsx`
 
 <a id="file-src-components-views-admin-sections-staff-section-tsx"></a>
 
@@ -85518,7 +85611,7 @@ function StaffEditorDialog({
 
 ---
 
-### File #405: `src/components/views/auth-view.tsx`
+### File #406: `src/components/views/auth-view.tsx`
 
 <a id="file-src-components-views-auth-view-tsx"></a>
 
@@ -86014,7 +86107,7 @@ export function AuthView() {
 
 ---
 
-### File #406: `src/components/views/cart-view.tsx`
+### File #407: `src/components/views/cart-view.tsx`
 
 <a id="file-src-components-views-cart-view-tsx"></a>
 
@@ -86327,7 +86420,7 @@ export function CartView() {
 
 ---
 
-### File #407: `src/components/views/catalog-view.tsx`
+### File #408: `src/components/views/catalog-view.tsx`
 
 <a id="file-src-components-views-catalog-view-tsx"></a>
 
@@ -87047,7 +87140,7 @@ function FilterChip({ label, onRemove }: { label: string; onRemove: () => void }
 
 ---
 
-### File #408: `src/components/views/checkout-view.tsx`
+### File #409: `src/components/views/checkout-view.tsx`
 
 <a id="file-src-components-views-checkout-view-tsx"></a>
 
@@ -88916,7 +89009,7 @@ function MethodCard({
 
 ---
 
-### File #409: `src/components/views/home-view.tsx`
+### File #410: `src/components/views/home-view.tsx`
 
 <a id="file-src-components-views-home-view-tsx"></a>
 
@@ -89391,7 +89484,7 @@ export function HomeView() {
 
 ---
 
-### File #410: `src/components/views/offers-view.tsx`
+### File #411: `src/components/views/offers-view.tsx`
 
 <a id="file-src-components-views-offers-view-tsx"></a>
 
@@ -89575,7 +89668,7 @@ export function OffersView() {
 
 ---
 
-### File #411: `src/components/views/order-detail-view.tsx`
+### File #412: `src/components/views/order-detail-view.tsx`
 
 <a id="file-src-components-views-order-detail-view-tsx"></a>
 
@@ -90696,7 +90789,7 @@ function PrescriptionFileDialog({ rx, onClose }: { rx: PrescriptionDTO; onClose:
 
 ---
 
-### File #412: `src/components/views/orders-view.tsx`
+### File #413: `src/components/views/orders-view.tsx`
 
 <a id="file-src-components-views-orders-view-tsx"></a>
 
@@ -91109,7 +91202,7 @@ function OrderCard({ order, onOpen }: { order: OrderDTO; onOpen: (orderId: strin
 
 ---
 
-### File #413: `src/components/views/prescriptions-view.tsx`
+### File #414: `src/components/views/prescriptions-view.tsx`
 
 <a id="file-src-components-views-prescriptions-view-tsx"></a>
 
@@ -91880,7 +91973,7 @@ function PrescriptionFileDialog({ rx, onClose }: { rx: PrescriptionDTO; onClose:
 
 ---
 
-### File #414: `src/components/views/product-view.tsx`
+### File #415: `src/components/views/product-view.tsx`
 
 <a id="file-src-components-views-product-view-tsx"></a>
 
@@ -92647,7 +92740,7 @@ function ReviewsForm({
 
 ---
 
-### File #415: `src/components/views/services-view.tsx`
+### File #416: `src/components/views/services-view.tsx`
 
 <a id="file-src-components-views-services-view-tsx"></a>
 
@@ -94505,7 +94598,7 @@ function ServiceReviewDialog({
 
 ---
 
-### File #416: `src/hooks/use-mobile.ts`
+### File #417: `src/hooks/use-mobile.ts`
 
 <a id="file-src-hooks-use-mobile-ts"></a>
 
@@ -94541,7 +94634,7 @@ export function useIsMobile() {
 
 ---
 
-### File #417: `src/hooks/use-toast.ts`
+### File #418: `src/hooks/use-toast.ts`
 
 <a id="file-src-hooks-use-toast-ts"></a>
 
@@ -94752,7 +94845,7 @@ export { useToast, toast }
 
 ---
 
-### File #418: `src/lib/api-client.ts`
+### File #419: `src/lib/api-client.ts`
 
 <a id="file-src-lib-api-client-ts"></a>
 
@@ -95269,7 +95362,7 @@ export const serviceAnalyticsApi = {
 
 ---
 
-### File #419: `src/lib/assistant/contracts.ts`
+### File #420: `src/lib/assistant/contracts.ts`
 
 <a id="file-src-lib-assistant-contracts-ts"></a>
 
@@ -95447,7 +95540,7 @@ export function safeModelReply(text: string): string {
 
 ---
 
-### File #420: `src/lib/assistant/payment-review.ts`
+### File #421: `src/lib/assistant/payment-review.ts`
 
 <a id="file-src-lib-assistant-payment-review-ts"></a>
 
@@ -95498,7 +95591,7 @@ export function reviewAmount(expected: number, actual: unknown): boolean {
 
 ---
 
-### File #421: `src/lib/assistant/public-knowledge.ts`
+### File #422: `src/lib/assistant/public-knowledge.ts`
 
 <a id="file-src-lib-assistant-public-knowledge-ts"></a>
 
@@ -95855,7 +95948,7 @@ export function fallbackReplyWithSettings(
 
 ---
 
-### File #422: `src/lib/bandago-normalizer.ts`
+### File #423: `src/lib/bandago-normalizer.ts`
 
 <a id="file-src-lib-bandago-normalizer-ts"></a>
 
@@ -96231,7 +96324,7 @@ export function parseCsv(text: string): string[][] {
 
 ---
 
-### File #423: `src/lib/constants.ts`
+### File #424: `src/lib/constants.ts`
 
 <a id="file-src-lib-constants-ts"></a>
 
@@ -96447,7 +96540,7 @@ export const DELIVERY_DEFAULTS = {
 
 ---
 
-### File #424: `src/lib/crm/bandago-crm.ts`
+### File #425: `src/lib/crm/bandago-crm.ts`
 
 <a id="file-src-lib-crm-bandago-crm-ts"></a>
 
@@ -96627,7 +96720,7 @@ export class BandaGoCrmReconciler {
 
 ---
 
-### File #425: `src/lib/db.ts`
+### File #426: `src/lib/db.ts`
 
 <a id="file-src-lib-db-ts"></a>
 
@@ -96727,7 +96820,7 @@ export const prisma = db
 
 ---
 
-### File #426: `src/lib/docs/assistant.ts`
+### File #427: `src/lib/docs/assistant.ts`
 
 <a id="file-src-lib-docs-assistant-ts"></a>
 
@@ -97222,7 +97315,7 @@ export const ASSISTANT_SYSTEM_PROMPT = [
 
 ---
 
-### File #427: `src/lib/docs/content.ts`
+### File #428: `src/lib/docs/content.ts`
 
 <a id="file-src-lib-docs-content-ts"></a>
 
@@ -97589,7 +97682,7 @@ export { CATEGORY_ORDER }
 
 ---
 
-### File #428: `src/lib/docs/frontmatter.ts`
+### File #429: `src/lib/docs/frontmatter.ts`
 
 <a id="file-src-lib-docs-frontmatter-ts"></a>
 
@@ -97752,7 +97845,7 @@ export function parseMetadataTable(body: string): {
 
 ---
 
-### File #429: `src/lib/docs/navigation.ts`
+### File #430: `src/lib/docs/navigation.ts`
 
 <a id="file-src-lib-docs-navigation-ts"></a>
 
@@ -98055,7 +98148,7 @@ export function getJourneyNeighbors(doc: DocRecord): { prev: DocRecord | null; n
 
 ---
 
-### File #430: `src/lib/docs/openapi.ts`
+### File #431: `src/lib/docs/openapi.ts`
 
 <a id="file-src-lib-docs-openapi-ts"></a>
 
@@ -98258,7 +98351,7 @@ export function parseOpenApi(): OpenApiSpec {
 
 ---
 
-### File #431: `src/lib/docs/prisma-schema.ts`
+### File #432: `src/lib/docs/prisma-schema.ts`
 
 <a id="file-src-lib-docs-prisma-schema-ts"></a>
 
@@ -98548,7 +98641,7 @@ export function erDiagramFor(group: DomainGroup, allModels: PrismaModel[]): stri
 
 ---
 
-### File #432: `src/lib/docs/search.ts`
+### File #433: `src/lib/docs/search.ts`
 
 <a id="file-src-lib-docs-search-ts"></a>
 
@@ -98773,7 +98866,7 @@ export function searchEntries(query: string, limit = 12): Array<{ entry: SearchE
 
 ---
 
-### File #433: `src/lib/docs/utils.ts`
+### File #434: `src/lib/docs/utils.ts`
 
 <a id="file-src-lib-docs-utils-ts"></a>
 
@@ -98861,7 +98954,7 @@ export function extractHeadings(markdown: string): DocHeading[] {
 
 ---
 
-### File #434: `src/lib/dto.ts`
+### File #435: `src/lib/dto.ts`
 
 <a id="file-src-lib-dto-ts"></a>
 
@@ -99155,7 +99248,7 @@ export function toReviewDTO(r: {
 
 ---
 
-### File #435: `src/lib/email/resend.ts`
+### File #436: `src/lib/email/resend.ts`
 
 <a id="file-src-lib-email-resend-ts"></a>
 
@@ -99253,7 +99346,7 @@ export async function sendEmail(opts: SendEmailOptions): Promise<EmailResult> {
 
 ---
 
-### File #436: `src/lib/email/templates.ts`
+### File #437: `src/lib/email/templates.ts`
 
 <a id="file-src-lib-email-templates-ts"></a>
 
@@ -99733,7 +99826,7 @@ export function serviceBookingTemplate(opts: {
 
 ---
 
-### File #437: `src/lib/firebase/admin.ts`
+### File #438: `src/lib/firebase/admin.ts`
 
 <a id="file-src-lib-firebase-admin-ts"></a>
 
@@ -100011,7 +100104,7 @@ export async function sendPushNotification(
 
 ---
 
-### File #438: `src/lib/firebase/client.ts`
+### File #439: `src/lib/firebase/client.ts`
 
 <a id="file-src-lib-firebase-client-ts"></a>
 
@@ -100220,7 +100313,7 @@ export function setupForegroundNotificationListener(onNotification?: (data: unkn
 
 ---
 
-### File #439: `src/lib/format.ts`
+### File #440: `src/lib/format.ts`
 
 <a id="file-src-lib-format-ts"></a>
 
@@ -100301,7 +100394,7 @@ export function shortRef(reference: string): string {
 
 ---
 
-### File #440: `src/lib/hash.ts`
+### File #441: `src/lib/hash.ts`
 
 <a id="file-src-lib-hash-ts"></a>
 
@@ -100406,7 +100499,7 @@ function requiredSecret(name: "OTP_HASH_SECRET" | "TOKEN_HASH_SECRET"): string {
 
 ---
 
-### File #441: `src/lib/image-library.ts`
+### File #442: `src/lib/image-library.ts`
 
 <a id="file-src-lib-image-library-ts"></a>
 
@@ -100503,7 +100596,7 @@ export const PRODUCT_IMAGE_LIBRARY: LibraryImage[] = [
 
 ---
 
-### File #442: `src/lib/image.ts`
+### File #443: `src/lib/image.ts`
 
 <a id="file-src-lib-image-ts"></a>
 
@@ -100544,7 +100637,7 @@ export function sanitizeImageInput(v?: string | null): string {
 
 ---
 
-### File #443: `src/lib/intasend/client.ts`
+### File #444: `src/lib/intasend/client.ts`
 
 <a id="file-src-lib-intasend-client-ts"></a>
 
@@ -100702,7 +100795,7 @@ function parseRefund(value: unknown, fallbackInvoice: string, fallbackAmount: nu
 
 ---
 
-### File #444: `src/lib/inventory-guard.ts`
+### File #445: `src/lib/inventory-guard.ts`
 
 <a id="file-src-lib-inventory-guard-ts"></a>
 
@@ -101037,7 +101130,7 @@ export class InventoryGuard {
 
 ---
 
-### File #445: `src/lib/loyalty.ts`
+### File #446: `src/lib/loyalty.ts`
 
 <a id="file-src-lib-loyalty-ts"></a>
 
@@ -101139,7 +101232,7 @@ export async function loyaltySummary(userId: string): Promise<LoyaltySummaryDTO>
 
 ---
 
-### File #446: `src/lib/medicine-request-dto.ts`
+### File #447: `src/lib/medicine-request-dto.ts`
 
 <a id="file-src-lib-medicine-request-dto-ts"></a>
 
@@ -101171,7 +101264,7 @@ export function toMedicineRequestDTO(row: MedicineRequest): MedicineRequestDTO {
 
 ---
 
-### File #447: `src/lib/medicine-requests.ts`
+### File #448: `src/lib/medicine-requests.ts`
 
 <a id="file-src-lib-medicine-requests-ts"></a>
 
@@ -101248,7 +101341,7 @@ export interface MedicineRequestsResponse {
 
 ---
 
-### File #448: `src/lib/mpesa/daraja.ts`
+### File #449: `src/lib/mpesa/daraja.ts`
 
 <a id="file-src-lib-mpesa-daraja-ts"></a>
 
@@ -101493,7 +101586,7 @@ export async function queryStkPush(checkoutRequestId: string): Promise<StkQueryR
 
 ---
 
-### File #449: `src/lib/notifications/delivery.ts`
+### File #450: `src/lib/notifications/delivery.ts`
 
 <a id="file-src-lib-notifications-delivery-ts"></a>
 
@@ -101600,7 +101693,7 @@ async function reconcileEmailEvents() {
 
 ---
 
-### File #450: `src/lib/notifications/payment.ts`
+### File #451: `src/lib/notifications/payment.ts`
 
 <a id="file-src-lib-notifications-payment-ts"></a>
 
@@ -101641,7 +101734,7 @@ export async function notifyPaymentOutcome(tx: Prisma.TransactionClient, input: 
 
 ---
 
-### File #451: `src/lib/notify.ts`
+### File #452: `src/lib/notify.ts`
 
 <a id="file-src-lib-notify-ts"></a>
 
@@ -101942,7 +102035,7 @@ export async function notifyServiceBooking(opts: {
 
 ---
 
-### File #452: `src/lib/offer-intent.ts`
+### File #453: `src/lib/offer-intent.ts`
 
 <a id="file-src-lib-offer-intent-ts"></a>
 
@@ -101982,7 +102075,7 @@ export function forgetOffer(): void {
 
 ---
 
-### File #453: `src/lib/pdf/daily-sales-pdf.ts`
+### File #454: `src/lib/pdf/daily-sales-pdf.ts`
 
 <a id="file-src-lib-pdf-daily-sales-pdf-ts"></a>
 
@@ -102271,7 +102364,979 @@ export function buildDailySalesPdfBuffer(input: DailySalesPdfInput): Buffer {
 
 ---
 
-### File #454: `src/lib/pos-reconciliation-core.ts`
+### File #455: `src/lib/pdf/full-docs-pdf.ts`
+
+<a id="file-src-lib-pdf-full-docs-pdf-ts"></a>
+
+- **Relative Path:** `src/lib/pdf/full-docs-pdf.ts`
+- **Category:** Core Business Logic & Database Clients
+- **Language:** TypeScript
+- **Lines:** 955
+- **Size:** 32.2 KB (32,927 bytes)
+
+`````typescript
+import { getCorpus, type DocRecord } from "@/lib/docs/content"
+import { parseOpenApi, type ApiEndpoint } from "@/lib/docs/openapi"
+import { parsePrismaSchema, type PrismaEnum, type PrismaModel } from "@/lib/docs/prisma-schema"
+import { plainText } from "@/lib/docs/utils"
+
+/**
+ * Zero-dependency PDF 1.4 generator for the complete Sphere Pharmacy
+ * Documentation Handbook ("* everything": all 129 Markdown docs across all
+ * 14 categories, all 72 user journeys & 7 role maps, all 126 OpenAPI 3.1
+ * endpoints, and all 41 Prisma database models & 5 enums).
+ *
+ * Features:
+ *  - A4 portrait layout with Type1 Helvetica, Helvetica-Bold, and Courier
+ *  - Cover page with corpus metrics + Master Table of Contents
+ *  - Native PDF /Outlines bookmark tree for every Part and Document
+ *  - Full Markdown rendering: headings, paragraphs, bullet/numbered lists,
+ *    blockquotes/callouts, tables, code blocks, and Mermaid flow diagrams
+ */
+
+export interface FullDocsPdfResult {
+  buffer: Buffer
+  pageCount: number
+  docCount: number
+  endpointCount: number
+  modelCount: number
+}
+
+interface PartDefinition {
+  id: string
+  partNumber: number
+  title: string
+  subtitle: string
+  docs: DocRecord[]
+}
+
+interface BookmarkEntry {
+  title: string
+  pageIndex: number
+}
+
+/** Normalize Unicode punctuation to printable ASCII so Type1 PDF fonts render cleanly. */
+export function normalizePdfText(value: string): string {
+  return value
+    .replace(/\u2014/g, " -- ")
+    .replace(/\u2013/g, "-")
+    .replace(/[\u2018\u2019]/g, "'")
+    .replace(/[\u201C\u201D]/g, '"')
+    .replace(/\u2026/g, "...")
+    .replace(/\u2192/g, "->")
+    .replace(/\u2190/g, "<-")
+    .replace(/\u2194/g, "<->")
+    .replace(/\u21D2/g, "=>")
+    .replace(/\u2265/g, ">=")
+    .replace(/\u2264/g, "<=")
+    .replace(/\u2260/g, "!=")
+    .replace(/\u00D7/g, "x")
+    .replace(/[\u00B7\u2022\u2733]/g, "*")
+    .replace(/\u2318/g, "Cmd+")
+    .replace(/[\u2713\u2714]/g, "[OK]")
+    .replace(/[\u2717\u2718]/g, "[X]")
+    .replace(/\u00B1/g, "+/-")
+    .replace(/\u00A0/g, " ")
+    .replace(/[^\x20-\x7E]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+}
+
+function pdfEscape(value: string): string {
+  return normalizePdfText(value)
+    .replace(/\\/g, "\\\\")
+    .replace(/\(/g, "\\(")
+    .replace(/\)/g, "\\)")
+}
+
+function stripInlineFormatting(line: string): string {
+  return normalizePdfText(
+    plainText(line)
+      .replace(/!\[([^\]]*)\]\(([^)]+)\)/g, "[Image: $1 ($2)]")
+      .replace(/\[([^\]]+)\]\(([^)]+)\)/g, "$1 ($2)")
+      .replace(/\*\*([^*]+)\*\*/g, "$1")
+      .replace(/\*([^*]+)\*/g, "$1")
+      .replace(/`([^`]+)`/g, "$1"),
+  )
+}
+
+function wrapText(text: string, maxChars: number): string[] {
+  const cleaned = normalizePdfText(text)
+  if (!cleaned) return []
+  if (cleaned.length <= maxChars) return [cleaned]
+
+  const words = cleaned.split(" ")
+  const lines: string[] = []
+  let current = ""
+
+  for (const word of words) {
+    if (!word) continue
+    if (word.length > maxChars) {
+      if (current) {
+        lines.push(current)
+        current = ""
+      }
+      let cursor = 0
+      while (cursor < word.length) {
+        lines.push(word.slice(cursor, cursor + maxChars))
+        cursor += maxChars
+      }
+      continue
+    }
+    const candidate = current ? `${current} ${word}` : word
+    if (candidate.length <= maxChars) {
+      current = candidate
+    } else {
+      if (current) lines.push(current)
+      current = word
+    }
+  }
+  if (current) lines.push(current)
+  return lines
+}
+
+function organizeCorpusParts(): PartDefinition[] {
+  const corpus = getCorpus()
+  const usedUrls = new Set<string>()
+
+  const take = (predicate: (doc: DocRecord) => boolean): DocRecord[] => {
+    const matched = corpus.docs.filter((d) => !usedUrls.has(d.url) && predicate(d))
+    for (const d of matched) usedUrls.add(d.url)
+    return matched
+  }
+
+  const actorOrder = ["Customer", "Pharmacist", "Staff", "Admin", "Rider", "System"]
+
+  const rawParts: Array<{ id: string; title: string; subtitle: string; docs: DocRecord[] }> = [
+    {
+      id: "start-and-product",
+      title: "Start Here & Pharmacy Operations",
+      subtitle: "Documentation index, product overview, feature catalogue, roles & permissions, and day-to-day pharmacy operations",
+      docs: [
+        ...take((d) => d.docsPath === "readme"),
+        ...take((d) => d.category === "product"),
+      ],
+    },
+    {
+      id: "journeys",
+      title: "User Journeys & Operational Role Maps",
+      subtitle: "Role overviews and all end-to-end customer, pharmacist, staff, admin, rider, and system journeys",
+      docs: [
+        ...take((d) => d.docsPath === "journeys/README"),
+        ...take((d) => d.docsPath.startsWith("journeys/roles/")),
+        ...take((d) => d.isJourney).sort((a, b) => {
+          const aActor = a.journey ? actorOrder.indexOf(a.journey.actor) : 99
+          const bActor = b.journey ? actorOrder.indexOf(b.journey.actor) : 99
+          if (aActor !== bActor) return aActor - bActor
+          return a.docsPath.localeCompare(b.docsPath)
+        }),
+      ],
+    },
+    {
+      id: "architecture",
+      title: "System, Frontend, Backend & API Architecture",
+      subtitle: "How the Next.js 16 SPA, API routes, authentication, and client/server state fit together",
+      docs: take((d) => d.category === "architecture"),
+    },
+    {
+      id: "features",
+      title: "Feature Subsystem Deep-Dives",
+      subtitle: "Storefront, inventory, prescriptions, orders, payments, bookings, loyalty, notifications, CRM, and AI assistant",
+      docs: take((d) => d.category === "features"),
+    },
+    {
+      id: "database",
+      title: "Database Architecture, Data Dictionary & Migrations",
+      subtitle: "PostgreSQL + Prisma 6 schema overview, data dictionary, ER diagrams, migrations, and data lifecycle",
+      docs: take((d) => d.category === "database"),
+    },
+    {
+      id: "api",
+      title: "API Reference & Conventions",
+      subtitle: "Complete HTTP route handler reference, rate limits, and idempotency key catalogue",
+      docs: take((d) => d.category === "api"),
+    },
+    {
+      id: "integrations",
+      title: "External Integrations",
+      subtitle: "M-Pesa Daraja, IntaSend, BandaGo POS/CRM, Cloudflare R2, Firebase FCM, Resend, and Groq AI",
+      docs: take((d) => d.category === "integrations"),
+    },
+    {
+      id: "security",
+      title: "Security, Access Control & Privacy",
+      subtitle: "Authorization guards, session-scoped AI access policy, R2 storage security, health-data privacy, and retention",
+      docs: take((d) => d.category === "security"),
+    },
+    {
+      id: "workflows",
+      title: "Business Process State Machines & Workflows",
+      subtitle: "Order, prescription, payment, inventory, and clinical service booking lifecycles",
+      docs: take((d) => d.category === "workflows"),
+    },
+    {
+      id: "operations",
+      title: "Operations, Local Development & Runbooks",
+      subtitle: "Local setup, environment variables, standalone deployment, database operations, scheduled jobs, backups, and troubleshooting",
+      docs: take((d) => d.category === "operations"),
+    },
+    {
+      id: "testing-and-governance",
+      title: "Testing, Architecture Decisions & Governance",
+      subtitle: "Testing strategy, 17 ADRs, documentation policy, technical debt ledger, and release history",
+      docs: [
+        ...take((d) => d.category === "testing"),
+        ...take((d) => d.category === "governance"),
+      ],
+    },
+    {
+      id: "reference-and-project",
+      title: "Acceptance Scripts, Audits & Repository Guides",
+      subtitle: "51-scene platform recording script, payment/notification audit, root README, and AGENTS guide",
+      docs: [
+        ...take((d) => d.category === "recording"),
+        ...take((d) => d.category === "reference"),
+        ...take((d) => d.category === "project"),
+        ...take(() => true), // Any remaining doc in corpus
+      ],
+    },
+  ]
+
+  return rawParts
+    .filter((p) => p.docs.length > 0)
+    .map((p, idx) => ({
+      ...p,
+      partNumber: idx + 1,
+    }))
+}
+
+export function buildFullDocumentationPdf(): FullDocsPdfResult {
+  const PAGE_W = 595.28
+  const PAGE_H = 841.89
+  const MARGIN_L = 40
+  const MARGIN_R = 40
+  const CONTENT_W = PAGE_W - MARGIN_L - MARGIN_R // ~515pt
+  const TOP_Y = PAGE_H - 48
+  const BOTTOM_Y = 50
+
+  const parts = organizeCorpusParts()
+  const api = parseOpenApi()
+  const schema = parsePrismaSchema()
+  const totalDocs = parts.reduce((acc, p) => acc + p.docs.length, 0)
+  const generatedAt = new Date().toISOString().replace("T", " ").slice(0, 19) + " UTC"
+
+  const pageStreams: string[] = []
+  const pageHeaders: string[] = []
+  const bookmarks: BookmarkEntry[] = []
+
+  let currentStream = ""
+  let currentHeader = "Sphere Pharmacy — Complete Documentation Handbook"
+  let y = TOP_Y
+
+  const drawText = (
+    x: number,
+    yPos: number,
+    text: string,
+    size = 9,
+    font: "/F1" | "/F2" | "/F3" = "/F1",
+    rgb = "0.10 0.12 0.15",
+  ): string => {
+    const escaped = pdfEscape(text)
+    if (!escaped) return ""
+    return `BT ${rgb} rg ${font} ${size} Tf ${x.toFixed(2)} ${yPos.toFixed(2)} Td (${escaped}) Tj ET\n`
+  }
+
+  const drawRect = (
+    x: number,
+    yPos: number,
+    w: number,
+    h: number,
+    fillRgb?: string,
+    strokeRgb?: string,
+  ): string => {
+    let op = ""
+    if (fillRgb) op += `${fillRgb} rg `
+    if (strokeRgb) op += `${strokeRgb} RG 0.5 w `
+    op += `${x.toFixed(2)} ${yPos.toFixed(2)} ${w.toFixed(2)} ${h.toFixed(2)} re `
+    if (fillRgb && strokeRgb) op += "B\n"
+    else if (fillRgb) op += "f\n"
+    else op += "S\n"
+    return op
+  }
+
+  const drawLine = (
+    x1: number,
+    y1: number,
+    x2: number,
+    y2: number,
+    strokeRgb = "0.82 0.85 0.88",
+    width = 0.5,
+  ): string => {
+    return `${strokeRgb} RG ${width} w ${x1.toFixed(2)} ${y1.toFixed(2)} m ${x2.toFixed(2)} ${y2.toFixed(2)} l S\n`
+  }
+
+  const flushPage = () => {
+    if (!currentStream) return
+    pageStreams.push(currentStream)
+    pageHeaders.push(currentHeader)
+    currentStream = ""
+    y = TOP_Y
+  }
+
+  const startNewPage = (headerLabel?: string) => {
+    if (currentStream) flushPage()
+    if (headerLabel) currentHeader = headerLabel
+    // Running top header on content pages
+    currentStream += drawText(MARGIN_L, PAGE_H - 28, currentHeader.slice(0, 95), 7.5, "/F2", "0.35 0.40 0.45")
+    currentStream += drawLine(MARGIN_L, PAGE_H - 34, MARGIN_L + CONTENT_W, PAGE_H - 34, "0.85 0.87 0.90", 0.4)
+    y = TOP_Y
+  }
+
+  const ensureSpace = (neededPt: number) => {
+    if (y - neededPt < BOTTOM_Y) {
+      startNewPage()
+    }
+  }
+
+  // =========================================================================
+  // 1. COVER PAGE & TABLE OF CONTENTS
+  // =========================================================================
+  bookmarks.push({ title: "Cover & Master Table of Contents", pageIndex: 0 })
+
+  // Hero Cover Banner
+  currentStream += drawRect(MARGIN_L, y - 92, CONTENT_W, 92, "0.06 0.31 0.25")
+  currentStream += drawText(MARGIN_L + 16, y - 26, "SPHERE PHARMACY", 11, "/F2", "0.75 0.95 0.88")
+  currentStream += drawText(
+    MARGIN_L + 16,
+    y - 48,
+    "COMPLETE PLATFORM DOCUMENTATION HANDBOOK",
+    16,
+    "/F2",
+    "1 1 1",
+  )
+  currentStream += drawText(
+    MARGIN_L + 16,
+    y - 66,
+    "Operations, User Journeys, Architecture, Features, Database Schema, OpenAPI Contract, Security & Runbooks",
+    8.5,
+    "/F1",
+    "0.88 0.96 0.92",
+  )
+  currentStream += drawText(
+    MARGIN_L + 16,
+    y - 81,
+    `Lumumba Drive, Roysambu, Nairobi, Kenya  |  Generated: ${generatedAt}  |  Staff & Admin Reference`,
+    7.8,
+    "/F1",
+    "0.78 0.90 0.86",
+  )
+  y -= 108
+
+  // Metrics Summary Boxes
+  const boxW = (CONTENT_W - 18) / 4
+  const kpis = [
+    { label: "CANONICAL DOCUMENTS", value: `${totalDocs} Pages` },
+    { label: "USER JOURNEYS & ROLES", value: `${parts.find((p) => p.id === "journeys")?.docs.length ?? 80} Flows` },
+    { label: "OPENAPI 3.1 ENDPOINTS", value: `${api.endpoints.length} Handlers` },
+    { label: "PRISMA DB MODELS", value: `${schema.models.length} Models / ${schema.enums.length} Enums` },
+  ]
+  kpis.forEach((kpi, idx) => {
+    const bx = MARGIN_L + idx * (boxW + 6)
+    currentStream += drawRect(bx, y - 38, boxW, 38, "0.95 0.97 0.97", "0.80 0.85 0.84")
+    currentStream += drawText(bx + 8, y - 14, kpi.label, 6.8, "/F2", "0.35 0.42 0.40")
+    currentStream += drawText(bx + 8, y - 29, kpi.value, 10.5, "/F2", "0.06 0.25 0.20")
+  })
+  y -= 54
+
+  // Master Table of Contents Heading
+  currentStream += drawText(MARGIN_L, y, "MASTER TABLE OF CONTENTS", 12, "/F2", "0.06 0.28 0.22")
+  currentStream += drawLine(MARGIN_L, y - 5, MARGIN_L + CONTENT_W, y - 5, "0.06 0.31 0.25", 0.8)
+  y -= 20
+
+  for (const part of parts) {
+    ensureSpace(32)
+    currentStream += drawRect(MARGIN_L, y - 14, CONTENT_W, 16, "0.93 0.96 0.95")
+    currentStream += drawText(
+      MARGIN_L + 6,
+      y - 10,
+      `PART ${part.partNumber}: ${part.title.toUpperCase()} (${part.docs.length} documents)`,
+      8.5,
+      "/F2",
+      "0.06 0.28 0.22",
+    )
+    y -= 20
+
+    for (const doc of part.docs) {
+      ensureSpace(13)
+      const label = doc.journey ? `${doc.journey.id} - ${doc.title}` : doc.title
+      currentStream += drawText(MARGIN_L + 12, y - 8, `* ${label.slice(0, 68)}`, 7.8, "/F1", "0.15 0.18 0.22")
+      currentStream += drawText(MARGIN_L + 335, y - 8, doc.sourcePath.slice(0, 44), 7.0, "/F3", "0.42 0.46 0.52")
+      y -= 11.5
+    }
+    y -= 6
+  }
+
+  // Appendices in TOC
+  ensureSpace(44)
+  currentStream += drawRect(MARGIN_L, y - 14, CONTENT_W, 16, "0.93 0.96 0.95")
+  currentStream += drawText(
+    MARGIN_L + 6,
+    y - 10,
+    `APPENDIX A: MACHINE-READABLE OPENAPI 3.1 CONTRACT (${api.endpoints.length} HTTP ENDPOINTS)`,
+    8.5,
+    "/F2",
+    "0.06 0.28 0.22",
+  )
+  y -= 22
+  currentStream += drawRect(MARGIN_L, y - 14, CONTENT_W, 16, "0.93 0.96 0.95")
+  currentStream += drawText(
+    MARGIN_L + 6,
+    y - 10,
+    `APPENDIX B: PRISMA DATABASE SCHEMA EXPLORER (${schema.models.length} MODELS & ${schema.enums.length} ENUMS)`,
+    8.5,
+    "/F2",
+    "0.06 0.28 0.22",
+  )
+  y -= 20
+
+  // =========================================================================
+  // 2. RENDER EVERY PART & EVERY DOCUMENT IN THE CORPUS
+  // =========================================================================
+  const renderMarkdownBody = (markdown: string) => {
+    const rawLines = markdown.replace(/^#\s+.+\r?\n/, "").split(/\r?\n/)
+    let inCode = false
+    let codeLang = ""
+    let codeBuffer: string[] = []
+    let tableBuffer: string[][] = []
+
+    const flushTable = () => {
+      if (!tableBuffer.length) return
+      const rows = tableBuffer.filter(
+        (cells) => !cells.every((c) => /^[:\s-]+$/.test(c)),
+      )
+      tableBuffer = []
+      if (!rows.length) return
+
+      const colCount = Math.max(1, Math.min(6, rows[0].length))
+      const colWidth = CONTENT_W / colCount
+      const maxCharsPerCell = Math.max(12, Math.floor(colWidth / 4.4) - 2)
+
+      rows.forEach((row, rIdx) => {
+        const cellLines = Array.from({ length: colCount }, (_, cIdx) =>
+          wrapText(stripInlineFormatting(row[cIdx] ?? ""), maxCharsPerCell).slice(0, 4),
+        )
+        const maxLines = Math.max(1, ...cellLines.map((cl) => cl.length))
+        const rowH = maxLines * 10 + 6
+        ensureSpace(rowH + 4)
+
+        if (rIdx === 0) {
+          currentStream += drawRect(MARGIN_L, y - rowH, CONTENT_W, rowH, "0.91 0.94 0.94", "0.78 0.82 0.84")
+        } else if (rIdx % 2 === 1) {
+          currentStream += drawRect(MARGIN_L, y - rowH, CONTENT_W, rowH, "0.98 0.985 0.99", "0.88 0.90 0.92")
+        } else {
+          currentStream += drawRect(MARGIN_L, y - rowH, CONTENT_W, rowH, undefined, "0.88 0.90 0.92")
+        }
+
+        for (let cIdx = 0; cIdx < colCount; cIdx++) {
+          const cx = MARGIN_L + cIdx * colWidth + 4
+          cellLines[cIdx].forEach((ln, lIdx) => {
+            currentStream += drawText(
+              cx,
+              y - 10 - lIdx * 9.5,
+              ln,
+              7.3,
+              rIdx === 0 ? "/F2" : "/F1",
+              rIdx === 0 ? "0.08 0.15 0.14" : "0.16 0.20 0.24",
+            )
+          })
+        }
+        y -= rowH
+      })
+      y -= 6
+    }
+
+    const flushCode = () => {
+      if (!codeBuffer.length) return
+      const isMermaid = codeLang.toLowerCase() === "mermaid"
+      const headerLabel = isMermaid ? "FLOWCHART / DIAGRAM SPECIFICATION (MERMAID)" : `CODE BLOCK (${(codeLang || "text").toUpperCase()})`
+
+      ensureSpace(24)
+      currentStream += drawRect(MARGIN_L, y - 13, CONTENT_W, 13, isMermaid ? "0.90 0.95 0.93" : "0.91 0.92 0.94")
+      currentStream += drawText(MARGIN_L + 6, y - 9.5, headerLabel, 6.8, "/F2", "0.20 0.28 0.26")
+      y -= 14
+
+      for (const rawCodeLine of codeBuffer) {
+        const wrapped = wrapText(rawCodeLine, 92)
+        const linesToDraw = wrapped.length ? wrapped : [""]
+        for (const cl of linesToDraw) {
+          ensureSpace(11)
+          currentStream += drawRect(MARGIN_L, y - 10.5, CONTENT_W, 10.5, "0.965 0.97 0.98")
+          currentStream += drawText(MARGIN_L + 6, y - 8, cl, 7.2, "/F3", "0.14 0.18 0.24")
+          y -= 10.5
+        }
+      }
+      codeBuffer = []
+      codeLang = ""
+      y -= 6
+    }
+
+    for (const rawLine of rawLines) {
+      const trimmed = rawLine.trim()
+
+      // Code fences
+      if (trimmed.startsWith("```")) {
+        flushTable()
+        if (!inCode) {
+          inCode = true
+          codeLang = trimmed.slice(3).trim()
+          codeBuffer = []
+        } else {
+          inCode = false
+          flushCode()
+        }
+        continue
+      }
+
+      if (inCode) {
+        codeBuffer.push(rawLine)
+        continue
+      }
+
+      // Markdown table row
+      if (trimmed.startsWith("|") && trimmed.endsWith("|")) {
+        const cells = trimmed
+          .slice(1, -1)
+          .split("|")
+          .map((c) => c.trim())
+        tableBuffer.push(cells)
+        continue
+      } else if (tableBuffer.length > 0) {
+        flushTable()
+      }
+
+      // Blank line
+      if (!trimmed || trimmed.startsWith("<!--")) {
+        y -= 4
+        continue
+      }
+
+      // Horizontal rule
+      if (/^(?:---|\*\*\*|___)\s*$/.test(trimmed)) {
+        ensureSpace(10)
+        currentStream += drawLine(MARGIN_L, y - 4, MARGIN_L + CONTENT_W, y - 4, "0.82 0.85 0.88", 0.6)
+        y -= 10
+        continue
+      }
+
+      // Headings
+      const hMatch = /^(#{1,4})\s+(.+)$/.exec(trimmed)
+      if (hMatch) {
+        const level = hMatch[1].length
+        const headingText = stripInlineFormatting(hMatch[2])
+        const fontSize = level === 1 ? 13 : level === 2 ? 11 : level === 3 ? 9.8 : 9
+        const maxChars = level <= 2 ? 75 : 85
+        const wrappedH = wrapText(headingText, maxChars)
+        ensureSpace(wrappedH.length * (fontSize + 3) + 18)
+        y -= level <= 2 ? 6 : 4
+        for (const hl of wrappedH) {
+          currentStream += drawText(
+            MARGIN_L,
+            y - fontSize,
+            hl,
+            fontSize,
+            "/F2",
+            level <= 2 ? "0.06 0.26 0.20" : "0.10 0.15 0.20",
+          )
+          y -= fontSize + 3
+        }
+        if (level <= 2) {
+          currentStream += drawLine(MARGIN_L, y, MARGIN_L + CONTENT_W, y, "0.78 0.84 0.82", 0.5)
+          y -= 5
+        }
+        continue
+      }
+
+      // Blockquotes / Callouts
+      if (trimmed.startsWith(">")) {
+        const quoteText = stripInlineFormatting(trimmed.replace(/^>\s*/, ""))
+        if (!quoteText) continue
+        const wrappedQ = wrapText(quoteText, 92)
+        for (const ql of wrappedQ) {
+          ensureSpace(12)
+          currentStream += drawRect(MARGIN_L + 2, y - 10, 2.5, 11, "0.06 0.38 0.30")
+          currentStream += drawText(MARGIN_L + 10, y - 8, ql, 8.2, "/F1", "0.22 0.27 0.32")
+          y -= 11.5
+        }
+        continue
+      }
+
+      // Bullet or numbered list items
+      const listMatch = /^(\s*)(?:([-*+])|(\d+\.))\s+(.+)$/.exec(rawLine)
+      if (listMatch) {
+        const indentLevel = Math.min(3, Math.floor((listMatch[1]?.length ?? 0) / 2))
+        const bullet = listMatch[3] ? listMatch[3] : "*"
+        const content = stripInlineFormatting(listMatch[4])
+        const indentPt = MARGIN_L + 8 + indentLevel * 12
+        const maxChars = Math.max(55, 94 - indentLevel * 3)
+        const wrappedL = wrapText(content, maxChars)
+        wrappedL.forEach((ll, idx) => {
+          ensureSpace(12)
+          if (idx === 0) {
+            currentStream += drawText(indentPt, y - 8.5, bullet, 8.3, "/F2", "0.06 0.31 0.25")
+          }
+          currentStream += drawText(indentPt + 14, y - 8.5, ll, 8.4, "/F1", "0.12 0.15 0.18")
+          y -= 11.5
+        })
+        continue
+      }
+
+      // Standard paragraph line
+      const paraLines = wrapText(stripInlineFormatting(trimmed), 96)
+      for (const pl of paraLines) {
+        ensureSpace(12)
+        currentStream += drawText(MARGIN_L, y - 8.5, pl, 8.6, "/F1", "0.12 0.15 0.18")
+        y -= 11.5
+      }
+    }
+
+    flushTable()
+    flushCode()
+  }
+
+  for (const part of parts) {
+    startNewPage(`Part ${part.partNumber}: ${part.title}`)
+    bookmarks.push({
+      title: `Part ${part.partNumber}: ${part.title}`,
+      pageIndex: pageStreams.length,
+    })
+
+    // Part Title Banner
+    currentStream += drawRect(MARGIN_L, y - 48, CONTENT_W, 48, "0.06 0.31 0.25")
+    currentStream += drawText(
+      MARGIN_L + 12,
+      y - 18,
+      `PART ${part.partNumber}  |  ${part.title.toUpperCase()}`,
+      12,
+      "/F2",
+      "1 1 1",
+    )
+    currentStream += drawText(
+      MARGIN_L + 12,
+      y - 35,
+      `${part.subtitle} (${part.docs.length} documents)`,
+      8,
+      "/F1",
+      "0.84 0.95 0.90",
+    )
+    y -= 60
+
+    for (const doc of part.docs) {
+      const docDisplayTitle = doc.journey && !doc.title.startsWith(doc.journey.id)
+        ? `${doc.journey.id} - ${doc.title}`
+        : doc.title
+
+      currentHeader = `Part ${part.partNumber}: ${part.title}  |  ${docDisplayTitle}`
+      ensureSpace(95)
+
+      bookmarks.push({
+        title: `  ${docDisplayTitle}`,
+        pageIndex: pageStreams.length,
+      })
+
+      // Document Title Card
+      currentStream += drawRect(MARGIN_L, y - 38, CONTENT_W, 38, "0.94 0.97 0.96", "0.75 0.84 0.80")
+      currentStream += drawText(MARGIN_L + 10, y - 16, docDisplayTitle.slice(0, 82), 11.5, "/F2", "0.06 0.25 0.20")
+      const metaLine = `Source: ${doc.sourcePath}   |   Portal URL: ${doc.url}   |   Status: ${doc.status.toUpperCase()}${doc.verified ? `   |   Verified: ${doc.verified}` : ""}`
+      currentStream += drawText(MARGIN_L + 10, y - 30, metaLine.slice(0, 110), 7.2, "/F3", "0.30 0.36 0.40")
+      y -= 46
+
+      // If this document is a Journey, render its structured Journey Metadata block
+      if (doc.journey) {
+        const j = doc.journey
+        const metaRows = [
+          `Actor: ${j.actor}${j.secondaryActors.length ? ` (Secondary: ${j.secondaryActors.join(", ")})` : ""}   |   Area: ${j.area}   |   Entry: ${j.entryPoint || "-"}`,
+          `Objective: ${j.objective || doc.description}`,
+          j.startCondition ? `Start Condition: ${j.startCondition}   |   End Condition: ${j.endCondition || "-"}` : "",
+        ].filter(Boolean)
+
+        for (const mr of metaRows) {
+          for (const wrappedMr of wrapText(mr, 96)) {
+            ensureSpace(12)
+            currentStream += drawText(MARGIN_L + 6, y - 8.5, wrappedMr, 7.8, "/F2", "0.18 0.26 0.24")
+            y -= 11
+          }
+        }
+        y -= 4
+      }
+
+      renderMarkdownBody(doc.body)
+      y -= 14
+    }
+  }
+
+  // =========================================================================
+  // 3. APPENDIX A: FULL OPENAPI 3.1 ENDPOINT CATALOGUE
+  // =========================================================================
+  startNewPage("Appendix A: Complete OpenAPI 3.1 Endpoint Catalogue")
+  bookmarks.push({
+    title: `Appendix A: OpenAPI 3.1 Contract (${api.endpoints.length} Endpoints)`,
+    pageIndex: pageStreams.length,
+  })
+
+  currentStream += drawRect(MARGIN_L, y - 44, CONTENT_W, 44, "0.06 0.31 0.25")
+  currentStream += drawText(
+    MARGIN_L + 12,
+    y - 18,
+    `APPENDIX A  |  OPENAPI 3.1 MACHINE-READABLE CONTRACT (${api.endpoints.length} ENDPOINTS)`,
+    11.5,
+    "/F2",
+    "1 1 1",
+  )
+  currentStream += drawText(
+    MARGIN_L + 12,
+    y - 33,
+    `Source: openapi/sphere-api.yaml (v${api.version}) — All ${api.pathCount} paths and ${api.endpoints.length} HTTP operations`,
+    8,
+    "/F1",
+    "0.84 0.95 0.90",
+  )
+  y -= 56
+
+  api.endpoints.forEach((ep: ApiEndpoint, idx: number) => {
+    ensureSpace(44)
+    currentStream += drawRect(MARGIN_L, y - 16, CONTENT_W, 16, "0.93 0.96 0.95", "0.80 0.85 0.84")
+    currentStream += drawText(
+      MARGIN_L + 6,
+      y - 11,
+      `${idx + 1}. [${ep.method}] ${ep.path}   (${ep.auth}${ep.rateLimit ? ` | Rate limit: ${ep.rateLimit}` : ""})`,
+      8.2,
+      "/F2",
+      "0.06 0.26 0.20",
+    )
+    y -= 18
+
+    if (ep.summary || ep.description) {
+      const desc = [ep.summary, ep.description && ep.description !== ep.summary ? ep.description : ""]
+        .filter(Boolean)
+        .join(" — ")
+      for (const dl of wrapText(desc, 95)) {
+        ensureSpace(11)
+        currentStream += drawText(MARGIN_L + 8, y - 8, dl, 8, "/F1", "0.15 0.18 0.22")
+        y -= 10.5
+      }
+    }
+
+    if (ep.parameters.length > 0) {
+      const paramStr = `Parameters: ${ep.parameters.map((p) => `${p.name} (${p.in}${p.required ? ", req" : ""}: ${p.schema})`).join("; ")}`
+      for (const pl of wrapText(paramStr, 95)) {
+        ensureSpace(11)
+        currentStream += drawText(MARGIN_L + 8, y - 8, pl, 7.4, "/F3", "0.28 0.32 0.38")
+        y -= 10
+      }
+    }
+
+    if (ep.responses.length > 0) {
+      const respStr = `Responses: ${ep.responses.map((r) => `HTTP ${r.status}: ${r.description}`).join(" | ")}`
+      for (const rl of wrapText(respStr, 95).slice(0, 3)) {
+        ensureSpace(11)
+        currentStream += drawText(MARGIN_L + 8, y - 8, rl, 7.4, "/F1", "0.30 0.35 0.40")
+        y -= 10
+      }
+    }
+    y -= 5
+  })
+
+  // =========================================================================
+  // 4. APPENDIX B: FULL PRISMA DATABASE SCHEMA EXPLORER
+  // =========================================================================
+  startNewPage("Appendix B: Complete Prisma Database Schema Explorer")
+  bookmarks.push({
+    title: `Appendix B: Prisma Schema (${schema.models.length} Models, ${schema.enums.length} Enums)`,
+    pageIndex: pageStreams.length,
+  })
+
+  currentStream += drawRect(MARGIN_L, y - 44, CONTENT_W, 44, "0.06 0.31 0.25")
+  currentStream += drawText(
+    MARGIN_L + 12,
+    y - 18,
+    `APPENDIX B  |  PRISMA DATABASE SCHEMA (${schema.models.length} MODELS & ${schema.enums.length} ENUMS)`,
+    11.5,
+    "/F2",
+    "1 1 1",
+  )
+  currentStream += drawText(
+    MARGIN_L + 12,
+    y - 33,
+    "Source: prisma/schema.prisma — Complete field, type, relation, and index dictionary",
+    8,
+    "/F1",
+    "0.84 0.95 0.90",
+  )
+  y -= 56
+
+  schema.models.forEach((model: PrismaModel, idx: number) => {
+    ensureSpace(48)
+    currentStream += drawRect(MARGIN_L, y - 16, CONTENT_W, 16, "0.93 0.96 0.95", "0.80 0.85 0.84")
+    currentStream += drawText(
+      MARGIN_L + 6,
+      y - 11,
+      `${idx + 1}. Model: ${model.name}   (Domain: ${model.domain} | Fields: ${model.fields.length})`,
+      8.5,
+      "/F2",
+      "0.06 0.26 0.20",
+    )
+    y -= 18
+
+    if (model.comment) {
+      for (const cl of wrapText(model.comment, 95)) {
+        ensureSpace(11)
+        currentStream += drawText(MARGIN_L + 8, y - 8, cl, 7.8, "/F1", "0.22 0.26 0.30")
+        y -= 10
+      }
+    }
+
+    for (const field of model.fields) {
+      ensureSpace(10.5)
+      const typeLabel = `${field.type}${field.isList ? "[]" : ""}${field.required ? "" : "?"}`
+      const flags = [
+        field.isId ? "@id" : "",
+        field.isUnique ? "@unique" : "",
+        field.default ? `default=${field.default}` : "",
+        field.relatedModel ? `-> ${field.relatedModel}` : "",
+      ]
+        .filter(Boolean)
+        .join(" ")
+      currentStream += drawText(MARGIN_L + 10, y - 7.5, field.name.slice(0, 28), 7.4, "/F3", "0.10 0.14 0.18")
+      currentStream += drawText(MARGIN_L + 150, y - 7.5, typeLabel.slice(0, 24), 7.4, "/F2", "0.06 0.30 0.24")
+      currentStream += drawText(MARGIN_L + 275, y - 7.5, flags.slice(0, 50), 7.2, "/F3", "0.35 0.40 0.45")
+      y -= 10
+    }
+    y -= 6
+  })
+
+  if (schema.enums.length > 0) {
+    ensureSpace(36)
+    currentStream += drawText(MARGIN_L, y - 10, "PRISMA ENUMS", 10, "/F2", "0.06 0.26 0.20")
+    y -= 16
+    schema.enums.forEach((en: PrismaEnum) => {
+      const line = `${en.name}: ${en.values.join(" | ")}`
+      for (const wl of wrapText(line, 94)) {
+        ensureSpace(11)
+        currentStream += drawText(MARGIN_L + 8, y - 8, wl, 7.6, "/F3", "0.15 0.20 0.25")
+        y -= 10.5
+      }
+    })
+  }
+
+  flushPage()
+
+  // =========================================================================
+  // 5. ASSEMBLE PDF 1.4 BINARY WITH FOOTER PAGE NUMBERS & /Outlines BOOKMARKS
+  // =========================================================================
+  const totalPages = pageStreams.length
+  const objects: string[] = []
+
+  // Object IDs:
+  // 1: Catalog
+  // 2: Pages
+  // 3: Font /F1 (Helvetica)
+  // 4: Font /F2 (Helvetica-Bold)
+  // 5: Font /F3 (Courier)
+  // 6..5+2*totalPages: Page Content Stream (6 + 2*i) and Page Dict (7 + 2*i)
+  const firstPageContentId = 6
+  const pageDictId = (pageIdx: number) => firstPageContentId + pageIdx * 2 + 1
+  const outlinesRootId = firstPageContentId + totalPages * 2
+
+  objects.push(`<< /Type /Catalog /Pages 2 0 R /Outlines ${outlinesRootId} 0 R /PageMode /UseOutlines >>`)
+  const kidsRefs = pageStreams.map((_, i) => `${pageDictId(i)} 0 R`).join(" ")
+  objects.push(`<< /Type /Pages /Kids [${kidsRefs}] /Count ${totalPages} >>`)
+  objects.push("<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>")
+  objects.push("<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>")
+  objects.push("<< /Type /Font /Subtype /Type1 /BaseFont /Courier /Encoding /WinAnsiEncoding >>")
+
+  pageStreams.forEach((bodyStream, pageIndex) => {
+    let footer = drawLine(MARGIN_L, 38, MARGIN_L + CONTENT_W, 38, "0.82 0.85 0.88", 0.4)
+    footer += drawText(
+      MARGIN_L,
+      26,
+      "Sphere Pharmacy Complete Documentation Handbook  |  Staff & Admin Internal Reference",
+      7.2,
+      "/F1",
+      "0.42 0.46 0.52",
+    )
+    footer += drawText(
+      PAGE_W - MARGIN_R - 68,
+      26,
+      `Page ${pageIndex + 1} of ${totalPages}`,
+      7.4,
+      "/F2",
+      "0.30 0.35 0.40",
+    )
+
+    const fullStream = bodyStream + footer
+    const len = Buffer.byteLength(fullStream, "utf8")
+    const contentId = firstPageContentId + pageIndex * 2
+    objects.push(`<< /Length ${len} >>\nstream\n${fullStream}endstream`)
+    objects.push(
+      `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${PAGE_W.toFixed(2)} ${PAGE_H.toFixed(2)}] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents ${contentId} 0 R >>`,
+    )
+  })
+
+  // Build PDF /Outlines bookmark objects
+  if (bookmarks.length > 0) {
+    const firstItemId = outlinesRootId + 1
+    const lastItemId = outlinesRootId + bookmarks.length
+    objects.push(
+      `<< /Type /Outlines /First ${firstItemId} 0 R /Last ${lastItemId} 0 R /Count ${bookmarks.length} >>`,
+    )
+    bookmarks.forEach((bm, idx) => {
+      const itemId = firstItemId + idx
+      const prevRef = idx > 0 ? `/Prev ${itemId - 1} 0 R ` : ""
+      const nextRef = idx < bookmarks.length - 1 ? `/Next ${itemId + 1} 0 R ` : ""
+      const targetPageObj = pageDictId(Math.min(totalPages - 1, Math.max(0, bm.pageIndex)))
+      objects.push(
+        `<< /Title (${pdfEscape(bm.title.slice(0, 90))}) /Parent ${outlinesRootId} 0 R ${prevRef}${nextRef}/Dest [${targetPageObj} 0 R /XYZ 0 ${PAGE_H.toFixed(0)} null] >>`,
+      )
+    })
+  } else {
+    objects.push("<< /Type /Outlines /Count 0 >>")
+  }
+
+  // Serialize PDF binary with exact byte offsets
+  const chunks: Buffer[] = [Buffer.from("%PDF-1.4\n", "utf8")]
+  const offsets: number[] = [0]
+  let byteCursor = chunks[0].length
+
+  objects.forEach((objBody, idx) => {
+    offsets.push(byteCursor)
+    const buf = Buffer.from(`${idx + 1} 0 obj\n${objBody}\nendobj\n`, "utf8")
+    chunks.push(buf)
+    byteCursor += buf.length
+  })
+
+  const xrefOffset = byteCursor
+  let xref = `xref\n0 ${objects.length + 1}\n0000000000 65535 f \n`
+  for (let i = 1; i <= objects.length; i++) {
+    xref += `${String(offsets[i]).padStart(10, "0")} 00000 n \n`
+  }
+  xref += `trailer\n<< /Size ${objects.length + 1} /Root 1 0 R >>\nstartxref\n${xrefOffset}\n%%EOF\n`
+  chunks.push(Buffer.from(xref, "utf8"))
+
+  return {
+    buffer: Buffer.concat(chunks),
+    pageCount: totalPages,
+    docCount: totalDocs,
+    endpointCount: api.endpoints.length,
+    modelCount: schema.models.length,
+  }
+}
+`````
+
+[↑ Back to Master Index](#4-master-alphabetical-file-index) | [↑ Back to Categorized Index](#3-categorized-source-code-index)
+
+---
+
+### File #456: `src/lib/pos-reconciliation-core.ts`
 
 <a id="file-src-lib-pos-reconciliation-core-ts"></a>
 
@@ -102553,7 +103618,7 @@ export function computeReconciledStock(input: ReconciledStockInput): ReconciledS
 
 ---
 
-### File #455: `src/lib/pos-reconciliation.ts`
+### File #457: `src/lib/pos-reconciliation.ts`
 
 <a id="file-src-lib-pos-reconciliation-ts"></a>
 
@@ -103014,7 +104079,7 @@ export async function recordPosIncident(input: RecordPosIncidentInput): Promise<
 
 ---
 
-### File #456: `src/lib/promotions.ts`
+### File #458: `src/lib/promotions.ts`
 
 <a id="file-src-lib-promotions-ts"></a>
 
@@ -103129,7 +104194,7 @@ export function promotionDiscount(value:unknown):number|null{
 
 ---
 
-### File #457: `src/lib/r2.ts`
+### File #459: `src/lib/r2.ts`
 
 <a id="file-src-lib-r2-ts"></a>
 
@@ -103246,7 +104311,7 @@ export async function objectExistsInR2(key: string): Promise<boolean> { return B
 
 ---
 
-### File #458: `src/lib/security/bandago-auth.ts`
+### File #460: `src/lib/security/bandago-auth.ts`
 
 <a id="file-src-lib-security-bandago-auth-ts"></a>
 
@@ -103308,7 +104373,7 @@ export async function authorizeBandagoRequest(
 
 ---
 
-### File #459: `src/lib/security/bandago-bearer.ts`
+### File #461: `src/lib/security/bandago-bearer.ts`
 
 <a id="file-src-lib-security-bandago-bearer-ts"></a>
 
@@ -103375,7 +104440,7 @@ export function isUsingInsecureDefaultBandagoKey(
 
 ---
 
-### File #460: `src/lib/security/file.ts`
+### File #462: `src/lib/security/file.ts`
 
 <a id="file-src-lib-security-file-ts"></a>
 
@@ -103420,7 +104485,7 @@ export function validateFile(buffer: Uint8Array, declaredMime: string, fileName:
 
 ---
 
-### File #461: `src/lib/security/order-workflow.ts`
+### File #463: `src/lib/security/order-workflow.ts`
 
 <a id="file-src-lib-security-order-workflow-ts"></a>
 
@@ -103457,7 +104522,7 @@ export function canTransitionOrder(from: OrderStatus, to: OrderStatus, role: Rol
 
 ---
 
-### File #462: `src/lib/security/payment-attempt.ts`
+### File #464: `src/lib/security/payment-attempt.ts`
 
 <a id="file-src-lib-security-payment-attempt-ts"></a>
 
@@ -103506,7 +104571,7 @@ export async function reservePaymentAttempt(input: {
 
 ---
 
-### File #463: `src/lib/security/payment.ts`
+### File #465: `src/lib/security/payment.ts`
 
 <a id="file-src-lib-security-payment-ts"></a>
 
@@ -103547,7 +104612,7 @@ export function paymentMatchesExpected(input: { expectedAmount: unknown; actualA
 
 ---
 
-### File #464: `src/lib/security/request.ts`
+### File #466: `src/lib/security/request.ts`
 
 <a id="file-src-lib-security-request-ts"></a>
 
@@ -103618,7 +104683,7 @@ export function escapeHtml(value: string): string {
 
 ---
 
-### File #465: `src/lib/security/service.ts`
+### File #467: `src/lib/security/service.ts`
 
 <a id="file-src-lib-security-service-ts"></a>
 
@@ -103688,7 +104753,7 @@ export function validateServiceFields(body: Record<string, unknown>, partial = f
 
 ---
 
-### File #466: `src/lib/session.ts`
+### File #468: `src/lib/session.ts`
 
 <a id="file-src-lib-session-ts"></a>
 
@@ -103864,7 +104929,7 @@ export async function requireAuth(): Promise<{ session: ResolvedSession; error: 
 
 ---
 
-### File #467: `src/lib/settings.ts`
+### File #469: `src/lib/settings.ts`
 
 <a id="file-src-lib-settings-ts"></a>
 
@@ -103929,7 +104994,7 @@ export async function saveSettingsSection(key:string,value:Record<string,unknown
 
 ---
 
-### File #468: `src/lib/sms.ts`
+### File #470: `src/lib/sms.ts`
 
 <a id="file-src-lib-sms-ts"></a>
 
@@ -103967,7 +105032,7 @@ export async function sendSms(to: string, message: string): Promise<SmsResult> {
 
 ---
 
-### File #469: `src/lib/types.ts`
+### File #471: `src/lib/types.ts`
 
 <a id="file-src-lib-types-ts"></a>
 
@@ -104440,7 +105505,7 @@ export interface ServiceAvailabilityResponse {
 
 ---
 
-### File #470: `src/lib/utils.ts`
+### File #472: `src/lib/utils.ts`
 
 <a id="file-src-lib-utils-ts"></a>
 
@@ -104463,7 +105528,7 @@ export function cn(...inputs: ClassValue[]) {
 
 ---
 
-### File #471: `src/store/use-app-store.ts`
+### File #473: `src/store/use-app-store.ts`
 
 <a id="file-src-store-use-app-store-ts"></a>
 
@@ -104702,7 +105767,7 @@ export const useAppStore = create<AppState>((set, get) => ({
 
 ---
 
-### File #472: `src/store/use-auth-store.ts`
+### File #474: `src/store/use-auth-store.ts`
 
 <a id="file-src-store-use-auth-store-ts"></a>
 
@@ -104759,7 +105824,7 @@ export const useAuthStore = create<AuthState>((set) => ({
 
 ---
 
-### File #473: `src/store/use-cart-store.ts`
+### File #475: `src/store/use-cart-store.ts`
 
 <a id="file-src-store-use-cart-store-ts"></a>
 
@@ -104869,7 +105934,7 @@ export const useCartStore = create<CartState>()(
 
 ---
 
-### File #474: `src/store/use-wish-store.ts`
+### File #476: `src/store/use-wish-store.ts`
 
 <a id="file-src-store-use-wish-store-ts"></a>
 
@@ -104957,7 +106022,7 @@ export const useRecentStore = create<RecentState>()(
 
 ---
 
-### File #475: `tailwind.config.ts`
+### File #477: `tailwind.config.ts`
 
 <a id="file-tailwind-config-ts"></a>
 
@@ -105038,7 +106103,7 @@ export default config;
 
 ---
 
-### File #476: `tests/admin-live-sync.test.mjs`
+### File #478: `tests/admin-live-sync.test.mjs`
 
 <a id="file-tests-admin-live-sync-test-mjs"></a>
 
@@ -105129,15 +106194,15 @@ test("cursor polling reads indexed columns", () => {
 
 ---
 
-### File #477: `tests/assistant.test.ts`
+### File #479: `tests/assistant.test.ts`
 
 <a id="file-tests-assistant-test-ts"></a>
 
 - **Relative Path:** `tests/assistant.test.ts`
 - **Category:** Automated Test Suites & Verification
 - **Language:** TypeScript
-- **Lines:** 133
-- **Size:** 8.0 KB (8,234 bytes)
+- **Lines:** 146
+- **Size:** 8.7 KB (8,955 bytes)
 
 `````typescript
 /// <reference types="bun-types" />
@@ -105272,6 +106337,19 @@ describe("assistant route with live-data adapters",()=>{
     expect(deliveryResult.reply).toContain("KES 180")
     expect(deliveryResult.reply).toContain("KES 2,500")
   })
+  test("full documentation PDF export compiles every corpus doc, journey, OpenAPI endpoint, and Prisma model",async()=>{
+    mock.module("server-only",()=>({}))
+    const { buildFullDocumentationPdf }=await import("../src/lib/pdf/full-docs-pdf")
+    const result=buildFullDocumentationPdf()
+    expect(result.docCount).toBeGreaterThanOrEqual(129)
+    expect(result.endpointCount).toBeGreaterThanOrEqual(126)
+    expect(result.modelCount).toBe(41)
+    expect(result.pageCount).toBeGreaterThan(150)
+    const pdfStr=result.buffer.toString("utf8",0,120)
+    expect(pdfStr.startsWith("%PDF-1.4")).toBe(true)
+    const tailStr=result.buffer.toString("utf8",result.buffer.length-64)
+    expect(tailStr).toContain("%%EOF")
+  })
 })
 `````
 
@@ -105279,7 +106357,7 @@ describe("assistant route with live-data adapters",()=>{
 
 ---
 
-### File #478: `tests/bandago-bidirectional-sync.test.mjs`
+### File #480: `tests/bandago-bidirectional-sync.test.mjs`
 
 <a id="file-tests-bandago-bidirectional-sync-test-mjs"></a>
 
@@ -105533,7 +106611,7 @@ test('Security & API contracts: H1 remediated, no hardcoded fallback secrets, gu
 
 ---
 
-### File #479: `tests/bandago-pos-crm-integration.test.mjs`
+### File #481: `tests/bandago-pos-crm-integration.test.mjs`
 
 <a id="file-tests-bandago-pos-crm-integration-test-mjs"></a>
 
@@ -106084,7 +107162,7 @@ test('Deep Functional Verification: CSV parser with custom slug and missing imag
 
 ---
 
-### File #480: `tests/checkout-points-contrast.test.mjs`
+### File #482: `tests/checkout-points-contrast.test.mjs`
 
 <a id="file-tests-checkout-points-contrast-test-mjs"></a>
 
@@ -106120,7 +107198,7 @@ test("checkout points redeem panel keeps dark text on a light surface in both th
 
 ---
 
-### File #481: `tests/compliance-workspace.test.mjs`
+### File #483: `tests/compliance-workspace.test.mjs`
 
 <a id="file-tests-compliance-workspace-test-mjs"></a>
 
@@ -106169,7 +107247,7 @@ test("blank compliance notes do not masquerade as saved proof of a licence", () 
 
 ---
 
-### File #482: `tests/dispatch-readiness.test.mjs`
+### File #484: `tests/dispatch-readiness.test.mjs`
 
 <a id="file-tests-dispatch-readiness-test-mjs"></a>
 
@@ -106223,7 +107301,7 @@ test("dispatch controller exposes prepared order handoff without skipping readin
 
 ---
 
-### File #483: `tests/medicine-requests.test.mjs`
+### File #485: `tests/medicine-requests.test.mjs`
 
 <a id="file-tests-medicine-requests-test-mjs"></a>
 
@@ -106366,7 +107444,7 @@ test("medicine requests: guest submission, private photos, staff workflow and va
 
 ---
 
-### File #484: `tests/offer-workflow.test.mjs`
+### File #486: `tests/offer-workflow.test.mjs`
 
 <a id="file-tests-offer-workflow-test-mjs"></a>
 
@@ -106460,7 +107538,7 @@ test("confirmed offers persist with the cart and cannot outlive an invalid baske
 
 ---
 
-### File #485: `tests/order-dispatch-promotion-workflow.test.mjs`
+### File #487: `tests/order-dispatch-promotion-workflow.test.mjs`
 
 <a id="file-tests-order-dispatch-promotion-workflow-test-mjs"></a>
 
@@ -106534,7 +107612,7 @@ test("dispatch handoff is eligible-only and server-searchable, with in-place pha
 
 ---
 
-### File #486: `tests/order-operations-ux.test.mjs`
+### File #488: `tests/order-operations-ux.test.mjs`
 
 <a id="file-tests-order-operations-ux-test-mjs"></a>
 
@@ -106663,7 +107741,7 @@ test("Desktop sidebar collapse is accessible, persistent and does not replace th
 
 ---
 
-### File #487: `tests/promotion-validation-resilience.test.mjs`
+### File #489: `tests/promotion-validation-resilience.test.mjs`
 
 <a id="file-tests-promotion-validation-resilience-test-mjs"></a>
 
@@ -106744,7 +107822,7 @@ test("promotion server failures carry a reference and the network limit remains 
 
 ---
 
-### File #488: `tests/python-runtime-build.sh`
+### File #490: `tests/python-runtime-build.sh`
 
 <a id="file-tests-python-runtime-build-sh"></a>
 
@@ -106825,7 +107903,7 @@ echo "python runtime build tests passed"
 
 ---
 
-### File #489: `tests/python-runtime-container.sh`
+### File #491: `tests/python-runtime-container.sh`
 
 <a id="file-tests-python-runtime-container-sh"></a>
 
@@ -106873,7 +107951,7 @@ docker run --rm \
 
 ---
 
-### File #490: `tests/reports-layout.test.mjs`
+### File #492: `tests/reports-layout.test.mjs`
 
 <a id="file-tests-reports-layout-test-mjs"></a>
 
@@ -106909,15 +107987,15 @@ test("top products table truncates lengthy names and allows horizontal scrolling
 
 ---
 
-### File #491: `tests/security-static.test.mjs`
+### File #493: `tests/security-static.test.mjs`
 
 <a id="file-tests-security-static-test-mjs"></a>
 
 - **Relative Path:** `tests/security-static.test.mjs`
 - **Category:** Automated Test Suites & Verification
 - **Language:** JavaScript (ESM)
-- **Lines:** 178
-- **Size:** 8.1 KB (8,281 bytes)
+- **Lines:** 184
+- **Size:** 8.4 KB (8,582 bytes)
 
 `````javascript
 import test from "node:test"
@@ -107089,6 +108167,12 @@ test("documentation portal and docs APIs require staff authentication and deskto
   assert.match(docsAssistantRoute, /requireStaff/)
   assert.match(docsAssistantRoute, /synthesizeDocsAnswer/)
 
+  const docsPdfExportRoute = read("src/app/api/docs-export/pdf/route.ts")
+  assert.match(docsPdfExportRoute, /requireStaff/)
+  assert.match(docsPdfExportRoute, /buildFullDocumentationPdf/)
+  assert.match(docsPdfExportRoute, /application\/pdf/)
+  assert.match(docsPdfExportRoute, /private, no-store/)
+
   const docsShell = read("src/components/docs/docs-shell.tsx")
   assert.match(docsShell, /sphere-docs-sidebar-collapsed/)
   assert.match(docsShell, /is-sidebar-collapsed/)
@@ -107104,7 +108188,7 @@ test("documentation portal and docs APIs require staff authentication and deskto
 
 ---
 
-### File #492: `tsconfig.json`
+### File #494: `tsconfig.json`
 
 <a id="file-tsconfig-json"></a>
 

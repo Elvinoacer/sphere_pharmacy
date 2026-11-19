@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import {
-  ArrowRight, BookOpen, Boxes, Braces, ClipboardCheck, Database, GitBranch, Layers,
+  ArrowRight, BookOpen, Boxes, Braces, ClipboardCheck, Database, Download, GitBranch, Layers,
   MessageCircleQuestion, Plug, Route, Server, ShieldCheck, Store, Wrench, type LucideIcon,
 } from "lucide-react"
 import { getCorpus, getCorpusStats } from "@/lib/docs/content"
@@ -109,6 +109,14 @@ export default function DocsHomePage() {
             <MessageCircleQuestion className="h-4 w-4 text-primary" aria-hidden />
             Ask Sphere Docs
           </Link>
+          <a
+            href="/api/docs-export/pdf"
+            download
+            className="inline-flex h-11 items-center gap-2 rounded-full border border-border bg-card px-6 text-sm font-semibold text-foreground transition-colors hover:border-ring focus-visible:outline-2 focus-visible:outline-ring"
+          >
+            <Download className="h-4 w-4 text-primary" aria-hidden />
+            Export full PDF (everything)
+          </a>
           <span className="text-xs text-muted-foreground">
             Press <kbd className="rounded border border-border bg-muted px-1.5 py-0.5 font-mono text-[0.625rem] font-semibold">⌘K</kbd> to search everything
           </span>

@@ -2065,6 +2065,17 @@ paths:
         '413': { $ref: '#/components/responses/PayloadTooLarge' }
         '429': { $ref: '#/components/responses/RateLimited' }
 
+  /api/docs-export/pdf:
+    get:
+      tags: [Assistant]
+      summary: Export complete documentation corpus (all docs, journeys, OpenAPI endpoints, and Prisma models) as a bookmarked A4 PDF
+      security: [{ sessionCookie: [] }]
+      responses:
+        '200':
+          description: Downloadable A4 PDF handbook (application/pdf)
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+
   /api/cron/notifications:
     get:
       tags: [Cron]

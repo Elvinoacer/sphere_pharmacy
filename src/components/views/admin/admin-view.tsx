@@ -474,6 +474,9 @@ export function AdminView() {
                 <CommandItem value="Ask Sphere Docs AI Documentation Assistant" onSelect={() => { setSearchOpen(false); router.push("/docs/assistant") }}>
                   <MessageSquareText className="h-4 w-4" /><span className="flex-1">Ask Sphere Docs (AI)</span><ArrowUpRight className="h-3.5 w-3.5" />
                 </CommandItem>
+                <CommandItem value="Export Full Documentation PDF Handbook Everything" onSelect={() => { setSearchOpen(false); window.open("/api/docs-export/pdf", "_blank", "noopener,noreferrer") }}>
+                  <BookOpen className="h-4 w-4" /><span className="flex-1">Export full documentation (PDF)</span><ArrowUpRight className="h-3.5 w-3.5" />
+                </CommandItem>
               </CommandGroup>
             </CommandList>
             <div className="admin-command-hint"><span>↑ ↓ to browse</span><span>↵ to open</span><span>esc to close</span></div>

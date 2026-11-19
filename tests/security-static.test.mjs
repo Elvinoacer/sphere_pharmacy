@@ -167,6 +167,12 @@ test("documentation portal and docs APIs require staff authentication and deskto
   assert.match(docsAssistantRoute, /requireStaff/)
   assert.match(docsAssistantRoute, /synthesizeDocsAnswer/)
 
+  const docsPdfExportRoute = read("src/app/api/docs-export/pdf/route.ts")
+  assert.match(docsPdfExportRoute, /requireStaff/)
+  assert.match(docsPdfExportRoute, /buildFullDocumentationPdf/)
+  assert.match(docsPdfExportRoute, /application\/pdf/)
+  assert.match(docsPdfExportRoute, /private, no-store/)
+
   const docsShell = read("src/components/docs/docs-shell.tsx")
   assert.match(docsShell, /sphere-docs-sidebar-collapsed/)
   assert.match(docsShell, /is-sidebar-collapsed/)

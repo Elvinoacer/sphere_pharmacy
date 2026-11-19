@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { useTheme } from "next-themes"
 import { useEffect, useState } from "react"
-import { LayoutDashboard, Menu, MessageCircleQuestion, Moon, PanelLeftClose, PanelLeftOpen, Search, Sun } from "lucide-react"
+import { Download, LayoutDashboard, Menu, MessageCircleQuestion, Moon, PanelLeftClose, PanelLeftOpen, Search, Sun } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 export function DocsHeader({
@@ -84,6 +84,18 @@ export function DocsHeader({
             aria-label={mounted && resolvedTheme === "dark" ? "Switch to light theme" : "Switch to dark theme"}
           >
             {mounted && resolvedTheme === "dark" ? <Sun className="h-5 w-5" aria-hidden /> : <Moon className="h-5 w-5" aria-hidden />}
+          </Button>
+
+          <Button asChild variant="outline" size="sm" className="hidden gap-1.5 sm:inline-flex">
+            <a href="/api/docs-export/pdf" download>
+              <Download className="h-4 w-4" aria-hidden />
+              <span>Export PDF</span>
+            </a>
+          </Button>
+          <Button asChild variant="ghost" size="icon" className="sm:hidden" aria-label="Export full documentation PDF" title="Export full documentation PDF">
+            <a href="/api/docs-export/pdf" download>
+              <Download className="h-4 w-4" aria-hidden />
+            </a>
           </Button>
 
           <Button asChild variant="outline" size="sm" className="hidden gap-1.5 md:inline-flex">
