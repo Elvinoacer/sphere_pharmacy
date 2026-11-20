@@ -225,10 +225,13 @@ model Order {
   pointsRedeemed       Int                  @default(0)
   inventoryReservedAt  DateTime?
   inventoryReleasedAt  DateTime?
+  refillOfOrderId      String?              @map("refill_of_order_id")
   version              Int                  @default(0)
   createdAt            DateTime             @default(now())
   updatedAt            DateTime             @updatedAt
   user                 User?                @relation(fields: [userId], references: [id])
+  refillOfOrder        Order?               @relation("OrderRefills", fields: [refillOfOrderId], references: [id], onDelete: SetNull)
+  refillOrders         Order[]              @relation("OrderRefills")
   items                OrderItem[]
   statusHistory        OrderStatusHistory[]
   payments             Payment[]
@@ -242,6 +245,7 @@ model Order {
   @@index([guestPhone, createdAt])
   @@index([updatedAt, id])
   @@index([createdAt, id])
+  @@index([refillOfOrderId])
 }
 
 model OrderItem {
@@ -287,32 +291,38 @@ model MedicineRequest {
 }
 
 model Prescription {
-  id             String                  @id @default(cuid())
-  userId         String?
-  orderId        String?
-  fileName       String
-  fileType       String
-  fileData       String?
-  notes          String?
-  status         String                  @default("PENDING")
-  reviewNotes    String?
-  reviewedById   String?
-  reviewedAt     DateTime?
-  refillsAllowed Int                     @default(0)
-  refillsUsed    Int                     @default(0)
-  validUntil     DateTime?
-  createdAt      DateTime                @default(now())
-  fileUrl        String?
-  storageKey     String?
-  order          Order?                  @relation(fields: [orderId], references: [id])
-  reviewedBy     StaffUser?              @relation("RxReviewer", fields: [reviewedById], references: [id])
-  user           User?                   @relation(fields: [userId], references: [id])
-  accessLogs     PrescriptionAccessLog[]
-  deletedAt      DateTime?
+  id                   String                  @id @default(cuid())
+  userId               String?
+  orderId              String?
+  parentPrescriptionId String?                 @map("parent_prescription_id")
+  refillNumber         Int?                    @map("refill_number")
+  refillReleasedAt     DateTime?               @map("refill_released_at")
+  fileName             String
+  fileType             String
+  fileData             String?
+  notes                String?
+  status               String                  @default("PENDING")
+  reviewNotes          String?
+  reviewedById         String?
+  reviewedAt           DateTime?
+  refillsAllowed       Int                     @default(0)
+  refillsUsed          Int                     @default(0)
+  validUntil           DateTime?
+  createdAt            DateTime                @default(now())
+  fileUrl              String?
+  storageKey           String?
+  order                Order?                  @relation(fields: [orderId], references: [id])
+  parentPrescription   Prescription?           @relation("PrescriptionRefills", fields: [parentPrescriptionId], references: [id], onDelete: SetNull)
+  childRefills         Prescription[]          @relation("PrescriptionRefills")
+  reviewedBy           StaffUser?              @relation("RxReviewer", fields: [reviewedById], references: [id])
+  user                 User?                   @relation(fields: [userId], references: [id])
+  accessLogs           PrescriptionAccessLog[]
+  deletedAt            DateTime?
 
   @@index([userId, createdAt])
   @@index([orderId, status])
   @@index([status, createdAt])
+  @@index([parentPrescriptionId])
 }
 
 model PrescriptionAccessLog {

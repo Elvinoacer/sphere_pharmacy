@@ -197,7 +197,7 @@ ACTIVE = first 9; TERMINAL = last 5; DISPATCH = `PAID`/`PREPARING`/`READY_FOR_PI
 
 ### 4. Money is `Decimal`, serialized as `Number`
 
-All monetary columns are `Decimal(12,2)` (`User.posCreditBalance` is `Decimal(10,2)`); currency is hardcoded KES. `src/lib/dto.ts` converts for the API boundary: `moneyNumber()` coerces Decimal → `Number`, nullable money → `null`, `DateTime` → ISO string, and statuses are cast without runtime validation. `ORDER_INCLUDE` is the shared order include; `attachRatings()` adds `avgRating`/`reviewCount` from `PUBLISHED` reviews; `toReviewDTO` masks the author as "First L."; `toPrescriptionDTO` hardcodes `fileUrl: null` and `storageKey: null` so storage keys never leave the server.
+All monetary columns are `Decimal(12,2)` (`User.posCreditBalance` is `Decimal(10,2)`); currency is hardcoded KES. `src/lib/dto.ts` converts for the API boundary: `moneyNumber()` coerces Decimal → `Number`, nullable money → `null`, `DateTime` → ISO string, and statuses are cast without runtime validation. `PRESCRIPTION_INCLUDE` and `ORDER_INCLUDE` are the shared includes (filtering `prescriptions` to `deletedAt: null` and loading parent/child refill lineage); `attachRatings()` adds `avgRating`/`reviewCount` from `PUBLISHED` reviews; `toReviewDTO` masks the author as "First L."; `toPrescriptionDTO` hardcodes `fileUrl: null` and `storageKey: null` so storage keys never leave the server.
 
 ### 5. Orphan-preserving (non-cascade) relations
 
@@ -228,7 +228,7 @@ All models default to `cuid` ids except these five natural-key tables:
 
 - [data-dictionary.md](data-dictionary.md) — every field of all 41 models.
 - [entity-relationship-diagram.md](entity-relationship-diagram.md) — per-domain ER diagrams.
-- [migrations.md](migrations.md) — the 11 migrations and how to apply them.
+- [migrations.md](migrations.md) — the 12 migrations and how to apply them.
 - [data-lifecycle.md](data-lifecycle.md) — creation → terminal state → retention per data class.
 - [../api/api-reference.md](../api/api-reference.md) — endpoints that read/write these tables.
 - [../operations/database-operations.md](../operations/database-operations.md) — operational runbooks.

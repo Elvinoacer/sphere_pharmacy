@@ -51,14 +51,14 @@ Each follows the same 14-section template: purpose, users, screens, frontend, ba
 | [database/schema-overview.md](database/schema-overview.md) | Provider config, 41 models in 9 domains, design decisions (stock authority, loyalty fields, string statuses) |
 | [database/data-dictionary.md](database/data-dictionary.md) | Every model, every field, relations, indexes |
 | [database/entity-relationship-diagram.md](database/entity-relationship-diagram.md) | Mermaid ER diagrams per domain with relationship walkthroughs |
-| [database/migrations.md](database/migrations.md) | The 11 migrations, apply workflow, seed truth, production safety |
+| [database/migrations.md](database/migrations.md) | The 12 migrations, apply workflow, seed truth, production safety |
 | [database/data-lifecycle.md](database/data-lifecycle.md) | How each data class is born, transitions, and expires |
 
 ### API
 | Document | What it covers |
 | --- | --- |
 | [api/api-reference.md](api/api-reference.md) | All 95 route handlers: auth, rate limits, validation, errors, side effects, idempotency |
-| [../openapi/sphere-api.yaml](../openapi/sphere-api.yaml) | Machine-readable OpenAPI 3.1 contract (94 paths, 125 operations, 61 schemas) |
+| [../openapi/sphere-api.yaml](../openapi/sphere-api.yaml) | Machine-readable OpenAPI 3.1 contract (95 paths, 125 operations, 62 schemas) |
 
 ### Integrations
 | Document | What it covers |
@@ -98,7 +98,7 @@ Each follows the same 14-section template: purpose, users, screens, frontend, ba
 ### Testing & governance
 | Document | What it covers |
 | --- | --- |
-| [testing/testing-strategy.md](testing/testing-strategy.md) | The 13 Node test suites + 1 Bun assistant suite, runner distinction, gaps |
+| [testing/testing-strategy.md](testing/testing-strategy.md) | The 14 Node test suites + 1 Bun assistant suite, runner distinction, gaps |
 | [governance/architecture-decisions.md](governance/architecture-decisions.md) | 17 ADRs: why the code is the way it is |
 | [governance/documentation-policy.md](governance/documentation-policy.md) | How documentation must evolve with the code |
 | [governance/technical-debt.md](governance/technical-debt.md) | Prioritized register of known issues |

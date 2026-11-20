@@ -1,4 +1,9 @@
 import { db } from "@/lib/db"
+import {
+  extractLegacySourceOrderReference,
+  isOrderActiveForRefill,
+  isRefillPrescriptionRecord,
+} from "@/lib/prescriptions/refill-core"
 import type {
   AddressDTO,
   AuditLogDTO,
@@ -85,16 +90,58 @@ export function toPaymentDTO(p: DbPayment): PaymentDTO {
   }
 }
 
+type DbRefillChildSummary = {
+  id: string
+  orderId: string | null
+  order?: { id: string; reference: string; status: string } | null
+}
+
+type DbParentPrescriptionSummary = {
+  id: string
+  status: string
+  refillsAllowed: number
+  refillsUsed: number
+  validUntil: Date | null
+  reviewNotes: string | null
+  orderId: string | null
+  order?: { id: string; reference: string; status: string } | null
+  reviewedBy?: { name: string } | null
+  childRefills?: DbRefillChildSummary[]
+}
+
 type DbPrescription = {
   id: string; fileName: string; fileType: string; notes: string | null; status: string;
   reviewNotes: string | null; reviewedById: string | null; reviewedBy?: { name: string } | null;
+  reviewedAt?: Date | null;
   refillsAllowed: number; refillsUsed: number; validUntil: Date | null; createdAt: Date;
-  orderId: string | null; order?: { reference: string } | null;
+  orderId: string | null; order?: { id?: string; reference: string; status?: string } | null;
   user?: { name: string | null; phone: string | null } | null; userId: string | null;
   fileUrl?: string | null; storageKey?: string | null;
+  parentPrescriptionId?: string | null;
+  refillNumber?: number | null;
+  refillReleasedAt?: Date | null;
+  parentPrescription?: DbParentPrescriptionSummary | null;
+  childRefills?: DbRefillChildSummary[];
+}
+
+function findActiveRefillOrder(children?: DbRefillChildSummary[]): { id: string; reference: string; status: OrderStatus } | null {
+  if (!children?.length) return null
+  for (const child of children) {
+    if (child.order && isOrderActiveForRefill(child.order.status)) {
+      return {
+        id: child.order.id,
+        reference: child.order.reference,
+        status: child.order.status as OrderStatus,
+      }
+    }
+  }
+  return null
 }
 
 export function toPrescriptionDTO(rx: DbPrescription, includeCustomer = false): PrescriptionDTO {
+  const isRefill = isRefillPrescriptionRecord(rx)
+  const parent = rx.parentPrescription ?? null
+  const activeRefill = findActiveRefillOrder(parent ? parent.childRefills : rx.childRefills)
   return {
     id: rx.id,
     fileName: rx.fileName,
@@ -103,15 +150,32 @@ export function toPrescriptionDTO(rx: DbPrescription, includeCustomer = false): 
     status: rx.status as RxStatus,
     reviewNotes: rx.reviewNotes,
     reviewedByName: rx.reviewedBy?.name ?? null,
-    reviewedAt: null, // filled by caller when raw row has it
+    reviewedAt: rx.reviewedAt ? rx.reviewedAt.toISOString() : null,
     refillsAllowed: rx.refillsAllowed,
     refillsUsed: rx.refillsUsed,
     validUntil: rx.validUntil ? rx.validUntil.toISOString() : null,
     createdAt: rx.createdAt.toISOString(),
     orderId: rx.orderId,
     orderReference: rx.order?.reference ?? null,
+    orderStatus: (rx.order?.status as OrderStatus | undefined) ?? null,
     fileUrl: null,
     storageKey: null,
+    isRefill,
+    parentPrescriptionId: rx.parentPrescriptionId ?? null,
+    refillNumber: rx.refillNumber ?? null,
+    refillReleasedAt: rx.refillReleasedAt ? rx.refillReleasedAt.toISOString() : null,
+    sourceOrderId: parent?.order?.id ?? parent?.orderId ?? null,
+    sourceOrderReference: parent?.order?.reference ?? null,
+    sourceOrderStatus: (parent?.order?.status as OrderStatus | undefined) ?? null,
+    parentRefillsAllowed: parent ? parent.refillsAllowed : null,
+    parentRefillsUsed: parent ? parent.refillsUsed : null,
+    parentValidUntil: parent?.validUntil ? parent.validUntil.toISOString() : null,
+    parentStatus: parent ? (parent.status as RxStatus) : null,
+    parentReviewedByName: parent?.reviewedBy?.name ?? null,
+    parentReviewNotes: parent?.reviewNotes ?? null,
+    activeRefillOrderId: activeRefill?.id ?? null,
+    activeRefillOrderReference: activeRefill?.reference ?? null,
+    activeRefillOrderStatus: activeRefill?.status ?? null,
     ...(includeCustomer
       ? { customerName: rx.user?.name ?? null, customerPhone: rx.user?.phone ?? null }
       : {}),
@@ -128,12 +192,25 @@ export function toOrderDTO(order: {
   pointsEarned?: number | null; pointsRedeemed?: number | null;
   discountAmount?: DbMoney | null; promotionCode?: string | null;
   guestName?: string | null; guestPhone?: string | null;
+  refillOfOrderId?: string | null;
+  refillOfOrder?: { id: string; reference: string } | null;
   user?: { name: string | null; phone: string | null } | null;
   items: DbOrderItem[];
   statusHistory: { id: string; status: string; note: string | null; actor: string; createdAt: Date }[];
   payments: DbPayment[];
   prescriptions: DbPrescription[];
 }): OrderDTO {
+  const refillOfOrderId = order.refillOfOrderId ?? order.refillOfOrder?.id ?? null
+  const refillOfOrderReference =
+    order.refillOfOrder?.reference ??
+    order.prescriptions.find((rx) => rx.parentPrescription?.order?.reference)?.parentPrescription?.order?.reference ??
+    extractLegacySourceOrderReference(order.notes)
+  const isRefill = Boolean(
+    refillOfOrderId ||
+      refillOfOrderReference ||
+      order.prescriptions.some((rx) => isRefillPrescriptionRecord(rx))
+  )
+
   return {
     id: order.id,
     reference: order.reference,
@@ -159,6 +236,9 @@ export function toOrderDTO(order: {
     riderName: order.riderName,
     customerName: order.user?.name ?? order.guestName ?? null,
     customerPhone: order.user?.phone ?? order.guestPhone ?? null,
+    isRefill,
+    refillOfOrderId,
+    refillOfOrderReference,
     createdAt: order.createdAt.toISOString(),
     updatedAt: order.updatedAt.toISOString(),
     items: order.items.map(toOrderItemDTO),
@@ -169,10 +249,7 @@ export function toOrderDTO(order: {
         id: h.id, status: h.status as OrderStatus, note: h.note, actor: h.actor, createdAt: h.createdAt.toISOString(),
       })),
     payments: order.payments.map(toPaymentDTO),
-    prescriptions: order.prescriptions.map((rx) => ({
-      ...toPrescriptionDTO(rx),
-      reviewedAt: null,
-    })),
+    prescriptions: order.prescriptions.map((rx) => toPrescriptionDTOFull({ ...rx, reviewedAt: rx.reviewedAt ?? null })),
   }
 }
 
@@ -227,13 +304,51 @@ export function toPrescriptionDTOFull(rx: DbPrescription & { reviewedAt: Date | 
   return { ...dto, reviewedAt: rx.reviewedAt ? rx.reviewedAt.toISOString() : null }
 }
 
+/** Prescription include object for Prisma queries (reused across routes & orders). */
+export const PRESCRIPTION_INCLUDE = {
+  user: { select: { name: true, phone: true } },
+  order: { select: { id: true, reference: true, status: true } },
+  reviewedBy: { select: { name: true } },
+  parentPrescription: {
+    select: {
+      id: true,
+      status: true,
+      refillsAllowed: true,
+      refillsUsed: true,
+      validUntil: true,
+      reviewNotes: true,
+      orderId: true,
+      order: { select: { id: true, reference: true, status: true } },
+      reviewedBy: { select: { name: true } },
+      childRefills: {
+        where: { deletedAt: null },
+        select: {
+          id: true,
+          orderId: true,
+          order: { select: { id: true, reference: true, status: true } },
+        },
+      },
+    },
+  },
+  childRefills: {
+    where: { deletedAt: null },
+    select: {
+      id: true,
+      orderId: true,
+      order: { select: { id: true, reference: true, status: true } },
+    },
+  },
+} as const
+
 /** Order include object for Prisma queries (reused everywhere). */
 export const ORDER_INCLUDE = {
   items: true,
   statusHistory: true,
   payments: true,
+  refillOfOrder: { select: { id: true, reference: true } },
   prescriptions: {
-    include: { reviewedBy: { select: { name: true } }, order: { select: { reference: true } }, user: { select: { name: true, phone: true } } },
+    where: { deletedAt: null },
+    include: PRESCRIPTION_INCLUDE,
   },
   user: { select: { name: true, phone: true } },
 } as const

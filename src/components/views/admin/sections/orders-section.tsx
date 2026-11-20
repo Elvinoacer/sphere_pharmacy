@@ -30,14 +30,15 @@ import {
   ACTIVE_STATUSES, DISPATCH_STATUSES, FULFILLMENT_LABELS, NEXT_STATUS, ORDER_STATUS_LABELS, ORDER_TYPE_LABELS,
   PAYMENT_METHOD_LABELS, TERMINAL_STATUSES, type OrderStatus, type OrderType, type Role,
 } from "@/lib/constants"
-import { formatDateTime, formatKES, shortRef, statusLabel, timeAgo } from "@/lib/format"
+import { formatDate, formatDateTime, formatKES, shortRef, statusLabel, timeAgo } from "@/lib/format"
+import { isRefillPrescriptionRecord } from "@/lib/prescriptions/refill-core"
 import { useAppStore } from "@/store/use-app-store"
 import { useAuthStore } from "@/store/use-auth-store"
 import { toast } from "sonner"
 import { AdminSectionHeader, KpiCard, apiErrorMessage, telHref, useDebounced, waHref, type SectionProps } from "../admin-shared"
 import {
   Search, Package, Loader2, Truck, Store, Phone, MessageCircle, ChevronRight, Ban, Bike,
-  Banknote, Smartphone, CreditCard, ClipboardList, Wallet, Clock, CheckCircle2, User, X, MapPin, Navigation, Info,
+  Banknote, Smartphone, CreditCard, ClipboardList, Wallet, Clock, CheckCircle2, User, X, MapPin, Navigation, Info, Repeat2,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
@@ -726,9 +727,17 @@ export function OrdersSection({ refreshKey, onRefresh, onNavigateSection }: Sect
                       </TableCell>
                       <TableCell>
                         <div className="flex min-w-0 flex-col items-start gap-1.5">
-                          <Badge variant="outline" className={cn("text-[10px]", typeBadgeClass[order.type])}>
-                            {ORDER_TYPE_LABELS[order.type]}
-                          </Badge>
+                          <div className="flex flex-wrap items-center gap-1">
+                            <Badge variant="outline" className={cn("text-[10px]", typeBadgeClass[order.type])}>
+                              {ORDER_TYPE_LABELS[order.type]}
+                            </Badge>
+                            {order.isRefill ? (
+                              <Badge variant="outline" className="gap-1 border-teal-300 bg-teal-50 text-[10px] text-teal-800 dark:border-teal-800 dark:bg-teal-950/40 dark:text-teal-300">
+                                <Repeat2 className="h-2.5 w-2.5" aria-hidden />
+                                Refill
+                              </Badge>
+                            ) : null}
+                          </div>
                           <p className="flex items-start gap-1.5 text-xs font-medium leading-snug">
                             {order.fulfillment === "DELIVERY" ? <Truck className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden /> : <Store className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden />}
                             <span>{order.fulfillment === "DELIVERY" ? (order.deliveryArea || "Delivery zone missing") : "Store pickup"}</span>
@@ -813,6 +822,12 @@ export function OrdersSection({ refreshKey, onRefresh, onNavigateSection }: Sect
                       <Badge variant="outline" className={cn("px-1.5 py-0 text-[10px]", typeBadgeClass[order.type])}>
                         {order.type === "RESERVATION" ? "Reservation" : order.type === "PRESCRIPTION" ? "Rx order" : order.type === "MIXED" ? "Mixed" : "OTC"}
                       </Badge>
+                      {order.isRefill ? (
+                        <Badge variant="outline" className="gap-1 border-teal-300 bg-teal-50 px-1.5 py-0 text-[10px] text-teal-800 dark:border-teal-800 dark:bg-teal-950/40 dark:text-teal-300">
+                          <Repeat2 className="h-2.5 w-2.5" aria-hidden />
+                          Refill
+                        </Badge>
+                      ) : null}
                       <span className="flex items-center gap-1 text-[11px] text-muted-foreground">
                         {order.fulfillment === "DELIVERY" ? <Truck className="h-3 w-3" aria-hidden /> : <Store className="h-3 w-3" aria-hidden />}
                         {FULFILLMENT_LABELS[order.fulfillment]}
@@ -883,6 +898,14 @@ export function OrdersSection({ refreshKey, onRefresh, onNavigateSection }: Sect
         onPromptMpesa={(order) => void handlePromptMpesa(order)}
         onStartPreparing={(order) => void runAction(() => ordersApi.startPreparing(order.id), `${shortRef(order.reference)} is now being packed.`)}
         onNavigateSection={onNavigateSection}
+        onSearchReference={(ref) => {
+          setSheetOpen(false)
+          setSelected(null)
+          setTab("all")
+          setStatusFilter("ALL")
+          setFocus("all")
+          setSearchInput(ref)
+        }}
         onReviewPrescription={setReviewId}
         onAssignRider={async (order, staffId, riderName) => {
           await runAction(
@@ -957,6 +980,7 @@ function OrderDetailSheet({
   onPromptMpesa,
   onStartPreparing,
   onNavigateSection,
+  onSearchReference,
   onReviewPrescription,
   onAssignRider,
 }: {
@@ -972,6 +996,7 @@ function OrderDetailSheet({
   onPromptMpesa: (order: OrderDTO) => void
   onStartPreparing: (order: OrderDTO) => void
   onNavigateSection: SectionProps["onNavigateSection"]
+  onSearchReference: (ref: string) => void
   onReviewPrescription: (id: string) => void
   onAssignRider: (order: OrderDTO, staffId: string, riderName?: string) => Promise<void>
 }) {
@@ -1022,6 +1047,12 @@ function OrderDetailSheet({
           <SheetTitle className="flex flex-wrap items-center gap-2 text-base">
             <span className="min-w-0 break-all font-bold">{order.reference}</span>
             <OrderFulfillmentStatus order={order} />
+            {order.isRefill ? (
+              <Badge variant="outline" className="gap-1 border-teal-300 bg-teal-50 text-xs text-teal-800 dark:border-teal-800 dark:bg-teal-950/40 dark:text-teal-300">
+                <Repeat2 className="h-3 w-3" aria-hidden />
+                Refill
+              </Badge>
+            ) : null}
           </SheetTitle>
           <SheetDescription className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
             <span>{formatDateTime(order.createdAt)}</span>
@@ -1234,23 +1265,86 @@ function OrderDetailSheet({
               </section>
             ) : null}
 
+            {/* refill lineage */}
+            {order.isRefill ? (
+              <section aria-labelledby="od-refill">
+                <h3 id="od-refill" className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Prescription refill</h3>
+                <div className="space-y-2 rounded-xl border border-teal-200 bg-teal-50/60 p-3 text-xs text-teal-950 dark:border-teal-900 dark:bg-teal-950/20 dark:text-teal-100">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <p className="flex items-center gap-1.5 font-semibold">
+                      <Repeat2 className="h-3.5 w-3.5 shrink-0" aria-hidden />
+                      {order.refillOfOrderReference
+                        ? `Refill of order #${shortRef(order.refillOfOrderReference)}`
+                        : "Prescription refill order"}
+                    </p>
+                    {order.refillOfOrderReference ? (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="h-7 px-2 text-xs"
+                        onClick={() => onSearchReference(order.refillOfOrderReference!)}
+                      >
+                        Find source order
+                      </Button>
+                    ) : null}
+                  </div>
+                  {order.prescriptions
+                    .filter((rx) => isRefillPrescriptionRecord(rx))
+                    .map((rx) => (
+                      <p key={rx.id} className="text-muted-foreground">
+                        {rx.refillNumber
+                          ? rx.parentRefillsAllowed
+                            ? `Refill #${rx.refillNumber} of ${rx.parentRefillsAllowed}`
+                            : `Refill #${rx.refillNumber}`
+                          : "Refill dispense"}
+                        {rx.parentRefillsAllowed != null
+                          ? ` · ${rx.parentRefillsUsed ?? 0}/${rx.parentRefillsAllowed} used`
+                          : ""}
+                        {rx.parentValidUntil ? ` · original valid until ${formatDate(rx.parentValidUntil)}` : ""}
+                        {rx.refillReleasedAt ? " · slot returned" : ""}
+                      </p>
+                    ))}
+                </div>
+              </section>
+            ) : null}
+
             {/* prescriptions */}
             {order.prescriptions.length > 0 ? (
               <section aria-labelledby="od-rx">
                 <h3 id="od-rx" className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Attached prescriptions</h3>
                 <ul className="space-y-2">
-                  {order.prescriptions.map((rx) => (
-                    <li key={rx.id} className="flex flex-wrap items-center gap-2 rounded-lg border p-3">
-                      <ClipboardList className="h-4 w-4 text-muted-foreground" aria-hidden />
-                      <span className="min-w-0 flex-1 break-all text-sm font-medium">{rx.fileName}</span>
-                      <RxStatusBadge status={rx.status} />
-                      {role === "ADMIN" || role === "PHARMACIST" ? (
-                        <Button size="sm" variant="outline" onClick={() => onReviewPrescription(rx.id)}>
-                          Review here
-                        </Button>
-                      ) : null}
-                    </li>
-                  ))}
+                  {order.prescriptions.map((rx) => {
+                    const isRefillRx = isRefillPrescriptionRecord(rx)
+                    return (
+                      <li key={rx.id} className="flex flex-wrap items-center gap-2 rounded-lg border p-3">
+                        <ClipboardList className="h-4 w-4 text-muted-foreground" aria-hidden />
+                        <div className="min-w-0 flex-1">
+                          <span className="block break-all text-sm font-medium">{rx.fileName}</span>
+                          {isRefillRx ? (
+                            <span className="block text-xs text-muted-foreground">
+                              {rx.refillNumber
+                                ? rx.parentRefillsAllowed
+                                  ? `Refill #${rx.refillNumber} of ${rx.parentRefillsAllowed}`
+                                  : `Refill #${rx.refillNumber}`
+                                : "Refill dispense"}
+                              {rx.refillReleasedAt ? " · slot returned" : ""}
+                            </span>
+                          ) : rx.refillsAllowed > 0 ? (
+                            <span className="block text-xs text-muted-foreground">
+                              Refills: {rx.refillsUsed} of {rx.refillsAllowed} used
+                              {rx.validUntil ? ` · valid until ${formatDate(rx.validUntil)}` : ""}
+                            </span>
+                          ) : null}
+                        </div>
+                        <RxStatusBadge status={rx.status} />
+                        {role === "ADMIN" || role === "PHARMACIST" ? (
+                          <Button size="sm" variant="outline" onClick={() => onReviewPrescription(rx.id)}>
+                            Review here
+                          </Button>
+                        ) : null}
+                      </li>
+                    )
+                  })}
                 </ul>
               </section>
             ) : null}

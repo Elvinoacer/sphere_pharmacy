@@ -140,11 +140,16 @@ function stateFromLocation(): HistoryEntry {
   if (product) return { view: "product", params: { ...params, productId: decodeURIComponent(product[1]) } }
   const order = /^\/orders\/([^/]+)$/.exec(path)
   if (order) return { view: "order", params: { ...params, orderId: decodeURIComponent(order[1]) } }
+  const adminSection = /^\/admin\/([a-z0-9-]+)$/.exec(path)
+  if (adminSection) return { view: "admin", params: { ...params, section: decodeURIComponent(adminSection[1]) } }
   const routes: Record<string, ViewName> = {
     "/": "home", "/catalog": "catalog", "/offers": "offers", "/services": "services", "/cart": "cart",
     "/checkout": "checkout", "/auth": "auth", "/orders": "orders",
     "/prescriptions": "prescriptions", "/account": "account", "/admin": "admin",
   }
+  const hash = window.location.hash.replace(/^#/, "")
+  if (path === "/" && hash === "prescriptions") return { view: "prescriptions", params }
+  if (path === "/" && hash.startsWith("admin-")) return { view: "admin", params: { ...params, section: hash.slice(6) } }
   return { view: routes[path] || "home", params }
 }
 

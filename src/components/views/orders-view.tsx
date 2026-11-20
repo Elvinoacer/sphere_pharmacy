@@ -33,6 +33,7 @@ import {
   PackageOpen,
   PackageSearch,
   RefreshCw,
+  Repeat2,
   Search,
   ShieldCheck,
   Store,
@@ -351,6 +352,12 @@ function OrderCard({ order, onOpen }: { order: OrderDTO; onOpen: (orderId: strin
             <Badge variant="secondary" className="text-[10px] sm:text-xs">
               {ORDER_TYPE_LABELS[order.type]}
             </Badge>
+            {order.isRefill ? (
+              <Badge variant="outline" className="gap-1 border-teal-300 bg-teal-50 text-[10px] text-teal-800 sm:text-xs dark:border-teal-800 dark:bg-teal-950/40 dark:text-teal-300">
+                <Repeat2 className="h-3 w-3" aria-hidden />
+                Refill
+              </Badge>
+            ) : null}
           </div>
 
           <div className="mt-3 flex items-start gap-2 text-sm text-muted-foreground">

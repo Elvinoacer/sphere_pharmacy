@@ -9,13 +9,13 @@ This document inventories what is actually tested in Sphere Pharmacy, how to run
 ## Two commands, two runners — the distinction matters
 
 ```bash
-npm test                 # node --test tests/*.test.mjs   — 13 suites, Node test runner
+npm test                 # node --test tests/*.test.mjs   — 14 suites, Node test runner
 npm run test:assistant   # bun test tests/assistant.test.ts — 1 TypeScript suite, Bun runner
 ```
 
 `npm test` globs only `tests/*.test.mjs`. `tests/assistant.test.ts` is **not** picked up by it (different extension, different runner) and is **not run in CI** — anyone touching the assistant must run `test:assistant` manually. CI only executes `npm test`. (The two shell scripts in `tests/` — `python-runtime-build.sh`, `python-runtime-container.sh` — are deployment-flow stubs, not tests.)
 
-## Inventory of the 13 `.mjs` suites
+## Inventory of the 14 `.mjs` suites
 
 | Suite (actual file) | Area | What it validates |
 | --- | --- | --- |
@@ -29,6 +29,7 @@ npm run test:assistant   # bun test tests/assistant.test.ts — 1 TypeScript sui
 | `offer-workflow.test.mjs` | Offers/promotions | Persisted promo codes, revalidation on cart/account changes, payment guard. |
 | `order-dispatch-promotion-workflow.test.mjs` | Orders + dispatch + promotions | Order workflow invariants across dispatch and promotion paths (payment-required handoffs, safe next actions). |
 | `order-operations-ux.test.mjs` | Order operations UX | Work-queue labels/ages, batch-selection UX, responsive tables. |
+| `prescription-refills.test.mjs` | Prescriptions & refills | Pure refill eligibility (`evaluateRefillEligibility`), payment normalization, refill pricing/delivery-fee math, schema/migration lineage contracts, non-multiplying refill review, idempotent refill-slot rollback on cancel/reject/expiry, and customer/admin refill UI contracts. |
 | `promotion-validation-resilience.test.mjs` | Promotions | Validation resilience: infrastructure failures fail closed (503 + errorId), limits enforced, cookies set. |
 | `reports-layout.test.mjs` | Reports | Admin reports layout/labels. |
 | `security-static.test.mjs` | Security (static) | Codifies: no build-error bypass; private prescription storage strings; no OTP demo code; `codeHash` column present; webhook auth functions present; security-hardening migration exists; staff-login legacy-hash upgrade; real FCM tokens (no placeholders); admin product view requires staff; lazy `db.ts` Proxy defers missing-URL throw to runtime property access; `/docs` loader avoids root-wide tracing. |

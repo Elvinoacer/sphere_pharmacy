@@ -115,7 +115,7 @@ initialStatus = hasRx ? UNDER_REVIEW
 | `COMPLETED_DELIVERY` | `fulfillment = DELIVERY` + `SUCCESS` payment + rider assigned. |
 | Rider callers | May only touch orders assigned to them, and only the two rider transitions. |
 
-Every accepted transition increments `Order.version`, writes an `OrderStatusHistory` row and an `AuditLog` entry `ORDER_STATUS_<STATUS>`. `REJECTED` additionally notifies ADMIN + PHARMACIST.
+Every accepted transition increments `Order.version`, writes an `OrderStatusHistory` row and an `AuditLog` entry `ORDER_STATUS_<STATUS>`. Moving an order to `REJECTED` (via `PATCH /api/orders/[id]` or prescription-review aggregation in `PATCH /api/prescriptions/[id]`) runs `releaseOrderResourcesOnReject` to restore reserved inventory, re-credit redeemed loyalty points (`reject:<orderId>`), fail dangling payments, cancel outbound POS deductions, idempotently return any claimed refill slot (`releaseRefillSlotsForOrder`), and notify ADMIN + PHARMACIST (`/admin?section=orders`).
 
 ## 4. Order creation — end-to-end sequence
 
@@ -176,7 +176,7 @@ Guest orders mint a one-time opaque 32-byte `guestAccessToken` (base64url); only
 1. **Status gate** — order must still be in `RECEIVED`, `UNDER_REVIEW`, `PRESCRIPTION_VERIFIED`, `AVAILABILITY_CONFIRMED`, or `AWAITING_PAYMENT`; otherwise 409 "This order can no longer be cancelled online."
 2. **Payment gate** — any `SUCCESS` payment blocks cancellation with 409: *"A captured payment cannot be cancelled. An administrator must request and confirm a provider refund."*
 3. **Retry loop (3 attempts)** — inside a transaction, re-read `status/version/inventoryReleasedAt`; `updateMany` guarded by `{ id, status, version, inventoryReleasedAt: null }` sets `CANCELLED`, stamps `inventoryReleasedAt`, bumps `version`. Conflicts/deadlocks retry with `50ms × attempt` backoff. If already `CANCELLED`, idempotent success.
-4. **Inside the winning transaction:** restore stock per line (`stockQty` and `stock` incremented, `inStock` re-set), re-credit redeemed points via idempotent `LoyaltyLedger cancel:<orderId>` (`+pointsRedeemed`, reason `ORDER_CANCELLED`), fail dangling `PENDING`/`PROCESSING` payments (`"Order cancelled before payment"`), write `OrderStatusHistory` with the actor's name.
+4. **Inside the winning transaction:** restore stock per line (`stockQty` and `stock` incremented, `inStock` re-set), re-credit redeemed points via idempotent `LoyaltyLedger cancel:<orderId>` (`+pointsRedeemed`, reason `ORDER_CANCELLED`), fail dangling `PENDING`/`PROCESSING` payments (`"Order cancelled before payment"`), idempotently release any claimed refill slot (`releaseRefillSlotsForOrder`), cancel outbound POS deductions, and write `OrderStatusHistory` with the actor's name.
 5. Audit `ORDER_CANCELLED`; customer notified.
 
 > The customer-facing cancel toast promises automatic refunds — this contradicts server behavior. Captured payments are **never** auto-refunded on cancel; only an ADMIN refund (see [payment-lifecycle.md](payment-lifecycle.md)) returns money.
@@ -187,7 +187,7 @@ Guest orders mint a one-time opaque 32-byte `guestAccessToken` (base64url); only
 
 - Targets `RECEIVED`, `UNDER_REVIEW`, `PRESCRIPTION_VERIFIED`, `AVAILABILITY_CONFIRMED`, `AWAITING_PAYMENT` with `inventoryReservedAt ≤ now − TTL` and **no** `SUCCESS` payment.
 - Claims rows via `updateMany` version guard (no double-release), batch of 100 per run.
-- Per order: restore `stockQty`/`stock`, recompute `stockStatus`, stamp `inventoryReleasedAt`, re-credit redeemed points (`expire:<orderId>`, reason `RESERVATION_EXPIRED`), fail `PENDING`/`PROCESSING` payments, write history with actor `SYSTEM` — *"Inventory reservation expired before payment."* Returns `{ ok, released }`.
+- Per order: restore `stockQty`/`stock`, recompute `stockStatus`, stamp `inventoryReleasedAt`, re-credit redeemed points (`expire:<orderId>`, reason `RESERVATION_EXPIRED`), fail `PENDING`/`PROCESSING` payments, idempotently release any claimed refill slot (`releaseRefillSlotsForOrder`), cancel outbound POS deductions, write history with actor `SYSTEM` — *"Inventory reservation expired before payment."* Returns `{ ok, released }`.
 
 ## 7. Rider assignment and rider transitions
 

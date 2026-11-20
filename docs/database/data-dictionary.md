@@ -260,14 +260,15 @@ Order header. Money fields `Decimal(12,2)`. Statuses/groups per [schema-overview
 | `pointsEarned` | Int | `@default(0)` | Sphere Points awarded on payment capture. |
 | `pointsRedeemed` | Int | `@default(0)` | Points debited at checkout. |
 | `inventoryReservedAt` | DateTime? | — | When stock was physically reserved. |
-| `inventoryReleasedAt` | DateTime? | — | When stock was restored (cancel/expiry). |
+| `inventoryReleasedAt` | DateTime? | — | When stock was restored (cancel/reject/expiry). |
+| `refillOfOrderId` | String? | FK → `Order` (`"OrderRefills"`, SetNull, `@map("refill_of_order_id")`) | Source prescription order when this order was created by a refill request. |
 | `version` | Int | `@default(0)` | Optimistic-concurrency counter (guarded `updateMany` on every transition). |
 | `createdAt` | DateTime | `@default(now())` | Row creation. |
 | `updatedAt` | DateTime | `@updatedAt` | Auto-updated. |
 
-**Relations:** `user` (no cascade), `items` (1:N `OrderItem`, cascade), `statusHistory` (1:N `OrderStatusHistory`, cascade), `payments` (1:N `Payment`, cascade), `prescriptions` (1:N `Prescription`, no cascade), `loyaltyEntries` (1:N `LoyaltyLedger`, cascade), `posOutboundJobs` (1:N `PosOutboundJob`, SetNull).
+**Relations:** `user` (no cascade), `refillOfOrder` / `refillOrders` (self-relation `"OrderRefills"`, SetNull), `items` (1:N `OrderItem`, cascade), `statusHistory` (1:N `OrderStatusHistory`, cascade), `payments` (1:N `Payment`, cascade), `prescriptions` (1:N `Prescription`, no cascade), `loyaltyEntries` (1:N `LoyaltyLedger`, cascade), `posOutboundJobs` (1:N `PosOutboundJob`, SetNull).
 
-**Indexes:** `@@index([status, createdAt])`, `@@index([userId, createdAt])`, `@@index([riderId, status, createdAt])`, `@@index([guestPhone, createdAt])`, `@@index([updatedAt, id])` and `@@index([createdAt, id])` (live-monitor cursor pairs).
+**Indexes:** `@@index([status, createdAt])`, `@@index([userId, createdAt])`, `@@index([riderId, status, createdAt])`, `@@index([guestPhone, createdAt])`, `@@index([updatedAt, id])` and `@@index([createdAt, id])` (live-monitor cursor pairs), `@@index([refillOfOrderId])`.
 
 ### `OrderItem`
 
@@ -383,26 +384,29 @@ Uploaded prescription. File bytes live in private R2 at `storageKey` (`prescript
 | --- | --- | --- | --- |
 | `id` | String | `@id @default(cuid())` | Primary key. |
 | `userId` | String? | FK → `User` (no cascade) | Owning customer (null for legacy/system rows). |
-| `orderId` | String? | FK → `Order` (no cascade) | Order the Rx was attached to at checkout. |
+| `orderId` | String? | FK → `Order` (no cascade) | Order the Rx was attached to at checkout or refill creation. |
+| `parentPrescriptionId` | String? | FK → `Prescription` (`"PrescriptionRefills"`, SetNull, `@map("parent_prescription_id")`) | Original authorized prescription when this row is a refill re-verification copy. |
+| `refillNumber` | Int? | `@map("refill_number")` | 1-based dispense sequence for refill copies (e.g. `1` for Refill #1 of 3). |
+| `refillReleasedAt` | DateTime? | `@map("refill_released_at")` | Idempotent timestamp stamped when a cancelled/rejected/expired refill returns its claimed slot to `parentPrescription.refillsUsed`. |
 | `fileName` | String | — | Original file name (≤120). |
 | `fileType` | String | — | `png/jpeg/jpg/webp/heic/pdf`. |
 | `fileData` | String? | — | Legacy inline base64 — always null. |
 | `notes` | String? | — | Customer notes (≤1000). |
 | `status` | String | `@default("PENDING")` | `PENDING` / `APPROVED` / `REJECTED` / `CLARIFICATION_REQUESTED` / `PARTIALLY_APPROVED`. |
-| `reviewNotes` | String? | — | Pharmacist notes (≤2000; required unless APPROVED/PARTIALLY_APPROVED). |
+| `reviewNotes` | String? | — | Pharmacist notes (≤2000; required unless APPROVED). |
 | `reviewedById` | String? | FK → `StaffUser` (`"RxReviewer"`) | Reviewing pharmacist/admin. |
 | `reviewedAt` | DateTime? | — | Review completion time. |
-| `refillsAllowed` | Int | `@default(0)` | Authorized refills (0–6). |
-| `refillsUsed` | Int | `@default(0)` | Optimistically claimed refill counter. |
-| `validUntil` | DateTime? | — | Validity window end (now + validDays ∈ {30,60,90,180}); only set when approved. |
+| `refillsAllowed` | Int | `@default(0)` | Authorized refills (0–6 on original prescriptions; always 0 on refill copies). |
+| `refillsUsed` | Int | `@default(0)` | Optimistically claimed refill counter (rolled back idempotently via `refillReleasedAt` on abort). |
+| `validUntil` | DateTime? | — | Validity window end (now + validDays ∈ {30,60,90,180} on original approval; inherited read-only from parent on refill copies). |
 | `createdAt` | DateTime | `@default(now())` | Row creation. |
 | `fileUrl` | String? | — | Legacy — null; API substitutes a presigned URL at read time. |
 | `storageKey` | String? | — | Private R2 object key; never exposed by DTOs. |
 | `deletedAt` | DateTime? | — | Soft-delete timestamp; retention clock starts here. |
 
-**Relations:** `order` (no cascade), `reviewedBy` (StaffUser), `user` (no cascade), `accessLogs` (1:N `PrescriptionAccessLog`, cascade).
+**Relations:** `order` (no cascade), `parentPrescription` / `childRefills` (self-relation `"PrescriptionRefills"`, SetNull), `reviewedBy` (StaffUser), `user` (no cascade), `accessLogs` (1:N `PrescriptionAccessLog`, cascade).
 
-**Indexes:** `@@index([userId, createdAt])`, `@@index([orderId, status])`, `@@index([status, createdAt])` (review queue).
+**Indexes:** `@@index([userId, createdAt])`, `@@index([orderId, status])`, `@@index([status, createdAt])` (review queue), `@@index([parentPrescriptionId])`.
 
 ### `PrescriptionAccessLog`
 

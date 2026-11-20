@@ -140,6 +140,8 @@ erDiagram
 erDiagram
     USER |o--o{ PRESCRIPTION : uploads
     ORDER |o--o{ PRESCRIPTION : links
+    ORDER |o--o{ ORDER : refills
+    PRESCRIPTION |o--o{ PRESCRIPTION : spawns_refill
     STAFF_USER |o--o{ PRESCRIPTION : reviews
     PRESCRIPTION ||--o{ PRESCRIPTION_ACCESS_LOG : logs
 
@@ -147,10 +149,13 @@ erDiagram
         string id PK "cuid"
         string userId FK "nullable, no cascade"
         string orderId FK "nullable, no cascade"
+        string parentPrescriptionId FK "nullable, SetNull"
+        int refillNumber "1-based refill sequence"
+        datetime refillReleasedAt "idempotent rollback"
         string fileName
         string status "5 canonical values"
         string storageKey "private R2 key"
-        int refillsAllowed "0-6"
+        int refillsAllowed "0-6 (0 on refill copies)"
         datetime deletedAt "soft delete"
     }
     PRESCRIPTION_ACCESS_LOG {
@@ -167,6 +172,7 @@ erDiagram
     ORDER {
         string id PK "cuid"
         string reference UK
+        string refillOfOrderId FK "nullable, SetNull"
     }
     STAFF_USER {
         string id PK "cuid"
@@ -174,7 +180,7 @@ erDiagram
     }
 ```
 
-`Prescription.reviewedById` → `StaffUser` uses the named relation `"RxReviewer"`. The file bytes never live in Postgres — `storageKey` points at a private R2 object `prescriptions/{userId}/{uuid}{ext}`; refills create a **new** `Prescription` row sharing the same `storageKey`.
+`Prescription.reviewedById` → `StaffUser` uses the named relation `"RxReviewer"`. `Prescription.parentPrescriptionId` → `Prescription` (`"PrescriptionRefills"`) and `Order.refillOfOrderId` → `Order` (`"OrderRefills"`) capture refill lineage structurally: refills create a **new** `Prescription` row sharing the same `storageKey` (with `refillsAllowed = 0` and parent validity inherited) and a new `Order` pointing back to its source order. The file bytes never live in Postgres — `storageKey` points at a private R2 object `prescriptions/{userId}/{uuid}{ext}`.
 
 ## Products / inventory
 

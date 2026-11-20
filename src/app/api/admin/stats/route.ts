@@ -21,7 +21,16 @@ export async function GET() {
     db.payment.aggregate({ where: { status: "SUCCESS" }, _sum: { amount: true } }),
     db.order.count({ where: { status: { in: ACTIVE_STATUSES } } }),
     db.order.count({ where: { status: "AWAITING_PAYMENT" } }),
-    db.prescription.count({ where: { status: "PENDING", deletedAt: null } }),
+    db.prescription.count({
+      where: {
+        status: "PENDING",
+        deletedAt: null,
+        OR: [
+          { orderId: null },
+          { order: { status: { notIn: ["CANCELLED", "REJECTED", "REFUNDED"] } } },
+        ],
+      },
+    }),
     db.product.groupBy({ by: ["stockStatus", "active"], _count: { _all: true } }),
     db.user.count(),
     db.order.findMany({ where: { createdAt: { gte: start14 } }, select: { createdAt: true, total: true, status: true }, orderBy: { createdAt: "asc" } }),

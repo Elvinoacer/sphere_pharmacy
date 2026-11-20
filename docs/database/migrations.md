@@ -20,7 +20,7 @@ This document records every Prisma migration in `prisma/migrations/` in chronolo
 
 ## Migration history (chronological)
 
-Eleven migrations, year-2026 timestamps. `prisma migrate deploy` applies them in this order.
+Twelve migrations, year-2026 timestamps. `prisma migrate deploy` applies them in this order.
 
 | # | Migration | One-line summary |
 | --- | --- | --- |
@@ -35,6 +35,7 @@ Eleven migrations, year-2026 timestamps. `prisma migrate deploy` applies them in
 | 9 | `20261028194500_admin_live_cursor_indexes` | Cursor pagination indexes for the staff live monitor. |
 | 10 | `20261104200000_add_bandago_pos_support` | BandaGo/iDempiere POS integration: enums, POS columns, `product_batches`, `pos_sync_logs`. |
 | 11 | `20261119120000_add_bandago_bidirectional_sync` | Bi-directional POS reconciliation & telemetry: `pos_outbound_jobs`, `pos_sync_incidents`, POS drift baseline columns, `PosSyncDirection` & outbound enums. |
+| 12 | `20261120120000_prescription_refill_lineage` | Structural prescription refill lineage: `Order.refill_of_order_id`, `Prescription.parent_prescription_id`, `refill_number`, `refill_released_at` + self-FKs/indexes. |
 
 ### 1. `20260902000000_initial`
 
@@ -99,6 +100,13 @@ Adds durable bi-directional POS reconciliation, daily sales export batching, and
 - **`Product`:** adds `last_pos_stock`, `last_pos_sellable_stock`, `external_warehouse_id`, `external_locator_id`, `external_org_id`, `external_client_id`.
 - **`PosSyncLog`:** adds `direction` (`PosSyncDirection`, default `INBOUND`).
 - **New tables:** `pos_outbound_jobs` (unique `idempotency_key`, indexes `(status, created_at)`, `(product_id, status)`, `order_id`, `export_batch_id`) and `pos_sync_incidents` (indexes `(resolved, severity, last_seen_at)`, `(code, resolved)`).
+
+### 12. `20261120120000_prescription_refill_lineage`
+
+Adds structural lineage between original prescriptions/orders and refill dispenses — **additive only** (`ADD COLUMN IF NOT EXISTS`, `CREATE INDEX IF NOT EXISTS`, guarded FK creation):
+
+- **`Order`:** adds nullable `refill_of_order_id` (`Order.refillOfOrderId` self-FK `"OrderRefills"`, `ON DELETE SET NULL`) + index `Order_refill_of_order_id_idx`.
+- **`Prescription`:** adds nullable `parent_prescription_id` (`Prescription.parentPrescriptionId` self-FK `"PrescriptionRefills"`, `ON DELETE SET NULL`), `refill_number` (1-based dispense sequence), and `refill_released_at` (idempotent rollback stamp when a refill order is cancelled/rejected/expired) + index `Prescription_parent_prescription_id_idx`.
 
 ## Adding a new model or field
 

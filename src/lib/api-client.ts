@@ -234,6 +234,28 @@ export const ordersApi = {
 
 // ---------- prescriptions ----------
 
+export interface RequestRefillPayload {
+  fulfillment?: "PICKUP" | "DELIVERY"
+  paymentMethod?: "MPESA" | "CARD" | "CASH" | "LATER"
+  addressId?: string
+  deliveryAddress?: string
+  deliveryArea?: string
+  deliveryNotes?: string
+  deliveryLatitude?: number
+  deliveryLongitude?: number
+  notes?: string
+}
+
+export interface RequestRefillResponse {
+  orderId: string
+  reference: string
+  refillNumber: number
+  refillsRemaining: number
+  subtotal: number
+  deliveryFee: number
+  total: number
+}
+
 export const prescriptionsApi = {
   mine: () => req<PrescriptionDTO[]>("/api/prescriptions"),
   queue: () => req<PrescriptionDTO[]>("/api/prescriptions?scope=queue"),
@@ -242,8 +264,11 @@ export const prescriptionsApi = {
   get: (id: string) => req<PrescriptionDTO & { fileData: string }>(`/api/prescriptions/${id}`),
   review: (id: string, data: { status: RxStatus; reviewNotes?: string; refillsAllowed?: number; validDays?: number }) =>
     req<PrescriptionDTO>(`/api/prescriptions/${id}`, { method: "PATCH", body: JSON.stringify(data) }),
-  requestRefill: (id: string) =>
-    req<{ orderId: string; reference: string }>(`/api/prescriptions/${id}/refill`, { method: "POST" }),
+  requestRefill: (id: string, data?: RequestRefillPayload) =>
+    req<RequestRefillResponse>(`/api/prescriptions/${id}/refill`, {
+      method: "POST",
+      ...(data ? { body: JSON.stringify(data) } : {}),
+    }),
 }
 
 // ---------- notifications ----------

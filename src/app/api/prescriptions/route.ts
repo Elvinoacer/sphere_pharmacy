@@ -1,6 +1,6 @@
 import { after, NextResponse } from "next/server"
 import { db } from "@/lib/db"
-import { toPrescriptionDTOFull } from "@/lib/dto"
+import { PRESCRIPTION_INCLUDE, toPrescriptionDTOFull } from "@/lib/dto"
 import { addStatusEvent, notifyCustomer } from "@/lib/notify"
 import { requireCustomer, requireStaff } from "@/lib/session"
 import { objectMetadataInR2, uploadBase64ToR2 } from "@/lib/r2"
@@ -11,8 +11,8 @@ import { randomUUID } from "crypto"
 const MAX_FILE_BYTES = 10 * 1024 * 1024 // 10MB
 const ALLOWED_TYPES = ["image/png", "image/jpeg", "image/jpg", "image/webp", "image/heic", "application/pdf"]
 
-// GET /api/orders            → customer's own prescriptions
-// GET /api/orders?scope=queue → staff: review queue
+// GET /api/prescriptions             → customer's own prescriptions
+// GET /api/prescriptions?scope=queue → staff: review queue
 export async function GET(request: Request) {
   const url = new URL(request.url)
   const scope = url.searchParams.get("scope")
@@ -21,7 +21,8 @@ export async function GET(request: Request) {
     const { error } = await requireStaff(["PHARMACIST", "ADMIN"])
     if (error) return error
     const rows = await db.prescription.findMany({
-      include: { user: { select: { name: true, phone: true } }, order: { select: { reference: true } }, reviewedBy: { select: { name: true } } },
+      where: { deletedAt: null },
+      include: PRESCRIPTION_INCLUDE,
       orderBy: { createdAt: "desc" },
       take: Math.min(100, Math.max(1, Number(url.searchParams.get("limit")) || 50)),
     })
@@ -33,8 +34,8 @@ export async function GET(request: Request) {
   const { session, error } = await requireCustomer()
   if (error) return error
   const rows = await db.prescription.findMany({
-    where: { userId: session.userId },
-    include: { user: { select: { name: true, phone: true } }, order: { select: { reference: true } }, reviewedBy: { select: { name: true } } },
+    where: { userId: session.userId, deletedAt: null },
+    include: PRESCRIPTION_INCLUDE,
     orderBy: { createdAt: "desc" },
     take: Math.min(100, Math.max(1, Number(url.searchParams.get("limit")) || 50)),
   })
@@ -126,7 +127,7 @@ export async function POST(request: Request) {
         storageKey,
         notes,
       },
-      include: { user: { select: { name: true, phone: true } }, order: { select: { reference: true } }, reviewedBy: { select: { name: true } } },
+      include: PRESCRIPTION_INCLUDE,
     })
 
     if (orderId) {
@@ -147,7 +148,7 @@ export async function POST(request: Request) {
           "We received your prescription. Our pharmacist is reviewing it — usually within 2 working hours.",
           "IN_APP",
           {
-            link: `${appUrl}/#prescriptions`,
+            link: `${appUrl}/prescriptions`,
             metadata: { prescriptionId: rx.id, orderId },
             email: customerUser?.email
               ? {
@@ -165,7 +166,7 @@ export async function POST(request: Request) {
           event: "NEW_PRESCRIPTION",
           title: "New Prescription Uploaded",
           message: `Prescription uploaded by ${customerName} awaiting pharmacist review.`,
-          link: `${appUrl}/#admin-prescriptions`,
+          link: `${appUrl}/admin?section=prescriptions`,
           details: {
             Customer: customerName,
             File: fileName,

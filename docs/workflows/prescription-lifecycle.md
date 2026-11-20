@@ -26,16 +26,16 @@ stateDiagram-v2
     REJECTED --> [*]
 ```
 
-> The queue (`GET /api/prescriptions?scope=queue`) is client-side re-sorted by priority: `PENDING < CLARIFICATION_REQUESTED < PARTIALLY_APPROVED < APPROVED < REJECTED`.
+> The queue (`GET /api/prescriptions?scope=queue`) returns non-deleted prescriptions (`deletedAt: null`) with linked order status and refill lineage; the admin queue excludes cancelled/rejected/refunded orders and is client-side re-sorted by priority: `PENDING < CLARIFICATION_REQUESTED < PARTIALLY_APPROVED < APPROVED < REJECTED`.
 
 ### 1.1 Linked-order aggregation
 
-Reviewing one prescription re-evaluates **every** prescription linked to the same order and moves the order accordingly (version bump + history + in-app notice):
+Reviewing one prescription re-evaluates **every** non-deleted prescription linked to the same order and moves the order accordingly (version bump + history + in-app notice):
 
 | Condition on the order's prescriptions | Order status |
 | --- | --- |
 | All are `APPROVED` or `PARTIALLY_APPROVED` | `PRESCRIPTION_VERIFIED` |
-| All decided and **any** is `REJECTED` | `REJECTED` (staff-notified) |
+| All decided and **any** is `REJECTED` | `REJECTED` (`releaseOrderResourcesOnReject` restores stock, loyalty points, POS deductions, and claimed refill slots; staff notified at `/admin?section=orders`) |
 | Otherwise (still undecided) | stays/moves to `UNDER_REVIEW` (only if currently `UNDER_REVIEW`) |
 
 ## 2. Upload flow
@@ -90,15 +90,16 @@ sequenceDiagram
 
 | Field | Rule |
 | --- | --- |
+| Target state | Rejects soft-deleted rows (404) and prescriptions attached to `CANCELLED`/`REFUNDED` orders (409). |
 | `status` | must be one of `RX_STATUSES`. |
-| `reviewNotes` | **required** unless status is `APPROVED` or `PARTIALLY_APPROVED`; ≤ 2,000 chars. |
-| `refillsAllowed` | integer 0–6; **only persisted for APPROVED / PARTIALLY_APPROVED** (else stored 0). |
-| `validDays` | one of `{30, 60, 90, 180}`, default 90; `validUntil = now + validDays` set only on approval (else null). |
-| Side effects | stamps `reviewedById` / `reviewedAt`; recomputes linked-order aggregation (§1.1); audit `RX_<STATUS>`; customer notified IN_APP + email (`prescriptionStatusTemplate`). |
+| `reviewNotes` | **required** unless status is `APPROVED`; ≤ 2,000 chars. |
+| `refillsAllowed` | integer 0–6; **only persisted for original prescriptions on APPROVED / PARTIALLY_APPROVED** (and never lower than `refillsUsed`, else 400). **Always forced to `0` on refill dispense copies (`parentPrescriptionId != null`)** so approving a refill never spawns extra refills. |
+| `validDays` | one of `{30, 60, 90, 180}`, default 90; `validUntil = now + validDays` on original approval. On **refill dispense copies**, `validUntil` inherits the parent prescription's `validUntil` (read-only), and approval is refused (409) if the parent prescription is expired or no longer approved. |
+| Side effects | stamps `reviewedById` / `reviewedAt`; recomputes linked-order aggregation (§1.1 — including full resource + refill-slot release on `REJECTED`); audit `RX_<STATUS>`; customer notified IN_APP + email (`prescriptionStatusTemplate`). |
 
 ## 4. Refill flow
 
-`POST /api/prescriptions/[id]/refill` (customer; rate limit 5/24h). **Every refill use is re-verified by a pharmacist** — the refill creates a *new* order in `UNDER_REVIEW` and a *new* `PENDING` prescription row sharing the same R2 `storageKey`.
+`POST /api/prescriptions/[id]/refill` (customer; rate limit 5/24h per `userId`). **Every refill use is re-verified by a pharmacist** — the refill creates a *new* order in `UNDER_REVIEW` (`refillOfOrderId` pointing to the original order) and a *new* `PENDING` child `Prescription` row (`parentPrescriptionId`, `refillNumber`, `refillsAllowed: 0`) sharing the same R2 `storageKey`. If called with a child refill prescription ID (e.g. from a completed refill order), the route transparently resolves to its root `parentPrescriptionId`.
 
 ```mermaid
 sequenceDiagram
@@ -108,20 +109,22 @@ sequenceDiagram
     participant DB as PostgreSQL (Serializable tx)
     participant N as Notifications
 
-    C->>API: refill request (rate limit 5/24h)
-    API->>API: eligibility — owned (else 404), not deleted,<br/>status APPROVED/PARTIALLY_APPROVED,<br/>refillsUsed < refillsAllowed, validUntil ≥ now
-    API->>API: source order has ≥1 Rx item with productId —<br/>products active, not DISCONTINUED, available stock ≥ qty
+    C->>API: refill request (+ optional fulfillment/address/paymentMethod/notes, rate limit 5/24h/user)
+    API->>API: resolve parentPrescriptionId if child refill -> check owned (404), not deleted,<br/>parent APPROVED/PARTIALLY_APPROVED, refillsUsed < refillsAllowed, validUntil >= now
+    API->>API: source order present and not CANCELLED/REJECTED/REFUNDED,<br/>no active refill order in progress for parent, Rx products active & available >= qty
+    API->>API: compute live subtotal + deliveryFee (computeDeliveryFee) + total;<br/>normalize paymentMethod for fulfillment
     API->>DB: BEGIN Serializable
+    API->>DB: re-check no active child refill order (else ACTIVE_REFILL_CONFLICT)
     API->>DB: optimistic claim: updateMany refillsUsed+1 WHERE refillsUsed = expected (else REFILL_CONFLICT)
-    API->>DB: per-line conditional stock decrement + recompute inStock/stockStatus (else STOCK_CONFLICT)
-    API->>DB: Order.create — type PRESCRIPTION, status UNDER_REVIEW,<br/>fulfillment + address copied, CURRENT product prices,<br/>pickupCode regenerated, notes "Refill of order {ref}",<br/>inventoryReservedAt = now, items requiresPrescription = true
-    API->>DB: history "Refill queued for pharmacist re-verification"
-    API->>DB: Prescription.create — same storageKey, status PENDING,<br/>notes "Refill use of prescription {id last 6 uppercased}"
+    API->>DB: per-line availability + conditional stock decrement + recompute inStock/stockStatus (else STOCK_CONFLICT)
+    API->>DB: Order.create — type PRESCRIPTION, status UNDER_REVIEW, refillOfOrderId,<br/>paymentMethod, deliveryFee, delivery address/notes/GPS, CURRENT prices,<br/>fresh pickupCode, inventoryReservedAt = now, items requiresPrescription = true
+    API->>DB: history "Refill #N of M queued for pharmacist re-verification"
+    API->>DB: Prescription.create — parentPrescriptionId, refillNumber, refillsAllowed = 0,<br/>parent validUntil, same storageKey, status PENDING
     API->>DB: COMMIT
-    API->>N: audit RX_REFILL_REQUESTED (actor System) · customer + staff notified
+    API->>N: audit RX_REFILL_REQUESTED · customer + staff notified (/admin?section=prescriptions)
 ```
 
-Why a fresh `PENDING` row: the pharmacist must re-check the prescription against current stock, dosing and the customer's history on **every** dispense cycle — approval of the original never auto-approves refills.
+Why a fresh `PENDING` row linked by `parentPrescriptionId`: the pharmacist must re-check the prescription against current stock, dosing and the customer's history on **every** dispense cycle — approval of the original never auto-approves refills, and approving a refill copy can never grant additional refills or extend the original expiry. If a refill order is later **cancelled**, **rejected**, or **expired** before completion, `releaseRefillSlotsForOrder` (`src/lib/prescriptions/refill-server.ts`) idempotently stamps `Prescription.refillReleasedAt` and decrements `parentPrescription.refillsUsed` (floor 0) so the customer does not lose their refill slot.
 
 ### 4.1 Refill eligibility checklist
 
@@ -129,21 +132,23 @@ Why a fresh `PENDING` row: the pharmacist must re-check the prescription against
 | --- | --- | --- |
 | Ownership (non-owner sees 404, not 403 — avoids disclosure) | `Prescription.userId` | 404 |
 | Not soft-deleted | `deletedAt` | 404 |
-| Status `APPROVED` / `PARTIALLY_APPROVED` | `status` | 409 |
-| `refillsUsed < refillsAllowed` | both fields on the row | 409 |
-| `validUntil ≥ now` | set at review (`now + validDays`) | 409 |
+| Status `APPROVED` / `PARTIALLY_APPROVED` (on root parent) | `status` | 409 |
+| `refillsUsed < refillsAllowed` | both fields on the root parent row | 409 |
+| `validUntil ≥ now` | set at original review (`now + validDays`) | 409 |
+| Source order exists and is not `CANCELLED`/`REJECTED`/`REFUNDED` | `Order.status` on original order | 409 |
+| No active refill order already in progress for this parent | `childRefills` linked to orders in `ACTIVE_STATUSES` | 409 `ACTIVE_REFILL_CONFLICT` |
 | Source order has ≥1 Rx item with `productId` | `OrderItem` of the original order | 409 |
-| Products active, not `DISCONTINUED`, stock ≥ qty | availability formula (see [inventory-lifecycle.md](inventory-lifecycle.md)) | 409 |
+| Products active, not `DISCONTINUED`, available stock ≥ qty | `InventoryGuard.getAvailableStock` (honoring `safetyStockBuffer` + `virtualReservedStock`) | 409 |
 | Concurrent claim of the same refill slot | optimistic `refillsUsed` update inside Serializable tx | 409 `REFILL_CONFLICT` |
 | Stock moved mid-transaction | per-line conditional decrement | 409 `STOCK_CONFLICT` |
 
-The refill order prices lines at **current** product prices (not the original order's snapshot), regenerates the `pickupCode`, copies fulfillment and delivery address from the source order, and records history *"Refill queued for pharmacist re-verification"*.
+The refill order prices lines at **current** product prices (not the original order's snapshot), calculates the current delivery fee via `computeDeliveryFee` when `fulfillment === "DELIVERY"`, regenerates the `pickupCode` for pickup, preserves or applies validated fulfillment, delivery address/notes/GPS coordinates, and normalized `paymentMethod` (`CASH_ON_PICKUP`/`CASH_ON_DELIVERY`/`MPESA`/`CARD`), and records history *"Refill #N of M queued for pharmacist re-verification"*.
 
 ## 5. Access control and auditing
 
 | Concern | Rule |
 | --- | --- |
-| List | `GET /api/prescriptions` — own prescriptions only (limit 1–100, default 50). `?scope=queue` (PHARMACIST/ADMIN) returns all; DTO **never** exposes `fileData`/`storageKey`; `fileUrl` is null in lists. |
+| List | `GET /api/prescriptions` — own non-deleted prescriptions only (`deletedAt: null`, limit 1–100, default 50). `?scope=queue` (PHARMACIST/ADMIN) returns non-deleted rows with refill lineage and `orderStatus`; DTO **never** exposes `fileData`/`storageKey`; `fileUrl` is null in lists. |
 | Read one | `GET /api/prescriptions/[id]` — owner or ADMIN/PHARMACIST (else 403); 404 if missing or soft-deleted. |
 | Access log | **Every** GET writes a `PrescriptionAccessLog` row: `VIEW`, or `DOWNLOAD` when `?download=1`. Write-only compliance record (no API reads it). |
 | File access | `fileUrl` = presigned R2 GET URL, 300 s expiry (clamped 30–300 s), `private, no-store` cache headers; `?download=1` adds attachment disposition + 302 redirect. `fileData` blanked `""`, `storageKey` stripped in the DTO. Presign failure → 503. |
@@ -212,7 +217,7 @@ All notifications are queued transactionally as DB work only (in-app `Notificati
 
 | Model | Role in this workflow |
 | --- | --- |
-| `Prescription` | `fileName/fileType`, `storageKey` (R2 private key), `status`, `reviewNotes`, `reviewedById/reviewedAt`, `refillsAllowed/refillsUsed`, `validUntil`, `deletedAt` (soft delete), `orderId` (link established at checkout). `fileData`/`fileUrl` are legacy and always null now. |
+| `Prescription` | `fileName/fileType`, `storageKey` (R2 private key), `status`, `reviewNotes`, `reviewedById/reviewedAt`, `refillsAllowed/refillsUsed`, `validUntil`, `parentPrescriptionId`, `refillNumber`, `refillReleasedAt`, `deletedAt` (soft delete), `orderId` (link established at checkout or refill creation). `fileData`/`fileUrl` are legacy and always null now. |
 | `PrescriptionAccessLog` | one row per GET: `VIEW`/`DOWNLOAD`, `actorId`, `actorRole`, `createdAt`. |
 | `Order` / `OrderStatusHistory` | aggregation writes `PRESCRIPTION_VERIFIED` / `REJECTED` / `UNDER_REVIEW` with history + version bump. |
 | `AuditLog` | `RX_<STATUS>`, `RX_REFILL_REQUESTED`. |

@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/db';
 import type { Prisma } from '@prisma/client';
 import { cancelOrderPosDeduction } from '@/lib/pos-reconciliation';
+import { releaseRefillSlotsForOrder } from '@/lib/prescriptions/refill-server';
 
 export class InventoryGuard {
   /**
@@ -130,6 +131,7 @@ export class InventoryGuard {
               note: 'Inventory reservation expired before payment.',
             },
           });
+          await releaseRefillSlotsForOrder(activeTx, order.id);
           await cancelOrderPosDeduction(activeTx, order.id, 'SYSTEM');
 
           released++;

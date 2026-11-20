@@ -4,6 +4,7 @@ import { MemberIntro } from "@/components/member/member-intro"
 
 import { useEffect, useMemo, useRef, useState } from "react"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
@@ -20,12 +21,14 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Textarea } from "@/components/ui/textarea"
 import { EmptyState } from "@/components/shared/empty-state"
+import { RefillRequestDialog } from "@/components/shared/refill-request-dialog"
 import { RxStatusBadge } from "@/components/shared/status-badges"
 import { useAppStore } from "@/store/use-app-store"
 import { useAuthStore } from "@/store/use-auth-store"
 import { prescriptionsApi, storageApi } from "@/lib/api-client"
+import { evaluateRefillEligibility } from "@/lib/prescriptions/refill-core"
 import { ROLE_LABELS } from "@/lib/constants"
-import { formatDate, formatDateTime, shortRef, timeAgo } from "@/lib/format"
+import { formatDate, formatDateTime, shortRef, statusLabel, timeAgo } from "@/lib/format"
 import type { PrescriptionDTO } from "@/lib/types"
 import { cn } from "@/lib/utils"
 import { toast } from "sonner"
@@ -227,21 +230,8 @@ export function PrescriptionsView() {
   }
 
   // ---------- refill / viewer ----------
-  const [refillingId, setRefillingId] = useState<string | null>(null)
+  const [refillTarget, setRefillTarget] = useState<PrescriptionDTO | null>(null)
   const [rxViewId, setRxViewId] = useState<string | null>(null)
-
-  async function requestRefill(rx: PrescriptionDTO) {
-    setRefillingId(rx.id)
-    try {
-      const res = await prescriptionsApi.requestRefill(rx.id)
-      toast.success(`Refill requested — order ${shortRef(res.reference)} created`)
-      navigate("orders")
-    } catch (err) {
-      toast.error(errMessage(err, "Couldn't request the refill. Please try again."))
-    } finally {
-      setRefillingId(null)
-    }
-  }
 
   const rxToView = (list ?? []).find((rx) => rx.id === rxViewId) ?? null
 
@@ -507,13 +497,25 @@ export function PrescriptionsView() {
               key={rx.id}
               rx={rx}
               onView={() => setRxViewId(rx.id)}
-              onRequestRefill={() => void requestRefill(rx)}
-              onPayOrder={(orderId) => navigate("order", { orderId })}
-              refillBusy={refillingId === rx.id}
+              onRequestRefill={() => setRefillTarget(rx)}
+              onOpenOrder={(orderId) => navigate("order", { orderId })}
             />
           ))}
         </ul>
       )}
+
+      {/* refill request confirmation dialog */}
+      {refillTarget ? (
+        <RefillRequestDialog
+          rx={refillTarget}
+          onClose={() => setRefillTarget(null)}
+          onCreated={(res) => {
+            setRefillTarget(null)
+            setReloadKey((k) => k + 1)
+            navigate("order", { orderId: res.orderId })
+          }}
+        />
+      ) : null}
 
       {/* prescription file viewer */}
       {rxToView ? <PrescriptionFileDialog rx={rxToView} onClose={() => setRxViewId(null)} /> : null}
@@ -527,16 +529,16 @@ function PrescriptionCard({
   rx,
   onView,
   onRequestRefill,
-  onPayOrder,
-  refillBusy,
+  onOpenOrder,
 }: {
   rx: PrescriptionDTO
   onView: () => void
   onRequestRefill: () => void
-  onPayOrder: (orderId: string) => void
-  refillBusy: boolean
+  onOpenOrder: (orderId: string) => void
 }) {
-  const eligibleForRefill = rx.status === "APPROVED" && rx.refillsAllowed > rx.refillsUsed
+  const eligibility = evaluateRefillEligibility(rx)
+  const isChildRefill = eligibility.isRefill
+  const orderAwaitingPayment = rx.orderStatus === "AWAITING_PAYMENT"
 
   return (
     <li>
@@ -545,11 +547,29 @@ function PrescriptionCard({
           <div className="flex flex-wrap items-center gap-2">
             <FileText className="h-4 w-4 shrink-0 text-muted-foreground" aria-hidden />
             <p className="min-w-0 flex-1 truncate text-sm font-semibold">{rx.fileName}</p>
+            {isChildRefill ? (
+              <Badge variant="outline" className="gap-1 border-teal-300 bg-teal-50 text-teal-800 dark:border-teal-800 dark:bg-teal-950/40 dark:text-teal-300">
+                <Repeat2 className="h-3 w-3" aria-hidden />
+                {rx.refillNumber
+                  ? rx.parentRefillsAllowed
+                    ? `Refill #${rx.refillNumber} of ${rx.parentRefillsAllowed}`
+                    : `Refill #${rx.refillNumber}`
+                  : "Refill"}
+              </Badge>
+            ) : null}
             <RxStatusBadge status={rx.status} />
           </div>
           <p className="mt-1.5 text-xs text-muted-foreground">
             Uploaded {formatDateTime(rx.createdAt)} · {timeAgo(rx.createdAt)}
+            {rx.orderReference ? ` · Order #${shortRef(rx.orderReference)}` : ""}
+            {rx.orderStatus ? ` (${statusLabel(rx.orderStatus)})` : ""}
           </p>
+          {isChildRefill && rx.sourceOrderReference ? (
+            <p className="mt-1 text-xs text-muted-foreground">
+              Refill of original order #{shortRef(rx.sourceOrderReference)}
+              {rx.refillReleasedAt ? " · refill slot returned" : ""}
+            </p>
+          ) : null}
 
           {rx.notes ? (
             <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">{rx.notes}</p>
@@ -567,20 +587,46 @@ function PrescriptionCard({
             </blockquote>
           ) : null}
 
-          <div className="mt-3 flex flex-wrap items-center gap-2">
-            {rx.refillsAllowed > 0 ? (
-              <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2.5 py-1 text-xs font-medium text-muted-foreground">
-                <Repeat2 className="h-3 w-3" aria-hidden />
-                Refills: {rx.refillsUsed} of {rx.refillsAllowed} used
-              </span>
-            ) : null}
-            {rx.validUntil ? (
+          {!isChildRefill ? (
+            <div className="mt-3 flex flex-wrap items-center gap-2">
+              {rx.refillsAllowed > 0 ? (
+                <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2.5 py-1 text-xs font-medium text-muted-foreground">
+                  <Repeat2 className="h-3 w-3" aria-hidden />
+                  Refills: {rx.refillsUsed} of {rx.refillsAllowed} used
+                </span>
+              ) : null}
+              {rx.validUntil ? (
+                <span
+                  className={cn(
+                    "inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium",
+                    eligibility.expired
+                      ? "bg-rose-100 text-rose-800 dark:bg-rose-950/60 dark:text-rose-300"
+                      : "bg-muted text-muted-foreground"
+                  )}
+                >
+                  <CalendarClock className="h-3 w-3" aria-hidden />
+                  {eligibility.expired ? "Expired" : "Valid until"} {formatDate(rx.validUntil)}
+                </span>
+              ) : null}
+            </div>
+          ) : rx.validUntil ? (
+            <div className="mt-3 flex flex-wrap items-center gap-2">
               <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2.5 py-1 text-xs font-medium text-muted-foreground">
                 <CalendarClock className="h-3 w-3" aria-hidden />
-                Valid until {formatDate(rx.validUntil)}
+                Original prescription valid until {formatDate(rx.validUntil)}
               </span>
-            ) : null}
-          </div>
+            </div>
+          ) : null}
+
+          {!isChildRefill && eligibility.blockedReason === "no_order" ? (
+            <p className="mt-2 text-xs text-muted-foreground">
+              Refills apply once this prescription is linked to a pharmacy order.
+            </p>
+          ) : !isChildRefill && eligibility.blockedReason === "source_order_cancelled" ? (
+            <p className="mt-2 text-xs text-muted-foreground">
+              Refills aren&apos;t available because the linked order was cancelled or rejected.
+            </p>
+          ) : null}
 
           <div className="mt-3 flex flex-wrap gap-2">
             <Button variant="outline" size="sm" onClick={onView} aria-label={`View ${rx.fileName}`}>
@@ -590,21 +636,30 @@ function PrescriptionCard({
             {rx.orderId ? (
               <Button
                 size="sm"
-                className="gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white"
-                onClick={() => onPayOrder(rx.orderId!)}
+                variant={orderAwaitingPayment ? "default" : "outline"}
+                className={cn(
+                  "gap-1.5",
+                  orderAwaitingPayment && "bg-emerald-600 text-white hover:bg-emerald-700"
+                )}
+                onClick={() => onOpenOrder(rx.orderId!)}
               >
                 <Wallet className="h-3.5 w-3.5" aria-hidden />
-                View / Pay Order
+                {orderAwaitingPayment ? "View / Pay Order" : "View Order"}
               </Button>
             ) : null}
-            {eligibleForRefill ? (
-              <Button size="sm" variant="outline" onClick={onRequestRefill} disabled={refillBusy}>
-                {refillBusy ? (
-                  <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden />
-                ) : (
-                  <Repeat2 className="h-3.5 w-3.5" aria-hidden />
-                )}
+            {!isChildRefill && eligibility.canRequest ? (
+              <Button size="sm" variant="outline" onClick={onRequestRefill}>
+                <Repeat2 className="h-3.5 w-3.5" aria-hidden />
                 Request refill
+              </Button>
+            ) : !isChildRefill && eligibility.blockedReason === "active_refill" && eligibility.activeRefillOrderId ? (
+              <Button
+                size="sm"
+                variant="secondary"
+                onClick={() => onOpenOrder(eligibility.activeRefillOrderId!)}
+              >
+                <Repeat2 className="h-3.5 w-3.5" aria-hidden />
+                Refill in progress
               </Button>
             ) : null}
           </div>

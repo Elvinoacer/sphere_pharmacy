@@ -20,6 +20,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Textarea } from "@/components/ui/textarea"
 import { EmptyState } from "@/components/shared/empty-state"
+import { RefillRequestDialog } from "@/components/shared/refill-request-dialog"
 import { OrderStatusBadge, PaymentStatusBadge, RxFlagBadge, RxStatusBadge } from "@/components/shared/status-badges"
 import { useAppStore } from "@/store/use-app-store"
 import { useAuthStore } from "@/store/use-auth-store"
@@ -30,6 +31,7 @@ import {
   paymentsApi,
   prescriptionsApi,
 } from "@/lib/api-client"
+import { evaluateRefillEligibility } from "@/lib/prescriptions/refill-core"
 import { ORDER_TYPE_LABELS, LOYALTY, PAYMENT_METHOD_LABELS, waLink, type OrderStatus } from "@/lib/constants"
 import { formatDate, formatDateTime, formatKES, shortRef, statusLabel } from "@/lib/format"
 import type { OrderDTO, PrescriptionDTO } from "@/lib/types"
@@ -212,7 +214,7 @@ export function OrderDetailView() {
   const [reorderOpen, setReorderOpen] = useState(false)
   const [reordering, setReordering] = useState(false)
   const [rxViewId, setRxViewId] = useState<string | null>(null)
-  const [refillingId, setRefillingId] = useState<string | null>(null)
+  const [refillTarget, setRefillTarget] = useState<PrescriptionDTO | null>(null)
 
   // ---------- derived ----------
 
@@ -226,7 +228,11 @@ export function OrderDetailView() {
   const canCancel = order ? CANCELLABLE_STATUSES.includes(order.status) : false
   const canReorder =
     order?.status === "COMPLETED_PICKUP" || order?.status === "COMPLETED_DELIVERY"
-  const isCashOrder = order ? order.payments.some((p) => p.provider === "CASH") : false
+  const isCashOrder = order
+    ? order.paymentMethod === "CASH_ON_DELIVERY" ||
+      order.paymentMethod === "CASH_ON_PICKUP" ||
+      order.payments.some((p) => p.provider === "CASH")
+    : false
 
   // ---------- payment handlers ----------
 
@@ -351,19 +357,6 @@ export function OrderDetailView() {
 
   // ---------- prescriptions ----------
 
-  async function requestRefill(rx: PrescriptionDTO) {
-    setRefillingId(rx.id)
-    try {
-      const res = await prescriptionsApi.requestRefill(rx.id)
-      toast.success(`Refill requested — order ${shortRef(res.reference)} created`)
-      navigate("orders")
-    } catch (err) {
-      toast.error(errMessage(err, "Couldn't request the refill. Please try again."))
-    } finally {
-      setRefillingId(null)
-    }
-  }
-
   const rxToView = order?.prescriptions.find((rx) => rx.id === rxViewId) ?? null
 
   // ============================== GUARDS ==============================
@@ -472,9 +465,31 @@ export function OrderDetailView() {
           <h1 className="font-mono text-2xl font-bold tracking-tight">{order.reference}</h1>
           <OrderStatusBadge status={order.status} />
           <Badge variant="secondary">{ORDER_TYPE_LABELS[order.type]}</Badge>
+          {order.isRefill ? (
+            <Badge variant="outline" className="gap-1 border-teal-300 bg-teal-50 text-teal-800 dark:border-teal-800 dark:bg-teal-950/40 dark:text-teal-300">
+              <Repeat2 className="h-3 w-3" aria-hidden />
+              Refill
+            </Badge>
+          ) : null}
         </div>
         <p className="mt-1 text-sm text-muted-foreground">
           Placed {formatDateTime(order.createdAt)}
+          {order.refillOfOrderReference ? (
+            <>
+              {" · Refill of "}
+              {order.refillOfOrderId ? (
+                <button
+                  type="button"
+                  className="font-mono font-medium text-primary underline-offset-4 hover:underline"
+                  onClick={() => navigate("order", { orderId: order.refillOfOrderId! })}
+                >
+                  #{shortRef(order.refillOfOrderReference)}
+                </button>
+              ) : (
+                <span className="font-mono">#{shortRef(order.refillOfOrderReference)}</span>
+              )}
+            </>
+          ) : null}
         </p>
         <Button
           variant="outline"
@@ -753,63 +768,95 @@ export function OrderDetailView() {
             <CardTitle className="text-base">Prescriptions</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3 pt-0">
-            {order.prescriptions.map((rx) => (
-              <div
-                key={rx.id}
-                className="rounded-lg border p-3"
-              >
-                <div className="flex flex-wrap items-center gap-2">
-                  <FileText className="h-4 w-4 text-muted-foreground" aria-hidden />
-                  <p className="min-w-0 flex-1 truncate text-sm font-medium">{rx.fileName}</p>
-                  <RxStatusBadge status={rx.status} />
-                </div>
-
-                {rx.reviewNotes ? (
-                  <blockquote className="mt-2 border-l-2 border-primary/40 pl-3 text-sm text-muted-foreground">
-                    “{rx.reviewNotes}”
-                    {rx.reviewedByName ? (
-                      <footer className="mt-1 text-xs">
-                        — {rx.reviewedByName}
-                        {rx.reviewedAt ? `, ${formatDate(rx.reviewedAt)}` : ""}
-                      </footer>
+            {order.prescriptions.map((rx) => {
+              const eligibility = evaluateRefillEligibility(rx)
+              const hasActiveOtherRefill =
+                eligibility.blockedReason === "active_refill" &&
+                eligibility.activeRefillOrderId &&
+                eligibility.activeRefillOrderId !== order.id
+              return (
+                <div
+                  key={rx.id}
+                  className="rounded-lg border p-3"
+                >
+                  <div className="flex flex-wrap items-center gap-2">
+                    <FileText className="h-4 w-4 text-muted-foreground" aria-hidden />
+                    <p className="min-w-0 flex-1 truncate text-sm font-medium">{rx.fileName}</p>
+                    {eligibility.isRefill ? (
+                      <Badge variant="outline" className="gap-1 border-teal-300 bg-teal-50 text-teal-800 dark:border-teal-800 dark:bg-teal-950/40 dark:text-teal-300">
+                        <Repeat2 className="h-3 w-3" aria-hidden />
+                        {rx.refillNumber
+                          ? eligibility.refillsAllowed > 0
+                            ? `Refill #${rx.refillNumber} of ${eligibility.refillsAllowed}`
+                            : `Refill #${rx.refillNumber}`
+                          : "Refill"}
+                      </Badge>
                     ) : null}
-                  </blockquote>
-                ) : null}
+                    <RxStatusBadge status={rx.status} />
+                  </div>
 
-                {rx.refillsAllowed > 0 ? (
-                  <p className="mt-2 text-xs text-muted-foreground">
-                    Refills: {rx.refillsUsed} of {rx.refillsAllowed} used
-                  </p>
-                ) : null}
-
-                <div className="mt-3 flex flex-wrap gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setRxViewId(rx.id)}
-                    aria-label={`View ${rx.fileName}`}
-                  >
-                    <FileSearch className="h-3.5 w-3.5" aria-hidden />
-                    View
-                  </Button>
-                  {rx.status === "APPROVED" && rx.refillsAllowed > rx.refillsUsed ? (
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => void requestRefill(rx)}
-                      disabled={refillingId === rx.id}
-                    >
-                      {refillingId === rx.id ? (
-                        <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden />
-                      ) : (
-                        <Repeat2 className="h-3.5 w-3.5" aria-hidden />
-                      )}
-                      Request refill
-                    </Button>
+                  {rx.reviewNotes ? (
+                    <blockquote className="mt-2 border-l-2 border-primary/40 pl-3 text-sm text-muted-foreground">
+                      “{rx.reviewNotes}”
+                      {rx.reviewedByName ? (
+                        <footer className="mt-1 text-xs">
+                          — {rx.reviewedByName}
+                          {rx.reviewedAt ? `, ${formatDate(rx.reviewedAt)}` : ""}
+                        </footer>
+                      ) : null}
+                    </blockquote>
                   ) : null}
+
+                  {eligibility.refillsAllowed > 0 ? (
+                    <p className="mt-2 text-xs text-muted-foreground">
+                      Refills: {eligibility.refillsUsed} of {eligibility.refillsAllowed} used
+                      {eligibility.validUntil ? (
+                        <span className={cn(eligibility.expired && "font-medium text-rose-600 dark:text-rose-400")}>
+                          {" · "}
+                          {eligibility.expired ? "Expired" : "Valid until"} {formatDate(eligibility.validUntil)}
+                        </span>
+                      ) : null}
+                    </p>
+                  ) : null}
+                  {rx.refillReleasedAt ? (
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      This refill slot was returned to your original prescription.
+                    </p>
+                  ) : null}
+
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setRxViewId(rx.id)}
+                      aria-label={`View ${rx.fileName}`}
+                    >
+                      <FileSearch className="h-3.5 w-3.5" aria-hidden />
+                      View
+                    </Button>
+                    {eligibility.canRequest ? (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => setRefillTarget(rx)}
+                      >
+                        <Repeat2 className="h-3.5 w-3.5" aria-hidden />
+                        {eligibility.isRefill ? `Request next refill (${eligibility.remaining} left)` : "Request refill"}
+                      </Button>
+                    ) : hasActiveOtherRefill ? (
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        onClick={() => navigate("order", { orderId: eligibility.activeRefillOrderId! })}
+                      >
+                        <Repeat2 className="h-3.5 w-3.5" aria-hidden />
+                        View active refill
+                      </Button>
+                    ) : null}
+                  </div>
                 </div>
-              </div>
-            ))}
+              )
+            })}
           </CardContent>
         </Card>
       ) : null}
@@ -975,6 +1022,19 @@ export function OrderDetailView() {
         </DialogContent>
       </Dialog>
 
+      {/* ---------- refill request dialog ---------- */}
+      {refillTarget ? (
+        <RefillRequestDialog
+          rx={refillTarget}
+          initialOrder={order}
+          onClose={() => setRefillTarget(null)}
+          onCreated={(res) => {
+            setRefillTarget(null)
+            navigate("order", { orderId: res.orderId })
+          }}
+        />
+      ) : null}
+
       {/* ---------- prescription file dialog ---------- */}
       {rxToView ? (
         <PrescriptionFileDialog
@@ -1014,13 +1074,24 @@ function PrescriptionFileDialog({ rx, onClose }: { rx: PrescriptionDTO; onClose:
   }, [rx.id])
 
   const isImage = detail ? detail.fileType.startsWith("image") : false
-  const imageSrc = detail?.fileData
-    ? detail.fileData.startsWith("data:")
-      ? detail.fileData
-      : `data:${detail.fileType};base64,${detail.fileData}`
-    : null
+  const imageSrc =
+    detail?.fileUrl ||
+    (detail?.fileData
+      ? detail.fileData.startsWith("data:")
+        ? detail.fileData
+        : `data:${detail.fileType};base64,${detail.fileData}`
+      : null)
 
   function download() {
+    if (detail?.fileUrl) {
+      const link = document.createElement("a")
+      link.href = `/api/prescriptions/${encodeURIComponent(rx.id)}?download=1`
+      link.download = detail.fileName || "prescription"
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
+      return
+    }
     if (!detail?.fileData) return
     let url: string | null = null
     try {
@@ -1076,13 +1147,19 @@ function PrescriptionFileDialog({ rx, onClose }: { rx: PrescriptionDTO; onClose:
               alt={`Prescription file: ${rx.fileName}`}
               className="mx-auto max-h-[60dvh] rounded-lg border object-contain"
             />
+          ) : detail?.fileType === "application/pdf" && imageSrc ? (
+            <iframe
+              src={imageSrc}
+              title={`Prescription PDF: ${rx.fileName}`}
+              className="h-[60dvh] w-full rounded-lg border bg-white"
+            />
           ) : (
             <div className="flex flex-col items-center gap-3 rounded-lg border border-dashed py-12 text-center">
               <FileText className="h-12 w-12 text-muted-foreground" aria-hidden />
               <div>
                 <p className="text-sm font-medium">{detail?.fileName}</p>
                 <p className="text-xs text-muted-foreground">
-                  PDF document — download to view on your device.
+                  Preview is unavailable for this file type. Download it to view on your device.
                 </p>
               </div>
             </div>

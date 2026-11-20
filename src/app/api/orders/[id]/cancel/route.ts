@@ -7,6 +7,7 @@ import { getSession } from "@/lib/session"
 import { tokenHash } from "@/lib/hash"
 import { escapeHtml, enforceRateLimit, rejectOversizedRequest, publicError } from "@/lib/security/request"
 import { cancelOrderPosDeduction } from "@/lib/pos-reconciliation"
+import { releaseRefillSlotsForOrder } from "@/lib/prescriptions/refill-server"
 
 type Params = { params: Promise<{ id: string }> }
 const CANCELLABLE = ["RECEIVED", "UNDER_REVIEW", "PRESCRIPTION_VERIFIED", "AVAILABILITY_CONFIRMED", "AWAITING_PAYMENT"]
@@ -86,6 +87,7 @@ export async function POST(request: Request, { params }: Params) {
           }
           await tx.payment.updateMany({ where: { orderId: order.id, status: { in: ["PENDING", "PROCESSING"] } }, data: { status: "FAILED", failureReason: "Order cancelled before payment" } })
           await tx.orderStatusHistory.create({ data: { orderId: order.id, status: "CANCELLED", actor, note: reason ? `Cancelled: ${reason}` : "Cancelled by customer" } })
+          await releaseRefillSlotsForOrder(tx, order.id)
           await cancelOrderPosDeduction(tx, order.id, actor)
         }, { timeout: 15000, maxWait: 5000 })
         break
@@ -135,7 +137,7 @@ export async function POST(request: Request, { params }: Params) {
           text: `Your order ${order.reference} has been cancelled.${reason ? ` Reason: ${reason}` : ""}`,
         } : undefined,
       })
-      await notifyStaff({ dedupeKey: `cancel:${order.id}`, roles: ["ADMIN", "PHARMACIST", "STAFF"], event: "ORDER_CANCELLED", title: `Order cancelled: ${order.reference}`, message: `Order ${order.reference} was cancelled by ${actor}.`, link: `${appUrl}/admin/orders` })
+      await notifyStaff({ dedupeKey: `cancel:${order.id}`, roles: ["ADMIN", "PHARMACIST", "STAFF"], event: "ORDER_CANCELLED", title: `Order cancelled: ${order.reference}`, message: `Order ${order.reference} was cancelled by ${actor}.`, link: `${appUrl}/admin?section=orders` })
     }
 
     const updated = await db.order.findUnique({ where: { id: order.id }, include: ORDER_INCLUDE })

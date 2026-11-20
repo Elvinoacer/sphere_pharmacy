@@ -7,6 +7,7 @@
 // Request clarification (message required), Partially approve (unavailable items noted).
 
 import { useCallback, useEffect, useMemo, useState } from "react"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
@@ -23,14 +24,15 @@ import { RxStatusBadge } from "@/components/shared/status-badges"
 import { ordersApi, prescriptionsApi } from "@/lib/api-client"
 import type { OrderDTO, PrescriptionDTO } from "@/lib/types"
 import { RX_STATUS_LABELS, RX_STATUSES, type RxStatus } from "@/lib/constants"
-import { formatDate, formatDateTime, formatKES, timeAgo } from "@/lib/format"
+import { formatDate, formatDateTime, formatKES, shortRef, statusLabel, timeAgo } from "@/lib/format"
+import { isOrderCancelledOrRejected, isRefillPrescriptionRecord } from "@/lib/prescriptions/refill-core"
 import { useAuthStore } from "@/store/use-auth-store"
 import { toast } from "sonner"
 import { AdminSectionHeader, apiErrorMessage, telHref, waHref, type SectionProps } from "../admin-shared"
 import {
   ShieldAlert, Loader2, FileText, Download, Phone, MessageCircle, Eye,
-  CheckCircle2, XCircle, HelpCircle, ListChecks, History, Clock,
-  ZoomIn, ZoomOut, RotateCw, RefreshCw, Maximize2, ExternalLink, ArrowRight, ArrowLeft, X, User,
+  CheckCircle2, XCircle, HelpCircle, ListChecks, History, Clock, Repeat2,
+  ZoomIn, ZoomOut, RotateCw, RefreshCw, Maximize2, ExternalLink, ArrowRight, ArrowLeft, X,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
@@ -77,14 +79,14 @@ export function PrescriptionsSection({ refreshKey, onRefresh }: SectionProps) {
   const queue = useMemo(
     () =>
       all
-        .filter((rx) => rx.status === "PENDING" || rx.status === "CLARIFICATION_REQUESTED")
+        .filter((rx) => (rx.status === "PENDING" || rx.status === "CLARIFICATION_REQUESTED") && !isOrderCancelledOrRejected(rx.orderStatus))
         .sort((a, b) => queueOrder[a.status] - queueOrder[b.status] || new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()),
     [all]
   )
   const history = useMemo(
     () =>
       all
-        .filter((rx) => rx.status !== "PENDING")
+        .filter((rx) => rx.status !== "PENDING" || isOrderCancelledOrRejected(rx.orderStatus))
         .filter((rx) => (historyFilter === "ALL" ? true : rx.status === historyFilter))
         .sort((a, b) => new Date(b.reviewedAt ?? b.createdAt).getTime() - new Date(a.reviewedAt ?? a.createdAt).getTime()),
     [all, historyFilter]
@@ -188,7 +190,7 @@ export function PrescriptionsSection({ refreshKey, onRefresh }: SectionProps) {
               description="Completed reviews will show here with reviewer notes, refills and validity."
             />
           ) : (
-            history.map((rx) => <HistoryCard key={rx.id} rx={rx} />)
+            history.map((rx) => <HistoryCard key={rx.id} rx={rx} onInspect={() => setReviewId(rx.id)} />)
           )}
         </TabsContent>
       </Tabs>
@@ -214,19 +216,37 @@ export function PrescriptionsSection({ refreshKey, onRefresh }: SectionProps) {
 function QueueCard({ rx, onReview, canReview }: { rx: PrescriptionDTO; onReview: () => void; canReview: boolean }) {
   const wa = waHref(rx.customerPhone, `Hello ${rx.customerName ?? "there"}, this is Sphere Pharmacy regarding your prescription upload (${rx.fileName}).`)
   const tel = telHref(rx.customerPhone)
+  const isRefill = isRefillPrescriptionRecord(rx)
   return (
     <Card className="card-lift">
       <CardContent className="flex flex-wrap items-center gap-3 p-4">
         <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-amber-100 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300">
-          {rx.status === "PENDING" ? <Clock className="h-5 w-5" aria-hidden /> : <HelpCircle className="h-5 w-5" aria-hidden />}
+          {isRefill ? <Repeat2 className="h-5 w-5" aria-hidden /> : rx.status === "PENDING" ? <Clock className="h-5 w-5" aria-hidden /> : <HelpCircle className="h-5 w-5" aria-hidden />}
         </span>
         <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-semibold">{rx.customerName ?? "Standalone upload"}</p>
+          <div className="flex flex-wrap items-center gap-1.5">
+            <p className="truncate text-sm font-semibold">{rx.customerName ?? "Standalone upload"}</p>
+            {isRefill ? (
+              <Badge variant="outline" className="gap-1 border-teal-300 bg-teal-50 px-1.5 py-0 text-[10px] text-teal-800 dark:border-teal-800 dark:bg-teal-950/40 dark:text-teal-300">
+                <Repeat2 className="h-2.5 w-2.5" aria-hidden />
+                {rx.refillNumber
+                  ? rx.parentRefillsAllowed
+                    ? `Refill #${rx.refillNumber} of ${rx.parentRefillsAllowed}`
+                    : `Refill #${rx.refillNumber}`
+                  : "Refill"}
+              </Badge>
+            ) : null}
+          </div>
           <p className="truncate text-xs text-muted-foreground">
             {rx.fileName} · uploaded {timeAgo(rx.createdAt)}
           </p>
           {rx.orderReference ? (
-            <p className="truncate text-xs text-muted-foreground">Linked order: <span className="font-medium text-foreground">{rx.orderReference}</span></p>
+            <p className="truncate text-xs text-muted-foreground">
+              Linked order: <span className="font-medium text-foreground">{rx.orderReference}</span>
+              {isRefill && rx.sourceOrderReference ? (
+                <span> · original order #{shortRef(rx.sourceOrderReference)}</span>
+              ) : null}
+            </p>
           ) : null}
           {rx.notes ? <p className="mt-1 truncate text-xs italic text-muted-foreground">“{rx.notes}”</p> : null}
         </div>
@@ -253,12 +273,29 @@ function QueueCard({ rx, onReview, canReview }: { rx: PrescriptionDTO; onReview:
 
 // ---------- history card ----------
 
-function HistoryCard({ rx }: { rx: PrescriptionDTO }) {
+function HistoryCard({ rx, onInspect }: { rx: PrescriptionDTO; onInspect: () => void }) {
+  const isRefill = isRefillPrescriptionRecord(rx)
+  const orderClosed = isOrderCancelledOrRejected(rx.orderStatus)
   return (
     <Card>
       <CardContent className="p-4">
         <div className="flex flex-wrap items-center gap-2">
           <p className="min-w-0 flex-1 truncate text-sm font-semibold">{rx.customerName ?? "Standalone upload"}</p>
+          {isRefill ? (
+            <Badge variant="outline" className="gap-1 border-teal-300 bg-teal-50 px-1.5 py-0 text-[10px] text-teal-800 dark:border-teal-800 dark:bg-teal-950/40 dark:text-teal-300">
+              <Repeat2 className="h-2.5 w-2.5" aria-hidden />
+              {rx.refillNumber
+                ? rx.parentRefillsAllowed
+                  ? `Refill #${rx.refillNumber} of ${rx.parentRefillsAllowed}`
+                  : `Refill #${rx.refillNumber}`
+                : "Refill"}
+            </Badge>
+          ) : null}
+          {orderClosed && rx.orderStatus ? (
+            <Badge variant="outline" className="text-[10px] text-muted-foreground">
+              Order {statusLabel(rx.orderStatus).toLowerCase()}
+            </Badge>
+          ) : null}
           <RxStatusBadge status={rx.status} />
         </div>
         <p className="mt-1 truncate text-xs text-muted-foreground">
@@ -269,7 +306,16 @@ function HistoryCard({ rx }: { rx: PrescriptionDTO }) {
           {rx.reviewedByName ? (
             <p><span className="font-medium text-foreground">Reviewed by:</span> {rx.reviewedByName}{rx.reviewedAt ? ` · ${formatDateTime(rx.reviewedAt)}` : ""}</p>
           ) : null}
-          {rx.refillsAllowed > 0 ? (
+          {isRefill ? (
+            <p>
+              <span className="font-medium text-foreground">Refill dispense:</span>{" "}
+              {rx.refillReleasedAt
+                ? "Slot returned to original prescription"
+                : rx.parentRefillsAllowed
+                  ? `Parent usage ${rx.parentRefillsUsed ?? 0} of ${rx.parentRefillsAllowed}`
+                  : "Linked to original prescription"}
+            </p>
+          ) : rx.refillsAllowed > 0 ? (
             <p><span className="font-medium text-foreground">Refills:</span> {rx.refillsUsed} used of {rx.refillsAllowed} allowed</p>
           ) : (
             <p><span className="font-medium text-foreground">Refills:</span> none allowed</p>
@@ -281,6 +327,12 @@ function HistoryCard({ rx }: { rx: PrescriptionDTO }) {
         {rx.reviewNotes ? (
           <p className="mt-2 rounded-lg bg-muted/50 p-2.5 text-xs">“{rx.reviewNotes}”</p>
         ) : null}
+        <div className="mt-3 flex justify-end">
+          <Button size="sm" variant="outline" className="h-7 gap-1 text-xs" onClick={onInspect}>
+            <Eye className="h-3.5 w-3.5" aria-hidden />
+            {rx.status === "APPROVED" || orderClosed ? "View details" : "Inspect / re-review"}
+          </Button>
+        </div>
       </CardContent>
     </Card>
   )
@@ -341,6 +393,7 @@ export function ReviewDialog({
       .then(async (rx) => {
         if (cancelled) return
         setDetail(rx)
+        setRefills(String(Math.max(rx.refillsUsed, rx.refillsAllowed)))
         setLoading(false)
         if (rx.orderId) {
           try {
@@ -385,10 +438,19 @@ export function ReviewDialog({
     document.body.removeChild(a)
   }
 
+  const isRefillCopy = detail ? isRefillPrescriptionRecord(detail) : false
+  const orderClosed = Boolean(detail?.orderStatus && ["CANCELLED", "REFUNDED"].includes(detail.orderStatus))
+  const parentExpired = Boolean(
+    isRefillCopy &&
+      detail?.parentPrescriptionId &&
+      (!detail.parentValidUntil || Date.parse(detail.parentValidUntil) < Date.now() || !["APPROVED", "PARTIALLY_APPROVED"].includes(detail.parentStatus ?? ""))
+  )
   const notesRequired = action === "REJECTED" || action === "CLARIFICATION_REQUESTED" || action === "PARTIALLY_APPROVED"
   const notesValid = notes.trim().length >= 3
   const partialValid = action !== "PARTIALLY_APPROVED" || unavailable.trim().length >= 3
-  const refillsNum = Math.max(0, Math.min(6, Number(refills) || 0))
+  const minRefillsAllowed = detail && !isRefillCopy ? detail.refillsUsed : 0
+  const refillsNum = Math.max(minRefillsAllowed, Math.min(6, Number(refills) || 0))
+  const approvalBlockedByParent = parentExpired && (action === "APPROVED" || action === "PARTIALLY_APPROVED")
 
   async function submit() {
     if (!detail) return
@@ -403,13 +465,21 @@ export function ReviewDialog({
       await prescriptionsApi.review(detail.id, {
         status: action,
         reviewNotes: reviewNotes || undefined,
-        refillsAllowed: action === "APPROVED" || action === "PARTIALLY_APPROVED" ? refillsNum : undefined,
-        validDays: action === "APPROVED" || action === "PARTIALLY_APPROVED" ? Number(validDays) : undefined,
+        ...(!isRefillCopy && (action === "APPROVED" || action === "PARTIALLY_APPROVED")
+          ? { refillsAllowed: refillsNum, validDays: Number(validDays) }
+          : {}),
       })
       toast.success(
-        action === "APPROVED" ? "Prescription approved — refills and validity recorded."
-          : action === "REJECTED" ? "Prescription rejected — customer will be notified."
-            : action === "CLARIFICATION_REQUESTED" ? "Clarification request sent to the customer."
+        action === "APPROVED"
+          ? isRefillCopy
+            ? "Refill dispense verified and approved."
+            : "Prescription approved — refills and validity recorded."
+          : action === "REJECTED"
+            ? isRefillCopy
+              ? "Refill rejected — customer notified and refill slot returned."
+              : "Prescription rejected — customer will be notified."
+            : action === "CLARIFICATION_REQUESTED"
+              ? "Clarification request sent to the customer."
               : "Partially approved — unavailable items noted."
       )
       onSubmitted()
@@ -648,6 +718,56 @@ export function ReviewDialog({
                     </div>
                   ) : null}
 
+                  {/* Refill verification context banner */}
+                  {detail && isRefillCopy ? (
+                    <div
+                      className={cn(
+                        "space-y-1.5 rounded-lg border p-3 text-xs",
+                        parentExpired
+                          ? "border-rose-300 bg-rose-50 text-rose-900 dark:border-rose-800 dark:bg-rose-950/40 dark:text-rose-200"
+                          : "border-teal-300 bg-teal-50/70 text-teal-950 dark:border-teal-800 dark:bg-teal-950/30 dark:text-teal-200"
+                      )}
+                    >
+                      <p className="flex items-center gap-1.5 font-bold uppercase tracking-wider">
+                        <Repeat2 className="h-3.5 w-3.5 shrink-0" aria-hidden />
+                        Refill re-verification
+                        {detail.refillNumber
+                          ? detail.parentRefillsAllowed
+                            ? ` · #${detail.refillNumber} of ${detail.parentRefillsAllowed}`
+                            : ` · #${detail.refillNumber}`
+                          : ""}
+                      </p>
+                      <p>
+                        {detail.sourceOrderReference ? (
+                          <>
+                            Source order <span className="font-mono font-semibold">#{shortRef(detail.sourceOrderReference)}</span>
+                          </>
+                        ) : (
+                          "Refill of a previously approved prescription"
+                        )}
+                        {detail.parentReviewedByName ? ` · originally approved by ${detail.parentReviewedByName}` : ""}
+                      </p>
+                      {detail.parentRefillsAllowed != null ? (
+                        <p>
+                          Original allowance: <span className="font-semibold">{detail.parentRefillsUsed ?? 0} of {detail.parentRefillsAllowed} used</span>
+                          {detail.parentValidUntil ? ` · valid until ${formatDate(detail.parentValidUntil)}` : ""}
+                        </p>
+                      ) : null}
+                      {detail.parentReviewNotes ? (
+                        <p className="italic opacity-90">Original notes: “{detail.parentReviewNotes}”</p>
+                      ) : null}
+                      {parentExpired ? (
+                        <p className="font-semibold">
+                          The original prescription has expired or is no longer valid — reject this refill and ask the customer to upload a current prescription.
+                        </p>
+                      ) : (
+                        <p className="opacity-85">
+                          Approving verifies this dispense only; it does not grant extra refills or extend the original expiry date.
+                        </p>
+                      )}
+                    </div>
+                  ) : null}
+
                   {/* Customer notes */}
                   {detail?.notes ? (
                     <div className="space-y-1">
@@ -692,7 +812,17 @@ export function ReviewDialog({
                   ) : null}
 
                   {/* Pharmacist Review Form */}
-                  {canReview && detail && detail.status !== "APPROVED" ? (
+                  {orderClosed && detail ? (
+                    <div className="rounded-lg border border-muted bg-muted/40 p-3 text-xs text-muted-foreground">
+                      <p className="font-semibold text-foreground">
+                        Linked order is {statusLabel(detail.orderStatus!).toLowerCase()}
+                      </p>
+                      <p className="mt-1">
+                        This prescription belongs to a cancelled or refunded order and no longer requires pharmacist review.
+                        {detail.refillReleasedAt ? " Its refill slot was automatically returned to the original prescription." : ""}
+                      </p>
+                    </div>
+                  ) : canReview && detail && detail.status !== "APPROVED" ? (
                     <div className="space-y-3 rounded-lg border p-3.5 bg-card shadow-xs">
                       <div className="flex items-center justify-between">
                         <p className="text-xs font-bold uppercase tracking-wider text-foreground">Pharmacist Decision</p>
@@ -708,7 +838,7 @@ export function ReviewDialog({
                           value="APPROVED"
                           icon={CheckCircle2}
                           title="Approve"
-                          desc="Valid prescription — authorize"
+                          desc={isRefillCopy ? "Verify this refill dispense" : "Valid prescription — authorize"}
                           selected={action === "APPROVED"}
                           colorScheme="emerald"
                         />
@@ -732,42 +862,55 @@ export function ReviewDialog({
                           value="REJECTED"
                           icon={XCircle}
                           title="Reject"
-                          desc="Invalid, expired or unreadable"
+                          desc={isRefillCopy ? "Deny refill (returns refill slot)" : "Invalid, expired or unreadable"}
                           selected={action === "REJECTED"}
                           colorScheme="rose"
                         />
                       </RadioGroup>
 
                       {/* Conditional inputs based on decision */}
-                      {action === "APPROVED" || action === "PARTIALLY_APPROVED" ? (
-                        <div className="grid grid-cols-2 gap-2.5 pt-1">
-                          <div className="space-y-1">
-                            <Label htmlFor="rx-refills" className="text-xs font-medium">Refills allowed (0–6)</Label>
-                            <Input
-                              id="rx-refills"
-                              type="number"
-                              min={0}
-                              max={6}
-                              value={refills}
-                              onChange={(e) => setRefills(e.target.value)}
-                              className="h-8 text-xs"
-                            />
+                      {(action === "APPROVED" || action === "PARTIALLY_APPROVED") && !isRefillCopy ? (
+                        <div className="space-y-2 pt-1">
+                          <div className="grid grid-cols-2 gap-2.5">
+                            <div className="space-y-1">
+                              <Label htmlFor="rx-refills" className="text-xs font-medium">
+                                Refills allowed ({minRefillsAllowed}–6)
+                              </Label>
+                              <Input
+                                id="rx-refills"
+                                type="number"
+                                min={minRefillsAllowed}
+                                max={6}
+                                value={refills}
+                                onChange={(e) => setRefills(e.target.value)}
+                                className="h-8 text-xs"
+                              />
+                            </div>
+                            <div className="space-y-1">
+                              <Label htmlFor="rx-valid" className="text-xs font-medium">Validity period</Label>
+                              <Select value={validDays} onValueChange={setValidDays}>
+                                <SelectTrigger id="rx-valid" className="h-8 text-xs">
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {VALID_DAYS_OPTIONS.map((d) => (
+                                    <SelectItem key={d} value={String(d)} className="text-xs">
+                                      {d} days
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </div>
                           </div>
-                          <div className="space-y-1">
-                            <Label htmlFor="rx-valid" className="text-xs font-medium">Validity period</Label>
-                            <Select value={validDays} onValueChange={setValidDays}>
-                              <SelectTrigger id="rx-valid" className="h-8 text-xs">
-                                <SelectValue />
-                              </SelectTrigger>
-                              <SelectContent>
-                                {VALID_DAYS_OPTIONS.map((d) => (
-                                  <SelectItem key={d} value={String(d)} className="text-xs">
-                                    {d} days
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                          </div>
+                          {!detail.orderId ? (
+                            <p className="text-[11px] text-muted-foreground">
+                              Standalone upload — refills only become actionable once linked to a prescription order.
+                            </p>
+                          ) : null}
+                        </div>
+                      ) : (action === "APPROVED" || action === "PARTIALLY_APPROVED") && isRefillCopy ? (
+                        <div className="rounded-md border bg-muted/40 p-2.5 text-[11px] text-muted-foreground">
+                          Refill allowance and validity are inherited from the original prescription — no additional refills will be created by approving this dispense.
                         </div>
                       ) : null}
 
@@ -855,11 +998,11 @@ export function ReviewDialog({
                 </Button>
               ) : null}
 
-              {canReview && detail && detail.status !== "APPROVED" ? (
+              {canReview && detail && !orderClosed && detail.status !== "APPROVED" ? (
                 <Button
                   size="sm"
                   onClick={() => void submit()}
-                  disabled={busy || (notesRequired && !notesValid) || !partialValid}
+                  disabled={busy || approvalBlockedByParent || (notesRequired && !notesValid) || !partialValid}
                   className={cn(
                     "h-8 text-xs font-semibold transition-colors",
                     submitButtonClass,

@@ -140,10 +140,27 @@ export interface PrescriptionDTO {
   createdAt: string
   orderId: string | null
   orderReference?: string | null
+  orderStatus?: OrderStatus | null
   fileUrl?: string | null
   storageKey?: string | null
   customerName?: string | null
   customerPhone?: string | null
+  isRefill?: boolean
+  parentPrescriptionId?: string | null
+  refillNumber?: number | null
+  refillReleasedAt?: string | null
+  sourceOrderId?: string | null
+  sourceOrderReference?: string | null
+  sourceOrderStatus?: OrderStatus | null
+  parentRefillsAllowed?: number | null
+  parentRefillsUsed?: number | null
+  parentValidUntil?: string | null
+  parentStatus?: RxStatus | null
+  parentReviewedByName?: string | null
+  parentReviewNotes?: string | null
+  activeRefillOrderId?: string | null
+  activeRefillOrderReference?: string | null
+  activeRefillOrderStatus?: OrderStatus | null
 }
 
 export interface OrderDTO {
@@ -173,6 +190,9 @@ export interface OrderDTO {
   pointsRedeemed: number
   riderId: string | null
   riderName: string | null
+  isRefill?: boolean
+  refillOfOrderId?: string | null
+  refillOfOrderReference?: string | null
   items: OrderItemDTO[]
   statusHistory: OrderStatusEventDTO[]
   payments: PaymentDTO[]

@@ -62,7 +62,7 @@ If your change falls into any of these categories, update the matching documenta
 | `src/lib/security/` | Rate limits, file validation, payment integrity, order workflow, BandaGo timing-safe auth (`bandago-auth.ts`, `bandago-bearer.ts`) |
 | `src/lib/pos-reconciliation*.ts` + `src/lib/pdf/` | BandaGo stagnant-POS drift protection, outbound reconciliation ledger, Daily Sales PDF generator (`daily-sales-pdf.ts`), and full documentation PDF generator (`full-docs-pdf.ts`) |
 | `src/lib/constants.ts` | Canonical status lists, roles, loyalty rules, delivery defaults |
-| `prisma/schema.prisma` | 41 models, 5 POS enums, 11 migrations; stock-field authority explained in [docs/database/schema-overview.md](docs/database/schema-overview.md) |
+| `prisma/schema.prisma` | 41 models, 5 POS enums, 12 migrations; stock-field authority explained in [docs/database/schema-overview.md](docs/database/schema-overview.md) |
 | `src/lib/assistant/` + `src/app/api/assistant/route.ts` | The storefront AI assistant (Groq, deterministic-first, session-gated, live public `pharmacy`/`delivery` settings + customer-safe navigation); companion `src/app/api/docs-assistant/route.ts` ("Ask Sphere Docs", staff-gated via `requireStaff`, docs/OpenAPI/Prisma corpus only) |
 | `.zscripts/` + `Caddyfile` | Standalone deployment pipeline (authoritative path) |
 

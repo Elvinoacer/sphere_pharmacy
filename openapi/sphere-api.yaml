@@ -712,7 +712,7 @@ paths:
         '503': { description: Presign failure }
     patch:
       tags: [Prescriptions]
-      summary: Pharmacist review decision (aggregates to the linked order)
+      summary: Pharmacist review decision (aggregates to the linked order; refill copies cannot spawn new refills)
       security: [{ sessionCookie: [] }]
       parameters: [{ $ref: '#/components/parameters/IdPath' }]
       requestBody:
@@ -730,6 +730,7 @@ paths:
         '401': { $ref: '#/components/responses/Unauthorized' }
         '403': { $ref: '#/components/responses/Forbidden' }
         '404': { $ref: '#/components/responses/NotFound' }
+        '409': { description: Linked order is cancelled/refunded, parent prescription expired, or order version conflict }
     delete:
       tags: [Prescriptions]
       summary: Soft delete (order-linked prescriptions require ADMIN)
@@ -744,12 +745,17 @@ paths:
   /api/prescriptions/{id}/refill:
     post:
       tags: [Prescriptions]
-      summary: Convert an approved prescription into a new refill order
+      summary: Convert an approved prescription (or a completed refill dispense via its parent) into a new refill order
       security: [{ sessionCookie: [] }]
       parameters: [{ $ref: '#/components/parameters/IdPath' }]
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/RequestRefillRequest' }
       responses:
         '201':
-          description: Created refill order
+          description: Created refill order with live pricing, delivery fee, and refill sequence
           content:
             application/json:
               schema:
@@ -757,9 +763,15 @@ paths:
                 properties:
                   orderId: { type: string }
                   reference: { type: string }
+                  refillNumber: { type: integer }
+                  refillsRemaining: { type: integer }
+                  subtotal: { type: number }
+                  deliveryFee: { type: number }
+                  total: { type: number }
+        '400': { $ref: '#/components/responses/BadRequest' }
         '401': { $ref: '#/components/responses/Unauthorized' }
         '404': { description: Not found or not owned }
-        '409': { description: 'Not refillable, expired or stock conflict' }
+        '409': { description: 'Not refillable, expired, source order cancelled/rejected, active refill already in progress, or stock conflict' }
         '429': { $ref: '#/components/responses/RateLimited' }
 
   /api/payments/mpesa/initiate:
@@ -2385,10 +2397,27 @@ components:
         createdAt: { type: string, format: date-time }
         orderId: { type: [string, 'null'] }
         orderReference: { type: [string, 'null'] }
+        orderStatus: { $ref: '#/components/schemas/OrderStatus' }
         fileUrl: { type: [string, 'null'], description: Short-lived presigned URL on detail GET only }
         storageKey: { type: [string, 'null'], description: Stripped from API responses }
         customerName: { type: [string, 'null'] }
         customerPhone: { type: [string, 'null'] }
+        isRefill: { type: boolean }
+        parentPrescriptionId: { type: [string, 'null'] }
+        refillNumber: { type: [integer, 'null'] }
+        refillReleasedAt: { type: [string, 'null'], format: date-time }
+        sourceOrderId: { type: [string, 'null'] }
+        sourceOrderReference: { type: [string, 'null'] }
+        sourceOrderStatus: { $ref: '#/components/schemas/OrderStatus' }
+        parentRefillsAllowed: { type: [integer, 'null'] }
+        parentRefillsUsed: { type: [integer, 'null'] }
+        parentValidUntil: { type: [string, 'null'], format: date-time }
+        parentStatus: { $ref: '#/components/schemas/RxStatus' }
+        parentReviewedByName: { type: [string, 'null'] }
+        parentReviewNotes: { type: [string, 'null'] }
+        activeRefillOrderId: { type: [string, 'null'] }
+        activeRefillOrderReference: { type: [string, 'null'] }
+        activeRefillOrderStatus: { $ref: '#/components/schemas/OrderStatus' }
     OrderDTO:
       type: object
       properties:
@@ -2418,6 +2447,9 @@ components:
         pointsRedeemed: { type: integer }
         riderId: { type: [string, 'null'] }
         riderName: { type: [string, 'null'] }
+        isRefill: { type: boolean }
+        refillOfOrderId: { type: [string, 'null'] }
+        refillOfOrderReference: { type: [string, 'null'] }
         items: { type: array, items: { $ref: '#/components/schemas/OrderItemDTO' } }
         statusHistory: { type: array, items: { $ref: '#/components/schemas/OrderStatusEvent' } }
         payments: { type: array, items: { $ref: '#/components/schemas/PaymentDTO' } }
@@ -2726,9 +2758,22 @@ components:
       required: [status]
       properties:
         status: { $ref: '#/components/schemas/RxStatus' }
-        reviewNotes: { type: [string, 'null'], maxLength: 2000, description: Required unless APPROVED or PARTIALLY_APPROVED }
-        refillsAllowed: { type: integer, minimum: 0, maximum: 6 }
-        validDays: { type: integer, enum: [30, 60, 90, 180], default: 90 }
+        reviewNotes: { type: [string, 'null'], maxLength: 2000, description: Required unless APPROVED }
+        refillsAllowed: { type: integer, minimum: 0, maximum: 6, description: Forced to 0 on refill dispense copies; cannot be less than refillsUsed on original prescriptions }
+        validDays: { type: integer, enum: [30, 60, 90, 180], default: 90, description: Ignored on refill dispense copies (inherits parent validUntil) }
+    RequestRefillRequest:
+      type: object
+      description: Optional overrides when requesting a refill; omitted fields inherit safely from the source prescription order.
+      properties:
+        fulfillment: { type: string, enum: [PICKUP, DELIVERY] }
+        paymentMethod: { type: string, enum: [MPESA, CARD, CASH, LATER] }
+        addressId: { type: string, description: Saved customer address id when fulfillment is DELIVERY }
+        deliveryAddress: { type: string, maxLength: 300 }
+        deliveryArea: { type: string, maxLength: 100 }
+        deliveryNotes: { type: string, maxLength: 500 }
+        deliveryLatitude: { type: number, minimum: -90, maximum: 90 }
+        deliveryLongitude: { type: number, minimum: -180, maximum: 180 }
+        notes: { type: string, maxLength: 600 }
     ServiceUpsert:
       type: object
       properties:
